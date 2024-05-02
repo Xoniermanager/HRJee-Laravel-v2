@@ -13,4 +13,5 @@
 <!--end::Vendors Javascript-->
 <!--begin::Custom Javascript(used for this page only)-->
 <script src="{{ asset('assets/js/widgets.bundle.js') }}"></script>
+<script src="{{ asset('assets/js/create-account.js') }}"></script>
 <!--end::Custom Javascript-->
