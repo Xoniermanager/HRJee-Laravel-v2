@@ -5265,7 +5265,6 @@ fieldset:disabled .btn {
   border-radius: var(--bs-modal-border-radius);
   box-shadow: var(--bs-modal-box-shadow);
   outline: 0;
-  margin-top: 80px;
 }
 
 .modal-backdrop {
@@ -7361,7 +7360,7 @@ fieldset:disabled .btn {
 }
 
 .border-top {
-  border-top: var(--bs-border-width) var(--bs-border-style) var(--kt-gray-200) !important;
+  border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
 .border-top-0 {
@@ -38822,34 +38821,4 @@ mat-paginator {
 .pr-10{
 padding-right: 10px;
 }
- 
-.stepper.stepper-links .stepper-nav {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.stepper.stepper-links .stepper-nav .stepper-item.current .stepper-title {
-  color: var(--kt-primary);
-}
-.stepper.stepper-links .stepper-nav .stepper-item.current:after {
-  background-color: var(--kt-primary);
-}
-.stepper.stepper-links .stepper-nav .stepper-item:after {
-  content: " ";
-  position: absolute;
-  top: 2.3rem;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  background-color: transparent;
-  transition: color 0.2s ease;
-}
-.stepper.stepper-links .stepper-nav .stepper-item {
-  position: relative;
-  flex-shrink: 0;
-  margin: 1rem;
-}
-.stepper-title {
-  font-size: 18px ! IMPORTANT;
-}
+

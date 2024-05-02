@@ -14,7 +14,7 @@ services:
     volumes:
       - ./:/var/www
     networks:
-      - hrjeev2Vishnu
+      - hrjee_network
 
   database:
     image: mysql:8.0
@@ -32,7 +32,7 @@ services:
     volumes:
       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
     networks:
-      - hrjeev2Vishnu
+      - hrjee_network
 
   nginx:
     image: nginx:1.17-alpine
@@ -44,8 +44,8 @@ services:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d
     networks:
-      - hrjeev2Vishnu
+      - hrjee_network
   
 networks:
-  hrjeev2Vishnu:
+  hrjee_network:
     driver: bridge
