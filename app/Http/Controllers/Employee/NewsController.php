@@ -12,7 +12,7 @@ class NewsController extends Controller
         return view('employee.news.index');
     }
 
-    public function view_details()
+    public function viewDetails()
     {
         return view('employee.news.details');
     }

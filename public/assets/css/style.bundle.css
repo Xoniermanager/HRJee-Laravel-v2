@@ -7361,7 +7361,7 @@ fieldset:disabled .btn {
 }
 
 .border-top {
-  border-top: var(--bs-border-width) var(--bs-border-style) var(--kt-gray-200) !important;
+  border-top:var(--bs-border-width) var(--bs-border-style) var(--kt-gray-300) !important;
 }
 
 .border-top-0 {

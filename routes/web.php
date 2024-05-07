@@ -1,31 +1,33 @@
 <?php
 
-use App\Http\Controllers\DesignationsController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\PermissionsController;
-use App\Http\Controllers\RolesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\CompanyBranchesController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\Employee\AccountController;
-use App\Http\Controllers\Employee\AttendanceServiceController;
+use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\Employee\AuthController;
-use App\Http\Controllers\Employee\ContactUsController;
-use App\Http\Controllers\Employee\DailyAttendanceController;
-use App\Http\Controllers\Employee\DashboardController;
-use App\Http\Controllers\Employee\ForgetPasswordController;
-use App\Http\Controllers\Employee\HolidaysMangementController;
-use App\Http\Controllers\Employee\HRServiceController;
-use App\Http\Controllers\Employee\LeaveMangementController;
 use App\Http\Controllers\Employee\NewsController;
-use App\Http\Controllers\Employee\NotificationController;
-use App\Http\Controllers\Employee\PayslipsMangementController;
+use App\Http\Controllers\CompanyBranchesController;
 use App\Http\Controllers\Employee\PolicyController;
-use App\Http\Controllers\Employee\ResignationController;
+use App\Http\Controllers\Employee\AccountController;
 use App\Http\Controllers\Employee\SupportController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
-use Spatie\Permission\Exceptions\PermissionDoesNotExist;
+use App\Http\Controllers\Admin\CompanySizeController;
+use App\Http\Controllers\Employee\ContactUsController;
+use App\Http\Controllers\Employee\DashboardController;
+use App\Http\Controllers\Employee\HRServiceController;
+use App\Http\Controllers\Admin\CompanyStatusController;
+use App\Http\Controllers\Admin\QualificationController;
+use App\Http\Controllers\Employee\ResignationController;
+use App\Http\Controllers\Employee\NotificationController;
+use App\Http\Controllers\Employee\ForgetPasswordController;
+use App\Http\Controllers\Employee\LeaveMangementController;
+use App\Http\Controllers\Employee\DailyAttendanceController;
+use App\Http\Controllers\Employee\AttendanceServiceController;
+use App\Http\Controllers\Employee\HolidaysMangementController;
+use App\Http\Controllers\Employee\PayslipsMangementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,7 +94,6 @@ Route::middleware(['dashboard.access'])->group(function () {
 
 
 /** ---------------Employee Pannel Started--------------  */
-
 //Login Process
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('employee');
@@ -117,7 +118,7 @@ Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
     //News Module
     Route::controller(NewsController::class)->group(function () {
         Route::get('/news', 'index')->name('employee.news');
-        Route::get('/news/details', 'view_details')->name('employee.news.details');
+        Route::get('/news/details', 'viewDetails')->name('employee.news.details');
     });
 
     //Policy Module
@@ -147,7 +148,7 @@ Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
     //Leave Management
     Route::controller(LeaveMangementController::class)->group(function () {
         Route::get('/leave', 'index')->name('employee.leave');
-        Route::get('/apply/leave', 'apply_leave')->name('employee.apply.leave');
+        Route::get('/apply/leave', 'applyLeave')->name('employee.apply.leave');
     });
 
     //Holidays Management
@@ -159,6 +160,44 @@ Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
     //Resignation Management
     Route::controller(ResignationController::class)->group(function () {
         Route::get('/resignation', 'index')->name('employee.resignation');
-        Route::get('/apply/resignation', 'apply_resignation')->name('employee.apply.resignation');
+        Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
     });
+});
+
+/** -----------------Super Admin Started--------------------*/
+
+//Company Status Module
+Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
+    Route::get('/', 'index')->name('company.status.index');
+    Route::post('/create', 'store')->name('company.status.store');
+    Route::post('/update', 'update')->name('company.status.update');
+    Route::get('/delete/{id}', 'destroy')->name('company.status.delete');
+    Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
+});
+
+//Company Size Module
+Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
+    Route::get('/', 'index')->name('company.size.index');
+    Route::post('/create', 'store')->name('company.size.store');
+    Route::post('/update', 'update')->name('company.size.update');
+    Route::get('/delete/{id}', 'destroy')->name('company.size.delete');
+    Route::get('/status/update', 'statusUpdate')->name('company.size.statusUpdate');
+});
+
+//Skills Module
+Route::prefix('/skills')->controller(SkillController::class)->group(function () {
+    Route::get('/', 'index')->name('skills.index');
+    Route::post('/create', 'store')->name('skills.store');
+    Route::post('/update', 'update')->name('skills.update');
+    Route::get('/delete/{id}', 'destroy')->name('skills.delete');
+    Route::get('/status/update', 'statusUpdate')->name('skills.statusUpdate');
+});
+
+//Qualification Module
+Route::prefix('/qualifications')->controller(QualificationController::class)->group(function () {
+    Route::get('/', 'index')->name('qualification.index');
+    Route::post('/create', 'store')->name('qualification.store');
+    Route::post('/update', 'update')->name('qualification.update');
+    Route::get('/delete/{id}', 'destroy')->name('qualification.delete');
+    Route::get('/status/update', 'statusUpdate')->name('qualification.statusUpdate');
 });

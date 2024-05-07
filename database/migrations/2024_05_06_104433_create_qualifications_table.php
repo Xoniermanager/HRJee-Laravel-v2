@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('company_statuses', function (Blueprint $table) {
+        Schema::create('qualifications', function (Blueprint $table) {
             $table->id();
-            $table->string("name")->unique();
-            $table->string('description');
+            $table->string('name');
+            $table->string('description')->nullable();
             $table->boolean('status')->default(true);
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('company_statuses');
+        Schema::dropIfExists('qualifications');
     }
 };

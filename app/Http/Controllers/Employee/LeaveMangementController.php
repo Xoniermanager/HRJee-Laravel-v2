@@ -11,7 +11,7 @@ class LeaveMangementController extends Controller
     {
         return view('employee.leave.index');
     }
-    public function apply_leave()
+    public function applyLeave()
     {
         return view('employee.leave.apply_leave');
     }

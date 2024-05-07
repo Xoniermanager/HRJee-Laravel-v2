@@ -11,7 +11,7 @@ class ResignationController extends Controller
     {
         return view('employee.resignation.index');
     }
-    public function apply_resignation()
+    public function applyResignation()
     {
         return view('employee.resignation.apply_resignation');
     }

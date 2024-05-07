@@ -21,7 +21,7 @@
     <meta name="description" property='og:description' content='' />
     <meta name="author" content="Jyoti Mishra Web Designer at Xonier">
     <!--begin::Fonts(mandatory for all pages)-->
-    <link rel="stylesheet" href="{{ asset('employee/assets/css/mark-pro.css') }}" />
+    {{-- <link rel="stylesheet" href="{{ asset('employee/assets/css/mark-pro.css') }}" /> --}}
     <!--end::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!--end::Fonts-->

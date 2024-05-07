@@ -143,6 +143,58 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item ">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('company.status.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-check-circle"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Company Status</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item ">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('company.size.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-building"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Company Size</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item ">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('skills.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-cogs"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Skills</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item ">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('qualification.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-graduation-cap"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Qualifications</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
 
                         </div>
                         <!--end:Menu item-->
