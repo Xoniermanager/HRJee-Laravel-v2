@@ -50,9 +50,9 @@ Route::view('/demo', 'demo');
 Route::middleware(['dashboard.access'])->group(function () {
     Route::view('/dashboard', 'admin.dashboard.dashboard')->name('admin.dashboard');
 
-    Route::get('company/profile',[CompanyController::class ,'company_profile'])->name('company.profile');
+    Route::get('company/profile', [CompanyController::class, 'company_profile'])->name('company.profile');
     Route::patch('company/update/{id}/', [CompanyController::class, 'update_company'])->name('update.company');
-    Route::post('company/change/password',[CompanyController::class ,'company_change_password'])->name('company.change.password');
+    Route::post('company/change/password', [CompanyController::class, 'company_change_password'])->name('company.change.password');
 
     Route::get('branch', [CompanyBranchesController::class, 'index'])->name('branch');
     Route::get('branch/create', [CompanyBranchesController::class, 'branch_form'])->name('create.branch.form');
@@ -100,7 +100,7 @@ Route::middleware(['dashboard.access'])->group(function () {
 });
 
 Route::view('/admin', 'login')->name('admin');
-Route::post('/company_login',[AdminController::class ,'companyLogin'])->name('company_login');
+Route::post('/company_login', [AdminController::class, 'companyLogin'])->name('company_login');
 Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
 
