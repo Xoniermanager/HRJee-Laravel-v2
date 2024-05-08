@@ -42,8 +42,7 @@ var KTCreateAccount = function () {
 			console.log('stepper.next');
 
 			// Validate form before change stepper step
-			var validator = validations[stepper.getCurrentStepIndex() - 1]; // get validator for currnt step
-console.log(validator);
+			var validator = validations[stepper.getCurrentStepIndex() - 1]; // get validator for currnt stepx
 			if (validator) {
 				validator.validate().then(function (status) {
 					console.log('validated!');
@@ -170,7 +169,7 @@ console.log(validator);
 			form,
 			{
 				fields: {
-					'full_name': {
+					'account_type': {
 						validators: {
 							notEmpty: {
 								message: 'Account type is required'

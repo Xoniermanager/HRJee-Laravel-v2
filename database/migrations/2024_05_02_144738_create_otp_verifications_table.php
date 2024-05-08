@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('otp_verifications', function (Blueprint $table) {
             $table->id();
+            $table->string('otp_type')->nullable();
+            $table->string('email');
+            $table->string('phone')->nullable();
+            $table->string('otp_code');
+            $table->timestamp('expire_at')->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('otp_verifications');
     }
 };

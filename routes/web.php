@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
+use App\Models\Department;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RolesController;
@@ -12,6 +13,13 @@ use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Employee\NewsController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\AuthWebController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\CompanyBranchesController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
@@ -42,15 +50,21 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 |
 */
 
+Route::view('/demo', 'demo');
+
 Route::middleware(['dashboard.access'])->group(function () {
     Route::view('/dashboard', 'admin.dashboard.dashboard')->name('admin.dashboard');
+
+    Route::get('company/profile',[CompanyController::class ,'company_profile'])->name('company.profile');
+    Route::patch('company/update/{id}/', [CompanyController::class, 'update_company'])->name('update.company');
+    Route::post('company/change/password',[CompanyController::class ,'company_change_password'])->name('company.change.password');
 
     Route::get('branch', [CompanyBranchesController::class, 'index'])->name('branch');
     Route::get('branch/create', [CompanyBranchesController::class, 'branch_form'])->name('create.branch.form');
     Route::post('add-branch', [CompanyBranchesController::class, 'add_branch'])->name('add.branch');
 
     Route::get('branch/{id}/edit', [CompanyBranchesController::class, 'edit_branch'])->name('edit.branch');
-    Route::patch('branch/{id}/', [CompanyBranchesController::class, 'update_branch'])->name('update.branch');
+    Route::post('branch/{id}/', [CompanyBranchesController::class, 'update_branch'])->name('update.branch');
     Route::get('delete-branch/{id}', [CompanyBranchesController::class, 'delete_branch'])->name('delete.branch');
 
     Route::get('departments', [DepartmentController::class, 'index'])->name('department');
@@ -90,9 +104,9 @@ Route::middleware(['dashboard.access'])->group(function () {
     Route::get('delete-permissions/{id}', [PermissionsController::class, 'delete_permissions'])->name('delete.permissions');
 });
 
-// Route::view('/admin', 'login')->name('admin')->middleware('guest');
-// Route::post('/login', [AdminController::class, 'userLogin'])->name('login')->middleware('guest');
-// Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+Route::view('/admin', 'login')->name('admin');
+Route::post('/company_login',[AdminController::class ,'companyLogin'])->name('company_login');
+Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
 
 /** ---------------Employee Pannel Started--------------  */

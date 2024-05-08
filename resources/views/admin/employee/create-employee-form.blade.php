@@ -51,7 +51,9 @@
                             </div>
                             <!--end::Nav-->
                             <!--begin::Form-->
-                            <form class="mx-auto w-100 pb-10" id="kt_create_account_form">
+                            <form class="mx-auto w-100 pb-10" id="kt_create_account_form" name="kt_create_account_form"
+                                method="post">
+
                                 <!--begin::Step 1-->
                                 <div class="current" data-kt-stepper-element="content">
                                     <!--begin::Wrapper-->
@@ -64,77 +66,78 @@
                                             </div>
                                             <!--end::Card title-->
                                         </div>
-										<div class="card-body">
-											<div class="row">
-												<div class="col-md-6 form-group">
-													<label for="">Full Name <span style="color: red;">*</span></label>
-													<input class="form-control" type="text" name="full_name" value="">
-		
-												</div>
-												<div class="col-md-6 form-group">
-													<label for="">Email <span style="color: red;">*</span></label>
-													<input class="form-control" type="email" name="email" value="{{isset($employee['user']->email)? $employee['user']->email : old('email')}}">
-													@error('email')
-														<div class="text-danger">{{ $message }}</div>
-													@enderror
-												</div>
-												<div class="col-md-6 form-group">
-													<label for="">Password <span style="color: red;">*</span></label>
-													<input class="form-control" type="password" name="password" value="{{old('password')}}">
-													@error('password')
-														<div class="text-danger">{{ $message }}</div>
-													@enderror
-												</div>
-												
-												<div class="col-md-6 form-group">
-													<label for="">Gaurdian's Name </label>
-													<input class="form-control" type="text" name="father_name" value="{{isset($employee['user']['user_details']->gurdian_name)? $employee['user']['user_details']->gurdian_name : old('gurdian_name')}}">
-													@error('father_name')
-														<div class="text-danger">{{ $message }}</div>
-													@enderror
-												</div>
-												<div class="col-md-6 form-group">
-													<label for="">Gender <span style="color: red;">*</span></label>
-													<select class="form-control" name="gender">
-														<option value="male" {{ old('gender') === 'male' ? 'selected' : '' }}>Male</option>
-														<option value="female" {{ old('gender') === 'female' ? 'selected' : '' }}>Female</option> 
-														<option value="other" {{ old('gender') === 'other' ? 'selected' : '' }}>Other</option> 
-													</select>
-													@error('gender')
-														<div class="text-danger">{{ $message }}</div>
-													@enderror
-												</div>
-												<div class="col-md-6 form-group">
-													<label for="">Date of Birth </label>
-													<input class="form-control" name="date_of_birth" type="date" value="{{isset($employee['user']['user_details']->date_of_birth)? $employee['user']['user_details']->date_of_birth : old('date_of_birth')}}"> 
-													@error('date_of_birth')
-														<div class="text-danger">{{ $message }}</div>
-													@enderror
-												</div>
-												<div class="col-md-6 form-group">
-													<label for="">Number <span style="color: red;">*</span></label>
-													<input class="form-control" name="phone" type="number" value="{{old('phone')}}"> 
-													@error('phone')
-														<div class="text-danger">{{ $message }}</div>
-													@enderror
-												</div>
-												<div class="col-md-6 form-group">
-													<label for="">Photo </label>
-													<input class="form-control" type="file" name="profile_image" value="{{old('profile_image')}}">
-													@error('profile_image')
-														<div class="text-danger">{{ $message }}</div>
-													@enderror
-												</div>
-												<div class="col-md-6 form-group">
-													<label for="">Family Contact Number </label>
-													<input class="form-control" type="text" name="family_contact_number" value="{{old('family_contact_number')}}">
-													@error('family_contact_number')
-														<div class="text-danger">{{ $message }}</div>
-													@enderror
-												</div>
-											 
-											</div>								 
-									</div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Full Name <span
+                                                            style="color: red;">*</span></label>
+                                                    <input class="form-control" type="text" name="full_name"
+                                                        id="full_name">
+
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Email <span style="color: red;">*</span></label>
+                                                    <input class="form-control" type="email" name="email"
+                                                        id="email">
+
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Password <span
+                                                            style="color: red;">*</span></label>
+                                                    <input class="form-control" type="password" name="password"
+                                                        value="">
+                                                </div>
+
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Gaurdian's Name </label>
+                                                    <input class="form-control" type="text" name="father_name"
+                                                        value="">
+
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Gender <span style="color: red;">*</span></label>
+                                                    <select class="form-control" name="gender">
+                                                        <option value="">Select Gender</option>
+                                                        <option value="male"
+                                                            {{ old('gender') === 'male' ? 'selected' : '' }}>Male</option>
+                                                        <option value="female"
+                                                            {{ old('gender') === 'female' ? 'selected' : '' }}>Female
+                                                        </option>
+                                                        <option value="other"
+                                                            {{ old('gender') === 'other' ? 'selected' : '' }}>Other</option>
+                                                    </select>
+                                                    @error('gender')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Date of Birth </label>
+                                                    <input class="form-control" name="date_of_birth" type="date"
+                                                        value="">
+
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Phone Number <span
+                                                            style="color: red;">*</span></label>
+                                                    <input class="form-control" name="phone" type="number"
+                                                        value="{{ old('phone') }}">
+
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Photo </label>
+                                                    <input class="form-control" type="file" name="profile_image"
+                                                        value="{{ old('profile_image') }}">
+
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label for="">Family Contact Number </label>
+                                                    <input class="form-control" type="text" name="family_contact_number"
+                                                        value="{{ old('family_contact_number') }}">
+
+                                                </div>
+
+                                            </div>
+                                        </div>
 
                                     </div>
                                     <!--end::Wrapper-->
@@ -388,7 +391,8 @@
                                         <div class="card-body">
                                             <div class="col-md-5 m-auto text-center">
                                                 <h2 class="fw-bold text-dark">Your Are Done!</h2>
-                                                <img src="{{ asset('assets/media/completed.png')}}" class="img-fluid" alt="">
+                                                <img src="{{ asset('assets/media/completed.png') }}" class="img-fluid"
+                                                    alt="">
                                             </div>
 
                                         </div>
@@ -415,7 +419,7 @@
                                     <!--end::Wrapper-->
                                     <!--begin::Wrapper-->
                                     <div>
-                                        <button type="button" class="btn btn-lg btn-primary me-3"
+                                        {{-- <button type="button" class="btn btn-lg btn-primary me-3"
                                             data-kt-stepper-action="submit">
                                             <span class="indicator-label">Submit
                                                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
@@ -434,17 +438,12 @@
                                             <span class="indicator-progress">Please wait...
                                                 <span
                                                     class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                                        </button>
-                                        <button type="button" class="btn btn-lg btn-primary"
-                                            data-kt-stepper-action="next" id="submit-form">Next
-                                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
-                                            {{-- <span class="svg-icon svg-icon-4 ms-1 me-0">
-														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-															<rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor" />
-															<path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor" />
-														</svg>
-													</span> --}}
-                                            <!--end::Svg Icon--></button>
+                                        </button> --}}
+                                        {{-- <button type="button" class="btn btn-lg btn-primary"
+                                            data-kt-stepper-action="next" id="submit-form">Next</button> --}}
+                                        <input type="submit" class="btn btn-lg btn-primary" id="submit-form"
+                                            value="Save">
+
                                     </div>
                                     <!--end::Wrapper-->
                                 </div>
@@ -463,3 +462,60 @@
     </div>
 @endsection
 
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script>
+    jQuery.noConflict();
+    jQuery(document).ready(function($) {
+        $("#kt_create_account_form").validate({
+            rules: {
+                full_name: "required",
+                email: {
+                    required: true,
+                    email: true
+                },
+                password: {
+                    required: true,
+                    minlength: 5
+                },
+                gender: "required",
+                phone: {
+                    required: true,
+                    maxlength: 12,
+                    minlength: 10
+                }
+            },
+            messages: {
+                full_name: "Please enter your firstname",
+                email: "Please enter a valid email address",
+                password: {
+                    required: "Please provide a password",
+                    minlength: "Your password must be at least 5 characters long"
+                },
+                gender: "Please select your gender"
+            },
+            submitHandler: function(form) {
+
+                var user = $(form).serialize();
+                $.ajax({
+                    url: "{{ route('add.employee') }}",
+                    type: 'PATCH',
+                    data: {
+                        user: user,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+
+    });
+</script>

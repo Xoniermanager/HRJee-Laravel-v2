@@ -17,7 +17,8 @@ class DepartmentServices
   }
     public function get_departments()
     { 
-     return $this->department_repository->all();
+     $company =  Auth::guard('admin')->user();
+     return $this->department_repository->getDepartmentByCompany($company->id)->get();
     }
     public function delete_department_by_id($id)
     {    

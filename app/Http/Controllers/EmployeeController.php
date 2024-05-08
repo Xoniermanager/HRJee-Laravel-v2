@@ -75,6 +75,7 @@ class EmployeeController extends Controller
     public function add_employee(ValidateEmployee $request)
     {
         $data = $request->all();
+        return  $data;
 
         if ($request->file('profile_image') !== null) {
             $upload_path = "/uploads";
@@ -94,9 +95,9 @@ class EmployeeController extends Controller
             'password' =>  Hash::make($data['password']), 
             'phone' =>  $data['phone'],
             'profile_image' =>  $data['profile_image'],
-            'joining_date' =>  $data['joining_date'],
-            'employee_id' =>  $data['employee_id'],
-            'role_id' =>  null,    // TODO  comes from session when compnay logged in 
+           // 'joining_date' =>  $data['joining_date'],
+            //'employee_id' =>  $data['employee_id'],
+            // 'role_id' =>  null,    // TODO  comes from session when compnay logged in 
             'company_id' =>  null, // TODO  comes from session when compnay logged in 
         ];
     

@@ -23,4 +23,8 @@ class CompanyBranch extends Model
         'country_id',
         'status',
     ];
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

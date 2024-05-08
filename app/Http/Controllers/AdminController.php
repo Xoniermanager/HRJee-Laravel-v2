@@ -26,22 +26,24 @@ class AdminController extends Controller
  * and attempts to authenticate the user using Laravel's built-in authentication system.
  *
  */
-    public function userLogin(Request $request)
+    public function companyLogin(Request $request)
     {    
+
             try {
                 $validateUser = Validator::make($request->all(),[
-                    'email' => 'required|exists:users,email',
+                    'email' => 'required|exists:companies,email',
                     'password' => 'required'
                 ]);
                 if ($validateUser->fails()) {
-                    return redirect('/admin')->withErrors($validateUser)->withInput();
+                    return redirect('/signin')->withErrors($validateUser)->withInput();
                 }
                 $credentials = $request->only('email', 'password');
-                if (Auth::attempt($credentials)) {
+                if (Auth::guard('admin')->attempt($credentials)) {
                     return redirect('/dashboard');
                 }
                 else{
-                    return redirect('/admin')->withErrors($validateUser)->withInput();
+                    dd('something went wrong');
+                    //return redirect('/signin')->withErrors($validateUser)->withInput();
                 }
 
             } catch (\Throwable $th) {
@@ -62,8 +64,18 @@ public function logout(Request $request)
     Auth::logout();
     $request->session()->flash('success', 'You have been logged out.');
 
-    return redirect('admin');
+    return redirect('signin');
 }
+
+public function signup()
+{        
+    return view('signup');
+}
+public function signin()
+{        
+    return view('signin');
+}
+
 }
 
 
