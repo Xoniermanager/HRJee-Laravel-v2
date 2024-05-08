@@ -1,37 +1,59 @@
-@extends('layouts.employee.main')
+@extends('layouts.company.main')
 @section('content')
 @section('title')
-    Employee Status
+    Departments
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible">
-                {{ session('error') }}
-            </div>
-        @endif
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible">
-                {{ session('success') }}
-            </div>
-        @endif
         <div class="row gy-5 g-xl-10">
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible">
+                    {{ session('success') }}
+                </div>
+            @endif
             <!--begin::Col-->
             <div class="card card-body col-md-12">
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
+                        <div class="d-flex align-items-center position-relative my-1">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                            <span class="svg-icon svg-icon-1 position-absolute ms-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none">
+                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
+                                        rx="1" transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
+                                    <path
+                                        d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                                        fill="black"></path>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
+                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
+                                value="">
+                            <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+                        </div>
+
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_employeee_status"
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#add_department"
                         class="btn btn-sm btn-primary align-self-center">
-                        Add Status</a>
+                        Add Department</a>
+
                     <!--end::Action-->
                 </div>
+
                 <div class="mb-5 mb-xl-10">
+
                     <div class="">
                         <div class="">
                             <!--begin::Body-->
@@ -45,45 +67,39 @@
                                             <thead>
                                                 <tr class="fw-bold">
                                                     <th>Sr. No.</th>
-                                                    <th>Name</th>
-                                                    <th>Description</th>
+                                                    <th>Department Name</th>
                                                     <th>Status</th>
                                                     <th class="float-right">Action</th>
                                                 </tr>
                                             </thead>
-                                            <!--end::Table head-->
-                                            <!--begin::Table body-->
-                                            @forelse ($allEmployeeStatusDetails as $key => $employeeStatusDetails)
+                                            @forelse ($allDepartmentDetails as $key => $departmentDetails)
                                                 <tbody class="">
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $employeeStatusDetails->name }}</td>
-                                                        <td>{{ $employeeStatusDetails->description }}</td>
+                                                        <td><a href="#" data-bs-toggle="modal"
+                                                                onClick="edit_department_details('{{ $departmentDetails->id }}', '{{ $departmentDetails->name }}')">{{ $departmentDetails->name }}</a>
+                                                        </td>
                                                         <td data-order="Invalid date">
                                                             <label class="switch">
                                                                 <input type="checkbox"
-                                                                    <?= $employeeStatusDetails->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $employeeStatusDetails->id }})"
+                                                                    <?= $departmentDetails->status == '1' ? 'checked' : '' ?>
+                                                                    onchange="handleStatus({{ $departmentDetails->id }})"
                                                                     id="checked_value">
                                                                 <span class="slider round"></span>
                                                             </label>
                                                         </td>
+
                                                         <td>
                                                             <div class="d-flex justify-content-end flex-shrink-0">
-                                                                <a href="#" data-bs-toggle="modal"
-                                                                    onClick="edit_company('{{ $employeeStatusDetails->id }}', '{{ $employeeStatusDetails->name }}','{{ $employeeStatusDetails->description }}')"
-                                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                                    <i class="fa fa-edit"></i>
-                                                                    <!--end::Svg Icon-->
-                                                                </a>
-                                                                <a href="{{ route('employee.status.delete', $employeeStatusDetails->id) }}"
+
+                                                                <a href="{{ route('department.delete', $departmentDetails->id) }}"
                                                                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                                                                     onclick="alert('Are you sure want to delete')">
                                                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                                                     <i class="fa fa-trash"></i>
                                                                     <!--end::Svg Icon-->
                                                                 </a>
+
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -91,7 +107,7 @@
                                             @empty
                                                 <td colspan="3">
                                                     <span class="text-danger">
-                                                        <strong>No Employee Status Found!</strong>
+                                                        <strong>No Department Found!</strong>
                                                     </span>
                                                 </td>
                                             @endforelse
@@ -100,9 +116,11 @@
                                         <!--end::Table-->
                                     </div>
                                     <!--end::Table container-->
+
                                 </div>
                             </div>
                             <!--begin::Body-->
+
                         </div>
                         <!--begin::Body-->
                     </div>
@@ -115,18 +133,15 @@
     </div>
     <!--end::Container-->
 </div>
-</div>
-
-<!-- Modal for creation form-->
-<div class="modal" id="kt_modal_employeee_status" tabindex="-1" aria-modal="true" role="dialog">
+<div class="modal" id="edit_department">
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-500px">
         <!--begin::Modal content-->
         <div class="modal-content">
             <!--begin::Modal header-->
-            <div class="modal-header pb-0">
-                <h2>Add Employee Status</h2>
+            <div class="modal-header">
                 <!--begin::Close-->
+                <h2>Edit Department</h2>
                 <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                     <span class="svg-icon svg-icon-1">
@@ -144,24 +159,20 @@
             </div>
             <!--begin::Modal header-->
             <!--begin::Modal body-->
-            <div class="modal-body scroll-y pb-5 border-top">
+            <div class="modal-body scroll-y pt-0 pb-5 border-top">
                 <!--begin::Wrapper-->
-                <form id="employee_status_form">
+                <form id="department-update-form">
                     @csrf
-                    <div class="col-md-12 form-group">
-                        <label for="">Name*</label>
-                        <input class="form-control" name="name" type="text">
+                    <input type="hidden" name="id" id="id">
+                    <div class="mw-lg-600px mx-auto p-4">
+
+                        <!--begin::Input group-->
+                        <div class="mt-3">
+                            <label>Department Name</label>
+                            <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
+                        </div>
+                        <!--end::Input group-->
                     </div>
-                    @error('name')
-                        <span class="text-red-500">{{ $message }}</span>
-                    @enderror
-                    <div class="col-md-12 form-group">
-                        <label for="">Description</label>
-                        <input class="form-control" name="description" type="text">
-                    </div>
-                    @error('description')
-                        <span class="text-red-500">{{ $message }}</span>
-                    @enderror
                     <!--end::Wrapper-->
                     <div class="d-flex flex-end flex-row-fluid pt-2 border-top">
                         <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
@@ -183,18 +194,16 @@
     </div>
     <!--end::Modal dialog-->
 </div>
-
-
-<!-- Modal for Edit  form-->
-<div class="modal" id="kt_modal_employeee_status_update" tabindex="-1" aria-modal="true" role="dialog">
+<!----------modal------------>
+<div class="modal" id="add_department">
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-500px">
         <!--begin::Modal content-->
         <div class="modal-content">
             <!--begin::Modal header-->
-            <div class="modal-header pb-0">
-                <h2>Edit Company Status</h2>
+            <div class="modal-header">
                 <!--begin::Close-->
+                <h2>Add Department</h2>
                 <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                     <span class="svg-icon svg-icon-1">
@@ -212,30 +221,29 @@
             </div>
             <!--begin::Modal header-->
             <!--begin::Modal body-->
-            <div class="modal-body scroll-y pb-5 border-top">
-                <!--begin::Wrapper-->
-                <form id="update-form">
+            <div class="modal-body scroll-y pt-0 pb-5 border-top">
+                <form id="department_form">
                     @csrf
-                    <input type="hidden" id="id" value="" name="id">
-                    <div class="col-md-12 form-group">
-                        <label for="">Name*</label>
-                        <input class="form-control" name="name" type="text" value="" id="name">
-                    </div>
-                    <div class="col-md-12 form-group">
-                        <label for="">Description</label>
-                        <input class="form-control" name="description" type="text" value=""
-                            id="description">
+                    <!--begin::Wrapper-->
+                    <div class="mw-lg-600px mx-auto p-4">
+                        <!--begin::Input group-->
+
+                        <div class="mt-3">
+                            <label>Department Name</label>
+                            <input class="form-control mb-5 mt-3" type="text" name="name">
+                            <!--end::Switch-->
+                        </div>
+                        <!--end::Input group-->
                     </div>
                     <!--end::Wrapper-->
                     <div class="d-flex flex-end flex-row-fluid pt-2 border-top">
                         <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary" id="kt_modal_upgrade_plan_btn">
                             <!--begin::Indicator label-->
-                            <span class="indicator-label">Update</span>
+                            <span class="indicator-label">Submit</span>
                             <!--end::Indicator label-->
                             <!--begin::Indicator progress-->
-                            <span class="indicator-progress">Please
-                                wait...
+                            <span class="indicator-progress">Please wait...
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                             <!--end::Indicator progress-->
                         </button>
@@ -248,23 +256,15 @@
     </div>
     <!--end::Modal dialog-->
 </div>
-
-@endsection
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script>
-    function edit_company(id, name, description) {
+    function edit_department_details(id, name) {
         $('#id').val(id);
         $('#name').val(name);
-        $('#description').val(description);
-        jQuery('#kt_modal_employeee_status_update').modal('show');
+        jQuery('#edit_department').modal('show');
     }
-
     jQuery.noConflict();
     jQuery(document).ready(function($) {
-        jQuery("#employee_status_form").validate({
+        jQuery("#department_form").validate({
             rules: {
                 name: "required",
             },
@@ -272,11 +272,11 @@
                 name: "Please enter name",
             },
             submitHandler: function(form) {
-                var employee_status = $(form).serialize();
+                var department_data = $(form).serialize();
                 $.ajax({
-                    url: "{{ route('employee.status.store') }}",
+                    url: "{{ route('department.store') }}",
                     type: 'POST',
-                    data: employee_status,
+                    data: department_data,
                     success: function(response) {
                         swal.fire("Done!", response.message, "success");
                         // refresh page after 2 seconds
@@ -299,24 +299,25 @@
                 });
             }
         });
-        $("#update-form").validate({
+    });
+    jQuery(document).ready(function($) {
+        $("#department-update-form").validate({
             rules: {
-                name: "required",
+                name: "required"
             },
             messages: {
                 name: "Please enter name",
+
             },
             submitHandler: function(form) {
-                var company_status = $(form).serialize();
+                var department_data = $(form).serialize();
                 var id = $('#id').val();
                 $.ajax({
-                    url: "<?= route('employee.status.update') ?>",
+                    url: "<?= route('department.update') ?>",
                     type: 'post',
-                    data: company_status,
+                    data: department_data,
                     success: function(response) {
                         swal.fire("Done!", response.message, "success");
-                        // location.reload();
-                        // refresh page after 2 seconds
                         setTimeout(function() {
                             location.reload();
                         }, 1000);
@@ -348,7 +349,7 @@
             status_name = 'Inactive';
         }
         $.ajax({
-            url: "{{ route('employee.status.statusUpdate') }}",
+            url: "{{ route('department.statusUpdate') }}",
             type: 'get',
             data: {
                 'id': id,
@@ -364,8 +365,4 @@
         })
     }
 </script>
-<style>
-.error {
-    color: red;
-}
-</style>
+@endsection

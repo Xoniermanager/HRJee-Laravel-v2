@@ -29,12 +29,9 @@ return new class extends Migration
             $table->string('subscription_id')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
-
             // $table->foreign('subscription_id')->references('id')->on('subscriptions');
             // $table->foreign('status')->references('id')->on('company_statuses');
             // $table->foreign('role_id')->references('id')->on('roles');
-            
-            
         });
         
     }

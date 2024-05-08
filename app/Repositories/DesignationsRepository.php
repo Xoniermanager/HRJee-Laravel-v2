@@ -22,16 +22,7 @@ class DesignationsRepository extends BaseRepository
     {
         return Designations::class;
     }
-
-    // public function deleteDepartmentById($id)
-    // {
-    //    return $this->where('id',$id);
-    // }
-    public function getDesignationsById($id)
-    {
-       return $this->where('id',$id);
-    }
-
+    
     /**
      * Boot up the repository, pushing criteria
      */

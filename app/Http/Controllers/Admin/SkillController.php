@@ -87,7 +87,7 @@ class SkillController extends Controller
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
+        $data['status'] = $request->status;
         $statusDetails = $this->skillsService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;

@@ -47,7 +47,7 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 Route::view('/demo', 'demo');
 
 Route::middleware(['dashboard.access'])->group(function () {
-    Route::view('/dashboard', 'admin.dashboard.dashboard')->name('company.dashboard');
+    Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
 
     Route::get('company/profile', [CompanyController::class, 'company_profile'])->name('company.profile');
     Route::patch('company/update/{id}/', [CompanyController::class, 'update_company'])->name('update.company');
@@ -61,19 +61,23 @@ Route::middleware(['dashboard.access'])->group(function () {
     Route::post('branch/{id}/', [CompanyBranchesController::class, 'update_branch'])->name('update.branch');
     Route::get('delete-branch/{id}', [CompanyBranchesController::class, 'delete_branch'])->name('delete.branch');
 
-    Route::get('departments', [DepartmentController::class, 'index'])->name('department');
-    Route::view('department/create', 'admin.department.create-department-form')->name('create.department.form');
-    Route::post('add-departments', [DepartmentController::class, 'add_departments'])->name('add.departments');
-    Route::get('departments/{id}/edit', [DepartmentController::class, 'edit_departments'])->name('edit.department');
-    Route::patch('departments/{id}/', [DepartmentController::class, 'update_departments'])->name('update.departments');
-    Route::get('delete-departments/{id}', [DepartmentController::class, 'delete_departments'])->name('delete.department');
+    //Department Module
+    Route::prefix('/department')->controller(DepartmentController::class)->group(function () {
+        Route::get('/', 'index')->name('department.index');
+        Route::post('/create', 'store')->name('department.store');
+        Route::post('/update', 'update')->name('department.update');
+        Route::get('/delete/{id}', 'destroy')->name('department.delete');
+        Route::get('/status/update', 'statusUpdate')->name('department.statusUpdate');
+    });
 
-    Route::get('designations', [DesignationsController::class, 'index'])->name('designation');
-    Route::get('designations/create', [DesignationsController::class, 'designation_form'])->name('create.designation.form');
-    Route::post('add-designations', [DesignationsController::class, 'add_designations'])->name('add.designations');
-    Route::get('designations/{id}/edit', [DesignationsController::class, 'edit_designations'])->name('edit.designation');
-    Route::patch('designations/{id}/', [DesignationsController::class, 'update_designations'])->name('update.designations');
-    Route::get('delete-designations/{id}', [DesignationsController::class, 'delete_designations'])->name('delete.designation');
+    //Designation Module
+    Route::prefix('/designation')->controller(DesignationsController::class)->group(function () {
+        Route::get('/', 'index')->name('designation.index');
+        Route::post('/create', 'store')->name('designation.store');
+        Route::post('/update', 'update')->name('designation.update');
+        Route::get('/delete/{id}', 'destroy')->name('designation.delete');
+        Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
+    });
 
     Route::get('employee', [EmployeeController::class, 'index'])->name('employee');
     Route::get('employee/{id}/view', [EmployeeController::class, 'view_employee'])->name('view.employee');

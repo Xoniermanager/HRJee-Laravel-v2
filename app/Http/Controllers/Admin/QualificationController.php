@@ -86,7 +86,7 @@ class QualificationController extends Controller
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
+        $data['status'] = $request->status;
         $statusDetails = $this->qualificationService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;

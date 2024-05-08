@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
     use HasFactory;
-    protected $table = 'departments';
+
     protected $fillable = [
-            'name','company_id'
+        'name', 'status'
     ];
-    public function designations() 
+
+    public function departments()
     {
-        return $this->hasMany(Designations::class);
+        return $this->hasOne(Department::class);
+        
     }
 }

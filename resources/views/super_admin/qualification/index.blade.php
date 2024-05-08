@@ -63,7 +63,8 @@
                                                             <label class="switch">
                                                                 <input type="checkbox"
                                                                     <?= $qualificationDetails->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $qualificationDetails->id }})" id="checked_value">
+                                                                    onchange="handleStatus({{ $qualificationDetails->id }})"
+                                                                    id="checked_value">
                                                                 <span class="slider round"></span>
                                                             </label>
                                                         </td>
@@ -298,11 +299,6 @@
                 });
             }
         });
-    });
-</script>
-<script>
-    jQuery.noConflict();
-    jQuery(document).ready(function($) {
         $("#update-form").validate({
             rules: {
                 name: "required",
@@ -340,8 +336,7 @@
             }
         });
     });
-</script>
-<script>
+
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
         if (checked_value == true) {

@@ -63,7 +63,8 @@
                                                             <label class="switch">
                                                                 <input type="checkbox"
                                                                     <?= $companySizeDetails->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $companySizeDetails->id }})" id="checked_value">
+                                                                    onchange="handleStatus({{ $companySizeDetails->id }})"
+                                                                    id="checked_value">
                                                                 <span class="slider round"></span>
                                                             </label>
                                                         </td>
@@ -261,7 +262,6 @@
         $('#description').val(description);
         jQuery('#kt_modal_company_size_update').modal('show');
     }
-
     jQuery.noConflict();
     jQuery(document).ready(function($) {
         jQuery("#company_size_form").validate({
@@ -301,11 +301,6 @@
                 });
             }
         });
-    });
-</script>
-<script>
-    jQuery.noConflict();
-    jQuery(document).ready(function($) {
         $("#update-form").validate({
             rules: {
                 name: "required",
@@ -344,8 +339,6 @@
             }
         });
     });
-</script>
-<script>
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
         if (checked_value == true) {

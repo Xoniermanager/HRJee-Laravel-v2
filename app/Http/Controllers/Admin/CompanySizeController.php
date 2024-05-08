@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\CompanySizeService;
-use App\Models\CompanySize;
-use App\Models\CompanyStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\OnlyString;
 use Exception;
 
 class CompanySizeController extends Controller
@@ -87,7 +84,7 @@ class CompanySizeController extends Controller
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
+        $data['status'] = $request->status;
         $statusDetails = $this->companySizeService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;

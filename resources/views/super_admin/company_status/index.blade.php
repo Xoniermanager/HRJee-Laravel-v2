@@ -301,11 +301,6 @@
                 });
             }
         });
-    });
-</script>
-<script>
-    jQuery.noConflict();
-    jQuery(document).ready(function($) {
         $("#update-form").validate({
             rules: {
                 name: "required",
@@ -346,8 +341,7 @@
             }
         });
     });
-</script>
-<script>
+
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
         if (checked_value == true) {

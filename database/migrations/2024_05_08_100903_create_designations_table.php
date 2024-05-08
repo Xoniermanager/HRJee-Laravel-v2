@@ -11,22 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('designations', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->unsignedBigInteger('company_id')->nullable(); 
+            $table->string('name');
+            $table->unsignedBigInteger("company_id")->nullable();
+            $table->unsignedBigInteger('department_id');
+            $table->boolean('status')->default(true);
             $table->timestamps();
-    
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('department_id')->references('id')->on('departments');
         });
+
     }
-    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('designations');
     }
 };

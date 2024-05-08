@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('designations', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger("company_id")->nullable();
-            $table->unsignedBigInteger('department_id');
+            $table->boolean('status')->default(true);
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->timestamps();
-
-           // $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('department_id')->references('id')->on('departments');
         });
-
     }
 
     /**
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('designations');
+        Schema::dropIfExists('departments');
     }
 };

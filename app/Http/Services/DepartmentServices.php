@@ -2,32 +2,30 @@
 
 namespace App\Http\Services;
 
-use App\Models\Department;
-use App\Models\User;
 use App\Repositories\DepartmentRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
-class DepartmentServices 
+class DepartmentServices
 {
-  private $department_repository ;
-  public function __construct(DepartmentRepository $department_repository)
+  private $departmentRepository;
+  public function __construct(DepartmentRepository $departmentRepository)
   {
-    $this->department_repository = $department_repository;
+    $this->departmentRepository = $departmentRepository;
   }
-    public function get_departments()
-    { 
-     $company =  Auth::guard('admin')->user();
-     return $this->department_repository->getDepartmentByCompany($company->id)->get();
-    }
-    public function delete_department_by_id($id)
-    {    
-    return $this->department_repository->getDepartmentById($id)->delete();
-    }
-    public function get_department_by_id($id)
-    {    
-    return $this->department_repository->getDepartmentById($id)->get();
-    }
-    
+  public function all()
+  {
+    return $this->departmentRepository->paginate(10);
+  }
+  public function create(array $data)
+  {
+    return $this->departmentRepository->create($data);
+  }
 
+  public function updateDetails(array $data, $id)
+  {
+    return $this->departmentRepository->find($id)->update($data);
+  }
+  public function deleteDetails($id)
+  {
+    return $this->departmentRepository->find($id)->delete();
+  }
 }

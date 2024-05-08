@@ -2,33 +2,30 @@
 
 namespace App\Http\Services;
 
-use App\Models\Department;
-use App\Models\Designations;
-use App\Models\User;
-use App\Repositories\DepartmentRepository;
 use App\Repositories\DesignationsRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
-class DesignationServices 
+class DesignationServices
 {
-  private $designations_repository ;
-  public function __construct(DesignationsRepository $designations_repository)
+  private $designationRepository;
+  public function __construct(DesignationsRepository $designationRepository)
   {
-    $this->designations_repository = $designations_repository;
+    $this->designationRepository = $designationRepository;
   }
-    public function get_designations()
-    { 
-     return  Designations::with('departments')->get();
-    }
-    public function delete_designations_by_id($id)
-    {    
-    return $this->designations_repository->getDesignationsById($id)->delete();
-    }
-    public function get_designations_by_id($id)
-    {    
-    return $this->designations_repository->getDesignationsById($id)->get();
-    }
-    
-
+  public function all()
+  {
+    return $this->designationRepository->with('departments')->paginate(10);
+  }
+  public function create(array $data)
+  {
+    return $this->designationRepository->create($data);
+  }
+  
+  public function updateDetails(array $data, $id)
+  {
+    return $this->designationRepository->find($id)->update($data);
+  }
+  public function deleteDetails($id)
+  {
+    return $this->designationRepository->find($id)->delete();
+  }
 }

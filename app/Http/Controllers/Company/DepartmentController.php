@@ -2,128 +2,91 @@
 
 namespace App\Http\Controllers\Company;
 
-use App\Rules\OnlyString;
-use App\Models\Department;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Services\DepartmentServices;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class DepartmentController extends Controller
 {
-    private $department_services; 
-    public function __construct(DepartmentServices $department_services)
+    private $departmentService;
+    public function __construct(DepartmentServices $departmentService)
     {
-            $this->department_services = $department_services;
+        $this->departmentService = $departmentService;
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $departments = $this->department_services->get_departments();
-        return view('company.department.department-list')->with(['departments'=> $departments]);
-    }
-
-    public function add_departments(Request $request)
-    {
-        try
-        {
-
-        $validateDepartment  = Validator::make($request->all(), [
-            'name' => ['required', 'string', new OnlyString, 'unique:departments,name'],
+        return view('company.department.index', [
+            'allDepartmentDetails' => $this->departmentService->all()
         ]);
-
-        if ($validateDepartment->fails()) {
-            return redirect('department/create')->withErrors($validateDepartment)->withInput();
-        }
-        $data = $request->all();
-
-        $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
-        if(Department::create($data))
-        { 
-            smilify('success','Department Created Successfully!');
-            return redirect('/departments');
-        }
-    }
-    catch (\Exception $e) {
-        return $e->getMessage();
-    }
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Store a newly created resource in storage.
      */
-    public function edit_departments($id)
+    public function store(Request $request)
     {
-        try{
-        $department = $this->department_services->get_department_by_id($id)->first();
-
-        if (!$department) {
-            smilify('error','Item Does Not Exists !');
-            return redirect('/departments');
-        }
-         return view('company.department.create-department-form', compact('department'));
-    }
-        catch (Exception $e) {
-            return $e->getMessage();
+        try {
+            $validateDepartments  = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'unique:departments,name'],
+            ]);
+            if ($validateDepartments->fails()) {
+                return response()->json(['error' => $validateDepartments->messages()], 400);
+            }
+            $data = $request->all();
+            if ($this->departmentService->create($data)) {
+                return response()->json(['message' => 'Departments Created Successfully!']);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' =>  $e->getMessage()], 400);
         }
     }
 
     /**
      * Update the specified resource in storage.
      */
-
-    public function update_departments(Request $request, $id)
+    public function update(Request $request)
     {
-        $validateDepartment  = Validator::make($request->all(), [
-            'name' => ['required', 'string', new OnlyString, Rule::unique('departments')->ignore($id)],
+        $validateDepartments  = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'unique:departments,name,' . $request->id],
         ]);
-    
-        if ($validateDepartment->fails()) {
-            return redirect()->route('edit.department', $id)->withErrors($validateDepartment)->withInput();
-        }
 
-        // Find the department by ID
-        $department = $this->department_services->get_department_by_id($id)->first();
-
-        if (!$department) {
-            smilify('error','Department Not Found!');
-            return redirect('/departments');
+        if ($validateDepartments->fails()) {
+            return response()->json(['error' => $validateDepartments->messages()], 400);
         }
-    
-        // Update the department's name
-        $department->name = $request->input('name');
-        $department->save();
-    
-        smilify('success','Department Updated Successfully!');
-        return redirect('/departments');
+        $updateData = $request->except(['_token', 'id']);
+        $companyStatus = $this->departmentService->updateDetails($updateData, $request->id);
+        if ($companyStatus) {
+            return response()->json(['message' => 'Departments Updated Successfully!']);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function delete_departments($id)
+    public function destroy(string $id)
     {
-        try {
-        $validateDepartment = Validator::make(['id' => $id],
-            ['id' => 'required|exists:departments,id']
-        );
-        if ($validateDepartment->fails()) {
-            smilify('error','Item Does Not Exists !');
-            return redirect('/departments');
-        }
-        $response  = $this->department_services->delete_department_by_id($id);
-        if($response)
-        {
-            smilify('success','Department Deleted Successfully!');
-            return redirect('/departments');
+        $data = $this->departmentService->deleteDetails($id);
+        if ($data) {
+            return back()->with('success', 'Deleted Successfully! ');
+        } else {
+            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
         }
     }
-    catch (Exception $e) {
-        return $e->getMessage();
-    }
+    public function statusUpdate(Request $request)
+    {
+        $id = $request->id;
+        $data['status'] = $request->status;
+        $statusDetails = $this->departmentService->updateDetails($data, $id);
+        if ($statusDetails) {
+            echo 1;
+        } else {
+            echo 0;
+        }
     }
 }

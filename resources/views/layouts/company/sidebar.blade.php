@@ -48,7 +48,7 @@
                             </div>
                             <div class="menu-item">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('department') }}">
+                                <a class="menu-link" href="{{ route('department.index') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
                                             <i class="fa fa-building"></i>
@@ -61,7 +61,7 @@
                             </div>
                             <div class="menu-item">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('designation') }}">
+                                <a class="menu-link" href="{{ route('designation.index') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
                                             <i class="fa fa-file-contract"></i>
