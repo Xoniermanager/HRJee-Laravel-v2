@@ -1,6 +1,6 @@
 <div class="float-left position-colps sidemenu-scroll">
     <!--begin::Aside-->
-    <a href="{{ route('admin.dashboard') }}">
+    <a href="{{ route('company.dashboard') }}">
         <img src="{{ asset('assets/media/logos/logo.png') }}" class="brand-logo">
     </a>
     <div id="kt_aside" class="aside py-5" data-kt-drawer="true" data-kt-drawer-name="aside"
@@ -20,7 +20,7 @@
                             <!--begin:Menu item-->
                             <div class="menu-item active">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('admin.dashboard') }}">
+                                <a class="menu-link" href="{{ route('company.dashboard') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
                                             <i class="fa fa-dashboard"></i>

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
 use Exception;
 use App\Rules\OnlyString;
 use App\Models\Designations;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use App\Http\Services\DepartmentServices;
@@ -31,13 +32,13 @@ class DesignationsController extends Controller
     public function index()
     {
         $designations = $this->designation_services->get_designations();
-        return view('admin.designation.designation-list')->with(['designations'=> $designations]);
+        return view('company.designation.designation-list')->with(['designations'=> $designations]);
     }
 
     public function designation_form()
     {
         $departments = $this->departments_services->get_departments();
-        return view('admin.designation.create-designation-form', compact('departments'));
+        return view('company.designation.create-designation-form', compact('departments'));
     }
 
     public function add_designations(Request $request)
@@ -78,7 +79,7 @@ class DesignationsController extends Controller
             smilify('error','Item Does Not Exists !');
             return redirect('/designations');
         }
-         return view('admin.designation.create-designation-form', compact('designation','departments'));
+         return view('company.designation.create-designation-form', compact('designation','departments'));
     }
         catch (Exception $e) {
             return $e->getMessage();

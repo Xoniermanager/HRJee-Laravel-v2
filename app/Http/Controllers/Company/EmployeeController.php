@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
-use App\Http\Requests\ValidateEmployee;
-use App\Http\Services\BranchServices;
-use App\Http\Services\DepartmentServices;
-use App\Http\Services\DesignationServices;
-use App\Http\Services\FileUploadService;
-use App\Models\Employee;
-use App\Http\Services\EmployeeServices;
-use App\Models\User;
-use App\Models\UserAddress;
-use App\Models\UserBankDetails;
-use App\Models\UserDetails;
 use Exception;
+use App\Models\User;
+use App\Models\Employee;
+use App\Models\UserAddress;
+use App\Models\UserDetails;
 use Illuminate\Http\Request;
+use App\Models\UserBankDetails;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Services\BranchServices;
+use App\Http\Requests\ValidateEmployee;
+use App\Http\Services\EmployeeServices;
+use App\Http\Services\FileUploadService;
+use App\Http\Services\DepartmentServices;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\DesignationServices;
 
 class EmployeeController extends Controller
 {
@@ -46,7 +47,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = $this->employee_services->get_employee();
-        return view('admin.employee.employee-list',compact('employees'));
+        return view('company.employee.employee-list',compact('employees'));
     }
     public function view_employee($id)
     {
@@ -56,7 +57,7 @@ class EmployeeController extends Controller
                 smilify('error','Item Does Not Exists !');
                 return redirect('/employees');
             }
-             return view('admin.employee.employee-view', compact('employee'));
+             return view('company.employee.employee-view', compact('employee'));
         }
             catch (Exception $e) {
                 return $e->getMessage();
@@ -69,7 +70,7 @@ class EmployeeController extends Controller
         $departments  = $this->departments_services->get_departments();
         $designations = $this->designation_services->get_designations();
         $branches = $this->branch_services->get_branches();
-        return view('admin.employee.create-employee-form', compact('departments','designations','branches'));
+        return view('company.employee.create-employee-form', compact('departments','designations','branches'));
     }
 
     public function add_employee(ValidateEmployee $request)
@@ -177,7 +178,7 @@ class EmployeeController extends Controller
             smilify('error','Item Does Not Exists !');
             return redirect('/employees');
         }
-         return view('admin.employee.create-employee-form', compact('employee','departments','designations','branches'));
+         return view('company.employee.create-employee-form', compact('employee','departments','designations','branches'));
     }
         catch (Exception $e) {
             return $e->getMessage();

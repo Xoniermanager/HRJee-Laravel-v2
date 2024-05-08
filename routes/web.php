@@ -3,17 +3,17 @@
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Employee\NewsController;
-use App\Http\Controllers\RolesController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\PermissionsController;
-use App\Http\Controllers\DesignationsController;
-use App\Http\Controllers\CompanyBranchesController;
+use App\Http\Controllers\Company\RolesController;
+use App\Http\Controllers\Company\CompanyController;
+use App\Http\Controllers\Company\EmployeeController;
+use App\Http\Controllers\Company\DepartmentController;
+use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\Company\DesignationsController;
+use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
 use App\Http\Controllers\Employee\SupportController;
@@ -47,7 +47,7 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 Route::view('/demo', 'demo');
 
 Route::middleware(['dashboard.access'])->group(function () {
-    Route::view('/dashboard', 'admin.dashboard.dashboard')->name('admin.dashboard');
+    Route::view('/dashboard', 'admin.dashboard.dashboard')->name('company.dashboard');
 
     Route::get('company/profile', [CompanyController::class, 'company_profile'])->name('company.profile');
     Route::patch('company/update/{id}/', [CompanyController::class, 'update_company'])->name('update.company');

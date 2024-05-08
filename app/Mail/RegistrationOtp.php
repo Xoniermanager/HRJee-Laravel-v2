@@ -39,7 +39,7 @@ class RegistrationOtp extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.send-otp',
+            markdown: 'email.send-otp',
             with: [
                 'sentOtpDetails' => $this->emailVerificationOtp
             ],

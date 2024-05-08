@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\BranchServices;
@@ -41,7 +42,7 @@ class CompanyController extends Controller
         $companyBranch  =  $companyDetails->branches->firstWhere('branch_type','primary');
         $states = DB::table('states')->get();
         $countries = DB::table('countries')->get();
-        return view('admin.company.company_profile',compact('companyDetails','companyBranch','countries','states'));
+        return view('company.company.company_profile',compact('companyDetails','companyBranch','countries','states'));
     }
 
     /**

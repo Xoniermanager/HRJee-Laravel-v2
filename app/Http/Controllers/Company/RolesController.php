@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
+use Exception;
 use App\Models\roles;
-use App\Http\Services\rolesServices;
 use App\Rules\OnlyString;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Exception;
+use App\Http\Controllers\Controller;
+use App\Http\Services\rolesServices;
+use Illuminate\Support\Facades\Validator;
+
 class RolesController extends Controller
 {
     private $roles_services; 
@@ -22,12 +24,12 @@ class RolesController extends Controller
     public function index()
     {
         $roles = $this->roles_services->get_roles();
-        return view('admin.roles_and_permission.roles-list')->with(['roles'=> $roles]);
+        return view('company.roles_and_permission.roles-list')->with(['roles'=> $roles]);
     }
 
     public function role_form()
     {
-        return view('admin.roles_and_permission.create-roles-form');
+        return view('company.roles_and_permission.create-roles-form');
     }
     public function add_roles(Request $request)
     {
@@ -65,7 +67,7 @@ class RolesController extends Controller
             smilify('error','Item Does Not Exists !');
             return redirect('/roles');
         }
-         return view('admin.roles_and_permission.create-roles-form', compact('roles'));
+         return view('company.roles_and_permission.create-roles-form', compact('roles'));
     }
         catch (Exception $e) {
             return $e->getmessage();

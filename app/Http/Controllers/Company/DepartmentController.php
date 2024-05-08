@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
 use App\Rules\OnlyString;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Services\DepartmentServices;
 use Illuminate\Support\Facades\Validator;
@@ -23,7 +24,7 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = $this->department_services->get_departments();
-        return view('admin.department.department-list')->with(['departments'=> $departments]);
+        return view('company.department.department-list')->with(['departments'=> $departments]);
     }
 
     public function add_departments(Request $request)
@@ -64,7 +65,7 @@ class DepartmentController extends Controller
             smilify('error','Item Does Not Exists !');
             return redirect('/departments');
         }
-         return view('admin.department.create-department-form', compact('department'));
+         return view('company.department.create-department-form', compact('department'));
     }
         catch (Exception $e) {
             return $e->getMessage();

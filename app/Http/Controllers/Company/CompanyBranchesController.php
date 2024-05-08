@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\CompanyBranch;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ValidateBranch;
 use App\Http\Services\BranchServices;
@@ -26,7 +27,7 @@ class CompanyBranchesController extends Controller
     public function index()
     {
         $branches = $this->branch_services->get_branches();
-        return view('admin.branch.branches-list')->with(['branches'=> $branches]);
+        return view('company.branch.branches-list')->with(['branches'=> $branches]);
     }
 
     /**
@@ -36,7 +37,7 @@ class CompanyBranchesController extends Controller
     {
         $states = DB::table('states')->get();
         $countries = DB::table('countries')->get();
-        return view('admin.branch.create-branch-form',compact('states','countries'));
+        return view('company.branch.create-branch-form',compact('states','countries'));
     }
     public function add_branch(ValidateBranch $request)
     {
@@ -69,7 +70,7 @@ class CompanyBranchesController extends Controller
             smilify('error','Item Does Not Exists !');
             return redirect('/branch');
         }
-         return view('admin.branch.create-branch-form', compact('branch','states','countries'));
+         return view('company.branch.create-branch-form', compact('branch','states','countries'));
     }
         catch (Exception $e) {
             return $e->getMessage();

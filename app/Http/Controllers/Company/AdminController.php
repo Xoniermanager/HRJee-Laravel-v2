@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
 use Exception;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Services\AuthService;
 use Illuminate\Support\Facades\Auth;

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
 use Carbon\Carbon;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Services\AuthService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ValidateCompany;
 use Illuminate\Support\Facades\Validator;

@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Company;
 
-use App\Models\Permissions;
-use App\Http\Services\permissionsServices;
-use App\Rules\OnlyString;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Exception;
+use App\Rules\OnlyString;
+use App\Models\Permissions;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\permissionsServices;
 
 class PermissionsController extends Controller
 {
@@ -23,12 +24,12 @@ class PermissionsController extends Controller
     public function index()
     {
         $permissions = $this->permissions_services->get_permissions();
-        return view('admin.roles_and_permission.permissions-list')->with(['permissions'=> $permissions]);
+        return view('company.roles_and_permission.permissions-list')->with(['permissions'=> $permissions]);
     }
 
     public function permissions_form()
     {
-        return view('admin.roles_and_permission.create-permissions-form');
+        return view('company.roles_and_permission.create-permissions-form');
     }
     public function add_permissions(Request $request)
     {
@@ -66,7 +67,7 @@ class PermissionsController extends Controller
             smilify('error','Item Does Not Exists !');
             return redirect('/permissions');
         }
-         return view('admin.roles_and_permission.create-permissions-form', compact('permissions'));
+         return view('company.roles_and_permission.create-permissions-form', compact('permissions'));
     }
         catch (Exception $e) {
             return $e->getmessage();
