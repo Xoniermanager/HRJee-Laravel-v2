@@ -7,6 +7,7 @@ use App\Http\Services\QualificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use App\Rules\UniqueForAdminOnly;
 
 class QualificationController extends Controller
 {
@@ -33,7 +34,7 @@ class QualificationController extends Controller
     {
         try {
             $validateCompanyStatus  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:qualifications,name'],
+                'name' => ['required', 'string', new UniqueForAdminOnly('qualifications')],
                 'description' => ['string']
             ]);
 
