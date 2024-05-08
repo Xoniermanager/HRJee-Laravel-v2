@@ -378,6 +378,8 @@
     });
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
+        let status;
+        let status_name;
         if (checked_value == true) {
             status = 1;
             status_name = 'Active';
@@ -385,6 +387,9 @@
             status = 0;
             status_name = 'Inactive';
         }
+        console.log(checked_value);
+        console.log(status);
+        console.log(status_name);
         $.ajax({
             url: "{{ route('designation.statusUpdate') }}",
             type: 'get',

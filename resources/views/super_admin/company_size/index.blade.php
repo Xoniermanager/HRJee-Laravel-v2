@@ -341,6 +341,8 @@
     });
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
+        let status;
+        let status_name;
         if (checked_value == true) {
             status = 1;
             status_name = 'Active';
