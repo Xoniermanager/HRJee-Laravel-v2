@@ -98,9 +98,10 @@ Route::middleware(['dashboard.access'])->group(function () {
     Route::get('delete-permissions/{id}', [PermissionsController::class, 'delete_permissions'])->name('delete.permissions');
 });
 
-Route::view('/admin', 'login')->name('admin');
 Route::post('/company_login', [AdminController::class, 'companyLogin'])->name('company_login');
 Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+Route::get('/signin', [AdminController::class, 'signin'])->name('signin');
+Route::get('/signup', [AdminController::class, 'signup'])->name('signup');
 
 
 /** ---------------Employee Pannel Started--------------  */
