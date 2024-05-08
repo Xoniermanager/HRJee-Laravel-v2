@@ -70,8 +70,8 @@
                                             <thead>
                                                 <tr class="fw-bold">
                                                     <th>Sr. No.</th>
+                                                    <th>Designation Name</th>
                                                     <th>Department </th>
-                                                    <th>Designation </th>
                                                     <th>Status</th>
                                                     <th class="float-right">Action</th>
                                                 </tr>
@@ -83,7 +83,7 @@
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
                                                         <td><a href="#" data-bs-toggle="modal"
-                                                                onClick="edit_designation_details('{{ $designationDetail->id }}', '{{ $designationDetail->name }}')">{{ $designationDetail->name }}</a>
+                                                                onClick="edit_designation_details('{{ $designationDetail->id }}', '{{ $designationDetail->name }}','{{ $designationDetail->department_id }}')">{{ $designationDetail->name }}</a>
                                                         </td>
                                                         <td>{{ $designationDetail->departments->name }}</td>
                                                         <td data-order="Invalid date">
@@ -178,10 +178,11 @@
                 <!--begin::Wrapper-->
                 <form id="designation-update-form">
                     @csrf
+                    <input type="hidden" name="id" id="id">
                     <div class="mw-lg-600px mx-auto p-4">
                         <div class="mt-3 mb-3">
                             <label>Department*</label>
-                            <select class="form-control mb-3" name="department_id">
+                            <select class="form-control mb-3" name="department_id" id="department_id">
                                 <option value="">Select Development</option>
                                 @forelse ($allDepartments as $departments)
                                     <option value="{{ $departments->id }}">{{ $departments->name }}</option>
@@ -193,7 +194,7 @@
                         <!--begin::Input group-->
                         <div class="mt-3">
                             <label>Designation Name*</label>
-                            <input class="form-control mb-5 mt-3" type="text" name="name">
+                            <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
                             <!--end::Switch-->
                         </div>
                         <!--end::Input group-->
@@ -293,9 +294,10 @@
     <!--end::Modal dialog-->
 </div>
 <script>
-    function edit_designation_details(id, name) {
+    function edit_designation_details(id, name, department_id) {
         $('#id').val(id);
         $('#name').val(name);
+        $('#department_id').val(department_id);
         jQuery('#edit_designation').modal('show');
     }
     jQuery.noConflict();
@@ -376,6 +378,7 @@
             }
         });
     });
+
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
         let status;

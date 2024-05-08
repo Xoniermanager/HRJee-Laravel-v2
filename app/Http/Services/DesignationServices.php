@@ -19,7 +19,7 @@ class DesignationServices
   {
     return $this->designationRepository->create($data);
   }
-  
+
   public function updateDetails(array $data, $id)
   {
     return $this->designationRepository->find($id)->update($data);
