@@ -3,8 +3,6 @@
 namespace App\Http\Services;
 
 use App\Repositories\CompanyStatusRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
 class CompanyStatusService
 {

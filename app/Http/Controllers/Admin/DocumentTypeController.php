@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\QualificationService;
+use App\Http\Services\DocumentTypeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
-class QualificationController extends Controller
+class DocumentTypeController extends Controller
 {
-    private $qualificationService;
-    public function __construct(QualificationService $qualificationService)
+    private $documentTypeService;
+    public function __construct(DocumentTypeService $documentTypeService)
     {
-        $this->qualificationService = $qualificationService;
+        $this->documentTypeService = $documentTypeService;
     }
 
     /**
@@ -21,8 +21,8 @@ class QualificationController extends Controller
      */
     public function index()
     {
-        return view('super_admin.qualification.index', [
-            'allQualificationDetails' => $this->qualificationService->all()
+        return view('super_admin.document_type.index', [
+            'allDocumentTypes' => $this->documentTypeService->all()
         ]);
     }
 
@@ -33,20 +33,19 @@ class QualificationController extends Controller
     {
         try {
             $validateCompanyStatus  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:qualifications,name'],
-                'description' => ['string']
+                'name' => ['required', 'string', 'unique:document_types,name'],
+                'is_mandatory' => ['boolean']
             ]);
 
             if ($validateCompanyStatus->fails()) {
                 return response()->json(['error' => $validateCompanyStatus->messages()], 400);
-                // return redirect(route('company-status.index'))->withErrors();
             }
             $data = $request->all();
-            if ($this->qualificationService->create($data)) {
-                return response()->json(['message' => 'Company Qualification Created Successfully!']);
+            if ($this->documentTypeService->create($data)) {
+                return response()->json(['message' => 'Document Type Created Successfully!']);
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            return response()->json(['error' =>  $e->getMessage()], 400);
         }
     }
 
@@ -56,17 +55,17 @@ class QualificationController extends Controller
     public function update(Request $request)
     {
         $validateCompanyStatus  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:qualifications,name,' . $request->id],
-            'description' => ['string']
+            'name' => ['required', 'string', 'unique:document_types,name,' . $request->id],
+            'is_mandatory' => ['boolean']
         ]);
 
         if ($validateCompanyStatus->fails()) {
             return response()->json(['error' => $validateCompanyStatus->messages()], 400);
         }
         $updateData = $request->except(['_token', 'id']);
-        $companyStatus = $this->qualificationService->updateDetails($updateData, $request->id);
+        $companyStatus = $this->documentTypeService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Company Qualification Updated Successfully!']);
+            return response()->json(['message' => 'Document Type Updated Successfully!']);
         }
     }
 
@@ -75,7 +74,7 @@ class QualificationController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = $this->qualificationService->deleteDetails($id);
+        $data = $this->documentTypeService->deleteDetails($id);
         if ($data) {
             return back()->with('success', 'Deleted Successfully! ');
         } else {
@@ -86,8 +85,8 @@ class QualificationController extends Controller
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
-        $statusDetails = $this->qualificationService->updateDetails($data, $id);
+        $data['status'] = $request->status;
+        $statusDetails = $this->documentTypeService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;
         } else {

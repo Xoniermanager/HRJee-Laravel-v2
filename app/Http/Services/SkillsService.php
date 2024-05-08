@@ -3,8 +3,6 @@
 namespace App\Http\Services;
 
 use App\Repositories\SkillRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
 class SkillsService
 {
@@ -30,10 +28,5 @@ class SkillsService
   public function deleteDetails($id)
   {
     return $this->companySkillsRepository->find($id)->delete();
-  }
-
-  public function updateStatusDetails($id, $data)
-  {
-    return $this->companySkillsRepository->find($id)->update($data);
   }
 }

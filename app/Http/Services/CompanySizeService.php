@@ -3,8 +3,6 @@
 namespace App\Http\Services;
 
 use App\Repositories\CompanySizeRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
 class CompanySizeService
 {

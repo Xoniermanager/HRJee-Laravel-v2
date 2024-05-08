@@ -3,8 +3,6 @@
 namespace App\Http\Services;
 
 use App\Repositories\QualificationRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
 class QualificationService
 {
@@ -30,10 +28,5 @@ class QualificationService
   public function deleteDetails($id)
   {
     return $this->qualificationRepository->find($id)->delete();
-  }
-
-  public function updateStatusDetails($id, $data)
-  {
-    return $this->qualificationRepository->find($id)->update($data);
   }
 }

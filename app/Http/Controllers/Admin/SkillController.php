@@ -88,7 +88,7 @@ class SkillController extends Controller
     {
         $id = $request->id;
         $data['status'] = $request->status == 1 ? 0 : 1;
-        $statusDetails = $this->skillsService->updateStatusDetails($id, $data);
+        $statusDetails = $this->skillsService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;
         } else {

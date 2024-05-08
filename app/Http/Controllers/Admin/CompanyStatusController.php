@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\CompanyStatusService;
-use App\Models\CompanyStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\OnlyString;
 use Exception;
 
 class CompanyStatusController extends Controller

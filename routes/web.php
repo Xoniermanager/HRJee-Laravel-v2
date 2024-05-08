@@ -2,14 +2,12 @@
 
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
-use App\Models\Department;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Employee\NewsController;
 use App\Http\Controllers\RolesController;
-use App\Http\Controllers\AuthWebController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\DepartmentController;
@@ -24,6 +22,7 @@ use App\Http\Controllers\Employee\ContactUsController;
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\HRServiceController;
 use App\Http\Controllers\Admin\CompanyStatusController;
+use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
@@ -229,4 +228,13 @@ Route::prefix('/employee-type')->controller(EmployeeTypeController::class)->grou
     Route::post('/update', 'update')->name('employee.type.update');
     Route::get('/delete/{id}', 'destroy')->name('employee.type.delete');
     Route::get('/status/update', 'statusUpdate')->name('employee.type.statusUpdate');
+});
+
+//Document Type Module
+Route::prefix('/document-type')->controller(DocumentTypeController::class)->group(function () {
+    Route::get('/', 'index')->name('document.type.index');
+    Route::post('/create', 'store')->name('document.type.store');
+    Route::post('/update', 'update')->name('document.type.update');
+    Route::get('/delete/{id}', 'destroy')->name('document.type.delete');
+    Route::get('/status/update', 'statusUpdate')->name('document.type.statusUpdate');
 });
