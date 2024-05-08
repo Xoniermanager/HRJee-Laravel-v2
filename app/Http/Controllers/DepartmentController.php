@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
-use App\Http\Services\DepartmentServices;
 use App\Rules\OnlyString;
+use App\Models\Department;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Services\DepartmentServices;
+use Illuminate\Support\Facades\Validator;
 
 class DepartmentController extends Controller
 {
@@ -37,14 +38,16 @@ class DepartmentController extends Controller
         if ($validateDepartment->fails()) {
             return redirect('department/create')->withErrors($validateDepartment)->withInput();
         }
-       
-        if(Department::create($request->all()))
+        $data = $request->all();
+
+        $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+        if(Department::create($data))
         { 
             smilify('success','Department Created Successfully!');
             return redirect('/departments');
         }
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
         return $e->getMessage();
     }
     }

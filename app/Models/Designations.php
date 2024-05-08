@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Designations extends Model
 {
     use HasFactory;
-    protected $table = 'designations'   ;
+    protected $table = 'designations';
     protected $fillable = [
             'name',
-            'department_id' ,
-            'company_id '
+            'department_id',
+            'company_id'
     ];
 
     public function departments()

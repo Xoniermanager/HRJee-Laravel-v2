@@ -12,22 +12,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('companies', function (Blueprint $table) {
+            
             $table->id();
             $table->string('name');
-            $table->string('username')->unique();
-            $table->string('contact_no')->unique();
-            $table->string('email')->unique();
+            $table->string('username');
+            $table->string('contact_no');
+            $table->string('email');
             $table->string('password');
-            $table->unsignedBigInteger('status');
-            $table->unsignedBigInteger('role_id');
-            $table->date('joinging_date');
-            $table->unsignedBigInteger('subscription_id')->nullable();
-            $table->string('company_logo');
+            $table->string('role_id')->nullable();
+            $table->string('joining_date');
+            $table->string('logo');
+            $table->string('company_size');
+            $table->string('company_url');
+            $table->string('industry_type');
+            $table->string('company_address');
+            $table->string('subscription_id')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
 
             // $table->foreign('subscription_id')->references('id')->on('subscriptions');
-            $table->foreign('status')->references('id')->on('company_statuses');
-            $table->foreign('role_id')->references('id')->on('roles');
+            // $table->foreign('status')->references('id')->on('company_statuses');
+            // $table->foreign('role_id')->references('id')->on('roles');
             
             
         });

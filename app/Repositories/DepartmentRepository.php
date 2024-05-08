@@ -33,6 +33,11 @@ class DepartmentRepository extends BaseRepository
        return $this->where('id',$id);
     }
 
+    public function getDepartmentByCompany($id)
+    {
+       return $this->where('company_id',$id);
+    }
+
 
     /**
      * Boot up the repository, pushing criteria

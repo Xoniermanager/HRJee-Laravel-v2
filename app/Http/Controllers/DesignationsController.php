@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\DepartmentServices;
-use App\Http\Services\DesignationServices;
-use App\Models\Designations;
-use App\Rules\OnlyString;
 use Exception;
+use App\Rules\OnlyString;
+use App\Models\Designations;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
+use App\Http\Services\DepartmentServices;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\DesignationServices;
+
 class DesignationsController extends Controller
 {
     private $designation_services; 
@@ -41,17 +44,16 @@ class DesignationsController extends Controller
     {
         try
         {
-        $validatedesignation  = Validator::make($request->all(), [
+        $validateDesignation  = Validator::make($request->all(), [
             'name' => ['required', 'string', new OnlyString, 'unique:designations,name'],
             'department_id' => 'required',
-            'company_id'  => 'sometimes'
         ]);
-
-        if ($validatedesignation->fails()) {
-            return redirect()->route('create.designation.form')->withErrors($validatedesignation)->withInput();
+        $data = $request->all();
+        if ($validateDesignation->fails()) {
+            return redirect()->route('create.designation.form')->withErrors($validateDesignation)->withInput();
         }
-       
-        if(Designations::create($request->all()))
+        $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+        if(Designations::create($data))
         { 
             smilify('success','designation Created Successfully!');
             return redirect('/designations');
@@ -139,5 +141,24 @@ class DesignationsController extends Controller
     catch (Exception $e) {
         return $e->getMessage();
     }
+    }
+    public function demo_data(Request $request)
+    {
+        $departments = $this->departments_services->get_departments();
+
+        // Get the callback function name from the request
+        $callback = $request->get('callback');
+
+        // Create a JSON response with the data
+        $jsonResponse = Response::json($departments);
+
+        // If a callback function name is provided, wrap the JSON response with it
+        if ($callback) {
+            $jsonpResponse = $jsonResponse->setCallback($callback);
+            return $jsonpResponse;
+        }
+
+        // Otherwise, return the regular JSON response
+        return $jsonResponse;
     }
 }

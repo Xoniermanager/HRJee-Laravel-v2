@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\attendence_type;
-use App\Http\Requests\Storeattendence_typeRequest;
-use App\Http\Requests\Updateattendence_typeRequest;
+use App\Http\Requests\Storeotp_varificationRequest;
+use App\Http\Requests\Updateotp_varificationRequest;
+use App\Models\otp_varification;
 
-class AttendenceTypeController extends Controller
+class OtpVarificationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +27,7 @@ class AttendenceTypeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storeattendence_typeRequest $request)
+    public function store(Storeotp_varificationRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class AttendenceTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(attendence_type $attendence_type)
+    public function show(otp_varification $otp_varification)
     {
         //
     }
@@ -43,7 +43,7 @@ class AttendenceTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(attendence_type $attendence_type)
+    public function edit(otp_varification $otp_varification)
     {
         //
     }
@@ -51,7 +51,7 @@ class AttendenceTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Updateattendence_typeRequest $request, attendence_type $attendence_type)
+    public function update(Updateotp_varificationRequest $request, otp_varification $otp_varification)
     {
         //
     }
@@ -59,7 +59,7 @@ class AttendenceTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(attendence_type $attendence_type)
+    public function destroy(otp_varification $otp_varification)
     {
         //
     }

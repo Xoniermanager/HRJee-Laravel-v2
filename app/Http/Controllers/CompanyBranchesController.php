@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Updatecompany_branchesRequest;
-use App\Http\Requests\ValidateBranch;
-use App\Http\Services\BranchServices;
-use App\Models\CompanyBranch;
-use App\Rules\OnlyString;
 use Exception;
 use Illuminate\Http\Request;
+use App\Models\CompanyBranch;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ValidateBranch;
+use App\Http\Services\BranchServices;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class CompanyBranchesController extends Controller
 {
@@ -37,12 +35,18 @@ class CompanyBranchesController extends Controller
     public function branch_form()
     {
         $states = DB::table('states')->get();
-        return view('admin.branch.create-branch-form')->with(['states'=>$states]);
+        $countries = DB::table('countries')->get();
+        return view('admin.branch.create-branch-form',compact('states','countries'));
     }
     public function add_branch(ValidateBranch $request)
     {
+
     try {
-        if(CompanyBranch::create($request->all()))
+        $data = $request->all();
+
+
+            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            if(CompanyBranch::create($data))
         { 
             smilify('success','Branch Created Successfully!');
             return redirect('/branch');
@@ -58,13 +62,14 @@ class CompanyBranchesController extends Controller
     public function edit_branch($id)
     {
         try{
+        $countries = DB::table('countries')->get();
         $states = DB::table('states')->get();
         $branch = $this->branch_services->get_branch_by_id($id)->first();
         if (!$branch) {
             smilify('error','Item Does Not Exists !');
             return redirect('/branch');
         }
-         return view('admin.branch.create-branch-form', compact('branch','states'));
+         return view('admin.branch.create-branch-form', compact('branch','states','countries'));
     }
         catch (Exception $e) {
             return $e->getMessage();
@@ -75,25 +80,22 @@ class CompanyBranchesController extends Controller
      * Update the specified resource in storage.
      */
 
-    public function update_branch(Request $request, $id)
-    {
-
-        // Find the branch by ID
-        $branch = $this->branch_services->get_branch_by_id($id)->first();
-
-        if (!$branch) {
-            smilify('error','branch Not Found!');
-            return redirect('/branch');
-        }
-    
-        // Update the branch's name
-        $branch->name = $request->input('name');
-        $branch->save();
-    
-        smilify('success','branch Updated Successfully!');
-        return redirect('/branch');
-    }
-
+     public function update_branch(Request $request, $id)
+     {
+         try {
+             $data =  $request->except(['_token']);
+             $branchUpdated = $this->branch_services->update_branch($data,$id);
+             if(   $branchUpdated )
+             {
+                smilify('success','Branch Updated Successfully!');
+                return redirect('/branch');
+             }
+             
+         } catch (Exception $e) {
+             return $e->getMessage();
+         }
+     }
+     
     /**
      * Remove the specified resource from storage.
      */

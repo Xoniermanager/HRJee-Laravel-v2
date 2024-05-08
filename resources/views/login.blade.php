@@ -21,7 +21,7 @@
 	<meta name="description" property='og:description' content='' />
 	<meta name="author" content="Jyoti Mishra Web Designer at Xonier">
 	<!--begin::Fonts(mandatory for all pages)-->
-	<link rel="stylesheet" href="{{ asset('assets/css/mark-pro.css') }}" />
+	{{-- <link rel="stylesheet" href="{{ asset('assets/css/mark-pro.css') }}" /> --}}
 	<!--end::Fonts-->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 	<!--end::Fonts-->
@@ -65,7 +65,7 @@
                             <!--begin::Form-->
                             <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden"
                                 id="kt_sign_in_form" data-kt-redirect-url="/metronic8/demo3/../demo3/index.html"
-                                action="{{ route('login') }}" method="POST">
+                                action="{{ route('company_login') }}" method="POST">
                      
                                 @csrf
                                 <!--begin::Input group=-->
