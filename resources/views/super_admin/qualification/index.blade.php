@@ -63,7 +63,7 @@
                                                             <label class="switch">
                                                                 <input type="checkbox"
                                                                     <?= $qualificationDetails->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $qualificationDetails->id }},{{ $qualificationDetails->status }},'status')">
+                                                                    onchange="handleStatus({{ $qualificationDetails->id }})" id="checked_value">
                                                                 <span class="slider round"></span>
                                                             </label>
                                                         </td>
@@ -342,7 +342,15 @@
     });
 </script>
 <script>
-    function handleStatus(id, status) {
+    function handleStatus(id) {
+        var checked_value = $('#checked_value').prop('checked');
+        if (checked_value == true) {
+            status = 1;
+            status_name = 'Active';
+        } else {
+            status = 0;
+            status_name = 'Inactive';
+        }
         $.ajax({
             url: "{{ route('qualification.statusUpdate') }}",
             type: 'get',
@@ -352,15 +360,9 @@
             },
             success: function(res) {
                 if (res) {
-                    swal.fire("Done!", 'Status update successfully', "success");
-                    setTimeout(function() {
-                        location.reload();
-                    }, 2000);
+                    swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
                 } else {
                     swal.fire("Oops!", 'Something Went Wrong', "error");
-                    setTimeout(function() {
-                        location.reload();
-                    }, 2000);
                 }
             }
         })

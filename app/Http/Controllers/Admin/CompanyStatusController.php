@@ -35,7 +35,7 @@ class CompanyStatusController extends Controller
     {
         try {
             $validateCompanyStatus  = Validator::make($request->all(), [
-                'name' => ['required', 'string','unique:company_statuses,name'],
+                'name' => ['required', 'string', 'unique:company_statuses,name'],
                 'description' => ['required', 'string']
             ]);
 
@@ -57,7 +57,7 @@ class CompanyStatusController extends Controller
     public function update(Request $request)
     {
         $validateCompanyStatus  = Validator::make($request->all(), [
-            'name' => ['required', 'string','unique:company_statuses,name,' . $request->id],
+            'name' => ['required', 'string', 'unique:company_statuses,name,' . $request->id],
             'description' => ['required', 'string']
         ]);
 
@@ -87,8 +87,8 @@ class CompanyStatusController extends Controller
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
-        $statusDetails = $this->companyStatusService->updateStatusDetails($id, $data);
+        $data['status'] = $request->status;
+        $statusDetails = $this->companyStatusService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;
         } else {

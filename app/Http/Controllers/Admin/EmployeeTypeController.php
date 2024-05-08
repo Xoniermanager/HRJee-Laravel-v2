@@ -3,20 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\CompanySizeService;
-use App\Models\CompanySize;
+use App\Http\Services\EmployeeTypeService;
 use App\Models\CompanyStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Rules\OnlyString;
 use Exception;
 
-class CompanySizeController extends Controller
+class EmployeeTypeController extends Controller
 {
-    private $companySizeService;
-    public function __construct(CompanySizeService $companySizeService)
+    private $employeeTypeService;
+    public function __construct(EmployeeTypeService $employeeTypeService)
     {
-        $this->companySizeService = $companySizeService;
+        $this->employeeTypeService = $employeeTypeService;
     }
 
     /**
@@ -24,8 +23,8 @@ class CompanySizeController extends Controller
      */
     public function index()
     {
-        return view('super_admin.company_size.index', [
-            'allCompanySizesDetails' => $this->companySizeService->all()
+        return view('super_admin.employee_type.index', [
+            'allEmployeeTypeDetails' => $this->employeeTypeService->all()
         ]);
     }
 
@@ -36,16 +35,15 @@ class CompanySizeController extends Controller
     {
         try {
             $validateCompanyStatus  = Validator::make($request->all(), [
-                'company_size' => ['required', 'numeric', 'unique:company_sizes,company_size'],
-                'description' => ['required', 'string']
+                'name' => ['required', 'string', 'unique:employee_types,name']
             ]);
 
             if ($validateCompanyStatus->fails()) {
                 return response()->json(['error' => $validateCompanyStatus->messages()], 400);
             }
             $data = $request->all();
-            if ($this->companySizeService->create($data)) {
-                return response()->json(['message' => 'Company Size Created Successfully!']);
+            if ($this->employeeTypeService->create($data)) {
+                return response()->json(['message' => 'Employee Type Created Successfully!']);
             }
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
@@ -58,17 +56,16 @@ class CompanySizeController extends Controller
     public function update(Request $request)
     {
         $validateCompanyStatus  = Validator::make($request->all(), [
-            'company_size' => ['required', 'numeric', 'unique:company_sizes,company_size,' . $request->id],
-            'description' => ['required', 'string']
+            'name' => ['required', 'string', 'unique:employee_types,name,' . $request->id],
         ]);
 
         if ($validateCompanyStatus->fails()) {
             return response()->json(['error' => $validateCompanyStatus->messages()], 400);
         }
         $updateData = $request->except(['_token', 'id']);
-        $companyStatus = $this->companySizeService->updateDetails($updateData, $request->id);
+        $companyStatus = $this->employeeTypeService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Company Size Updated Successfully!']);
+            return response()->json(['message' => 'Employee Type Updated Successfully!']);
         }
     }
 
@@ -77,9 +74,9 @@ class CompanySizeController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = $this->companySizeService->deleteDetails($id);
+        $data = $this->employeeTypeService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return back()->with('success', 'Employee Type Deleted Successfully! ');
         } else {
             return back()->with('error', 'Something Went Wrong! Pleaase try Again');
         }
@@ -87,8 +84,8 @@ class CompanySizeController extends Controller
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
-        $statusDetails = $this->companySizeService->updateDetails($data, $id);
+        $data['status'] = $request->status;
+        $statusDetails = $this->employeeTypeService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;
         } else {

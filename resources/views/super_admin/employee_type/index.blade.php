@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-    Company Size
+    Employee Type
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -26,9 +26,9 @@
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_company_size"
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_employee_type"
                         class="btn btn-sm btn-primary align-self-center">
-                        Add Company Size</a>
+                        Add Type</a>
                     <!--end::Action-->
                 </div>
                 <div class="mb-5 mb-xl-10">
@@ -45,7 +45,7 @@
                                             <thead>
                                                 <tr class="fw-bold">
                                                     <th>Sr. No.</th>
-                                                    <th>Size</th>
+                                                    <th>Name</th>
                                                     <th>Description</th>
                                                     <th>Status</th>
                                                     <th class="float-right">Action</th>
@@ -53,30 +53,30 @@
                                             </thead>
                                             <!--end::Table head-->
                                             <!--begin::Table body-->
-                                            @forelse ($allCompanySizesDetails as $key => $companySizeDetails)
+                                            @forelse ($allEmployeeTypeDetails as $key => $employeeTypeDetails)
                                                 <tbody class="">
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $companySizeDetails->company_size }}</td>
-                                                        <td>{{ $companySizeDetails->description }}</td>
+                                                        <td>{{ $employeeTypeDetails->name }}</td>
+                                                        <td>{{ $employeeTypeDetails->description }}</td>
                                                         <td data-order="Invalid date">
                                                             <label class="switch">
                                                                 <input type="checkbox"
-                                                                    <?= $companySizeDetails->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $companySizeDetails->id }})" id="checked_value">
+                                                                    <?= $employeeTypeDetails->status == '1' ? 'checked' : '' ?>
+                                                                    onchange="handleStatus({{ $employeeTypeDetails->id }})" id="checked_value">
                                                                 <span class="slider round"></span>
                                                             </label>
                                                         </td>
                                                         <td>
                                                             <div class="d-flex justify-content-end flex-shrink-0">
                                                                 <a href="#" data-bs-toggle="modal"
-                                                                    onClick="edit_company('{{ $companySizeDetails->id }}', '{{ $companySizeDetails->company_size }}','{{ $companySizeDetails->description }}')"
+                                                                    onClick="edit_company('{{ $employeeTypeDetails->id }}', '{{ $employeeTypeDetails->name }}','{{ $employeeTypeDetails->description }}')"
                                                                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                                                     <i class="fa fa-edit"></i>
                                                                     <!--end::Svg Icon-->
                                                                 </a>
-                                                                <a href="{{ route('company.size.delete', $companySizeDetails->id) }}"
+                                                                <a href="{{ route('employee.type.delete', $employeeTypeDetails->id) }}"
                                                                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                                                                     onclick="alert('Are you sure want to delete')">
                                                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
@@ -90,7 +90,7 @@
                                             @empty
                                                 <td colspan="3">
                                                     <span class="text-danger">
-                                                        <strong>No Company Size Found!</strong>
+                                                        <strong>No Employee Type Found!</strong>
                                                     </span>
                                                 </td>
                                             @endforelse
@@ -117,14 +117,14 @@
 </div>
 
 <!-- Modal for creation form-->
-<div class="modal" id="kt_modal_company_size" tabindex="-1" aria-modal="true" role="dialog">
+<div class="modal" id="kt_modal_employee_type" tabindex="-1" aria-modal="true" role="dialog">
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-500px">
         <!--begin::Modal content-->
         <div class="modal-content">
             <!--begin::Modal header-->
             <div class="modal-header pb-0">
-                <h2>Add Company Size</h2>
+                <h2>Add Employee Type</h2>
                 <!--begin::Close-->
                 <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -145,17 +145,17 @@
             <!--begin::Modal body-->
             <div class="modal-body scroll-y pb-5 border-top">
                 <!--begin::Wrapper-->
-                <form id="company_size_form">
+                <form id="employee_type_form">
                     @csrf
                     <div class="col-md-12 form-group">
-                        <label for="">Company Size*</label>
-                        <input class="form-control" name="company_size" type="number">
+                        <label for="">Name*</label>
+                        <input class="form-control" name="name" type="text">
                     </div>
                     @error('name')
                         <span class="text-red-500">{{ $message }}</span>
                     @enderror
                     <div class="col-md-12 form-group">
-                        <label for="">Description*</label>
+                        <label for="">Description</label>
                         <input class="form-control" name="description" type="text">
                     </div>
                     @error('description')
@@ -185,14 +185,14 @@
 
 
 <!-- Modal for Edit  form-->
-<div class="modal" id="kt_modal_company_size_update" tabindex="-1" aria-modal="true" role="dialog">
+<div class="modal" id="kt_modal_employee_type_update" tabindex="-1" aria-modal="true" role="dialog">
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-500px">
         <!--begin::Modal content-->
         <div class="modal-content">
             <!--begin::Modal header-->
             <div class="modal-header pb-0">
-                <h2>Edit Company Size</h2>
+                <h2>Edit Employee Type</h2>
                 <!--begin::Close-->
                 <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -217,12 +217,11 @@
                     @csrf
                     <input type="hidden" id="id" value="" name="id">
                     <div class="col-md-12 form-group">
-                        <label for="">Company Size*</label>
-                        <input class="form-control" name="company_size" type="number" value=""
-                            id="company_size">
+                        <label for="">Name*</label>
+                        <input class="form-control" name="name" type="text" value="" id="name">
                     </div>
                     <div class="col-md-12 form-group">
-                        <label for="">Description*</label>
+                        <label for="">Description</label>
                         <input class="form-control" name="description" type="text" value=""
                             id="description">
                     </div>
@@ -255,30 +254,28 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script>
-    function edit_company(id, company_size, description) {
+    function edit_company(id, name, description) {
         $('#id').val(id);
-        $('#company_size').val(company_size);
+        $('#name').val(name);
         $('#description').val(description);
-        jQuery('#kt_modal_company_size_update').modal('show');
+        jQuery('#kt_modal_employee_type_update').modal('show');
     }
 
     jQuery.noConflict();
     jQuery(document).ready(function($) {
-        jQuery("#company_size_form").validate({
+        jQuery("#employee_type_form").validate({
             rules: {
                 name: "required",
-                description: "required",
             },
             messages: {
                 name: "Please enter name",
-                description: "Please enter a description",
             },
             submitHandler: function(form) {
-                var company_size = $(form).serialize();
+                var company_status = $(form).serialize();
                 $.ajax({
-                    url: "{{ route('company.size.store') }}",
+                    url: "{{ route('employee.type.store') }}",
                     type: 'POST',
-                    data: company_size,
+                    data: company_status,
                     success: function(response) {
                         swal.fire("Done!", response.message, "success");
                         // refresh page after 2 seconds
@@ -316,13 +313,15 @@
                 description: "Please enter a description",
             },
             submitHandler: function(form) {
-                var company_size = $(form).serialize();
+                var company_status = $(form).serialize();
+                var id = $('#id').val();
                 $.ajax({
-                    url: "<?= route('company.size.update') ?>",
+                    url: "<?= route('employee.type.update') ?>",
                     type: 'post',
-                    data: company_size,
+                    data: company_status,
                     success: function(response) {
                         swal.fire("Done!", response.message, "success");
+                        // location.reload();
                         // refresh page after 2 seconds
                         setTimeout(function() {
                             location.reload();
@@ -356,7 +355,7 @@
             status_name = 'Inactive';
         }
         $.ajax({
-            url: "{{ route('company.size.statusUpdate') }}",
+            url: "{{ route('employee.type.statusUpdate') }}",
             type: 'get',
             data: {
                 'id': id,

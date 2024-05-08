@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\EmployeeStatusController;
+use App\Http\Controllers\Admin\EmployeeTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RolesController;
@@ -200,4 +202,22 @@ Route::prefix('/qualifications')->controller(QualificationController::class)->gr
     Route::post('/update', 'update')->name('qualification.update');
     Route::get('/delete/{id}', 'destroy')->name('qualification.delete');
     Route::get('/status/update', 'statusUpdate')->name('qualification.statusUpdate');
+});
+
+//Employee Status Module
+Route::prefix('/employee-status')->controller(EmployeeStatusController::class)->group(function () {
+    Route::get('/', 'index')->name('employee.status.index');
+    Route::post('/create', 'store')->name('employee.status.store');
+    Route::post('/update', 'update')->name('employee.status.update');
+    Route::get('/delete/{id}', 'destroy')->name('employee.status.delete');
+    Route::get('/status/update', 'statusUpdate')->name('employee.status.statusUpdate');
+});
+
+//Employee Type Module
+Route::prefix('/employee-type')->controller(EmployeeTypeController::class)->group(function () {
+    Route::get('/', 'index')->name('employee.type.index');
+    Route::post('/create', 'store')->name('employee.type.store');
+    Route::post('/update', 'update')->name('employee.type.update');
+    Route::get('/delete/{id}', 'destroy')->name('employee.type.delete');
+    Route::get('/status/update', 'statusUpdate')->name('employee.type.statusUpdate');
 });

@@ -45,8 +45,8 @@
                                             <thead>
                                                 <tr class="fw-bold">
                                                     <th>Sr. No.</th>
-                                                    <th>Company Name</th>
-                                                    <th>Company Description</th>
+                                                    <th>Name</th>
+                                                    <th>Description</th>
                                                     <th>Status</th>
                                                     <th class="float-right">Action</th>
                                                 </tr>
@@ -63,7 +63,8 @@
                                                             <label class="switch">
                                                                 <input type="checkbox"
                                                                     <?= $companyStatusDetails->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $companyStatusDetails->id }},{{ $companyStatusDetails->status }},'status')">
+                                                                    onchange="handleStatus({{ $companyStatusDetails->id }})"
+                                                                    id="checked_value">
                                                                 <span class="slider round"></span>
                                                             </label>
                                                         </td>
@@ -347,7 +348,15 @@
     });
 </script>
 <script>
-    function handleStatus(id, status) {
+    function handleStatus(id) {
+        var checked_value = $('#checked_value').prop('checked');
+        if (checked_value == true) {
+            status = 1;
+            status_name = 'Active';
+        } else {
+            status = 0;
+            status_name = 'Inactive';
+        }
         $.ajax({
             url: "{{ route('company.status.statusUpdate') }}",
             type: 'get',
@@ -357,16 +366,9 @@
             },
             success: function(res) {
                 if (res) {
-                    swal.fire("Done!", 'Status update successfully', "success");
-                    setTimeout(function() {
-                        location.reload();
-                    }, 2000);
+                    swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
                 } else {
                     swal.fire("Oops!", 'Something Went Wrong', "error");
-                    setTimeout(function() {
-                        location.reload();
-                    }, 2000);
-                    location.reload();
                 }
             }
         })

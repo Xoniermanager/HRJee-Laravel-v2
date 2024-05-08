@@ -31,9 +31,4 @@ class CompanyStatusService
   {
     return $this->companyStatusRepository->find($id)->delete();
   }
-
-  public function updateStatusDetails($id, $data)
-  {
-    return $this->companyStatusRepository->find($id)->update($data);
-  }
 }
