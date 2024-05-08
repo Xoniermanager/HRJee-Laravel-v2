@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Country;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Schema::defaultStringLength(191);
+        Blade::directive('countryName', function ($id) {
+            return "<?php echo App\Models\Country::getCountryNameById($id); ?>";
+        });
+        Blade::directive('stateName', function ($id) {
+            return "<?php echo App\Models\State::getStateNameById($id); ?>";
+        });
     }
 }
