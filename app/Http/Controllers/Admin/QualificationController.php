@@ -67,7 +67,10 @@ class QualificationController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->qualificationService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Company Qualification Updated Successfully!']);
+            return response()->json([
+                'message'   => 'Company Qualification Updated Successfully!',
+                'data'      =>  view('super_admin.qualification.qualification-list',['allQualificationDetails' => $this->qualificationService->all()])->render()
+            ]);
         }
     }
 
