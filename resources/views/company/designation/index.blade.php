@@ -8,17 +8,6 @@
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
         <div class="row gy-5 g-xl-10">
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible">
-                    {{ session('error') }}
-                </div>
-            @endif
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible">
-                    {{ session('success') }}
-                </div>
-            @endif
-            <!--begin::Col-->
             <div class="card card-body col-md-12">
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
@@ -57,81 +46,7 @@
                 </div>
 
                 <div class="mb-5 mb-xl-10">
-                    <div class="">
-                        <div class="">
-                            <!--begin::Body-->
-                            <div class="">
-                                <div class="card-body py-3">
-                                    <!--begin::Table container-->
-                                    <div class="table-responsive">
-                                        <!--begin::Table-->
-                                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                            <!--begin::Table head-->
-                                            <thead>
-                                                <tr class="fw-bold">
-                                                    <th>Sr. No.</th>
-                                                    <th>Designation Name</th>
-                                                    <th>Department </th>
-                                                    <th>Status</th>
-                                                    <th class="float-right">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <!--end::Table head-->
-                                            <!--begin::Table body-->
-                                            @forelse ($allDesignationDetails as $key => $designationDetail)
-                                                <tbody class="">
-                                                    <tr>
-                                                        <td>{{ $key + 1 }}</td>
-                                                        <td><a href="#" data-bs-toggle="modal"
-                                                                onClick="edit_designation_details('{{ $designationDetail->id }}', '{{ $designationDetail->name }}','{{ $designationDetail->department_id }}')">{{ $designationDetail->name }}</a>
-                                                        </td>
-                                                        <td>{{ $designationDetail->departments->name }}</td>
-                                                        <td data-order="Invalid date">
-                                                            <label class="switch">
-                                                                <input type="checkbox"
-                                                                    <?= $designationDetail->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $designationDetail->id }})"
-                                                                    id="checked_value">
-                                                                <span class="slider round"></span>
-                                                            </label>
-                                                        </td>
-
-                                                        <td>
-                                                            <div class="d-flex justify-content-end flex-shrink-0">
-
-                                                                <a href="{{ route('designation.delete', $designationDetail->id) }}"
-                                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                                                    onclick="alert('Are you sure want to delete')">
-                                                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                                    <i class="fa fa-trash"></i>
-                                                                    <!--end::Svg Icon-->
-                                                                </a>
-
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            @empty
-                                                <td colspan="3">
-                                                    <span class="text-danger">
-                                                        <strong>No Designation Found!</strong>
-                                                    </span>
-                                                </td>
-                                            @endforelse
-                                            <!--end::Table body-->
-                                        </table>
-                                        <!--end::Table-->
-                                    </div>
-                                    <!--end::Table container-->
-
-                                </div>
-                            </div>
-                            <!--begin::Body-->
-
-                        </div>
-                        <!--begin::Body-->
-                    </div>
-                    <!--begin::Body-->
+                    @include('company.designation.designation_list')
                 </div>
             </div>
             <!--end::Col-->
@@ -319,22 +234,22 @@
                     type: 'POST',
                     data: designation_data,
                     success: function(response) {
+                        console.log(response.data);
+                        jQuery('#add_designation').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        // refresh page after 2 seconds
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        $('#designation_list').replaceWith(response.data);
+
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
                         for (var error_key in errors) {
                             $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
+                                '<span class="' + error_key +
+                                '_error text text-danger">' + errors[
                                     error_key] + '</span>');
                             setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                                jQuery("." + error_key + "_error").remove();
+                            }, 3000);
                         }
                     }
                 });
@@ -357,10 +272,9 @@
                     type: 'post',
                     data: designation_data,
                     success: function(response) {
+                        jQuery('#edit_designation').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        jQuery('#designation_list').replaceWith(response.data);
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
@@ -371,7 +285,7 @@
                                     error_key] + '</span>');
                             setTimeout(function() {
                                 jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                            }, 3000);
                         }
                     }
                 });
@@ -390,9 +304,6 @@
             status = 0;
             status_name = 'Inactive';
         }
-        console.log(checked_value);
-        console.log(status);
-        console.log(status_name);
         $.ajax({
             url: "{{ route('designation.statusUpdate') }}",
             type: 'get',
@@ -408,6 +319,36 @@
                 }
             }
         })
+    }
+
+    function deleteFunction(id) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= route('designation.delete') ?>",
+                    type: "get",
+                    data: {
+                        id: id
+                    },
+                    success: function(res) {
+                        Swal.fire("Done!", "It was succesfully deleted!", "success");
+                        $('#designation_list').replaceWith(res.data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire("Error deleting!", "Please try again", "error");
+                    }
+                });
+            }
+        });
     }
 </script>
 @endsection

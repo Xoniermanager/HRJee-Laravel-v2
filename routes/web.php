@@ -66,7 +66,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/', 'index')->name('department.index');
         Route::post('/create', 'store')->name('department.store');
         Route::post('/update', 'update')->name('department.update');
-        Route::get('/delete/{id}', 'destroy')->name('department.delete');
+        Route::get('/delete', 'destroy')->name('department.delete');
         Route::get('/status/update', 'statusUpdate')->name('department.statusUpdate');
     });
 
@@ -75,7 +75,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/', 'index')->name('designation.index');
         Route::post('/create', 'store')->name('designation.store');
         Route::post('/update', 'update')->name('designation.update');
-        Route::get('/delete/{id}', 'destroy')->name('designation.delete');
+        Route::get('/delete', 'destroy')->name('designation.delete');
         Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
     });
 

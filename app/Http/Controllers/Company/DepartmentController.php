@@ -40,7 +40,12 @@ class DepartmentController extends Controller
             }
             $data = $request->all();
             if ($this->departmentService->create($data)) {
-                return response()->json(['message' => 'Departments Created Successfully!']);
+                return response()->json([
+                    'message' => 'Departments Created Successfully!',
+                    'data'   =>  view('company.department.department_list', [
+                        'allDepartmentDetails' => $this->departmentService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
@@ -62,20 +67,33 @@ class DepartmentController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->departmentService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Departments Updated Successfully!']);
+            return response()->json(
+                [
+                    'message' => 'Departments Updated Successfully!',
+                    'data'   =>  view('company.department.department_list', [
+                        'allDepartmentDetails' => $this->departmentService->all()
+                    ])->render()
+                ]
+            );
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->departmentService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'success' => 'Departments Deleted Successfully',
+                'data'   =>  view('company.department.department_list',[
+                    'allDepartmentDetails' => $this->departmentService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
     public function statusUpdate(Request $request)

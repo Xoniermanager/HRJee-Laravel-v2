@@ -34,8 +34,6 @@
     @notifyCss
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-
-
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -75,3 +73,4 @@
 @include('layouts.company.footer')
 
 </html>
+

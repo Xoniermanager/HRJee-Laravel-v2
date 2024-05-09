@@ -45,7 +45,14 @@ class DesignationsController extends Controller
             }
             $data = $request->all();
             if ($this->designationService->create($data)) {
-                return response()->json(['message' => 'Designation Created Successfully!']);
+                return response()->json(
+                    [
+                        'message' => 'Designation Created Successfully!',
+                        'data'   =>  view('company.designation.designation_list', [
+                            'allDesignationDetails' => $this->designationService->all()
+                        ])->render()
+                    ]
+                );
             }
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
@@ -67,20 +74,36 @@ class DesignationsController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->designationService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Designation Updated Successfully!']);
+            return response()->json([
+                'message' => 'Designation Updated Successfully!',
+                'data'   =>  view('company.designation.designation_list', [
+                    'allDesignationDetails' => $this->designationService->all()
+                ])->render()
+            ]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->designationService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'success', 'Deleted Successfully!',
+                'data'   =>  view('company.designation.designation_list', [
+                    'allDesignationDetails' => $this->designationService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json([
+                'error', 'Something Went Wrong! Pleaase try Again',
+                'data'   =>  view('company.designation.designation_list', [
+                    'allDesignationDetails' => $this->designationService->all()
+                ])->render()
+            ]);
         }
     }
     public function statusUpdate(Request $request)
