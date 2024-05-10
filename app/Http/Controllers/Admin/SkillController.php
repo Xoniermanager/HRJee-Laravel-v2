@@ -7,7 +7,7 @@ use App\Http\Services\SkillsService;
 use App\Models\CompanySkill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\OnlyString;
+use App\Rules\{OnlyString,UniqueForAdminOnly};
 use Exception;
 
 class SkillController extends Controller
@@ -36,7 +36,7 @@ class SkillController extends Controller
     {
         try {
             $validateCompanyStatus  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:skills,name'],
+                'name' => ['required', 'string', new UniqueForAdminOnly('skills')],
                 'description' => ['string']
             ]);
 
