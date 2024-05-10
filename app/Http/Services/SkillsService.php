@@ -13,7 +13,7 @@ class SkillsService
   }
   public function all()
   {
-    return $this->companySkillsRepository->paginate(10);
+    return $this->companySkillsRepository->orderBy('id','DESC')->paginate(10);
   }
 
   public function create(array $data)

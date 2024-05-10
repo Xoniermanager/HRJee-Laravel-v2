@@ -13,7 +13,7 @@ class QualificationService
   }
   public function all()
   {
-    return $this->qualificationRepository->paginate(10);
+    return $this->qualificationRepository->orderBy('id','DESC')->paginate(10);
   }
 
   public function create(array $data)

@@ -13,7 +13,7 @@ class CompanyStatusService
   }
   public function all()
   {
-    return $this->companyStatusRepository->paginate(10);
+    return $this->companyStatusRepository->orderBy('id','DESC')->paginate(10);
   }
 
   public function create(array $data)

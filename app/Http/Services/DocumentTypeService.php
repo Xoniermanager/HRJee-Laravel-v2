@@ -13,7 +13,7 @@ class DocumentTypeService
   }
   public function all()
   {
-    return $this->documentTypeRepository->paginate(10);
+    return $this->documentTypeRepository->orderBy('id','DESC')->paginate(10);
   }
 
   public function create(array $data)

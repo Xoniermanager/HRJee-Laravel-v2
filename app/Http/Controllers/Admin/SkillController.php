@@ -45,7 +45,12 @@ class SkillController extends Controller
             }
             $data = $request->all();
             if ($this->skillsService->create($data)) {
-                return response()->json(['message' => 'Company Skills Created Successfully!']);
+                return response()->json([
+                    'message' => 'Skills Created Successfully!',
+                    'data'   =>  view('super_admin.skill.skill_list', [
+                        'allSkillDetails' => $this->skillsService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()()], 400);
@@ -67,20 +72,31 @@ class SkillController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->skillsService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Company Skills Updated Successfully!']);
+            return response()->json([
+                'message' => 'Skills Updated Successfully!',
+                'data'   =>  view('super_admin.skill.skill_list', [
+                    'allSkillDetails' => $this->skillsService->all()
+                ])->render()
+            ]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->skillsService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'success' => 'Skills Deleted Successfully!',
+                'data'   =>  view('super_admin.skill.skill_list', [
+                    'allSkillDetails' => $this->skillsService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
 

@@ -6,17 +6,6 @@
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
-        <!--begin::Row-->
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible">
-                {{ session('error') }}
-            </div>
-        @endif
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible">
-                {{ session('success') }}
-            </div>
-        @endif
         <div class="row gy-5 g-xl-10">
             <!--begin::Col-->
             <div class="card card-body col-md-12">
@@ -32,81 +21,7 @@
                     <!--end::Action-->
                 </div>
                 <div class="mb-5 mb-xl-10">
-                    <div class="">
-                        <div class="">
-                            <!--begin::Body-->
-                            <div class="">
-                                <div class="card-body py-3">
-                                    <!--begin::Table container-->
-                                    <div class="table-responsive">
-                                        <!--begin::Table-->
-                                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                            <!--begin::Table head-->
-                                            <thead>
-                                                <tr class="fw-bold">
-                                                    <th>Sr. No.</th>
-                                                    <th>Qualification</th>
-                                                    <th>Description</th>
-                                                    <th>Status</th>
-                                                    <th class="float-right">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <!--end::Table head-->
-                                            <!--begin::Table body-->
-                                            @forelse ($allQualificationDetails as $key => $qualificationDetails)
-                                                <tbody class="">
-                                                    <tr>
-                                                        <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $qualificationDetails->name }}</td>
-                                                        <td>{{ $qualificationDetails->description }}</td>
-                                                        <td data-order="Invalid date">
-                                                            <label class="switch">
-                                                                <input type="checkbox"
-                                                                    <?= $qualificationDetails->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $qualificationDetails->id }})"
-                                                                    id="checked_value">
-                                                                <span class="slider round"></span>
-                                                            </label>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex justify-content-end flex-shrink-0">
-                                                                <a href="#" data-bs-toggle="modal"
-                                                                    onClick="edit_qualification('{{ $qualificationDetails->id }}', '{{ $qualificationDetails->name }}','{{ $qualificationDetails->description }}')"
-                                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                                    <i class="fa fa-edit"></i>
-                                                                    <!--end::Svg Icon-->
-                                                                </a>
-                                                                <a href="{{ route('qualification.delete', $qualificationDetails->id) }}"
-                                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                                                    onclick="alert('Are you sure want to delete')">
-                                                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                                    <i class="fa fa-trash"></i>
-                                                                    <!--end::Svg Icon-->
-                                                                </a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            @empty
-                                                <td colspan="3">
-                                                    <span class="text-danger">
-                                                        <strong>No Qualification Found!</strong>
-                                                    </span>
-                                                </td>
-                                            @endforelse
-                                            <!--end::Table body-->
-                                        </table>
-                                        <!--end::Table-->
-                                    </div>
-                                    <!--end::Table container-->
-                                </div>
-                            </div>
-                            <!--begin::Body-->
-                        </div>
-                        <!--begin::Body-->
-                    </div>
-                    <!--begin::Body-->
+                    @include('super_admin.qualification.qualification_list')
                 </div>
             </div>
             <!--end::Col-->
@@ -272,17 +187,16 @@
                 name: "Please enter name",
             },
             submitHandler: function(form) {
-                var company_qualification = $(form).serialize();
+                var qualification_data = $(form).serialize();
                 $.ajax({
                     url: "{{ route('qualification.store') }}",
                     type: 'POST',
-                    data: company_qualification,
+                    data: qualification_data,
                     success: function(response) {
+                        jQuery('#kt_modal_qualification').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        // refresh page after 2 seconds
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        $('#qualification_list').replaceWith(response.data);
+                        $('#company_qualification_form')[0].reset();
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
@@ -307,29 +221,26 @@
                 name: "Please enter name",
             },
             submitHandler: function(form) {
-                var company_qualification = $(form).serialize();
+                var qualification_data = $(form).serialize();
                 $.ajax({
                     url: "<?= route('qualification.update') ?>",
                     type: 'post',
-                    data: company_qualification,
+                    data: qualification_data,
                     success: function(response) {
+                        jQuery('#kt_modal_qualification_update').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        // location.reload();
-                        // refresh page after 2 seconds
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        $('#qualification_list').replaceWith(response.data);
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
                         for (var error_key in errors) {
                             $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
+                                '<span class="' + error_key +
+                                '_error text text-danger">' + errors[
                                     error_key] + '</span>');
                             setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                                jQuery("." + error_key + "_error").remove();
+                            }, 4000);
                         }
                     }
                 });
@@ -363,6 +274,36 @@
                 }
             }
         })
+    }
+
+    function deleteFunction(id) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= route('qualification.delete') ?>",
+                    type: "get",
+                    data: {
+                        id: id
+                    },
+                    success: function(res) {
+                        Swal.fire("Done!", "It was succesfully deleted!", "success");
+                        $('#qualification_list').replaceWith(res.data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire("Error deleting!", "Please try again", "error");
+                    }
+                });
+            }
+        });
     }
 </script>
 <style>

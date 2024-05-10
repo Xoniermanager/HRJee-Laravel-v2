@@ -13,7 +13,7 @@ class EmployeeStatusService
   }
   public function all()
   {
-    return $this->employeeStatusRepository->paginate(10);
+    return $this->employeeStatusRepository->orderBy('id','DESC')->paginate(10);
   }
 
   public function create(array $data)

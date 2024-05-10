@@ -13,7 +13,7 @@ class DesignationServices
   }
   public function all()
   {
-    return $this->designationRepository->with('departments')->paginate(10);
+    return $this->designationRepository->with('departments')->orderBy('id','DESC')->paginate(10);
   }
   public function create(array $data)
   {

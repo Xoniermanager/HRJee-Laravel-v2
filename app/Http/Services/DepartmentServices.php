@@ -13,7 +13,7 @@ class DepartmentServices
   }
   public function all()
   {
-    return $this->departmentRepository->paginate(10);
+    return $this->departmentRepository->orderBy('id','DESC')->paginate(10);
   }
   public function create(array $data)
   {

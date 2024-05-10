@@ -43,7 +43,12 @@ class QualificationController extends Controller
             }
             $data = $request->all();
             if ($this->qualificationService->create($data)) {
-                return response()->json(['message' => 'Company Qualification Created Successfully!']);
+                return response()->json([
+                    'message' => 'Qualification Created Successfully!',
+                    'data'   =>  view('super_admin.qualification.qualification_list', [
+                        'allQualificationDetails' => $this->qualificationService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return $e->getMessage();
@@ -66,20 +71,31 @@ class QualificationController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->qualificationService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Company Qualification Updated Successfully!']);
+            return response()->json([
+                'message' => 'Qualification Updated Successfully!',
+                'data'   =>  view('super_admin.qualification.qualification_list', [
+                    'allQualificationDetails' => $this->qualificationService->all()
+                ])->render()
+            ]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->qualificationService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'success' => 'Qualification Deleted Successfully! ',
+                'data'   =>  view('super_admin.qualification.qualification_list', [
+                    'allQualificationDetails' => $this->qualificationService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
 

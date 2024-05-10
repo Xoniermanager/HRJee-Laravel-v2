@@ -17,7 +17,7 @@ class RolesServices
   }
     public function get_roles()
     { 
-     return $this->roles_repository->all();
+     return $this->roles_repository->orderBy('id','DESC')->all();
     }
     public function delete_roles_by_id($id)
     {    
