@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('states',function($table){
+        Schema::create('states', function ($table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('country_id');
+            $table->boolean('status')->default(true);
             $table->timestamps();
-       });
+            $table->foreign('country_id')->references('id')->on('countries');
+        });
     }
 
     /**

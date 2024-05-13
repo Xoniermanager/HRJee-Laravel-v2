@@ -9,11 +9,13 @@ class State extends Model
 {
     use HasFactory;
     protected $table = 'states';
-    public static function getStateNameById($id)
-    {
-        
-        $state = self::find($id);
 
-        return $state ? $state->name : 'Country not found';
+    protected $fillable = [
+        'name', 'status', 'country_id'
+    ];
+
+    public function countries()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
     }
 }

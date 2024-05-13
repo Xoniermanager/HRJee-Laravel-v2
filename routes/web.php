@@ -24,6 +24,9 @@ use App\Http\Controllers\Employee\HRServiceController;
 use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\QualificationController;
+use App\Http\Controllers\Company\CountryController;
+use App\Http\Controllers\Company\PreviousCompanyController;
+use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
@@ -77,6 +80,33 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('designation.update');
         Route::get('/delete', 'destroy')->name('designation.delete');
         Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
+    });
+
+    //Country Module
+    Route::prefix('/country')->controller(CountryController::class)->group(function () {
+        Route::get('/', 'index')->name('country.index');
+        Route::post('/create', 'store')->name('country.store');
+        Route::post('/update', 'update')->name('country.update');
+        Route::get('/delete', 'destroy')->name('country.delete');
+        Route::get('/status/update', 'statusUpdate')->name('country.statusUpdate');
+    });
+
+    //State Module
+    Route::prefix('/state')->controller(StateController::class)->group(function () {
+        Route::get('/', 'index')->name('state.index');
+        Route::post('/create', 'store')->name('state.store');
+        Route::post('/update', 'update')->name('state.update');
+        Route::get('/delete', 'destroy')->name('state.delete');
+        Route::get('/status/update', 'statusUpdate')->name('state.statusUpdate');
+    });
+
+    //Previous Company Module
+    Route::prefix('/previous-company')->controller(PreviousCompanyController::class)->group(function () {
+        Route::get('/', 'index')->name('previous.company.index');
+        Route::post('/create', 'store')->name('previous.company.store');
+        Route::post('/update', 'update')->name('previous.company.update');
+        Route::get('/delete', 'destroy')->name('previous.company.delete');
+        Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
     });
 
     Route::get('employee/index', [EmployeeController::class, 'index'])->name('employee.index');

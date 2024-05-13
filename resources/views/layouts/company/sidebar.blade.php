@@ -48,6 +48,45 @@
                             </div>
                             <div class="menu-item">
                                 <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('country.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-building"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Country</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('state.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-building"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">State</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('previous.company.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-building"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Previous Company</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('department.index') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
