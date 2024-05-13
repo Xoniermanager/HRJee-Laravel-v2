@@ -79,7 +79,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
     });
 
-    Route::get('employee', [EmployeeController::class, 'index'])->name('employee');
+    Route::get('employee/index', [EmployeeController::class, 'index'])->name('employee.index');
     Route::get('employee/{id}/view', [EmployeeController::class, 'view_employee'])->name('view.employee');
     Route::get('employee/create', [EmployeeController::class, 'employee_form'])->name('create.employee');
     Route::post('add-employee', [EmployeeController::class, 'add_employee'])->name('add.employee');

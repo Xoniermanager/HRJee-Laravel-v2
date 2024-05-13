@@ -46,7 +46,8 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = $this->employee_services->get_employee();
+        // $employees = $this->employee_services->get_employee();
+        $employees = array();
         return view('company.employee.employee-list',compact('employees'));
     }
     public function view_employee($id)
@@ -67,10 +68,12 @@ class EmployeeController extends Controller
 
     public function employee_form()
     {
-        $departments  = $this->departments_services->get_departments();
-        $designations = $this->designation_services->get_designations();
-        $branches = $this->branch_services->get_branches();
-        return view('company.employee.create-employee-form', compact('departments','designations','branches'));
+        // $departments  = $this->departments_services->all();
+        // $designations = $this->designation_services->all();
+        // $branches = $this->branch_services->get_branches();
+        // return view('company.employee.create-employee-form', compact('departments','designations','branches'));
+    
+        return view('company.employee.create');
     }
 
     public function add_employee(ValidateEmployee $request)

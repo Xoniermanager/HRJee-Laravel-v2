@@ -15,11 +15,11 @@ class EmployeeServices
   {
     $this->employee_repository = $employee_repository;
   }
-    public function get_employee()
-    { 
-      return  User::with('user_details')->get();
-    //  return $this->employee_repository->all();
-    }
+    // public function get_employee()
+    // { 
+    //   return  User::with('user_details')->get();
+    // //  return $this->employee_repository->all();
+    // }
     public function delete_employee_by_id($id)
     {    
     return $this->employee_repository->getEmployeeById($id)->delete();
