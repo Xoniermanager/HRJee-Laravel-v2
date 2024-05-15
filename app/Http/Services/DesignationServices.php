@@ -13,7 +13,7 @@ class DesignationServices
   }
   public function all()
   {
-    return $this->designationRepository->with('departments')->orderBy('id','DESC')->paginate(10);
+    return $this->designationRepository->with('departments')->orderBy('id', 'DESC')->paginate(10);
   }
   public function create(array $data)
   {
@@ -27,5 +27,10 @@ class DesignationServices
   public function deleteDetails($id)
   {
     return $this->designationRepository->find($id)->delete();
+  }
+
+  public function getAllDesignationUsingDepartmentID($department_id)
+  {
+    return $this->designationRepository->where('department_id', $department_id)->where('status', '1')->get();
   }
 }

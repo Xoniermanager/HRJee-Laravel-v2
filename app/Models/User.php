@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,7 +10,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable ,HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -19,15 +18,23 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'full_name',
-        'email'  ,
-        'password'  ,
-        'phone' ,
+        'emp_id',
+        'name',
+        'email',
+        'password',
+        'official_email_id',
+        'father_name',
+        'mother_name',
+        'blood_group',
+        'gender',
+        'marital_status',
+        'employee_status_id',
+        'date_of_birth',
+        'joining_date',
+        'phone',
         'profile_image',
-        'joining_date' ,
-        'employee_id',
-        'role_id'   ,
-        'compnany_id',
+        'company_id',
+        'last_login_ip'
     ];
 
     /**
@@ -52,13 +59,15 @@ class User extends Authenticatable
 
     public function user_details()
     {
-        return $this->hasOne(UserDetails::class,'user_id');
+        return $this->hasOne(UserDetails::class, 'user_id');
     }
-    public function bankDetail() {
-        return $this->hasOne(UserBankDetails::class ,'user_id');
+    public function bankDetail()
+    {
+        return $this->hasOne(UserBankDetails::class, 'user_id');
     }
 
-    public function address() {
-        return $this->hasOne(UserAddress::class ,'user_id');
+    public function address()
+    {
+        return $this->hasOne(UserAddress::class, 'user_id');
     }
 }

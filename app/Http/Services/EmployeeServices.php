@@ -2,39 +2,31 @@
 
 namespace App\Http\Services;
 
-use App\Models\Employee;
-use App\Models\User;
 use App\Repositories\EmployeeRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
-class EmployeeServices 
+class EmployeeServices
 {
-  private $employee_repository ;
-  public function __construct(EmployeeRepository $employee_repository)
+  private $employeeRepository;
+  public function __construct(EmployeeRepository $employeeRepository)
   {
-    $this->employee_repository = $employee_repository;
+    $this->employeeRepository = $employeeRepository;
   }
-    // public function get_employee()
-    // { 
-    //   return  User::with('user_details')->get();
-    // //  return $this->employee_repository->all();
-    // }
-    public function delete_employee_by_id($id)
-    {    
-    return $this->employee_repository->getEmployeeById($id)->delete();
-    }
-    public function get_employee_by_id($id)
-    {    
-      return $this->employee_repository->getEmployeeById($id);
-    }
+  public function all()
+  {
+    return $this->employeeRepository->orderBy('id', 'DESC')->paginate(10);
+  }
+  public function create(array $data)
+  {
+    $data = $this->employeeRepository->create($data);
+    return $data->id;
+  }
 
-    public function get_employee_all_details_by_id($id)
-    {    
-      return $this->employee_repository->getEmployeeDetailsById($id);
-    }
-
-    
-    
-
+  public function updateDetails(array $data, $id)
+  {
+    return $this->employeeRepository->find($id)->update($data);
+  }
+  public function deleteDetails($id)
+  {
+    return $this->employeeRepository->find($id)->delete();
+  }
 }

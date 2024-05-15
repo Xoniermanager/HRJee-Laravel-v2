@@ -16497,4 +16497,6 @@ width: 500px;
 .d-grid{
   display: grid;
 }
-   
+.error {
+  color: red;
+}

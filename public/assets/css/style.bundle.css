@@ -32045,6 +32045,7 @@ h6.fw-bold.doctor-icon.rounded-circle img {
   color: var(--kt-primary-inverse);
   border-color: var(--kt-primary);
   background-color: var(--kt-primary);
+  font-size: 15px;
 }
 
 .btn.btn-primary .svg-icon,
@@ -32055,20 +32056,7 @@ h6.fw-bold.doctor-icon.rounded-circle img {
 .btn.btn-primary.dropdown-toggle:after {
   color: var(--kt-primary-inverse);
 }
-
-.btn-check:active+.btn.btn-primary,
-.btn-check:checked+.btn.btn-primary,
-.btn.btn-primary.active,
-.btn.btn-primary.show,
-.btn.btn-primary:active:not(.btn-active),
-.btn.btn-primary:focus:not(.btn-active),
-.btn.btn-primary:hover:not(.btn-active),
-.show>.btn.btn-primary {
-  color: var(--kt-primary-inverse);
-  border-color: var(--kt-primary-active);
-  background-color: var(--kt-link-color) !important;
-}
-
+ 
 .btn-check:active+.btn.btn-primary .svg-icon,
 .btn-check:active+.btn.btn-primary i,
 .btn-check:checked+.btn.btn-primary .svg-icon,
@@ -39139,4 +39127,12 @@ input:checked + .slider:before {
   border-radius: 50%;
   margin: auto;
   text-align: center;
+}
+
+.h-20w-100 {
+  height: 30px;
+  width: 100px;
+}
+.p2px {
+  padding: 2px !important;
 }

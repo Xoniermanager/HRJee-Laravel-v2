@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\StateController;
+use App\Http\Controllers\Company\UserAdvanceDetailsController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
@@ -46,8 +47,6 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::view('/demo', 'demo');
 
 Route::middleware(['dashboard.access'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
@@ -80,6 +79,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('designation.update');
         Route::get('/delete', 'destroy')->name('designation.delete');
         Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
+        Route::get('/get/all/designation', 'getAllDesignation')->name('get.all.designation');
     });
 
     //Country Module
@@ -98,6 +98,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('state.update');
         Route::get('/delete', 'destroy')->name('state.delete');
         Route::get('/status/update', 'statusUpdate')->name('state.statusUpdate');
+        Route::get('/get/all/state', 'getAllStates')->name('get.all.country.state');
     });
 
     //Previous Company Module
@@ -109,13 +110,15 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
     });
 
-    Route::get('employee/index', [EmployeeController::class, 'index'])->name('employee.index');
-    Route::get('employee/{id}/view', [EmployeeController::class, 'view_employee'])->name('view.employee');
-    Route::get('employee/create', [EmployeeController::class, 'employee_form'])->name('create.employee');
-    Route::post('add-employee', [EmployeeController::class, 'add_employee'])->name('add.employee');
-    Route::get('employee/{id}/edit', [EmployeeController::class, 'edit_employee'])->name('edit.employee');
-    Route::patch('employee/{id}/', [EmployeeController::class, 'update_employee'])->name('update.employee');
-    Route::get('delete-employee/{id}', [EmployeeController::class, 'delete_employee'])->name('delete.employee');
+    
+
+    // Route::get('employee/index', [EmployeeController::class, 'index'])->name('employee.index');
+    // Route::get('employee/{id}/view', [EmployeeController::class, 'view_employee'])->name('view.employee');
+    // Route::get('employee/create', [EmployeeController::class, 'add_employee'])->name('create.employee');
+    // Route::post('add-employee', [EmployeeController::class, 'add_employee'])->name('add.employee');
+    // Route::get('employee/{id}/edit', [EmployeeController::class, 'edit_employee'])->name('edit.employee');
+    // Route::patch('employee/{id}/', [EmployeeController::class, 'update_employee'])->name('update.employee');
+    // Route::get('delete-employee/{id}', [EmployeeController::class, 'delete_employee'])->name('delete.employee');
 
     Route::get('roles', [RolesController::class, 'index'])->name('roles');
     Route::get('roles/create', [RolesController::class, 'role_form'])->name('create.role.form');
@@ -137,8 +140,21 @@ Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 Route::get('/signin', [AdminController::class, 'signin'])->name('signin');
 Route::get('/signup', [AdminController::class, 'signup'])->name('signup');
 
+//Employee Module
+Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
+    Route::get('/index', 'index')->name('employee.index');
+    Route::get('/add', 'add')->name('employee.add');
+    Route::post('/store', 'store')->name('employee.company.store');
+    Route::post('/update', 'update')->name('previous.company.update');
+    Route::get('/delete', 'destroy')->name('previous.company.delete');
+    Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
+});
+
+//Advance Details for employee
+Route::post('/employee/advance/details', [UserAdvanceDetailsController::class, 'store'])->name('employee.advance.details');
 
 /** ---------------Employee Pannel Started--------------  */
+
 //Login Process
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('employee');
@@ -152,7 +168,8 @@ Route::controller(ForgetPasswordController::class)->group(function () {
     Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
 });
 
-Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
+// Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
+    Route::prefix('employee')->group(function () {
 
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
@@ -208,6 +225,7 @@ Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
         Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
     });
 });
+
 
 /** -----------------Super Admin Started--------------------*/
 

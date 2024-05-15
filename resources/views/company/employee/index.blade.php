@@ -25,7 +25,7 @@
                             data-bs-toggle="modal" data-bs-target="#kt_modal_employee">
                             <i class="fa fa-upload"></i> Employee</a>
                         <!--begin::Menu toggle-->
-                        <a href="{{route('create.employee')}}" class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
+                        <a href="{{route('employee.add')}}" class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
                             Add Employee</a>
                         <!--begin::Menu toggle-->
 

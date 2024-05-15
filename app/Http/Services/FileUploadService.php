@@ -6,9 +6,8 @@ use Illuminate\Support\Facades\Storage;
 
 class FileUploadService
 {
-    public $upload_path;
     public function __construct(){
-        $this->upload_path          = public_path().'/';
+        
     }
     public function imageUpload($file,String $path, $namePrefix=''){
         $image  = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();

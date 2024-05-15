@@ -2,8 +2,6 @@
 
 namespace App\Http\Services;
 
-use App\Models\Roles;
-use App\Models\User;
 use App\Repositories\rolesRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;

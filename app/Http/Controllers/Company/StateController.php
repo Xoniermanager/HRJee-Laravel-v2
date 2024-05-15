@@ -113,4 +113,24 @@ class StateController extends Controller
             echo 0;
         }
     }
+
+    public function getAllStates(Request $request)
+    {
+        $country_id = $request->country_id;
+        $allStateDetails = $this->stateService->getAllStateUsingCountryID($country_id);
+        if (count($allStateDetails) > 0 && isset($allStateDetails)) 
+        {
+            $response = [
+                'status'    =>  true,
+                'data'      =>  $allStateDetails
+            ];
+            
+        } else {
+            $response = [
+                'status'    =>  false,
+                'error'     => 'No State Found for this Country'
+            ];
+        }
+        return json_encode($response);
+    }
 }

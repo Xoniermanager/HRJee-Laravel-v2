@@ -12,7 +12,7 @@
             </div>
             <!--end::Card title-->
         </div>
-     
+
 
         <div class="mb-5 mb-xl-10">
             <div class="card-body">
@@ -42,12 +42,12 @@
                                 <td>
                                     <select class="form-select mb-3" name="branch_type">
                                         <option value="">Select Branch Type</option>
-                                        <option value="Primary" 
-                                        {{ collect(isset($branch['branch_type'])?$branch['branch_type']:'')->contains('primary') ? 'selected' : '' }}>
+                                        <option value="Primary"
+                                            {{ collect(isset($branch['branch_type']) ? $branch['branch_type'] : '')->contains('primary') ? 'selected' : '' }}>
                                             Primary</option>
                                         <option value="Secondary"
-                                        {{ collect(isset($branch['branch_type'])?$branch['branch_type']:'')->contains('secondary') ? 'selected' : '' }}
-                                            >Secondary</option>
+                                            {{ collect(isset($branch['branch_type']) ? $branch['branch_type'] : '')->contains('secondary') ? 'selected' : '' }}>
+                                            Secondary</option>
                                     </select>
                                     @error('branch_type')
                                         <div class="text-danger">{{ $message }}</div>
@@ -123,7 +123,7 @@
                                         <option value="">Select States</option>
                                         @foreach ($states as $state)
                                             <option value="{{ $state->id }}"
-                                                {{ collect(isset($branch['state'])?$branch['state']:'')->contains($state->id) ? 'selected' : '' }}>
+                                                {{ collect(isset($branch['state']) ? $branch['state'] : '')->contains($state->id) ? 'selected' : '' }}>
                                                 {{ $state->name }}
                                             </option>
                                         @endforeach
@@ -136,11 +136,11 @@
                             <tr>
                                 <td>Country</td>
                                 <td>
-                                    <select name="country_id" class="form-control" name="country_id" >
-                                        @foreach($countries as $country)
-                                        <option value="{{ $country->id }}"
-                                        {{ collect(isset($branch['country_id'])?$branch['country_id']:'')->contains($country->id) ? 'selected' : '' }}>
-                                        @countryName($country->id)
+                                    <select name="country_id" class="form-control" name="country_id">
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->id }}"
+                                                {{ collect(isset($branch['country_id']) ? $branch['country_id'] : '')->contains($country->id) ? 'selected' : '' }}>
+                                                {{ $country->name }}
                                             </option>
                                         @endforeach
                                     </select>

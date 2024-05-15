@@ -28,4 +28,9 @@ class StateServices
   {
     return $this->stateRepository->find($id)->delete();
   }
+
+  public function getAllStateUsingCountryID($country_id)
+  {
+    return $this->stateRepository->where('country_id', $country_id)->where('status','1')->get();
+  }
 }

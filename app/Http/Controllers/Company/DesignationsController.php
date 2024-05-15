@@ -117,4 +117,22 @@ class DesignationsController extends Controller
             echo 0;
         }
     }
+
+    public function getAllDesignation(Request $request)
+    {
+        $department_id = $request->department_id;
+        $allDesignationDetails = $this->designationService->getAllDesignationUsingDepartmentID($department_id);
+        if (count($allDesignationDetails) > 0 && isset($allDesignationDetails)) {
+            $response = [
+                'status'    =>  true,
+                'data'      =>  $allDesignationDetails
+            ];
+        } else {
+            $response = [
+                'status'    =>  false,
+                'error'     => 'No Designation found this Department'
+            ];
+        }
+        return json_encode($response);
+    }
 }
