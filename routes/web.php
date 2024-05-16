@@ -1,35 +1,38 @@
 <?php
 
-use App\Http\Controllers\Admin\EmployeeStatusController;
-use App\Http\Controllers\Admin\EmployeeTypeController;
+use App\Http\Controllers\Company\OfficeShiftController;
+use App\Models\OfficeTimingConfig;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Company\AdminController;
+use App\Http\Controllers\Company\RolesController;
+use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Employee\NewsController;
-use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\CompanyController;
-use App\Http\Controllers\Company\EmployeeController;
-use App\Http\Controllers\Company\DepartmentController;
-use App\Http\Controllers\Company\PermissionsController;
-use App\Http\Controllers\Company\DesignationsController;
-use App\Http\Controllers\Company\CompanyBranchesController;
+use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Employee\PolicyController;
+use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Employee\AccountController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Admin\CompanySizeController;
+use App\Http\Controllers\Admin\DocumentTypeController;
+use App\Http\Controllers\Admin\EmployeeTypeController;
+use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Employee\ContactUsController;
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\HRServiceController;
+use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Admin\CompanyStatusController;
-use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\QualificationController;
-use App\Http\Controllers\Company\CountryController;
-use App\Http\Controllers\Company\PreviousCompanyController;
-use App\Http\Controllers\Company\StateController;
+use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\Admin\EmployeeStatusController;
+use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\UserAdvanceDetailsController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
+use App\Http\Controllers\Company\CompanyBranchesController;
+use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Employee\LeaveMangementController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
@@ -133,6 +136,24 @@ Route::middleware(['dashboard.access'])->group(function () {
     Route::get('permissions/{id}/edit', [PermissionsController::class, 'edit_permissions'])->name('edit.permissions');
     Route::patch('permissions/{id}/', [PermissionsController::class, 'update_permissions'])->name('update.permissions');
     Route::get('delete-permissions/{id}', [PermissionsController::class, 'delete_permissions'])->name('delete.permissions');
+
+    // Office Time Configs
+    Route::prefix('/office-time')->controller(OfficeTimingConfigController::class)->group(function () {
+        Route::get('/', 'index')->name('office_time_config.index');
+        Route::post('/create', 'store')->name('office_time_config.store');
+         Route::post('/update', 'update')->name('office_time_config.update');
+         Route::get('/delete', 'destroy')->name('office_time_config.delete');
+         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
+    });
+    
+    // Office Shifts
+    Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
+        Route::get('/', 'index')->name('shifts.index');
+            Route::post('/create', 'store')->name('shift.store');
+            Route::post('/update', 'update')->name('shift.update');
+            Route::get('/delete', 'destroy')->name('shift.delete');
+            Route::get('/status/update', 'statusUpdate')->name('shift.statusUpdate');
+    });
 });
 
 Route::post('/company_login', [AdminController::class, 'companyLogin'])->name('company_login');
