@@ -27,7 +27,7 @@
                         No data found. Do you want to add new item - '#: instance.filterInput.val() #' ?
                     </div>
                     <br />
-                    <button class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md" onclick="addNew('#: instance.element[0].id #', '#: instance.filterInput.val() #')">Add new item</button>
+                    <button class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md" onclick="addNewPreviousCompany('#: instance.element[0].id #', '#: instance.filterInput.val() #')">Add new item</button>
                 </script>
             </div>
 

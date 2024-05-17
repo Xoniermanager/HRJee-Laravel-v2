@@ -58,7 +58,7 @@
 // };
 
 
-function addNew(widgetId, value) {
+function addNewSkill(widgetId, value) {
     var widget = $("#" + widgetId).getKendoMultiSelect();
     var dataSource = widget.dataSource;
     console.log(dataSource.data().length + 1)
@@ -130,6 +130,24 @@ $('.menu-item').each(function() {
 });
 
 
+
+function addNewQualification(widgetId, value) {
+    
+    var widget = jQuery("#" + widgetId).getKendoDropDownList();
+    var dataSource = widget.dataSource;
+    // console.log(dataSource);
+    // if (confirm("Are you sure?")) {
+        dataSource.add({
+            name: value
+        });
+
+        dataSource.one("sync", function() {
+            widget.select(dataSource.view().length - 1);
+        });
+
+        dataSource.sync();
+    }
+
 jQuery(document).ready(function() {
     var qualificationCrudServiceBaseUrl =  company_ajax_base_url;
     var qualificationDataSource = new kendo.data.DataSource({
@@ -171,65 +189,63 @@ jQuery(document).ready(function() {
 
 
 
-// ----------------------------------------------------------------------
 
-
-// function addNew(widgetId, value) {
+function addNewPreviousCompany(widgetId, value) {
     
-//     var widget = jQuery("#" + widgetId).getKendoDropDownList();
-//     var dataSource = widget.dataSource;
-//     // console.log(dataSource);
-//     // if (confirm("Are you sure?")) {
-//         dataSource.add({
-//             name: value
-//         });
+    var widget = jQuery("#" + widgetId).getKendoDropDownList();
+    var dataSource = widget.dataSource;
+    // console.log(dataSource);
+    // if (confirm("Are you sure?")) {
+        dataSource.add({
+            name: value
+        });
 
-//         dataSource.one("sync", function() {
-//             widget.select(dataSource.view().length - 1);
-//         });
+        dataSource.one("sync", function() {
+            widget.select(dataSource.view().length - 1);
+        });
 
-//         dataSource.sync();
-//     // }
-// };
+        dataSource.sync();
+    // }
+};
 
-// jQuery(document).ready(function() {
-//     var previousCompanyCrudServiceBaseUrl =  company_ajax_base_url;
-//     var previousCompanyDataSource = new kendo.data.DataSource({
-//         batch: true,
-//         transport: {
-//             read:  {
-//                 url: previousCompanyCrudServiceBaseUrl + "/previous-company/previous_company_data",
-//                dataType: "json"
-//             },
-//             create: {
-//                 url: previousCompanyCrudServiceBaseUrl + "/previous-company/ajax_store_previous_company",
-//                 dataType: "json"
-//             },
-//             parameterMap: function(options, operation) {
-//                 if (operation !== "read" && options.models) {
-//                     return {models: kendo.stringify(options.models)};
-//                 }
-//             }
-//         },
-//         schema: {
-//             model: {
-//                 id: "id",
-//                 fields: {
-//                     id: { type: "number" },
-//                     name: { type: "string" }
-//                 }
-//             }
-//         }
-//     });
+jQuery(document).ready(function() {
+    var previousCompanyCrudServiceBaseUrl =  company_ajax_base_url;
+    var previousCompanyDataSource = new kendo.data.DataSource({
+        batch: true,
+        transport: {
+            read:  {
+                url: previousCompanyCrudServiceBaseUrl + "/previous-company/previous_company_data",
+               dataType: "json"
+            },
+            create: {
+                url: previousCompanyCrudServiceBaseUrl + "/previous-company/ajax_store_previous_company",
+                dataType: "json"
+            },
+            parameterMap: function(options, operation) {
+                if (operation !== "read" && options.models) {
+                    return {models: kendo.stringify(options.models)};
+                }
+            }
+        },
+        schema: {
+            model: {
+                id: "id",
+                fields: {
+                    id: { type: "number" },
+                    name: { type: "string" }
+                }
+            }
+        }
+    });
 
-//     jQuery("#previous_company_id").kendoDropDownList({
-//         filter: "startswith",
-//         dataTextField: "name",
-//         dataValueField: "id",
-//         dataSource: previousCompanyDataSource,
-//         noDataTemplate: jQuery("#noPreviousCompanyTemplate").html()
-//     });
-// });
+    jQuery("#previous_company_id").kendoDropDownList({
+        filter: "startswith",
+        dataTextField: "name",
+        dataValueField: "id",
+        dataSource: previousCompanyDataSource,
+        noDataTemplate: jQuery("#noPreviousCompanyTemplate").html()
+    });
+});
 
 
 
