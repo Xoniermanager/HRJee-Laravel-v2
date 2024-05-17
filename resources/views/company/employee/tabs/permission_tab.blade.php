@@ -59,7 +59,7 @@
                     No data found. Do you want to add new item - '#: instance.filterInput.val() #' ?
                 </div>
                 <br />
-                <button class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md" onclick="addNew('#: instance.element[0].id #', '#: instance.filterInput.val() #')">Add new item</button>
+                <button class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md" onclick="addNewQualification('#: instance.element[0].id #', '#: instance.filterInput.val() #')">Add new item</button>
             </script>
         </div>
    
@@ -76,7 +76,7 @@
                             No data found. Do you want to add new item - '#: value #' ?
                         </div>
                         <br />
-                        <button class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md" onclick="addNew('#: id #', '#: value #')" ontouchend="addNew('#: id #', '#: value #')">Add new item</button>
+                        <button class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md" onclick="addNewSkill('#: id #', '#: value #')" ontouchend="addNew('#: id #', '#: value #')">Add new item</button>
                     <div>
                 </script>
         </div>
