@@ -20,6 +20,7 @@
     <meta name="url" property='og:url' content='' />
     <meta name="description" property='og:description' content='' />
     <meta name="author" content="Jyoti Mishra Web Designer at Xonier">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet"
         type="text/css" />
     <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
@@ -33,7 +34,9 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-    
+    <script>
+        window.company_ajax_base_url = '{{ env('DYNAMIC_BASE_URL') }}';
+    </script>
 </head>
 <!--end::Head-->
 <!--begin::Body-->

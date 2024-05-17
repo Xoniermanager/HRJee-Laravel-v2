@@ -15,6 +15,12 @@ class PreviousCompanyService
   {
     return $this->previousCompanyRepository->orderBy('id', 'DESC')->paginate(10);
   }
+
+  public function get_previous_company_ajax_call()
+  {
+    return $this->previousCompanyRepository->orderBy('id', 'DESC')->get();
+  }
+
   public function create(array $data)
   {
     return $this->previousCompanyRepository->create($data);

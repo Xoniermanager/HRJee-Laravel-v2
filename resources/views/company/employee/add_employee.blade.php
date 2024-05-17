@@ -219,7 +219,9 @@
         /** Previous Company HTML*/
 
         function get_previous_company_html() {
-            var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
+            var previous_company = document.getElementById('previous_company_id').value.trim();
+
+            // var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
             var exist = false;
             if ($('#previous_company_id').val() != '') {
                 jQuery('.previous_company').each(function(key, ele) {

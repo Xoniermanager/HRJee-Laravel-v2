@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Company;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\PreviousCompanyService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Http\Request;
+use App\Rules\UniqueForAdminOnly;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\PreviousCompanyService;
 
 class PreviousCompanyController extends Controller
 {
@@ -108,4 +110,34 @@ class PreviousCompanyController extends Controller
             echo 0;
         }
     }
+
+
+    public function get_all_previous_company_ajax_call()
+    {
+       $data =  $this->previousCompanyService->get_previous_company_ajax_call();
+       return json_encode($data);
+    }
+    public function ajax_store_previous_company(Request $request)
+    {
+        try {
+            $dataTest = $request->all()['models'];
+            $data = collect(json_decode($dataTest, true))->first();
+            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $validatePreviousCompany  = Validator::make($data, [
+                'name'        => ['required', 'string', new UniqueForAdminOnly('previous_companies')],
+                'description' => ['string']
+            ]);
+
+            if ($validatePreviousCompany->fails()) {
+                return response()->json(['error' => $validatePreviousCompany->messages()], 400);
+            }
+        
+            if ($this->previousCompanyService->create($data)){
+                return  $this->previousCompanyService->get_previous_company_ajax_call();
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()()], 400);
+        }
+    }
 }
+
