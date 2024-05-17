@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Company\OfficeShiftController;
-use App\Models\OfficeTimingConfig;
 use App\Http\Controllers\Company\UserAddressDetailsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SkillController;
