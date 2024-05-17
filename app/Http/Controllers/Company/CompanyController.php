@@ -104,5 +104,5 @@ class CompanyController extends Controller
     //         return $e->getMessage();
     //     }
     // }
-  
+
 }

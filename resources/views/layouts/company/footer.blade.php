@@ -22,20 +22,5 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-
-<script>
-    setTimeout(function() {
-        jQuery(".alert-dismissible").remove();
-    }, 3000);
-
-    $(document).ready(function() {
-    var currentUrl = window.location.pathname;
-    var fullUrl = window.location.origin + currentUrl;
-    $('.menu-item').each(function() {
-        var url = $(this).data('url');
-        if (fullUrl == url) {
-            $(this).addClass('active');
-        }
-    });
-});
-</script>
+<script src="https://kendo.cdn.telerik.com/2024.2.514/js/kendo.all.min.js"></script>
+<script src="{{ asset('assets/js/custom-script.js') }}"></script>

@@ -56,6 +56,10 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 |
 */
 
+
+Route::get('demo', [SkillController::class, 'demo'])->name('demo');
+Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
+
 Route::middleware(['dashboard.access'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
 
@@ -116,6 +120,11 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('previous.company.update');
         Route::get('/delete', 'destroy')->name('previous.company.delete');
         Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
+
+        // for ajax call 
+        Route::get('/previous_company_data', 'get_all_previous_company_ajax_call');
+        Route::get('/ajax_store_previous_company', 'ajax_store_previous_company');
+    
     });
 
     
@@ -296,10 +305,15 @@ Route::prefix('/company-size')->controller(CompanySizeController::class)->group(
 //Skills Module
 Route::prefix('/skills')->controller(SkillController::class)->group(function () {
     Route::get('/', 'index')->name('skills.index');
-    Route::post('/create', 'store')->name('skills.store');
+    Route::get('/create', 'store')->name('skills.store');
     Route::post('/update', 'update')->name('skills.update');
     Route::get('/delete', 'destroy')->name('skills.delete');
     Route::get('/status/update', 'statusUpdate')->name('skills.statusUpdate');
+    
+    // for ajax call 
+    Route::get('/ajax_get_all', 'get_all_skills');
+    Route::get('/ajax_store_skills', 'ajax_store_skills');
+    
 });
 
 //Qualification Module
@@ -309,6 +323,11 @@ Route::prefix('/qualifications')->controller(QualificationController::class)->gr
     Route::post('/update', 'update')->name('qualification.update');
     Route::get('/delete', 'destroy')->name('qualification.delete');
     Route::get('/status/update', 'statusUpdate')->name('qualification.statusUpdate');
+        
+    // for ajax call 
+    Route::get('/qualification_data', 'get_all_qualification_ajax_call');
+    Route::get('/ajax_store_qualification', 'ajax_store_qualification');
+    
 });
 
 //Employee Status Module

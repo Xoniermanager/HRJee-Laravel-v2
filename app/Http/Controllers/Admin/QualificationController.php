@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\QualificationService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Http\Request;
 use App\Rules\UniqueForAdminOnly;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\QualificationService;
 
 class QualificationController extends Controller
 {
@@ -109,6 +110,37 @@ class QualificationController extends Controller
             echo 1;
         } else {
             echo 0;
+        }
+    }
+
+
+
+    public function get_all_qualification_ajax_call()
+    {
+
+       $data =  $this->qualificationService->get_qualification_ajax_call();
+       return json_encode($data);
+    }
+    public function ajax_store_qualification(Request $request)
+    {
+        try {
+            $dataTest = $request->all()['models'];
+            $data = collect(json_decode($dataTest, true))->first();
+            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $validateQualification  = Validator::make($data, [
+                'name'        => ['required', 'string', new UniqueForAdminOnly('qualifications')],
+                'description' => ['string']
+            ]);
+
+            if ($validateQualification->fails()) {
+                return response()->json(['error' => $validateQualification->messages()], 400);
+            }
+        
+            if ($this->qualificationService->create($data)){
+                return  $this->qualificationService->get_qualification_ajax_call();
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()()], 400);
         }
     }
 }

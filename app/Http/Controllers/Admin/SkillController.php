@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\SkillsService;
+use Exception;
 use App\Models\CompanySkill;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Services\SkillsService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Rules\{OnlyString,UniqueForAdminOnly};
-use Exception;
 
 class SkillController extends Controller
 {
@@ -109,6 +110,39 @@ class SkillController extends Controller
             echo 1;
         } else {
             echo 0;
+        }
+    }
+
+    public function demo()
+    {
+        return view('demodropdown');
+    }
+
+    public function skill_data()
+    {
+       $data =  $this->skillsService->get_skill_ajax_call();
+       return json_encode($data);
+    }
+    public function ajax_store_skills(Request $request)
+    {
+        try {
+            $dataTest = $request->all()['models'];
+            $data     = collect(json_decode($dataTest, true))->first();
+            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $validateSkills  = Validator::make($data, [
+                'name'        => ['required', 'string', new UniqueForAdminOnly('skills')],
+                'description' => ['string']
+            ]);
+
+            if ($validateSkills->fails()) {
+                return response()->json(['error' => $validateSkills->messages()], 400);
+            }
+        
+            if ($this->skillsService->create($data)) {
+                return  $this->skillsService->all();
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()()], 400);
         }
     }
 }

@@ -15,6 +15,10 @@ class SkillsService
   {
     return $this->companySkillsRepository->orderBy('id','DESC')->paginate(10);
   }
+  public function get_skill_ajax_call()
+  {
+    return $this->companySkillsRepository->orderBy('id','DESC')->get();
+  }
 
   public function create(array $data)
   {

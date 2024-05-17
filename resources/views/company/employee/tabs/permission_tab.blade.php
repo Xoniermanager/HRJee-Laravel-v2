@@ -1,7 +1,7 @@
 <div class="tab-pane fade" id="permission_tab">
     <!--begin::Wrapper-->
     <div class="row">
-    <input type="hidden" name="company_id" class="id">
+        <input type="hidden" name="company_id" class="id">
         <div class="col-md-4 form-group">
             <label for="">Employment Type *</label>
             <select class="form-control">
@@ -48,21 +48,37 @@
                 <option value="">HR Recruiter</option>
             </select>
         </div>
+
         <div class="col-md-4 form-group">
-            <label for="">Highest Qualification *</label>
-            <select class="form-control">
-                <option value="">Select the Qualification</option>
-                <option value="">Btech</option>
-                <option value="">10th</option>
-            </select>
+            <div class="k-w-300">
+                <label for="qualification">Highest Qualification*</label>
+                <input id="Qualification" class="form-control" />
+            </div>
+            <script id="noQualificationTemplate" type="text/x-kendo-tmpl">
+                <div>
+                    No data found. Do you want to add new item - '#: instance.filterInput.val() #' ?
+                </div>
+                <br />
+                <button class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md" onclick="addNew('#: instance.element[0].id #', '#: instance.filterInput.val() #')">Add new item</button>
+            </script>
         </div>
+   
         <div class="col-md-4 form-group">
-            <label for="">Skills (multiselect)</label>
-            <select class="form-control">
-                <option value="">Select the Skills</option>
-                <option value="">Data Entry</option>
-                <option value="">Java Script</option>
-            </select>
+                <div>
+                    <label>Skills (Multiselect)</label>
+                    <input id="Skill" class="form-control" ></input>
+                </div>
+                <script id="noSkillTemplate" type="text/x-kendo-tmpl">
+                    <div class="kd-nodata-wrapper">
+                        # var value = instance.input.val(); #
+                        # var id = instance.element[0].id; #
+                        <div>
+                            No data found. Do you want to add new item - '#: value #' ?
+                        </div>
+                        <br />
+                        <button class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md" onclick="addNew('#: id #', '#: value #')" ontouchend="addNew('#: id #', '#: value #')">Add new item</button>
+                    <div>
+                </script>
         </div>
         <div class="col-md-4 form-group">
             <label for="">Shift</label>
@@ -110,9 +126,32 @@
             </div>
         </div>
     </div>
-    <button onclick="show_next_tab('past_work_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>   Previous</button>
-            {{-- <button onclick="save_data_show_next_tab('advance_details_tab')"
+    
+    <button onclick="show_next_tab('past_work_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
+        Previous</button>
+    {{-- <button onclick="save_data_show_next_tab('advance_details_tab')"
     class="btn btn-primary">Save & Continue</button> --}}
-            <button onclick="show_next_tab('family_details_tab')" class="btn btn-primary float-right">Next <i class="fa fa-arrow-right"></i>  </button>
-            <!--end::Wrapper-->
+    <button onclick="show_next_tab('family_details_tab')" class="btn btn-primary float-right">Next <i
+            class="fa fa-arrow-right"></i> </button>
+    <!--end::Wrapper-->
 </div>
+
+<style>
+    .k-picker-solid {
+        height: 47px;
+    }
+
+    .k-picker-solid {
+        background-color: white !important;
+    }
+
+    .k-list-item.k-selected,
+    .k-selected.k-list-optionlabel {
+        color: #ffffff;
+        background-color: #1642b3 !important;
+    }
+    .k-input:not(:-webkit-autofill) {
+    animation-name: autoFillEnd;
+    height: 47px!important;
+}
+</style>

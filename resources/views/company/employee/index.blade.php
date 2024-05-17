@@ -3,6 +3,8 @@
 @section('title', 'main')
 
 @section('content')
+<base href="https://demos.telerik.com/kendo-ui/dropdownlist/addnewitem#">
+<link href="https://kendo.cdn.telerik.com/themes/8.0.1/default/default-main.css" rel="stylesheet" />
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
