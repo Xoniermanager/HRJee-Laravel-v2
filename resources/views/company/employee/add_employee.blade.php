@@ -3,6 +3,12 @@
 @section('title', 'Add Employee')
 
 @section('content')
+    @php
+        $userQualificationDetails = [];
+        if (isset($userDetails)) {
+            $userQualificationDetails = $userDetails['qualificationDetails'];
+        }
+    @endphp
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
@@ -185,79 +191,6 @@
         <!--end::Container-->
     </div>
     <script>
-        /** Qualification HTML*/
-
-        function get_qualification_html() {
-            var degree_name = $('select[name=qualification_id]').find(':selected').text().trim();
-            var exist = false;
-            jQuery('.degree_name').each(function(key, ele) {
-                var existing_ele = jQuery(ele).text().trim();
-                if (existing_ele == degree_name) {
-                    exist = true;
-                }
-            });
-            if (exist == false) {
-                var qualificationhtml = '<div class="row"><div class="panel-head"><h5 class="degree_name">' + degree_name +
-                    '</h5></div>\
-                                                                <div class="panel-body"><div class="row"><div class="col-md-3 form-group"><label for="">Institute/College *</label><input class="form-control" type="text" name=""></div>\
-                                                                <div class="col-md-3 form-group"><label for="">University *</label><input class="form-control" type="text" name=""></div>\
-                                                                <div class="col-md-3 form-group"><label for="">Course *</label><input class="form-control" type="text" name=""></div>\
-                                                                <div class="col-md-1 form-group"><label for="">Year *</label><input class="form-control" type="text" name=""></div>\
-                                                                <div class="col-md-1 form-group"><label for="">Percentage*</label><input class="form-control" type="text" name=""></div>\
-                                                                <div class="col-md-1 form-group text-center mt-5"><button class="btn btn-danger btn-sm mt-3" onclick="remove_qualification_html(this)"> <i class="fa fa-minus"></i></button></div></div></div></div>';
-                $('#qualification_html').append(qualificationhtml);
-            }
-
-        }
-
-        function remove_qualification_html(ele) {
-            jQuery(ele).parent().parent().parent().parent().remove();
-        }
-
-        /** end Qualification HTMl*/
-
-        /** Previous Company HTML*/
-
-        function get_previous_company_html() {
-            var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
-            var exist = false;
-            if ($('#previous_company_id').val() != '') {
-                jQuery('.previous_company').each(function(key, ele) {
-                    var existing_ele = jQuery(ele).text().trim();
-                    if (existing_ele == previous_company) {
-                        exist = true;
-                    }
-                });
-                if (exist == false) {
-                    var previous_company_html = '<div class="row"><div class="panel-head"><h5 class="previous_company">' +
-                        previous_company +
-                        '</h5></div>\
-                                                                                        <div class="panel-body"><div class="row"><div class="col-md-3 form-group"><label for="">Designation *</label><input class="form-control" type="text" name=""></div>\
-                                                                                        <div class="col-md-2 form-group"><label for="">From *</label><input class="form-control" type="date" name=""></div>\
-                                                                                        <div class="col-md-2 form-group"><label for="">To *</label><input class="form-control" type="date" name=""></div>\
-                                                                                        <div class="col-md-2 form-group"><label for="">Duration (In Years) *</label><input class="form-control" type="text" name=""></div>\
-                                                                                        <div class="col-md-2 form-group text-center"><label for="">Current Company *</label><p class="mt-2"><input class="h-20w-100" type="checkbox" name=""></p></div>\
-                                                                                        <div class="col-md-1 form-group text-center mt-5"><button class="btn btn-danger btn-sm mt-3" onclick="remove_previous_company_html(this)"> <i class="fa fa-minus"></i></button></div></div></div></div>';
-                    $('#previous_company_html').append(previous_company_html);
-                }
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Please Select the Previous Company"
-                });
-                return false;
-            }
-
-        }
-
-        function remove_previous_company_html(ele) {
-            jQuery(ele).parent().parent().parent().parent().remove();
-        }
-
-        /** end Previous Company HTML*/
-
-
         /** get all Designation Using Department Id*/
         jQuery('#department_id').on('change', function() {
             var department_id = $(this).val();
@@ -304,24 +237,7 @@
 
         }
         /** end get all Designation Using Department Id*/
-
-        /** Family details create html*/
-        function get_family_details_html() {
-            var family_details_html =
-                '<div class=""><div class="row panel panel-body mb-3"><div class="col-md-3 form-group"><label for="">Relationship *</label><input class="form-control" type="text"></div>\
-                                                        <div class="col-md-3 form-group"><label for="">Name *</label><input class="form-control" type="text"></div>\
-                                                        <div class="col-md-2 form-group"><label for="">Number *</label><input class="form-control" type="text"></div>\
-                                                        <div class="col-md-2 form-group"><label for="">Date of birth *</label><input class="form-control" type="date"></div>\
-                                                        <div class="col-md-2 form-group mt-5"><input type="checkbox"> <label for=""> Nominee </label><button onclick="remove_family_details_html(this)" class="btn btn-danger btn-sm float-right"> <i class="fa fa-minus"></i></button></div></div></div>';
-            $('#family_details_html').append(family_details_html);
-        }
-
-        function remove_family_details_html(this_ele) {
-            jQuery(this_ele).parent().parent().remove();
-        }
-        /** End Family details create html*/
-
-
+        
         /**
          * close current tab and open next tab
          */

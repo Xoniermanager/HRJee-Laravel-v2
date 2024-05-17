@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserBankDetails extends Model
+class UserBankDetail extends Model
 {
     use HasFactory;
     protected $fillable = [
@@ -14,8 +14,6 @@ class UserBankDetails extends Model
         'account_number',
         'bank_name',
         'ifsc_code',
-        'pan_no',
-        'uan_no',
     ];
     public function user()
     {

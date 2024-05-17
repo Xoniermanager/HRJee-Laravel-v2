@@ -29,4 +29,9 @@ class DocumentTypeService
   {
     return $this->documentTypeRepository->find($id)->delete();
   }
+
+  public function getAllActiveDocuments()
+  {
+    return $this->documentTypeRepository->where('status','1')->get();
+  }
 }

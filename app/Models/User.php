@@ -56,18 +56,32 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    public function user_details()
+    public function bankDetails()
     {
-        return $this->hasOne(UserDetails::class, 'user_id');
-    }
-    public function bankDetail()
-    {
-        return $this->hasOne(UserBankDetails::class, 'user_id');
+        return $this->hasOne(UserBankDetail::class, 'user_id');
     }
 
-    public function address()
+    public function addressDetails()
     {
-        return $this->hasOne(UserAddress::class, 'user_id');
+        return $this->hasOne(UserAddressDetail::class, 'user_id');
+    }
+
+    public function advanceDetails()
+    {
+        return $this->hasOne(UserAdvanceDetail::class, 'user_id');
+    }
+
+    public function pastWorkDetails()
+    {
+        return $this->hasOne(UserPastWorkDetail::class, 'user_id');
+    }
+
+    public function documentDetails()
+    {
+        return $this->hasOne(UserDocumentDetail::class, 'user_id');
+    }
+    public function qualificationDetails()
+    {
+        return $this->hasMany(UserQualificationDetail::class, 'user_id','id');
     }
 }

@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_bank_details', function (Blueprint $table) {
+        Schema::create('user_document_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('account_name')->unique();
-            $table->string('account_number')->unique();
-            $table->string('bank_name');
-            $table->string('ifsc_code');
-            $table->timestamps();
+            $table->unsignedBigInteger('document_type_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('document_type_id')->references('id')->on('document_types');
+            $table->string('document');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_bank_details');
+        Schema::dropIfExists('user_document_details');
     }
 };

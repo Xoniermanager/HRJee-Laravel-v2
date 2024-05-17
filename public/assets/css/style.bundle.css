@@ -39136,3 +39136,6 @@ input:checked + .slider:before {
 .p2px {
   padding: 2px !important;
 }
+.error {
+  color: red;
+}

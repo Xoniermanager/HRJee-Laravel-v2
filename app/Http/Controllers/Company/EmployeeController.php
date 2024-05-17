@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Company;
 
+use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Services\FileUploadService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Services\CountryServices;
-use App\Http\Services\DepartmentServices;
-use App\Http\Services\DocumentTypeService;
 use App\Http\Services\EmployeeServices;
+use App\Http\Services\FileUploadService;
+use App\Http\Services\DepartmentServices;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\DocumentTypeService;
 use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
-use Illuminate\Support\Facades\Validator;
-use Exception;
-
 
 class EmployeeController extends Controller
 {
@@ -67,8 +67,25 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
-
+        
         return view('company.employee.add_employee', compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails'));
+    }
+
+    public function edit(User $user)
+    {
+        $allCountries = $this->countryService->all()->where('status', '1');
+        $allPreviousCompany = $this->previousCompanyService->all()->where('status', '1');
+        $allQualification = $this->qualificationService->all()->where('status', '1');
+        $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');
+        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
+        $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
+        $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
+
+        // Get employee details to update
+        $userDetails = $user->load('qualificationDetails','advanceDetails','bankDetails','addressDetails','pastWorkDetails','documentDetails');
+        // dd($userDetails->qualificationDetails);
+        return view('company.employee.add_employee', compact('allCountries', 'allPreviousCompany', 'allQualification', 
+        'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails','userDetails'));
     }
 
     public function store(Request $request)
@@ -92,8 +109,8 @@ class EmployeeController extends Controller
                 return response()->json(['error' => $validateBasicDetails->messages()], 400);
             }
             $data = $request->all();
-            $lowerCaseName = strtolower($data['name']);
-            $nameForImage = str_replace(' ', '_', trim(preg_replace('/\s+/', ' ', $lowerCaseName)));
+           
+            $nameForImage = removingSpaceMakingName($data['name']);
             $data['password'] = Hash::make($request->password);
             $data['company_id'] = Auth()->user()->id;
             $data['last_login_ip'] = request()->ip();

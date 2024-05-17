@@ -9,10 +9,11 @@ class FileUploadService
     public function __construct(){
         
     }
-    public function imageUpload($file,String $path, $namePrefix=''){
+    public function imageUpload($file,String $path, $namePrefix='')
+    {
         $image  = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
         $path = $path . '/' . $image;
-        Storage::disk('public')->put($path, file_get_contents($file));  
+        Storage::disk('public')->put($path, file_get_contents($file));
        return  $path;
     }
 }

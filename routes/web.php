@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
+use App\Http\Controllers\Company\UserAddressDetailsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Admin\SkillController;
@@ -28,6 +29,11 @@ use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Company\UserAdvanceDetailsController;
+use App\Http\Controllers\Company\UserBankDetailsController;
+use App\Http\Controllers\Company\UserDocumentDetailsController;
+use App\Http\Controllers\Company\UserPastWorkDetailsController;
+use App\Http\Controllers\Company\UserQualificationDetailsController;
+use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
@@ -144,14 +150,34 @@ Route::get('/signup', [AdminController::class, 'signup'])->name('signup');
 Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
     Route::get('/index', 'index')->name('employee.index');
     Route::get('/add', 'add')->name('employee.add');
-    Route::post('/store', 'store')->name('employee.company.store');
-    Route::post('/update', 'update')->name('previous.company.update');
-    Route::get('/delete', 'destroy')->name('previous.company.delete');
-    Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
+    Route::post('/store', 'store')->name('employee.store');
+    Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
+    // Route::post('/update', 'update')->name('previous.company.update');
+    // Route::get('/delete', 'destroy')->name('previous.company.delete');
+    // Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
 });
 
 //Advance Details for employee
 Route::post('/employee/advance/details', [UserAdvanceDetailsController::class, 'store'])->name('employee.advance.details');
+
+//Address Details for employee
+Route::post('/employee/addresss/details', [UserAddressDetailsController::class, 'store'])->name('employee.address.details');
+
+//Bank Details for employee
+Route::post('/employee/bank/details', [UserBankDetailsController::class, 'store'])->name('employee.banks.details');
+
+//Qualification Details for employee
+Route::post('/employee/qualification/details', [UserQualificationDetailsController::class, 'store'])->name('employee.qualification.details');
+
+//Past Work Details for employee
+Route::post('/employee/past/work/details', [UserPastWorkDetailsController::class, 'store'])->name('employee.past.work.details');
+
+//Family Details for employee
+Route::post('/employee/family/details', [UserRelativeDetailsController::class, 'store'])->name('employee.family.details');
+
+//Document Details for employee
+Route::post('/employee/document/details', [UserDocumentDetailsController::class, 'store'])->name('employee.document.details');
+
 
 /** ---------------Employee Pannel Started--------------  */
 

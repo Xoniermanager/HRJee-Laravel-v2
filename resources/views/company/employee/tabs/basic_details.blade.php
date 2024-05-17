@@ -180,7 +180,7 @@
             submitHandler: function(form) {
                 var basic_details_Data = new FormData(form);
                 $.ajax({
-                    url: "{{ route('employee.company.store') }}",
+                    url: "{{ route('employee.store') }}",
                     type: 'POST',
                     processData: false,
                     contentType: false,

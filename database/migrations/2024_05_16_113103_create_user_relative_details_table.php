@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_bank_details', function (Blueprint $table) {
+        Schema::create('user_relative_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('account_name')->unique();
-            $table->string('account_number')->unique();
-            $table->string('bank_name');
-            $table->string('ifsc_code');
-            $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->string('relation_name');
+            $table->string('name');
+            $table->date('dob');
+            $table->string('phone');
+            $table->boolean('nominee')->default(false);
+            $table->timestamps();
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_bank_details');
+        Schema::dropIfExists('user_relative_details');
     }
 };
