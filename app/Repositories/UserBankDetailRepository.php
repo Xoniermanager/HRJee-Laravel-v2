@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\UserBankDetail;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -21,14 +20,5 @@ class UserBankDetailRepository extends BaseRepository
     public function model()
     {
         return UserBankDetail::class;
-    }
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
-    }
-    
+    }    
 }

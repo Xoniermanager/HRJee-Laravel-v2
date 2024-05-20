@@ -15,7 +15,7 @@ class UserAddressDetailServices
   public function create(array $data)
   {
     $address_type = $data['address_type'];
-    $user_id = $data['user_id'];
+    $user_id = $data['user_id'] ;
     $payload = array();
 
     if ($address_type == '0') {

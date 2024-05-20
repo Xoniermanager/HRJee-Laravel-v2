@@ -2,7 +2,7 @@
     <!--begin::Wrapper-->
     <form id="document_details">
         @csrf
-        <input type="hidden" name="user_id" class="id" value="2">
+        <input type="hidden" name="user_id" class="id">
         <div class="row">
             @forelse ($allDocumentTypeDetails as $key => $item)
                 <div class="col-md-4 form-group">

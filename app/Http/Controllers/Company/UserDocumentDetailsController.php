@@ -21,12 +21,11 @@ class UserDocumentDetailsController extends Controller
     {
         try {
             $data  = $userDocumentDetailsRequest->validated();
-            return $this->userDocumentDetailsService->create($userDocumentDetailsRequest);
-            // if ($this->userDocumentDetailsService->create($userDocumentDetailsRequest)) {
-            //     return response()->json([
-            //         'message' => 'Document Uploaded Added Successfully! Please Continue',
-            //     ]);
-            // }
+            if ($this->userDocumentDetailsService->create($data)) {
+                return response()->json([
+                    'message' => 'Document Uploaded Added Successfully! Please Continue',
+                ]);
+            }
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
         }

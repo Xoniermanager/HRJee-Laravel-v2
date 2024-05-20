@@ -4,8 +4,6 @@ namespace App\Http\Services;
 
 use App\Repositories\UserQualificationDetailRepository;
 
-use function PHPSTORM_META\type;
-
 class UserQualificationDetailServices
 {
   private $userQualificationDetailRepository;

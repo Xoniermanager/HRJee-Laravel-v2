@@ -5,25 +5,25 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserAddressDetailsAddRequest;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Services\UserAddressDetailServices;
+use App\Http\Services\UserDetailServices;
 use Illuminate\Http\Request;
 use Exception;
 
-class UserAddressDetailsController extends Controller
+class UserDetailsController extends Controller
 {
-    private $userAddressDetailsService;
-    public function __construct(UserAddressDetailServices $userAddressDetailsService)
+    private $userDetailsService;
+    public function __construct(UserDetailServices $userDetailsService)
     {
-        $this->userAddressDetailsService = $userAddressDetailsService;
+        $this->userDetailsService = $userDetailsService;
     }
 
     public function store(UserAddressDetailsAddRequest $request)
     {
         try {
             $data = $request->all();
-            if ($this->userAddressDetailsService->create($data)) {
+            if ($this->userDetailsService->create($data)) {
                 return response()->json([
-                    'message' => 'Address Details Added Successfully! Please Continue',
+                    'message' => 'Permission Details Added Successfully! Please Continue',
                 ]);
             }
         } catch (Exception $e) {

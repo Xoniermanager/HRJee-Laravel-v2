@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Qualification;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -21,13 +20,5 @@ class QualificationRepository extends BaseRepository
     public function model()
     {
         return Qualification::class;
-    }
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
     }
 }
