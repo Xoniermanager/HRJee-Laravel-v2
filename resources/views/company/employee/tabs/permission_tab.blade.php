@@ -233,6 +233,10 @@
         $('#start_time').val(startTime);
     });
 
+    jQuery("#languageID").keyup(function(){
+        $('.text-danger').hide(); 
+});
+
     /** Qualification Details created Ajax*/
     jQuery.noConflict();
     jQuery("#user_details_form").validate({
