@@ -49,7 +49,8 @@ class EmployeeController extends Controller
         EmployeeServices $employeeService,
         BranchServices $branchService,
         RolesServices $roleService,
-        ShiftServices $shiftService
+        ShiftServices $shiftService,
+        LanguagesServices $languagesServices
 
     ) {
         $this->countryService = $countryService;
@@ -63,6 +64,8 @@ class EmployeeController extends Controller
         $this->branchService = $branchService;
         $this->roleService = $roleService;
         $this->shiftService = $shiftService;
+        $this->languagesServices = $languagesServices;
+
     }
     /**
      * Display a listing of the resource.

@@ -135,6 +135,7 @@
             </div>
         </div>
     </div>
+    </form>
     <form id="add_language">
         @csrf
         <div class="col-md-4 form-group">
