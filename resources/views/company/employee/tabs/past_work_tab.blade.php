@@ -4,21 +4,9 @@
         @csrf
         <input type="hidden" name="user_id" class="id" value="2">
         <div class="row">
-            {{-- <div class="col-md-4 form-group">
-                <label for="">Previous Company*</label>
-                <select class="form-control" name="previous_company_id" id="previous_company_id">
-                    <option value="">Select The Previous Company</option>
-                    @forelse ($allPreviousCompany as $previousCompany)
-                        <option value="{{ $previousCompany->id }}">
-                            {{ $previousCompany->name }}</option>
-                    @empty
-                        <option value="">No Previous Company Found</option>
-                    @endforelse
-                </select>
-            </div> --}}
 
             <div class="col-md-4 form-group">
-                <div class="k-w-300">
+                <div class="k-w-300 old_company">
                     <label for="previous_company_id">Previous Company*</label>
                     <input id="previous_company_id" class="form-control"  name="previous_company_id" />
                 </div>
@@ -55,8 +43,12 @@
     var previous_company_counter = 0;
 
     function get_previous_company_html() {
-        var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
-        var previous_company_id = $('select[name=previous_company_id]').find(':selected').val();
+
+        var previous_company = $('.old_company .k-picker .k-input-value-text').text().trim();
+        var previous_company_id = $('previous_company_id').val();
+
+        // var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
+        // var previous_company_id = $('select[name=previous_company_id]').find(':selected').val();
         var exist = false;
         if (previous_company_id != '') {
             jQuery('.previous_company').each(function(key, ele) {

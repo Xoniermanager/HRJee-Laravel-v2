@@ -13,6 +13,8 @@ use App\Http\Services\FileUploadService;
 use App\Http\Services\DepartmentServices;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\DocumentTypeService;
+use App\Http\Services\EmployeeLanguageServices;
+use App\Http\Services\LanguagesServices;
 use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
@@ -28,9 +30,12 @@ class EmployeeController extends Controller
     private $departmentService;
     private $documentTypeService;
     private $employeeService;
+    private $employeeLanguageServices;
+    private $languagesServices;
 
 
     public function __construct(
+        
         CountryServices $countryService,
         PreviousCompanyService $previousCompanyService,
         QualificationService $qualificationService,
@@ -38,7 +43,9 @@ class EmployeeController extends Controller
         EmployeeStatusService $employeeStatusService,
         DepartmentServices $departmentService,
         DocumentTypeService $documentTypeService,
-        EmployeeServices $employeeService
+        EmployeeServices $employeeService,
+        EmployeeLanguageServices $employeeLanguageServices,
+        LanguagesServices $languagesServices
 
     ) {
         $this->countryService                       = $countryService;
@@ -49,6 +56,8 @@ class EmployeeController extends Controller
         $this->departmentService                    = $departmentService;
         $this->documentTypeService                  = $documentTypeService;
         $this->employeeService                      = $employeeService;
+        $this->employeeLanguageServices             = $employeeLanguageServices;
+        $this->languagesServices                    = $languagesServices;
     }
     /**
      * Display a listing of the resource.
@@ -67,8 +76,9 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
+        $languages =   $this->languagesServices->defaultLanguages();
         
-        return view('company.employee.add_employee', compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails'));
+        return view('company.employee.add_employee', compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails','languages'));
     }
 
     public function edit(User $user)
