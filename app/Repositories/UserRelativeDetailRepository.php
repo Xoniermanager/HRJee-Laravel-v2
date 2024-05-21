@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\UserRelativeDetail;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -22,13 +21,4 @@ class UserRelativeDetailRepository extends BaseRepository
     {
         return UserRelativeDetail::class;
     }
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
-    }
-    
 }

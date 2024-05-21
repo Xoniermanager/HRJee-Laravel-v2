@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\PreviousCompany;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -22,13 +21,4 @@ class PreviousCompanyRepository extends BaseRepository
     {
         return PreviousCompany::class;
     }
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
-    }
-    
 }

@@ -2,7 +2,7 @@
     <!--begin::Wrapper-->
     <form id="address_Details_form">
         @csrf
-        <input type="hidden" name="user_id" class="id" value="2">
+        <input type="hidden" name="user_id" class="id">
         <input type="hidden" name="address_type" id="address_type" value="0">
         <div class="row">
             <div class="col-md-6">

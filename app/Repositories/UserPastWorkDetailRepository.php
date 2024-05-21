@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\UserPastWorkDetail;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -21,16 +20,5 @@ class UserPastWorkDetailRepository extends BaseRepository
     public function model()
     {
         return UserPastWorkDetail::class;
-    }
-
-    
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
-    }
-    
+    }    
 }

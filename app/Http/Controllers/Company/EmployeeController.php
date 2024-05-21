@@ -4,14 +4,12 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\EmployeeAddRequest;
+use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
-use App\Http\Services\FileUploadService;
 use App\Http\Services\DepartmentServices;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Services\DocumentTypeService;
 use App\Http\Services\EmployeeLanguageServices;
 use App\Http\Services\LanguagesServices;
@@ -19,6 +17,8 @@ use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
+use App\Http\Services\RolesServices;
+use App\Http\Services\ShiftServices;
 
 class EmployeeController extends Controller
 {
@@ -30,6 +30,9 @@ class EmployeeController extends Controller
     private $departmentService;
     private $documentTypeService;
     private $employeeService;
+    private $branchService;
+    private $roleService;
+    private $shiftService;
     private $employeeLanguageServices;
     private $languagesServices;
 
@@ -44,20 +47,22 @@ class EmployeeController extends Controller
         DepartmentServices $departmentService,
         DocumentTypeService $documentTypeService,
         EmployeeServices $employeeService,
-        EmployeeLanguageServices $employeeLanguageServices,
-        LanguagesServices $languagesServices
+        BranchServices $branchService,
+        RolesServices $roleService,
+        ShiftServices $shiftService
 
     ) {
-        $this->countryService                       = $countryService;
-        $this->previousCompanyService               = $previousCompanyService;
-        $this->qualificationService                 = $qualificationService;
-        $this->employeeTypeService                  = $employeeTypeService;
-        $this->employeeStatusService                = $employeeStatusService;
-        $this->departmentService                    = $departmentService;
-        $this->documentTypeService                  = $documentTypeService;
-        $this->employeeService                      = $employeeService;
-        $this->employeeLanguageServices             = $employeeLanguageServices;
-        $this->languagesServices                    = $languagesServices;
+        $this->countryService = $countryService;
+        $this->previousCompanyService = $previousCompanyService;
+        $this->qualificationService = $qualificationService;
+        $this->employeeTypeService = $employeeTypeService;
+        $this->employeeStatusService = $employeeStatusService;
+        $this->departmentService = $departmentService;
+        $this->documentTypeService = $documentTypeService;
+        $this->employeeService = $employeeService;
+        $this->branchService = $branchService;
+        $this->roleService = $roleService;
+        $this->shiftService = $shiftService;
     }
     /**
      * Display a listing of the resource.
@@ -77,8 +82,23 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
         $languages =   $this->languagesServices->defaultLanguages();
-        
-        return view('company.employee.add_employee', compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails','languages'));
+        $allBranches = $this->branchService->get_branches();
+        $allRoles = $this->roleService->get_roles();
+        $allShifts = $this->shiftService->all()->where('status', '1');
+
+        return view('company.employee.add_employee', compact(
+            'allCountries',
+            'allPreviousCompany',
+            'allQualification',
+            'allEmployeeType',
+            'allEmployeeStatus',
+            'alldepartmentDetails',
+            'allDocumentTypeDetails','languages',
+            'allBranches',
+            'allRoles',
+            'allShifts'
+        )
+        );
     }
 
     public function edit(User $user)
@@ -92,56 +112,34 @@ class EmployeeController extends Controller
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
 
         // Get employee details to update
-        $userDetails = $user->load('qualificationDetails','advanceDetails','bankDetails','addressDetails','pastWorkDetails','documentDetails');
-        // dd($userDetails->qualificationDetails);
-        return view('company.employee.add_employee', compact('allCountries', 'allPreviousCompany', 'allQualification', 
-        'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails','userDetails'));
+        $userDetails = $user->load('qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
+        
+        return view('company.employee.add_employee', compact(
+            'allCountries',
+            'allPreviousCompany',
+            'allQualification',
+            'allEmployeeType',
+            'allEmployeeStatus',
+            'alldepartmentDetails',
+            'allDocumentTypeDetails',
+            'userDetails'
+        )
+        );
     }
 
-    public function store(Request $request)
+    public function store(EmployeeAddRequest $request)
     {
         try {
-            $validateBasicDetails  = Validator::make($request->all(), [
-                'name'                => ['required', 'string'],
-                'email'               => ['required', 'unique:users,email'],
-                'password'            => ['required', 'string'],
-                'official_email_id'   => ['required', 'unique:users,official_email_id'],
-                'blood_group'         => ['required', 'in:A-,A+,B-,B+,O-,O+'],
-                'gender'              => ['required', 'in:M,F,O'],
-                'marital_status'      => ['required', 'in:M,S'],
-                'employee_status_id'  => ['required', 'exists:employee_statuses,id'],
-                'date_of_birth'       => ['required', 'date'],
-                'joining_date'        => ['required', 'date'],
-                'phone'               => ['required', 'min:10', 'numeric'],
-                'profile_image'       => ['required', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            ]);
-            if ($validateBasicDetails->fails()) {
-                return response()->json(['error' => $validateBasicDetails->messages()], 400);
-            }
-            $data = $request->all();
-           
-            $nameForImage = removingSpaceMakingName($data['name']);
-            $data['password'] = Hash::make($request->password);
-            $data['company_id'] = Auth()->user()->id;
-            $data['last_login_ip'] = request()->ip();
-            if ($data['profile_image']) {
-                $upload_path = "/user_profile_picture";
-                $file_upload_service = new FileUploadService();
-                $image = $request->file('profile_image');
-                $imagePath = $file_upload_service->imageUpload($image, $upload_path, $nameForImage);
-                if ($imagePath) {
-                    $data['profile_image'] = $imagePath;
-                }
-            }
+            $data  = $request->validated();
             $createData = $this->employeeService->create($data);
             if ($createData) {
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
-                    'data'    => $createData
+                    'data' => $createData
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 }

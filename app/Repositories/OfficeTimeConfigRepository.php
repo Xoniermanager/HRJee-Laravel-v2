@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\OfficeTimingConfig;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -21,14 +20,5 @@ class OfficeTimeConfigRepository extends BaseRepository
     public function model()
     {
         return OfficeTimingConfig::class;
-    }
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
-    }
-    
+    }    
 }

@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\UserDocumentDetail;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -21,14 +20,6 @@ class UserDocumentsDetailRepository extends BaseRepository
     public function model()
     {
         return UserDocumentDetail::class;
-    }
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
     }
 
     public function getUserDocumentByUserIdAndDoumentId($userId,$documentId)

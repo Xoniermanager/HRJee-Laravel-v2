@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\OfficeShift;
+use App\Models\UserSkill;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -10,7 +10,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
  *
  * @package namespace App\Repositories;
  */
-class ShiftRepository extends BaseRepository
+class UserSkillRepository extends BaseRepository
 {
     /**
      * Specify Model class name
@@ -19,6 +19,6 @@ class ShiftRepository extends BaseRepository
      */
     public function model()
     {
-        return OfficeShift::class;
+        return UserSkill::class;
     }
 }

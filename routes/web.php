@@ -31,7 +31,7 @@ use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
-use App\Http\Controllers\Company\UserBankDetailsController;
+use App\Http\Controllers\Company\UserDetailsController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Employee\LeaveMangementController;
 use App\Http\Controllers\company\EmployeeLanguageController;
@@ -218,6 +218,9 @@ Route::post('/employee/family/details', [UserRelativeDetailsController::class, '
 
 //Document Details for employee
 Route::post('/employee/document/details', [UserDocumentDetailsController::class, 'store'])->name('employee.document.details');
+
+//User / Permission Details for employee
+Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
 
 
 /** ---------------Employee Pannel Started--------------  */

@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Country;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -22,13 +21,4 @@ class CountryRepository extends BaseRepository
     {
         return Country::class;
     }
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
-    }
-    
 }
