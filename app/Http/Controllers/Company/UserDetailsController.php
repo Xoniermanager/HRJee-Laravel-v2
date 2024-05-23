@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserAddressDetailsAddRequest;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\UserDetailsAddRequest;
 use App\Http\Services\UserDetailServices;
-use Illuminate\Http\Request;
 use Exception;
 
 class UserDetailsController extends Controller
@@ -17,7 +15,7 @@ class UserDetailsController extends Controller
         $this->userDetailsService = $userDetailsService;
     }
 
-    public function store(UserAddressDetailsAddRequest $request)
+    public function store(UserDetailsAddRequest $request)
     {
         try {
             $data = $request->all();

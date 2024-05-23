@@ -20,11 +20,8 @@ class UserDetail extends Model
         'offer_letter_id',
         'work_from_office',
         'exit_date',
-        'official_mobile_no'
+        'official_mobile_no',
+        'shift_id',
+        'start_time'
     ];
-
-    public function skills()
-    {
-        return $this->belongsToMany(Skill::class);
-    }
 }

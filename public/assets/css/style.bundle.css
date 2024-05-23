@@ -39139,3 +39139,14 @@ input:checked + .slider:before {
 .error {
   color: red;
 }
+.doc_button {
+  position: absolute;
+  top: 35%;
+  text-align: center;
+  background: #37496e;
+  border-radius: 30px;
+  left: 50px;
+  right: 50px;
+  padding: 5px;
+  color: #fff;
+}

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->date('date_of_birth');
             $table->date('joining_date');
             $table->string('phone')->unique();
-            $table->string('profile_image');
+            $table->string('profile_image')->nullable();
             $table->unsignedBigInteger('company_id');
             $table->string('last_login_ip');
             $table->foreign('employee_status_id')->references('id')->on('employee_statuses');

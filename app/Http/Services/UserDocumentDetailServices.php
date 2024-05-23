@@ -3,7 +3,6 @@
 namespace App\Http\Services;
 
 use App\Repositories\UserDocumentsDetailRepository;
-use Illuminate\Support\Facades\Storage;
 class UserDocumentDetailServices
 {
   private $userDocumentDetailRepository;

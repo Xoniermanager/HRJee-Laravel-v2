@@ -15,13 +15,13 @@ class UserBankDetailsController extends Controller
     {
         $this->userBankDetailsService = $userBankDetailsService;
     }
-    
+
     public function store(Request $request)
     {
         try {
             $validateDetails  = Validator::make($request->all(), [
-                'account_name'          => ['required', 'unique:user_bank_details,account_name'],
-                'account_number'        => ['required', 'unique:user_bank_details,account_number'],
+                'account_name'          => ['required', 'unique:user_bank_details,account_name,' . $request->id],
+                'account_number'        => ['required', 'unique:user_bank_details,account_number,' . $request->id],
                 'bank_name'             => ['required'],
                 'ifsc_code'             => ['required'],
             ]);

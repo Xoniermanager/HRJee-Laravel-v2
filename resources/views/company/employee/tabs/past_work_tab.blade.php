@@ -2,7 +2,7 @@
     <!--begin::Wrapper-->
     <form id="past_work_details">
         @csrf
-        <input type="hidden" name="user_id" class="id">
+        <input type="hidden" name="user_id" value="{{ $userpastWorkDetails[0]['user_id'] ?? (Request::segment(3) ?? '') }}">
         <div class="row">
             {{-- <div class="col-md-4 form-group">
                 <label for="">Previous Company*</label>
@@ -20,7 +20,7 @@
             <div class="col-md-4 form-group">
                 <div class="k-w-300">
                     <label for="previous_company_id">Previous Company*</label>
-                    <input id="previous_company_id" class="form-control"  name="previous_company_id" />
+                    <select id="previous_company_id" class="form-control" name="previous_company_id"></select>
                 </div>
                 <script id="noPreviousCompanyTemplate" type="text/x-kendo-tmpl">
                     <div>
@@ -32,15 +32,68 @@
             </div>
 
             <div class="col-md-4 form-group">
-                <label class="mt-3"> <button class="btn btn-primary btn-sm mt-5"
-                        onclick="get_previous_company_html()"> <i class="fa fa-plus"></i></button>
+                <label class="mt-3"> <a class="btn btn-primary btn-sm mt-5" onclick="get_previous_company_html()"> <i
+                            class="fa fa-plus"></i></a>
                 </label>
             </div>
+            @php
+                $i = 0;
+            @endphp
             <div class="col-md-12 form-group">
                 <div class="panel" id="previous_company_html">
                 </div>
-
+                @foreach ($userpastWorkDetails as $pastWorkDetail)
+                    <div class="row">
+                        <div class="panel-head">
+                            <h5 class="previous_company">{{ $pastWorkDetail->previousCompanies->name }}</h5>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    <label for="">Designation *</label>
+                                    <input class="form-control" type="text"
+                                        name="previous_company[{{ $i }}][designation]"
+                                        value="{{ $pastWorkDetail->designation }}">
+                                </div>
+                                <div class="col-md-2 form-group">
+                                    <label for="">From *</label><input class="form-control" type="date"
+                                        name="previous_company[{{ $i }}][from]"
+                                        value="{{ $pastWorkDetail->from }}">
+                                </div>
+                                <div class="col-md-2 form-group">
+                                    <label for="">To *</label><input class="form-control" type="date"
+                                        name="previous_company[{{ $i }}][to]"
+                                        value="{{ $pastWorkDetail->to }}">
+                                </div>
+                                <div class="col-md-2 form-group"><label for="">Duration (In Years) *</label>
+                                    <input class="form-control" type="text"
+                                        name="previous_company[{{ $i }}][duration]"
+                                        value="{{ $pastWorkDetail->duration }}">
+                                    <input class="form-control" type="hidden"
+                                        name="previous_company[{{ $i }}][previous_company_id]"
+                                        value="{{ $pastWorkDetail->previous_company_id }}">
+                                </div>
+                                <div class="col-md-2 form-group text-center"><label for="">Current Company
+                                        *</label>
+                                    <p class="mt-2">
+                                        <input class="h-20w-100" type="checkbox" name="[current_company]"
+                                            {{ $pastWorkDetail->current_company == 1 ? 'checked' : '' }}>
+                                    </p>
+                                </div>
+                                <div class="col-md-1 form-group text-center mt-5">
+                                    <button class="btn btn-danger btn-sm mt-3"
+                                        onclick="remove_previous_company_html(this)"> <i
+                                            class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @php
+                        $i++;
+                    @endphp
+                @endforeach
             </div>
+
         </div>
         <button class="btn btn-primary">Save & Continue</button>
     </form>
@@ -52,7 +105,7 @@
 </div>
 <script>
     /** Previous Company HTML*/
-    var previous_company_counter = 0;
+    var previous_company_counter = {{ $i }};
 
     function get_previous_company_html() {
         var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
@@ -83,7 +136,8 @@
                     '][duration]"><input class="form-control" type="hidden" name="previous_company[' +
                     previous_company_counter + '][previous_company_id]" value="' + previous_company_id +
                     '"></div>\
-                        <div class="col-md-2 form-group text-center"><label for="">Current Company *</label><p class="mt-2"><input class="h-20w-100" type="checkbox" name="[' + previous_company_counter +
+                        <div class="col-md-2 form-group text-center"><label for="">Current Company *</label><p class="mt-2"><input class="h-20w-100" type="checkbox" name="[' +
+                    previous_company_counter +
                     '][current_company]" value="1"></p></div>\
                         <div class="col-md-1 form-group text-center mt-5"><button class="btn btn-danger btn-sm mt-3" onclick="remove_previous_company_html(this)"> <i class="fa fa-minus"></i></button></div></div></div></div>';
                 $('#previous_company_html').append(previous_company_html);
@@ -107,39 +161,48 @@
 
     /** end Previous Company HTML*/
 
-    jQuery.noConflict();
-    jQuery("#past_work_details").validate({
-        rules: {},
-        messages: {},
-        submitHandler: function(form) {
-            var past_work_details_data = $(form).serialize();
-            $.ajax({
-                url: "{{ route('employee.past.work.details') }}",
-                type: 'POST',
-                data: past_work_details_data,
-                success: function(response) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    jQuery('.nav-pills a[href="#permission_tab"]').tab('show');
-                },
-                error: function(error_messages) {
-                    let errors = error_messages.responseJSON.error;
-                    for (var error_key in errors) {
-                        $(document).find('[name=' + error_key + ']').after(
-                            '<span class="' + error_key +
-                            '_error text text-danger">' + errors[
-                                error_key] + '</span>');
-                        setTimeout(function() {
-                            jQuery("." + error_key + "_error").remove();
-                        }, 3000);
-                    }
-                }
-            });
-        }
+    jQuery(document).ready(function() {
+        jQuery("#past_work_details").validate({
+            rules: {},
+            messages: {},
+            submitHandler: function(form) {
+                createPastWorkDetails(form);
+            }
+        });
     });
+
+    function createPastWorkDetails(form) {
+        var past_work_details_data = $(form).serialize();
+        $.ajax({
+            url: "{{ route('employee.past.work.details') }}",
+            type: 'POST',
+            data: past_work_details_data,
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                jQuery('.nav-pills a[href="#permission_tab"]').tab('show');
+                // This variable is used on save all records button
+                all_data_saved = true;
+            },
+            error: function(error_messages) {
+                // This variable is used on save all records button
+                all_data_saved = false;
+                jQuery('.nav-pills a[href="#past_work_tab"]').tab('show');
+                for (let [key, value] of Object.entries(error_messages.responseJSON.errors)) {
+                    let split_arr = key.split('.');
+                    let error_key = 'input[name="' + split_arr[0] +'['+split_arr[1]+']'+'['+split_arr[2]+']"]';
+                    $(document).find(error_key).after(
+                        '<span class="_error'+split_arr[1]+' text text-danger">' + value[0].replace(split_arr[0]+'.'+split_arr[1]+'.',' ') + '</span>');
+                    setTimeout(function() {
+                        jQuery('._error'+split_arr[1]).remove();
+                    }, 3000);
+                }
+            }
+        });
+    }
 </script>

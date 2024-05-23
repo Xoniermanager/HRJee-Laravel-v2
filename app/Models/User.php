@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 
 class User extends Authenticatable
 {
@@ -63,7 +65,7 @@ class User extends Authenticatable
 
     public function addressDetails()
     {
-        return $this->hasOne(UserAddressDetail::class, 'user_id');
+        return $this->hasMany(UserAddressDetail::class, 'user_id');
     }
 
     public function advanceDetails()
@@ -73,15 +75,36 @@ class User extends Authenticatable
 
     public function pastWorkDetails()
     {
-        return $this->hasOne(UserPastWorkDetail::class, 'user_id');
+        return $this->hasMany(UserPastWorkDetail::class, 'user_id');
     }
 
     public function documentDetails()
     {
-        return $this->hasOne(UserDocumentDetail::class, 'user_id');
+        return $this->hasMany(UserDocumentDetail::class, 'user_id');
     }
     public function qualificationDetails()
     {
-        return $this->hasMany(UserQualificationDetail::class, 'user_id','id');
+        return $this->hasMany(UserQualificationDetail::class, 'user_id', 'id');
+    }
+    public function familyDetails()
+    {
+        return $this->hasMany(UserRelativeDetail::class, 'user_id', 'id');
+    }
+
+    public function userDetails()
+    {
+        return $this->hasOne(UserDetail::class, 'user_id');
+    }
+
+    protected function profileImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => url("storage/" .  $value)
+        );
+    }
+
+    public function userSkills()
+    {
+        return $this->hasMany(UserSkill::class, 'user_id', 'id');
     }
 }

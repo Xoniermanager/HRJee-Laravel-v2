@@ -22,7 +22,7 @@ class UserDetailsAddRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_type_id'   => ["required",'exists:employee_types,id'],
+                    'employee_type_id'   => ["required",'exists:employee_types,id'],
                     'department_id'        => ["required",'exists:departments,id'],
                     'designation_id'       => ["required",'exists:designations,id'],
                     'company_branch_id'    => ["required",'exists:company_branches,id'],

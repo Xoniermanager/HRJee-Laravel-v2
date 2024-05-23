@@ -80,6 +80,10 @@ function addNewSkill(widgetId, value) {
 
 
 $(document).ready(function() {
+    var skillId = jQuery('#get_skills_id').text();
+    var arraySkillId = JSON.parse(skillId);
+    var skillValue = "" + arraySkillId.join(",") + "";
+    var arrs = skillValue.split(',');
     var skillCrudServiceBaseUrl =  company_ajax_base_url;
     var skillDataSource = new kendo.data.DataSource({
         batch: true,
@@ -113,6 +117,7 @@ $(document).ready(function() {
         dataTextField: "name",
         dataValueField: "id",
         dataSource: skillDataSource,
+        value: arrs,
         noDataTemplate: jQuery("#noSkillTemplate").html()
     });
 });
@@ -183,6 +188,7 @@ jQuery(document).ready(function() {
         dataTextField: "name",
         dataValueField: "id",
         dataSource: qualificationDataSource,
+        value:[jQuery('#highest_qualification_id').val()],
         noDataTemplate: jQuery("#noQualificationTemplate").html()
     });
 });
