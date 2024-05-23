@@ -11,6 +11,8 @@ use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
 use App\Http\Services\DepartmentServices;
 use App\Http\Services\DocumentTypeService;
+use App\Http\Services\EmployeeLanguageServices;
+use App\Http\Services\LanguagesServices;
 use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
@@ -31,9 +33,12 @@ class EmployeeController extends Controller
     private $branchService;
     private $roleService;
     private $shiftService;
+    private $employeeLanguageServices;
+    private $languagesServices;
 
 
     public function __construct(
+        
         CountryServices $countryService,
         PreviousCompanyService $previousCompanyService,
         QualificationService $qualificationService,
@@ -44,7 +49,8 @@ class EmployeeController extends Controller
         EmployeeServices $employeeService,
         BranchServices $branchService,
         RolesServices $roleService,
-        ShiftServices $shiftService
+        ShiftServices $shiftService,
+        LanguagesServices $languagesServices
 
     ) {
         $this->countryService = $countryService;
@@ -58,6 +64,8 @@ class EmployeeController extends Controller
         $this->branchService = $branchService;
         $this->roleService = $roleService;
         $this->shiftService = $shiftService;
+        $this->languagesServices = $languagesServices;
+
     }
     /**
      * Display a listing of the resource.
@@ -76,6 +84,7 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
+        $languages =   $this->languagesServices->defaultLanguages();
         $allBranches = $this->branchService->get_branches();
         $allRoles = $this->roleService->get_roles();
         $allShifts = $this->shiftService->all()->where('status', '1');
@@ -89,7 +98,7 @@ class EmployeeController extends Controller
                 'allEmployeeType',
                 'allEmployeeStatus',
                 'alldepartmentDetails',
-                'allDocumentTypeDetails',
+                'allDocumentTypeDetails','languages',
                 'allBranches',
                 'allRoles',
                 'allShifts'

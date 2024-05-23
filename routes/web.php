@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\Company\OfficeShiftController;
-use App\Http\Controllers\Company\UserAddressDetailsController;
+use App\Http\Controllers\Company\LanguagesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Company\AdminController;
@@ -22,18 +21,12 @@ use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Employee\ContactUsController;
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\HRServiceController;
-use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
+use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\DesignationsController;
-use App\Http\Controllers\Company\UserAdvanceDetailsController;
-use App\Http\Controllers\Company\UserBankDetailsController;
-use App\Http\Controllers\Company\UserDocumentDetailsController;
-use App\Http\Controllers\Company\UserPastWorkDetailsController;
-use App\Http\Controllers\Company\UserQualificationDetailsController;
-use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Company\CompanyBranchesController;
@@ -41,10 +34,18 @@ use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserDetailsController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Employee\LeaveMangementController;
+use App\Http\Controllers\company\EmployeeLanguageController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
+use App\Http\Controllers\Company\OfficeTimingConfigController;
+use App\Http\Controllers\Company\UserAddressDetailsController;
+use App\Http\Controllers\Company\UserAdvanceDetailsController;
 use App\Http\Controllers\Employee\AttendanceServiceController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
+use App\Http\Controllers\Company\UserDocumentDetailsController;
+use App\Http\Controllers\Company\UserPastWorkDetailsController;
+use App\Http\Controllers\Company\UserRelativeDetailsController;
+use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,6 +127,16 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/previous_company_data', 'get_all_previous_company_ajax_call');
         Route::get('/ajax_store_previous_company', 'ajax_store_previous_company');
     
+    });
+    
+    // Route::prefix('/employee/language')->controller(EmployeeLanguageController::class)->group(function () {
+    //     Route::post('/create', 'store')->name('employee.language.create');
+    //     Route::get('/delete', 'destroy')->name('employee.language.delete');
+    // });
+
+    Route::prefix('/language')->controller(LanguagesController::class)->group(function () {
+        Route::post('/create', 'store')->name('language.create');
+        Route::get('/delete', 'destroy')->name('language.delete');
     });
 
     
