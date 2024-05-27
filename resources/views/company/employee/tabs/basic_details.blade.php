@@ -150,7 +150,7 @@
         <button class="btn btn-primary" id="submit">Save &
             Continue</button>
     </form>
-    <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary float-right">Next <i
+    <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary float-right {{$buttonDisabled}}">Next <i
             class="fa fa-arrow-right"></i> </button>
     <!--end::Wrapper-->
 </div>

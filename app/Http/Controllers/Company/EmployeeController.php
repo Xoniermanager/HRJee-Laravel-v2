@@ -118,6 +118,7 @@ class EmployeeController extends Controller
         $allBranches = $this->branchService->get_branches();
         $allRoles = $this->roleService->get_roles();
         $allShifts = $this->shiftService->all()->where('status', '1');
+        $languages =   $this->languagesServices->defaultLanguages();
 
 
         // Get employee details to update
@@ -136,6 +137,7 @@ class EmployeeController extends Controller
                 'allBranches',
                 'allRoles',
                 'allShifts',
+                'languages'
             )
         );
     }

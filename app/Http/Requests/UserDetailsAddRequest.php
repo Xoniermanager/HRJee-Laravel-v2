@@ -30,6 +30,13 @@ class UserDetailsAddRequest extends FormRequest
                     'qualification_id'     => ["required",'exists:qualifications,id'],
                     'shift_id'             => ["required",'exists:shifts,id'],
                     'skill_id'             => ["required",'exists:skills,id'],
+                    'language'                     => "required|array",
+                    'language.*'                   => "required|array", 
+                    'language.*.language_id'       => "required",
+                    'language.*.read'              => ['required', 'in:b,i,e'],
+                    'language.*.write'             => ['required', 'in:b,i,e'],
+                    'language.*.speak'             => ['required', 'in:b,i,e'],
+
         ];
     }
 }

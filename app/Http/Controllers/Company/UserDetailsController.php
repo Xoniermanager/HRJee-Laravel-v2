@@ -18,8 +18,7 @@ class UserDetailsController extends Controller
     public function store(UserDetailsAddRequest $request)
     {
         try {
-            $data = $request->all();
-            if ($this->userDetailsService->create($data)) {
+            if ($this->userDetailsService->create($request->all())) {
                 return response()->json([
                     'message' => 'Permission Details Added Successfully! Please Continue',
                 ]);

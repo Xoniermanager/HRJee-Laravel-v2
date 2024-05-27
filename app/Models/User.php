@@ -107,4 +107,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserSkill::class, 'user_id', 'id');
     }
+
+    public function languages()
+    {
+        return $this->belongsToMany(Languages::class,'langauge_user','user_id','language_id')->withPivot('read','write','speak');
+    }
 }

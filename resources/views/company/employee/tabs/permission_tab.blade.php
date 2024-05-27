@@ -2,11 +2,10 @@
     <!--begin::Wrapper-->
     <form id="user_details_form">
         @csrf
-        <input type="hidden" id="highest_qualification_id" value="{{$userDetails->qualification_id}}">
-        <p id="get_skills_id">{{ $userSkills ?? '' }}</p>
+        <input type="hidden" id="highest_qualification_id" value="{{ $userDetails->qualification_id ?? '' }}">
+        <p id="get_skills_id" style="display: none">{{ $userSkills ?? '' }}</p>
         <div class="row">
-            <input type="hidden" name="user_id" class="id"
-                value="{{ $userDetails->user_id ?? (Request::segment(3) ?? '') }}">
+            <input type="hidden" name="user_id" value="{{ $userDetails->user_id ?? (Request::segment(3) ?? '') }}">
             <div class="col-md-4 form-group">
                 <label for="">Employment Type *</label>
                 <select class="form-control" name="employee_type_id">
@@ -129,24 +128,35 @@
                     <!--begin::Option-->
                     <label class="form-check form-check-custom form-check-inline form-check-solid me-5 is-valid">
                         <input class="form-check-input" name="work_from_office" type="radio" value="1"
-                            {{ $userDetails->official_mobile_no ?? '' }}>
+                            {{ $userDetails->work_from_office ?? old('work_from_office') == 1 ? 'checked' : ' ' }}>
                         <span class="fw-semibold ps-2 fs-6">
                             Yes
                         </span>
                     </label>
                     <!--end::Option-->
 
-                <!--begin::Option-->
-                <label class="form-check form-check-custom form-check-inline form-check-solid is-valid">
-                    <input class="form-check-input" name="communication[]" type="radio" value="2">
-                    <span class="fw-semibold ps-2 fs-6">
-                        No
-                    </span>
-                </label>
-                <!--end::Option-->
+                    <!--begin::Option-->
+                    <label class="form-check form-check-custom form-check-inline form-check-solid is-valid">
+                        <input class="form-check-input" name="work_from_office" type="radio" value="0"
+                            {{ $userDetails->work_from_office ?? old('work_from_office') == 0 ? 'checked' : ' ' }}>
+                        <span class="fw-semibold ps-2 fs-6">
+                            No
+                        </span>
+                    </label>
+                    <!--end::Option-->
+                </div>
             </div>
         </div>
-    </div>
+        <div class="container">
+            <div id="language_list">
+                @if (count($userLanguages) > 0)
+                @include('company.employee.languages.user_language')
+                @else
+                @include('company.employee.languages.create_language')
+                @endif
+            </div>
+        </div>
+        <button class="btn btn-primary">Save & Continue</button>
     </form>
     <form id="add_language">
         @csrf
@@ -161,47 +171,8 @@
             <label class="mt-3"><button class="btn btn-primary btn-sm mt-5">
                     <i class="fa fa-plus"></i></button>
             </label>
-                
         </div>
     </form>
-    <div class="container">
-        <div id="language_list">
-            @foreach($languages as $language)
-            <div class="row" id="language_{{ $language->id }}" style="min-height:37px">
-                <div class="col-md-2">{{ $language->name }}</div>
-                <input class="language" value="{{ $language->id }}" type="hidden" name="language[{{ $language->id }}][language_id]">
-                <div class="col-md-9">
-                    <div class="chkbox"> <label>Read</label>
-                        <select name="language[{{ $language->id }}][read]">
-                            <option>Beginner</option>
-                            <option>Intermediate</option>
-                            <option>Excellent</option>
-                        </select>
-                        <label>write</label>
-                        <select name="language[{{ $language->id }}][write]">
-                            <option>Beginner</option>
-                            <option>Intermediate</option>
-                            <option>Excellent</option>
-                        </select>
-                        <label>speak</label>
-                        <select name="language[{{ $language->id }}][speak]">
-                            <option>Beginner</option>
-                            <option>Intermediate</option>
-                            <option>Excellent</option>
-                        </select>
-                    </div>
-                </div>
-                @if(!in_array($language->name,['Hindi','English']))
-                <div class="col-md-1 text-center">
-                    <button class="btn btn-danger btn-sm" onclick="remove_language({{ $language->id }})"> 
-                        <i class="fa fa-minus"></i>
-                    </button>
-                </div>
-                @endif
-            </div>
-            @endforeach
-        </div>
-    </div>
     <button onclick="show_next_tab('past_work_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
         Previous</button>
 
@@ -230,14 +201,14 @@
 
 
     .k-input:not(:-webkit-autofill) {
-            animation-name: autoFillEnd;
-            height: 47px !important;
+        animation-name: autoFillEnd;
+        height: 47px !important;
     }
-    .text-danger
-    {
-        color: #ff0000  !important;
+
+    .text-danger {
+        color: #ff0000 !important;
         font-weight: 700
-        }
+    }
 </style>
 <script>
     jQuery(document).ready(function() {
@@ -277,12 +248,12 @@
                     }
                 },
                 error: function() {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Something Went Wrong!! Please try Again"
-                    });
-                    return false;
+                    // Swal.fire({
+                    //     icon: "error",
+                    //     title: "Oops...",
+                    //     text: "Something Went Wrong!! Please try Again"
+                    // });
+                    // return false;
                 }
             });
         } else {
@@ -297,9 +268,9 @@
         $('#start_time').val(startTime);
     });
 
-    jQuery("#languageID").keyup(function(){
-        $('.text-danger').hide(); 
-});
+    jQuery("#languageID").keyup(function() {
+        $('.text-danger').hide();
+    });
 
     /** Qualification Details created Ajax*/
     jQuery(document).ready(function() {
@@ -369,25 +340,26 @@
 </script>
 
 <script>
-
     jQuery.noConflict();
     jQuery(document).ready(function($) {
         jQuery("#add_language").validate({
             rules: {
                 name: "required",
-                department_id: "required"
             },
             messages: {
                 name: "Please enter language",
             },
             submitHandler: function(form) {
-               let languages =  [];
-               
-                jQuery('.language').each(function(ele,value){
+
+                let languages = [];
+
+                jQuery('.language').each(function(ele, value) {
                     languages.push(jQuery(value).val());
                 });
                 console.log("languages : " + languages);
-                let language_params = $(form).serialize() + "&" + $.param({"languages":languages});
+                let language_params = $(form).serialize() + "&" + $.param({
+                    "languages": languages
+                });
                 $.ajax({
                     url: "{{ route('language.create') }}",
                     type: 'POST',
@@ -396,16 +368,14 @@
                         console.log(response.data);
                         jQuery('#add_designation').modal('hide');
 
-                        let exists = jQuery("#language_"+response.language_id).html();
-                        if(exists)
-                        {
-                        $('.text-danger').text('The language is already added!').show();  
-                        }
-                        else
-                        {
-                            $('.text-danger').hide(); 
+                        let exists = jQuery("#language_" + response.language_id).html();
+                        if (exists) {
+                            $('.text-danger').text('The language is already added!')
+                                .show();
+                        } else {
+                            $('.text-danger').hide();
                             $('#language_list').append(response.data);
-                        }                        
+                        }
 
                     },
                     error: function(error_messages) {
@@ -425,8 +395,7 @@
         });
     });
 
-    function remove_language(language_id)
-    {
-        jQuery("#language_"+language_id).remove();
+    function remove_language(language_id) {
+        jQuery("#language_" + language_id).remove();
     }
 </script>

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Company\LanguagesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Company\AdminController;
@@ -15,6 +14,7 @@ use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Employee\AccountController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Admin\CompanySizeController;
+use App\Http\Controllers\Company\LanguagesController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\DepartmentController;
@@ -25,16 +25,16 @@ use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\Company\UserDetailsController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
-use App\Http\Controllers\Company\UserDetailsController;
+use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Employee\LeaveMangementController;
-use App\Http\Controllers\company\EmployeeLanguageController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
@@ -128,12 +128,6 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/ajax_store_previous_company', 'ajax_store_previous_company');
     
     });
-    
-    // Route::prefix('/employee/language')->controller(EmployeeLanguageController::class)->group(function () {
-    //     Route::post('/create', 'store')->name('employee.language.create');
-    //     Route::get('/delete', 'destroy')->name('employee.language.delete');
-    // });
-
     Route::prefix('/language')->controller(LanguagesController::class)->group(function () {
         Route::post('/create', 'store')->name('language.create');
         Route::get('/delete', 'destroy')->name('language.delete');
@@ -193,9 +187,6 @@ Route::prefix('/employee')->controller(EmployeeController::class)->group(functio
     Route::get('/add', 'add')->name('employee.add');
     Route::post('/store', 'store')->name('employee.store');
     Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
-    // Route::post('/update', 'update')->name('previous.company.update');
-    // Route::get('/delete', 'destroy')->name('previous.company.delete');
-    // Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
 });
 
 //Advance Details for employee
