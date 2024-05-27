@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\SkillsService;
+use Exception;
 use App\Models\CompanySkill;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Services\SkillsService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Rules\{OnlyString,UniqueForAdminOnly};
-use Exception;
 
 class SkillController extends Controller
 {
@@ -45,7 +46,12 @@ class SkillController extends Controller
             }
             $data = $request->all();
             if ($this->skillsService->create($data)) {
-                return response()->json(['message' => 'Company Skills Created Successfully!']);
+                return response()->json([
+                    'message' => 'Skills Created Successfully!',
+                    'data'   =>  view('super_admin.skill.skill_list', [
+                        'allSkillDetails' => $this->skillsService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()()], 400);
@@ -67,32 +73,76 @@ class SkillController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->skillsService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Company Skills Updated Successfully!']);
+            return response()->json([
+                'message' => 'Skills Updated Successfully!',
+                'data'   =>  view('super_admin.skill.skill_list', [
+                    'allSkillDetails' => $this->skillsService->all()
+                ])->render()
+            ]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->skillsService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'success' => 'Skills Deleted Successfully!',
+                'data'   =>  view('super_admin.skill.skill_list', [
+                    'allSkillDetails' => $this->skillsService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
 
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
+        $data['status'] = $request->status;
         $statusDetails = $this->skillsService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;
         } else {
             echo 0;
+        }
+    }
+
+    public function demo()
+    {
+        return view('demodropdown');
+    }
+
+    public function skill_data()
+    {
+       $data =  $this->skillsService->get_skill_ajax_call();
+       return json_encode($data);
+    }
+    public function ajax_store_skills(Request $request)
+    {
+        try {
+            $dataTest = $request->all()['models'];
+            $data     = collect(json_decode($dataTest, true))->first();
+            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $validateSkills  = Validator::make($data, [
+                'name'        => ['required', 'string', new UniqueForAdminOnly('skills')],
+                'description' => ['string']
+            ]);
+
+            if ($validateSkills->fails()) {
+                return response()->json(['error' => $validateSkills->messages()], 400);
+            }
+        
+            if ($this->skillsService->create($data)) {
+                return  $this->skillsService->all();
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()()], 400);
         }
     }
 }

@@ -7,14 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
-    
+
     use HasFactory;
     protected $table = 'countries';
-    public static function getCountryNameById($id)
-    {
-        
-        $country = self::find($id);
 
-        return $country ? $country->name : 'Country not found';
-    }
+    protected $fillable = [
+        'name', 'status'
+    ];
 }

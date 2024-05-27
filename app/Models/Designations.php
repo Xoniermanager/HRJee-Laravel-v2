@@ -12,7 +12,7 @@ class Designations extends Model
     protected $fillable = [
             'name',
             'department_id',
-            'company_id'
+            'status'
     ];
 
     public function departments()

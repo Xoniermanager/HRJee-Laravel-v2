@@ -33,7 +33,6 @@
 <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
 <!--end::Global Stylesheets Bundle-->
 <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
-<base href="https://demos.telerik.com/kendo-ui/dropdownlist/addnewitem">
 <style>html { font-size: 14px; font-family: Arial, Helvetica, sans-serif; }</style>
 <title></title>
 <link href="https://kendo.cdn.telerik.com/themes/7.2.1/default/default-main.css" rel="stylesheet" />

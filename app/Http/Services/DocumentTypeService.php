@@ -13,7 +13,7 @@ class DocumentTypeService
   }
   public function all()
   {
-    return $this->documentTypeRepository->paginate(10);
+    return $this->documentTypeRepository->orderBy('id','DESC')->paginate(10);
   }
 
   public function create(array $data)
@@ -28,5 +28,10 @@ class DocumentTypeService
   public function deleteDetails($id)
   {
     return $this->documentTypeRepository->find($id)->delete();
+  }
+
+  public function getAllActiveDocuments()
+  {
+    return $this->documentTypeRepository->where('status','1')->get();
   }
 }

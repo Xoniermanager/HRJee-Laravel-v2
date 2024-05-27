@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\CompanySizeService;
-use App\Models\CompanySize;
-use App\Models\CompanyStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\OnlyString;
 use Exception;
 
 class CompanySizeController extends Controller
@@ -45,7 +42,12 @@ class CompanySizeController extends Controller
             }
             $data = $request->all();
             if ($this->companySizeService->create($data)) {
-                return response()->json(['message' => 'Company Size Created Successfully!']);
+                return response()->json([
+                    'message' => 'Company Size Created Successfully!',
+                    'data'   =>  view('super_admin.company_size.company_size_list', [
+                        'allCompanySizesDetails' => $this->companySizeService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
@@ -68,26 +70,37 @@ class CompanySizeController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->companySizeService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Company Size Updated Successfully!']);
+            return response()->json([
+                'message' => 'Company Size Updated Successfully!',
+                'data'   =>  view('super_admin.company_size.company_size_list', [
+                    'allCompanySizesDetails' => $this->companySizeService->all()
+                ])->render()
+            ]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->companySizeService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'message' => 'Company Size Deleted Successfully!',
+                'data'   =>  view('super_admin.company_size.company_size_list', [
+                    'allCompanySizesDetails' => $this->companySizeService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
+        $data['status'] = $request->status;
         $statusDetails = $this->companySizeService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;

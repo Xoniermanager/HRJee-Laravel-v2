@@ -13,7 +13,12 @@ class QualificationService
   }
   public function all()
   {
-    return $this->qualificationRepository->paginate(10);
+    return $this->qualificationRepository->orderBy('id','DESC')->paginate(10);
+  }
+
+  public function get_qualification_ajax_call()
+  {
+    return $this->qualificationRepository->orderBy('id','DESC')->get();
   }
 
   public function create(array $data)

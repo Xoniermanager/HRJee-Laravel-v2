@@ -2,8 +2,6 @@
 
 namespace App\Http\Services;
 
-use App\Models\Roles;
-use App\Models\User;
 use App\Repositories\rolesRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +15,7 @@ class RolesServices
   }
     public function get_roles()
     { 
-     return $this->roles_repository->all();
+     return $this->roles_repository->orderBy('id','DESC')->all();
     }
     public function delete_roles_by_id($id)
     {    

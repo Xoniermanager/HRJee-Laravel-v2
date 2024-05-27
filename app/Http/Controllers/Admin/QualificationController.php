@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\QualificationService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Http\Request;
 use App\Rules\UniqueForAdminOnly;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\QualificationService;
 
 class QualificationController extends Controller
 {
@@ -44,7 +45,12 @@ class QualificationController extends Controller
             }
             $data = $request->all();
             if ($this->qualificationService->create($data)) {
-                return response()->json(['message' => 'Company Qualification Created Successfully!']);
+                return response()->json([
+                    'message' => 'Qualification Created Successfully!',
+                    'data'   =>  view('super_admin.qualification.qualification_list', [
+                        'allQualificationDetails' => $this->qualificationService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return $e->getMessage();
@@ -68,8 +74,10 @@ class QualificationController extends Controller
         $companyStatus = $this->qualificationService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
             return response()->json([
-                'message'   => 'Company Qualification Updated Successfully!',
-                'data'      =>  view('super_admin.qualification.qualification-list',['allQualificationDetails' => $this->qualificationService->all()])->render()
+                'message' => 'Qualification Updated Successfully!',
+                'data'   =>  view('super_admin.qualification.qualification_list', [
+                    'allQualificationDetails' => $this->qualificationService->all()
+                ])->render()
             ]);
         }
     }
@@ -77,25 +85,62 @@ class QualificationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->qualificationService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'success' => 'Qualification Deleted Successfully! ',
+                'data'   =>  view('super_admin.qualification.qualification_list', [
+                    'allQualificationDetails' => $this->qualificationService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
 
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status == 1 ? 0 : 1;
+        $data['status'] = $request->status;
         $statusDetails = $this->qualificationService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;
         } else {
             echo 0;
+        }
+    }
+
+
+
+    public function get_all_qualification_ajax_call()
+    {
+
+       $data =  $this->qualificationService->get_qualification_ajax_call();
+       return json_encode($data);
+    }
+    public function ajax_store_qualification(Request $request)
+    {
+        try {
+            $dataTest = $request->all()['models'];
+            $data = collect(json_decode($dataTest, true))->first();
+            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $validateQualification  = Validator::make($data, [
+                'name'        => ['required', 'string', new UniqueForAdminOnly('qualifications')],
+                'description' => ['string']
+            ]);
+
+            if ($validateQualification->fails()) {
+                return response()->json(['error' => $validateQualification->messages()], 400);
+            }
+        
+            if ($this->qualificationService->create($data)){
+                return  $this->qualificationService->get_qualification_ajax_call();
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()()], 400);
         }
     }
 }

@@ -14,14 +14,11 @@ return new class extends Migration
         Schema::create('user_bank_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('account_name');
-            $table->string('account_number');
+            $table->string('account_name')->unique();
+            $table->string('account_number')->unique();
             $table->string('bank_name');
             $table->string('ifsc_code');
-            $table->string('pan_no');
-            $table->string('uan_no');
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

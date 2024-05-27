@@ -1,6 +1,6 @@
 <div class="float-left position-colps sidemenu-scroll">
     <!--begin::Aside-->
-    <a href="{{ route('admin.dashboard') }}">
+    <a href="{{ route('company.dashboard') }}">
         <img src="{{ asset('assets/media/logos/logo.png') }}" class="brand-logo">
     </a>
     <div id="kt_aside" class="aside py-5" data-kt-drawer="true" data-kt-drawer-name="aside"
@@ -18,9 +18,9 @@
                     <div class="menudesign">
                         <div class="menubox">
                             <!--begin:Menu item-->
-                            <div class="menu-item active">
+                            <div class="menu-item" data-url="{{ route('company.dashboard') }}">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('admin.dashboard') }}">
+                                <a class="menu-link" href="{{ route('company.dashboard') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
                                             <i class="fa fa-dashboard"></i>
@@ -33,7 +33,7 @@
                             </div>
                             <!--end:Menu item-->
                             <!--begin:Menu item-->
-                            <div class="menu-item">
+                            <div class="menu-item" data-url="{{ route('branch') }}">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('branch') }}">
                                     <span class="menu-icon">
@@ -46,9 +46,48 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            <div class="menu-item">
+                            <div class="menu-item"  data-url="{{ route('country.index') }}">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('department') }}">
+                                <a class="menu-link" href="{{ route('country.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-building"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Country</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item" data-url="{{ route('state.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('state.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-building"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">State</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item" data-url="{{ route('previous.company.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('previous.company.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-building"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Previous Company</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item" data-url="{{ route('department.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('department.index') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
                                             <i class="fa fa-building"></i>
@@ -59,9 +98,22 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            <div class="menu-item">
+                            {{-- <div class="menu-item">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('designation') }}">
+                                <a class="menu-link" href="{{route('office.time')}}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-building"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title"> Office Timing</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div> --}}
+                            <div class="menu-item" data-url="{{ route('designation.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('designation.index') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
                                             <i class="fa fa-file-contract"></i>
@@ -73,10 +125,55 @@
                                 <!--end:Menu link-->
                             </div>
 
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
+                            <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee') }}">
+                                <span class="menu-link">
+                                    <span class="menu-icon">
+                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr001.svg-->
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-clock"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">OT config</span>
+                                    <span class="menu-arrow"></span>
+                                </span>
+                                <!--end:Menu link-->
+                                <!--begin:Menu sub-->
+                                <div class="menu-sub menu-sub-accordion">
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item" data-url="{{ route('shifts.index') }}">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{route('shifts.index')}}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                shifts </span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item" data-url="{{ route('office_time_config.index') }}">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{ route('office_time_config.index') }}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Office time Config</span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                </div>
+                                <!--end:Menu sub-->
+                            </div>
+                            <!--end:Menu item-->
+
+                            <!--begin:Menu item-->
+                            <div class="menu-item" data-url="{{ route('employee.index') }}" >
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('employee.index') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
                                             <i class="fa fa-users-gear"></i>
@@ -105,7 +202,7 @@
                                 <!--begin:Menu sub-->
                                 <div class="menu-sub menu-sub-accordion">
                                     <!--begin:Menu item-->
-                                    <div class="menu-item">
+                                    <div class="menu-item" data-url="{{ route('roles') }}">
                                         <!--begin:Menu link-->
                                         <a class="menu-link" href="{{ route('roles') }}">
                                             <span class="menu-bullet">
@@ -117,7 +214,7 @@
                                         <!--end:Menu link-->
                                     </div>
                                     <!--begin:Menu item-->
-                                    <div class="menu-item">
+                                    <div class="menu-item" data-url="{{ route('permissions') }}">
                                         <!--begin:Menu link-->
                                         <a class="menu-link" href="{{ route('permissions') }}">
                                             <span class="menu-bullet">

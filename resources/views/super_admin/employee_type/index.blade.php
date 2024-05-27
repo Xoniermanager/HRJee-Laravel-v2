@@ -7,16 +7,6 @@
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible">
-                {{ session('error') }}
-            </div>
-        @endif
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible">
-                {{ session('success') }}
-            </div>
-        @endif
         <div class="row gy-5 g-xl-10">
             <!--begin::Col-->
             <div class="card card-body col-md-12">
@@ -32,80 +22,7 @@
                     <!--end::Action-->
                 </div>
                 <div class="mb-5 mb-xl-10">
-                    <div class="">
-                        <div class="">
-                            <!--begin::Body-->
-                            <div class="">
-                                <div class="card-body py-3">
-                                    <!--begin::Table container-->
-                                    <div class="table-responsive">
-                                        <!--begin::Table-->
-                                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                            <!--begin::Table head-->
-                                            <thead>
-                                                <tr class="fw-bold">
-                                                    <th>Sr. No.</th>
-                                                    <th>Name</th>
-                                                    <th>Description</th>
-                                                    <th>Status</th>
-                                                    <th class="float-right">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <!--end::Table head-->
-                                            <!--begin::Table body-->
-                                            @forelse ($allEmployeeTypeDetails as $key => $employeeTypeDetails)
-                                                <tbody class="">
-                                                    <tr>
-                                                        <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $employeeTypeDetails->name }}</td>
-                                                        <td>{{ $employeeTypeDetails->description }}</td>
-                                                        <td data-order="Invalid date">
-                                                            <label class="switch">
-                                                                <input type="checkbox"
-                                                                    <?= $employeeTypeDetails->status == '1' ? 'checked' : '' ?>
-                                                                    onchange="handleStatus({{ $employeeTypeDetails->id }})" id="checked_value">
-                                                                <span class="slider round"></span>
-                                                            </label>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex justify-content-end flex-shrink-0">
-                                                                <a href="#" data-bs-toggle="modal"
-                                                                    onClick="edit_company('{{ $employeeTypeDetails->id }}', '{{ $employeeTypeDetails->name }}','{{ $employeeTypeDetails->description }}')"
-                                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                                    <i class="fa fa-edit"></i>
-                                                                    <!--end::Svg Icon-->
-                                                                </a>
-                                                                <a href="{{ route('employee.type.delete', $employeeTypeDetails->id) }}"
-                                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                                                    onclick="alert('Are you sure want to delete')">
-                                                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                                    <i class="fa fa-trash"></i>
-                                                                    <!--end::Svg Icon-->
-                                                                </a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            @empty
-                                                <td colspan="3">
-                                                    <span class="text-danger">
-                                                        <strong>No Employee Type Found!</strong>
-                                                    </span>
-                                                </td>
-                                            @endforelse
-                                            <!--end::Table body-->
-                                        </table>
-                                        <!--end::Table-->
-                                    </div>
-                                    <!--end::Table container-->
-                                </div>
-                            </div>
-                            <!--begin::Body-->
-                        </div>
-                        <!--begin::Body-->
-                    </div>
-                    <!--begin::Body-->
+                    @include('super_admin.employee_type.employee_type_list')
                 </div>
             </div>
             <!--end::Col-->
@@ -277,11 +194,10 @@
                     type: 'POST',
                     data: company_status,
                     success: function(response) {
+                        jQuery('#kt_modal_employee_type').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        // refresh page after 2 seconds
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        $('#employee_type_list').replaceWith(response.data);
+                        $('#employee_type_form')[0].reset();
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
@@ -292,61 +208,51 @@
                                     error_key] + '</span>');
                             setTimeout(function() {
                                 jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                            }, 4000);
                         }
                     }
                 });
             }
         });
-    });
-</script>
-<script>
-    jQuery.noConflict();
-    jQuery(document).ready(function($) {
         $("#update-form").validate({
             rules: {
                 name: "required",
-                description: "required",
             },
             messages: {
                 name: "Please enter name",
-                description: "Please enter a description",
             },
             submitHandler: function(form) {
                 var company_status = $(form).serialize();
-                var id = $('#id').val();
                 $.ajax({
                     url: "<?= route('employee.type.update') ?>",
                     type: 'post',
                     data: company_status,
                     success: function(response) {
+                        jQuery('#kt_modal_employee_type_update').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        // location.reload();
-                        // refresh page after 2 seconds
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        $('#employee_type_list').replaceWith(response.data);
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
                         for (var error_key in errors) {
                             $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
+                                '<span classs="' + error_key +
+                                '_error text text-danger">' + errors[
                                     error_key] + '</span>');
                             setTimeout(function() {
                                 jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                            }, 4000);
                         }
                     }
                 });
             }
         });
     });
-</script>
-<script>
+
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
+        let status;
+        let status_name;
         if (checked_value == true) {
             status = 1;
             status_name = 'Active';
@@ -369,6 +275,36 @@
                 }
             }
         })
+    }
+
+    function deleteFunction(id) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= route('employee.type.delete') ?>",
+                    type: "get",
+                    data: {
+                        id: id
+                    },
+                    success: function(res) {
+                        Swal.fire("Done!", "It was succesfully deleted!", "success");
+                        $('#employee_type_list').replaceWith(res.data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire("Error deleting!", "Please try again", "error");
+                    }
+                });
+            }
+        });
     }
 </script>
 <style>

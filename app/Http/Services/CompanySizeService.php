@@ -13,7 +13,7 @@ class CompanySizeService
   }
   public function all()
   {
-    return $this->companySizeRepository->paginate(10);
+    return $this->companySizeRepository->orderBy('id','DESC')->paginate(10);
   }
 
   public function create(array $data)

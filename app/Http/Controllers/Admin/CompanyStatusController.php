@@ -42,7 +42,12 @@ class CompanyStatusController extends Controller
             }
             $data = $request->all();
             if ($this->companyStatusService->create($data)) {
-                return response()->json(['message' => 'Company Status Created Successfully!']);
+                return response()->json([
+                    'message' => 'Company Status Created Successfully!',
+                    'data'   =>  view('super_admin.company_status.company_status_list', [
+                        'allCompanyStatusDetails' => $this->companyStatusService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return $e->getMessage();
@@ -65,20 +70,31 @@ class CompanyStatusController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->companyStatusService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Company Status Updated Successfully!']);
+            return response()->json([
+                'message' => 'Company Status Updated Successfully!',
+                'data'   =>  view('super_admin.company_status.company_status_list', [
+                    'allCompanyStatusDetails' => $this->companyStatusService->all()
+                ])->render()
+            ]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->companyStatusService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'success' => 'Company Status Deleted Successfully!',
+                'data'   =>  view('super_admin.company_status.company_status_list', [
+                    'allCompanyStatusDetails' => $this->companyStatusService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
 

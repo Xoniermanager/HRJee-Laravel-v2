@@ -42,7 +42,12 @@ class EmployeeStatusController extends Controller
             }
             $data = $request->all();
             if ($this->employeeStatusService->create($data)) {
-                return response()->json(['message' => 'Employee Status Created Successfully!']);
+                return response()->json([
+                    'message' => 'Employee Status Created Successfully!',
+                    'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                        'allEmployeeStatusDetails' => $this->employeeStatusService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
@@ -64,20 +69,31 @@ class EmployeeStatusController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->employeeStatusService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
-            return response()->json(['message' => 'Employee Status Updated Successfully!']);
+            return response()->json([
+                'message' => 'Employee Status Updated Successfully!',
+                'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                    'allEmployeeStatusDetails' => $this->employeeStatusService->all()
+                ])->render()
+            ]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->employeeStatusService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Employee Status Deleted Successfully! ');
+            return response()->json([
+                'success' => 'Employee Status Deleted Successfully!',
+                'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                    'allEmployeeStatusDetails' => $this->employeeStatusService->all()
+                ])->render()
+            ]);
         } else {
-            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
     public function statusUpdate(Request $request)

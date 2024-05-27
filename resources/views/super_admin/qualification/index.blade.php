@@ -6,17 +6,6 @@
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
-        <!--begin::Row-->
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible">
-                {{ session('error') }}
-            </div>
-        @endif
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible">
-                {{ session('success') }}
-            </div>
-        @endif
         <div class="row gy-5 g-xl-10">
             <!--begin::Col-->
             <div class="card card-body col-md-12">
@@ -32,17 +21,7 @@
                     <!--end::Action-->
                 </div>
                 <div class="mb-5 mb-xl-10">
-                    <div class="">
-                        <div class="">
-                            <!--begin::Body-->
-                            <div class="">
-                                @include('super_admin.qualification.qualification-list')
-                            </div>
-                            <!--begin::Body-->
-                        </div>
-                        <!--begin::Body-->
-                    </div>
-                    <!--begin::Body-->
+                    @include('super_admin.qualification.qualification_list')
                 </div>
             </div>
             <!--end::Col-->
@@ -208,17 +187,16 @@
                 name: "Please enter name",
             },
             submitHandler: function(form) {
-                var company_qualification = $(form).serialize();
+                var qualification_data = $(form).serialize();
                 $.ajax({
                     url: "{{ route('qualification.store') }}",
                     type: 'POST',
-                    data: company_qualification,
+                    data: qualification_data,
                     success: function(response) {
+                        jQuery('#kt_modal_qualification').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        // refresh page after 2 seconds
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
+                        $('#qualification_list').replaceWith(response.data);
+                        $('#company_qualification_form')[0].reset();
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
@@ -235,11 +213,6 @@
                 });
             }
         });
-    });
-</script>
-<script>
-    jQuery.noConflict();
-    jQuery(document).ready(function($) {
         $("#update-form").validate({
             rules: {
                 name: "required",
@@ -248,37 +221,37 @@
                 name: "Please enter name",
             },
             submitHandler: function(form) {
-                var company_qualification = $(form).serialize();
+                var qualification_data = $(form).serialize();
                 $.ajax({
                     url: "<?= route('qualification.update') ?>",
                     type: 'post',
-                    data: company_qualification,
+                    data: qualification_data,
                     success: function(response) {
+                        jQuery('#kt_modal_qualification_update').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        // location.reload();
-                        // refresh page after 2 seconds
-                        
+                        $('#qualification_list').replaceWith(response.data);
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
                         for (var error_key in errors) {
                             $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
+                                '<span class="' + error_key +
+                                '_error text text-danger">' + errors[
                                     error_key] + '</span>');
                             setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                                jQuery("." + error_key + "_error").remove();
+                            }, 4000);
                         }
                     }
                 });
             }
         });
     });
-</script>
-<script>
+
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
+        let status;
+        let status_name;
         if (checked_value == true) {
             status = 1;
             status_name = 'Active';
@@ -301,6 +274,36 @@
                 }
             }
         })
+    }
+
+    function deleteFunction(id) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= route('qualification.delete') ?>",
+                    type: "get",
+                    data: {
+                        id: id
+                    },
+                    success: function(res) {
+                        Swal.fire("Done!", "It was succesfully deleted!", "success");
+                        $('#qualification_list').replaceWith(res.data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire("Error deleting!", "Please try again", "error");
+                    }
+                });
+            }
+        });
     }
 </script>
 <style>

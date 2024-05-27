@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable ,HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -19,15 +20,23 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'full_name',
-        'email'  ,
-        'password'  ,
-        'phone' ,
+        'emp_id',
+        'name',
+        'email',
+        'password',
+        'official_email_id',
+        'father_name',
+        'mother_name',
+        'blood_group',
+        'gender',
+        'marital_status',
+        'employee_status_id',
+        'date_of_birth',
+        'joining_date',
+        'phone',
         'profile_image',
-        'joining_date' ,
-        'employee_id',
-        'role_id'   ,
-        'compnany_id',
+        'company_id',
+        'last_login_ip'
     ];
 
     /**
@@ -49,16 +58,58 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    public function user_details()
+    public function bankDetails()
     {
-        return $this->hasOne(UserDetails::class,'user_id');
-    }
-    public function bankDetail() {
-        return $this->hasOne(UserBankDetails::class ,'user_id');
+        return $this->hasOne(UserBankDetail::class, 'user_id');
     }
 
-    public function address() {
-        return $this->hasOne(UserAddress::class ,'user_id');
+    public function addressDetails()
+    {
+        return $this->hasMany(UserAddressDetail::class, 'user_id');
+    }
+
+    public function advanceDetails()
+    {
+        return $this->hasOne(UserAdvanceDetail::class, 'user_id');
+    }
+
+    public function pastWorkDetails()
+    {
+        return $this->hasMany(UserPastWorkDetail::class, 'user_id');
+    }
+
+    public function documentDetails()
+    {
+        return $this->hasMany(UserDocumentDetail::class, 'user_id');
+    }
+    public function qualificationDetails()
+    {
+        return $this->hasMany(UserQualificationDetail::class, 'user_id', 'id');
+    }
+    public function familyDetails()
+    {
+        return $this->hasMany(UserRelativeDetail::class, 'user_id', 'id');
+    }
+
+    public function userDetails()
+    {
+        return $this->hasOne(UserDetail::class, 'user_id');
+    }
+
+    protected function profileImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => url("storage/" .  $value)
+        );
+    }
+
+    public function userSkills()
+    {
+        return $this->hasMany(UserSkill::class, 'user_id', 'id');
+    }
+
+    public function languages()
+    {
+        return $this->belongsToMany(Languages::class,'langauge_user','user_id','language_id')->withPivot('read','write','speak');
     }
 }

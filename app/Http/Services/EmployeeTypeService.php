@@ -12,7 +12,7 @@ class EmployeeTypeService
   }
   public function all()
   {
-    return $this->employeeTypeRepository->paginate(10);
+    return $this->employeeTypeRepository->orderBy('id','DESC')->paginate(10);
   }
 
   public function create(array $data)

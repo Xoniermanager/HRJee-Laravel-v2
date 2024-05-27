@@ -32,17 +32,22 @@ class DocumentTypeController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateCompanyStatus  = Validator::make($request->all(), [
+            $validateDocumentType  = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:document_types,name'],
                 'is_mandatory' => ['boolean']
             ]);
 
-            if ($validateCompanyStatus->fails()) {
-                return response()->json(['error' => $validateCompanyStatus->messages()], 400);
+            if ($validateDocumentType->fails()) {
+                return response()->json(['error' => $validateDocumentType->messages()], 400);
             }
             $data = $request->all();
             if ($this->documentTypeService->create($data)) {
-                return response()->json(['message' => 'Document Type Created Successfully!']);
+                return response()->json([
+                    'message' => 'Document Type Created Successfully!',
+                    'data'   =>  view('super_admin.document_type.document_type_list', [
+                        'allDocumentTypes' => $this->documentTypeService->all()
+                    ])->render()
+                ]);
             }
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
@@ -54,29 +59,40 @@ class DocumentTypeController extends Controller
      */
     public function update(Request $request)
     {
-        $validateCompanyStatus  = Validator::make($request->all(), [
+        $validateDocumentType  = Validator::make($request->all(), [
             'name' => ['required', 'string', 'unique:document_types,name,' . $request->id],
             'is_mandatory' => ['boolean']
         ]);
 
-        if ($validateCompanyStatus->fails()) {
-            return response()->json(['error' => $validateCompanyStatus->messages()], 400);
+        if ($validateDocumentType->fails()) {
+            return response()->json(['error' => $validateDocumentType->messages()], 400);
         }
         $updateData = $request->except(['_token', 'id']);
-        $companyStatus = $this->documentTypeService->updateDetails($updateData, $request->id);
-        if ($companyStatus) {
-            return response()->json(['message' => 'Document Type Updated Successfully!']);
+        $documentType = $this->documentTypeService->updateDetails($updateData, $request->id);
+        if ($documentType) {
+            return response()->json([
+                'message' => 'Document Type Updated Successfully!!',
+                'data'   =>  view('super_admin.document_type.document_type_list', [
+                    'allDocumentTypes' => $this->documentTypeService->all()
+                ])->render()
+            ]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $data = $this->documentTypeService->deleteDetails($id);
         if ($data) {
-            return back()->with('success', 'Deleted Successfully! ');
+            return response()->json([
+                'success' => 'Document Type Deleted Successfully!!',
+                'data'   =>  view('super_admin.document_type.document_type_list', [
+                    'allDocumentTypes' => $this->documentTypeService->all()
+                ])->render()
+            ]);
         } else {
             return back()->with('error', 'Something Went Wrong! Pleaase try Again');
         }
