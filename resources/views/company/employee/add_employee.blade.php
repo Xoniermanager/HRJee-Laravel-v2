@@ -4,11 +4,39 @@
 
 @section('content')
     @php
+        $editDetails = false;
         $userQualificationDetails = [];
-        if (isset($userDetails)) {
-            $userQualificationDetails = $userDetails['qualificationDetails'];
+        $userAddressDetails = [];
+        $userAdvanceDetails = [];
+        $userbankDetails = [];
+        $userpastWorkDetails = [];
+        $userfamilyDetails = [];
+        $userdocumentDetails = [];
+        $userDetails = [];
+        $userSkills = '';
+        $userLanguages = [];
+        if (isset($singleUserDetails)) {
+            $editDetails = true;
+            $userQualificationDetails = $singleUserDetails['qualificationDetails'];
+            $userAdvanceDetails = $singleUserDetails['advanceDetails'];
+            $userAddressDetails = $singleUserDetails['addressDetails'];
+            $userbankDetails = $singleUserDetails['bankDetails'];
+            $userpastWorkDetails = $singleUserDetails['pastWorkDetails'];
+            $userfamilyDetails = $singleUserDetails['familyDetails'];
+            $userdocumentDetails = $singleUserDetails['documentDetails'];
+            $userDetails = $singleUserDetails['userDetails'];
+            $userSkills = $singleUserDetails['userSkills']->pluck('skill_id');
+            $userLanguages = $singleUserDetails['languages'];
         }
     @endphp
+    {{-- <div class="loading_item" id="loading_item">
+    <div class="loading-wave">
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+  </div>
+  </div> --}}
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
@@ -31,11 +59,20 @@
                                 </a>
                                 <!--end::Date-->
                             </li>
+                            @php
+                                if($editDetails == false)
+                                {
+                                    $buttonDisabled = 'disabled';
+                                }
+                                else {
+                                    $buttonDisabled = '';
+                                }
+                            @endphp
                             <!--end::Nav item-->
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#advance_details_tab">
                                     <span class="fs-7 fw-semibold">Advance Details</span>
 
@@ -46,7 +83,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#address_tab">
                                     <span class="fs-7 fw-semibold">Address</span>
 
@@ -57,7 +94,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#bank_details_tab">
                                     <span class="fs-7 fw-semibold">Bank Details</span>
 
@@ -68,7 +105,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#qualification_tab">
                                     <span class="fs-7 fw-semibold">Qualification</span>
 
@@ -79,7 +116,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#past_work_tab">
                                     <span class="fs-7 fw-semibold">Past work</span>
 
@@ -90,7 +127,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#permission_tab">
                                     <span class="fs-7 fw-semibold">Permissions</span>
                                 </a>
@@ -100,7 +137,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#family_details_tab">
                                     <span class="fs-7 fw-semibold">Family Details</span>
                                 </a>
@@ -110,7 +147,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#asset_tab">
                                     <span class="fs-7 fw-semibold">Asset </span>
                                 </a>
@@ -120,7 +157,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
                                     data-bs-toggle="tab" href="#document_tab">
                                     <span class="fs-7 fw-semibold">Documents</span>
                                 </a>
@@ -191,58 +228,115 @@
         <!--end::Container-->
     </div>
     <script>
-        /** get all Designation Using Department Id*/
-        jQuery('#department_id').on('change', function() {
-            var department_id = $(this).val();
-            get_all_designation_using_department_id(department_id);
-        });
-
-        function get_all_designation_using_department_id(department_id) {
-            if (department_id) {
-                $.ajax({
-                    url: "{{ route('get.all.designation') }}",
-                    type: "GET",
-                    dataType: "json",
-                    data: {
-                        'department_id': department_id
-                    },
-                    success: function(response) {
-                        var select = $('#designation_id');
-                        select.empty();
-                        if (response.status == true) {
-                            $('#designation_id').append(
-                                '<option>Select The Designation</option>');
-                            $.each(response.data, function(key, value) {
-                                select.append('<option value=' + value.id + '>' +
-                                    value
-                                    .name + '</option>');
-                            });
-                        } else {
-                            select.append('<option value="">' + response.error +
-                                '</option>');
-                        }
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Oops...",
-                            text: "Something Went Wrong!! Please try Again"
-                        });
-                        return false;
-                    }
-                });
-            } else {
-                $('#designation_id').empty();
-            }
-
-        }
-        /** end get all Designation Using Department Id*/
-        
         /**
          * close current tab and open next tab
          */
         function show_next_tab(tab) {
             jQuery('.nav-pills a[href="#' + tab + '"]').tab('show');
         }
+
+        /** Submitting All Details */
+        var all_data_saved = true;
+
+        jQuery('#submit_all').click(function() {
+            //Basic Details
+            if (jQuery("#basic_create_form").valid()) {
+                jQuery('.nav-pills a[href="#basic_Details_tab"]').tab('show');
+                setTimeout(function() {
+                    createBasicDetails(jQuery('#basic_create_form'));
+                }, 3000);
+            } else {
+                jQuery('.nav-pills a[href="#basic_create_form"]').tab('show');
+            }
+
+            //Advance Details
+            setTimeout(function() {
+                if (all_data_saved) {
+                    if (jQuery("#advance_details_form").valid()) {
+                        createAdvanceDetails(jQuery('#advance_details_form'));
+                    } else {
+                        jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
+                    }
+                }
+            }, 4000);
+
+
+            //Address Details
+            setTimeout(function() {
+                if (all_data_saved) {
+                    if (jQuery("#address_Details_form").valid()) {
+                        createAddressDetails(jQuery('#address_Details_form'));
+                    } else {
+                        jQuery('.nav-pills a[href="#address_tab"]').tab('show');
+                    }
+                }
+            }, 6000);
+
+            //Bank Details
+            setTimeout(function() {
+                if (all_data_saved) {
+                    if (jQuery("#bank_details_form").valid()) {
+                        createBankDetails(jQuery('#bank_details_form'));
+                    } else {
+                        jQuery('.nav-pills a[href="#bank_details_tab"]').tab('show');
+                    }
+                }
+            }, 8000);
+
+            //Qualification Details
+            setTimeout(function() {
+                if (all_data_saved) {
+                    if (jQuery("#qualification_details_form").valid()) {
+                        createQualification(jQuery('#qualification_details_form'));
+                    } else {
+                        jQuery('.nav-pills a[href="#qualification_tab"]').tab('show');
+                    }
+                }
+            }, 10000);
+
+            //Past Work Details
+            setTimeout(function() {
+                if (all_data_saved) {
+                    if (jQuery("#past_work_details").valid()) {
+                        createPastWorkDetails(jQuery('#past_work_details'));
+                    } else {
+                        jQuery('.nav-pills a[href="#past_work_tab"]').tab('show');
+                    }
+                }
+            }, 12000);
+
+            //Permission Details
+            setTimeout(function() {
+                if (all_data_saved) {
+                    if (jQuery("#user_details_form").valid()) {
+                        createPermissionDetails(jQuery('#user_details_form'));
+                    } else {
+                        jQuery('.nav-pills a[href="#permission_tab"]').tab('show');
+                    }
+                }
+            }, 14000);
+
+            //Fmaily Details  Details
+            setTimeout(function() {
+                if (all_data_saved) {
+                    if (jQuery("#family_details_form").valid()) {
+                        createFamilyDetails(jQuery('#family_details_form'));
+                    } else {
+                        jQuery('.nav-pills a[href="#family_details_tab"]').tab('show');
+                    }
+                }
+            }, 16000);
+
+            //Documents Details
+            setTimeout(function() {
+                if (all_data_saved) {
+                    if (jQuery("#document_details").valid()) {
+                        createDocumentDetails(jQuery('#document_details'));
+                    } else {
+                        jQuery('.nav-pills a[href="#document_tab"]').tab('show');
+                    }
+                }
+            }, 18000);
+        });
     </script>
 @endsection

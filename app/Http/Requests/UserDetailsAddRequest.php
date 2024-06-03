@@ -22,7 +22,7 @@ class UserDetailsAddRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_type_id'   => ["required",'exists:employee_types,id'],
+                    'employee_type_id'   => ["required",'exists:employee_types,id'],
                     'department_id'        => ["required",'exists:departments,id'],
                     'designation_id'       => ["required",'exists:designations,id'],
                     'company_branch_id'    => ["required",'exists:company_branches,id'],
@@ -30,6 +30,13 @@ class UserDetailsAddRequest extends FormRequest
                     'qualification_id'     => ["required",'exists:qualifications,id'],
                     'shift_id'             => ["required",'exists:shifts,id'],
                     'skill_id'             => ["required",'exists:skills,id'],
+                    'language'                     => "required|array",
+                    'language.*'                   => "required|array", 
+                    'language.*.language_id'       => "required",
+                    'language.*.read'              => ['required', 'in:b,i,e'],
+                    'language.*.write'             => ['required', 'in:b,i,e'],
+                    'language.*.speak'             => ['required', 'in:b,i,e'],
+
         ];
     }
 }

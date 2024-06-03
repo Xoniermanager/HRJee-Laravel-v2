@@ -14,7 +14,9 @@ class UserSkillServices
 
   public function create($data)
   {
-    foreach ($data['skill_id'] as $skillID) {
+
+    foreach ($data['skill_id'] as $skillID) 
+    {
       $this->userSkillRepository->updateOrCreate([
         'user_id'           =>  $data['user_id'],
         'skill_id' => $skillID

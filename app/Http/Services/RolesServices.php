@@ -2,14 +2,12 @@
 
 namespace App\Http\Services;
 
-use App\Repositories\rolesRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\RolesRepository;
 
 class RolesServices 
 {
-  private $rolesRepository ;
-  public function __construct(rolesRepository $rolesRepository)
+  private $roles_repository ;
+  public function __construct(RolesRepository $roles_repository)
   {
     $this->rolesRepository = $rolesRepository;
   }

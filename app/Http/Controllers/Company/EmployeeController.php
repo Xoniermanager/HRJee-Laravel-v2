@@ -5,20 +5,20 @@ namespace App\Http\Controllers\Company;
 use Exception;
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\EmployeeAddRequest;
+use App\Http\Services\RolesServices;
+use App\Http\Services\ShiftServices;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
+use App\Http\Services\LanguagesServices;
+use App\Http\Requests\EmployeeAddRequest;
 use App\Http\Services\DepartmentServices;
 use App\Http\Services\DocumentTypeService;
-use App\Http\Services\EmployeeLanguageServices;
-use App\Http\Services\LanguagesServices;
 use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
-use App\Http\Services\RolesServices;
-use App\Http\Services\ShiftServices;
 
 class EmployeeController extends Controller
 {
@@ -33,7 +33,6 @@ class EmployeeController extends Controller
     private $branchService;
     private $roleService;
     private $shiftService;
-    private $employeeLanguageServices;
     private $languagesServices;
 
 
@@ -89,18 +88,20 @@ class EmployeeController extends Controller
         $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->all()->where('status', '1');
 
-        return view('company.employee.add_employee', compact(
-            'allCountries',
-            'allPreviousCompany',
-            'allQualification',
-            'allEmployeeType',
-            'allEmployeeStatus',
-            'alldepartmentDetails',
-            'allDocumentTypeDetails','languages',
-            'allBranches',
-            'allRoles',
-            'allShifts'
-        )
+        return view(
+            'company.employee.add_employee',
+            compact(
+                'allCountries',
+                'allPreviousCompany',
+                'allQualification',
+                'allEmployeeType',
+                'allEmployeeStatus',
+                'alldepartmentDetails',
+                'allDocumentTypeDetails','languages',
+                'allBranches',
+                'allRoles',
+                'allShifts'
+            )
         );
     }
 
@@ -113,32 +114,41 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
+        $allBranches = $this->branchService->get_branches();
+        $allRoles = $this->roleService->get_roles();
+        $allShifts = $this->shiftService->all()->where('status', '1');
+        $languages =   $this->languagesServices->defaultLanguages();
+
 
         // Get employee details to update
-        $userDetails = $user->load('qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
-        
-        return view('company.employee.add_employee', compact(
-            'allCountries',
-            'allPreviousCompany',
-            'allQualification',
-            'allEmployeeType',
-            'allEmployeeStatus',
-            'alldepartmentDetails',
-            'allDocumentTypeDetails',
-            'userDetails'
-        )
+        $singleUserDetails = $user->load('familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+        return view(
+            'company.employee.add_employee',
+            compact(
+                'allCountries',
+                'allPreviousCompany',
+                'allQualification',
+                'allEmployeeType',
+                'allEmployeeStatus',
+                'alldepartmentDetails',
+                'allDocumentTypeDetails',
+                'singleUserDetails',
+                'allBranches',
+                'allRoles',
+                'allShifts',
+                'languages'
+            )
         );
     }
 
     public function store(EmployeeAddRequest $request)
     {
         try {
-            $data  = $request->validated();
-            $createData = $this->employeeService->create($data);
-            if ($createData) {
+            $userDetails = $this->employeeService->create($request->all());
+            if ($userDetails) {
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
-                    'data' => $createData
+                    'data' => $userDetails
                 ]);
             }
         } catch (Exception $e) {

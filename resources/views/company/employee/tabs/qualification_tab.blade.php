@@ -2,7 +2,8 @@
     <!--begin::Wrapper-->
     <form id="qualification_details_form">
         @csrf
-        <input type="hidden" name="user_id" class="id">
+        <input type="hidden" name="user_id" class="id"
+            value="{{ $userQualificationDetails[0]['user_id'] ?? (Request::segment(3) ?? '') }}">
         <div class="row">
             <div class="col-md-4 form-group">
                 <label for="">Degree*</label>
@@ -42,7 +43,8 @@
                                             name="degree[{{ $i }}][course]"
                                             value="{{ $userQualificationDetail->course }}"></div>
                                     <div class="col-md-1 form-group"><label for="">Year *</label><input
-                                            class="form-control" type="text" name="degree[{{ $i }}][year]"
+                                            class="form-control" type="text"
+                                            name="degree[{{ $i }}][year]"
                                             value="{{ $userQualificationDetail->year }}"></div>
                                     <div class="col-md-1 form-group"><label for="">Percentage*</label><input
                                             class="form-control" type="text"
@@ -75,7 +77,7 @@
 </div>
 <script>
     /** Qualification HTML*/
-    var qualification_counter = 0;
+    var qualification_counter = {{ $i }};
 
     function get_qualification_html() {
         var degree_name = $('#qualification_id').find(':selected').text().trim();
@@ -121,50 +123,60 @@
     /** end Qualification HTMl*/
 
     /** Qualification Details created Ajax*/
-    jQuery.noConflict();
-    jQuery("#qualification_details_form").validate({
-        rules: {
-            "degree[][university]": "required",
-            "degree[][course]": "required",
-            "degree[][year]": "required",
-            "degree[][percentage]": "required"
-        },
-        messages: {
-            'degree[][institute]': 'Please Enter the Institute Name',
-            'degree[][university]': 'Please Enter the University Name',
-            'degree[][course]': 'Please Enter the Course Name',
-            'degree[][year]': 'Please Enter the year',
-            'degree[][percentage]': 'Please Enter Percentage %'
-        },
-        submitHandler: function(form) {
-            var qualification_details_data = $(form).serialize();
-            $.ajax({
-                url: "{{ route('employee.qualification.details') }}",
-                type: 'POST',
-                data: qualification_details_data,
-                success: function(response) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    jQuery('.nav-pills a[href="#qualification_tab"]').tab('show');
-                },
-                error: function(error_messages) {
-                    let errors = error_messages.responseJSON.error;
-                    for (var error_key in errors) {
-                        $(document).find('[name=' + error_key + ']').after(
-                            '<span class="' + error_key +
-                            '_error text text-danger">' + errors[
-                                error_key] + '</span>');
-                        setTimeout(function() {
-                            jQuery("." + error_key + "_error").remove();
-                        }, 3000);
-                    }
-                }
-            });
-        }
+    jQuery(document).ready(function() {
+        jQuery("#qualification_details_form").validate({
+            rules: {
+                "degree[][university]": "required",
+                "degree[][course]": "required",
+                "degree[][year]": "required",
+                "degree[][percentage]": "required"
+            },
+            messages: {
+                'degree[][institute]': 'Please Enter the Institute Name',
+                'degree[][university]': 'Please Enter the University Name',
+                'degree[][course]': 'Please Enter the Course Name',
+                'degree[][year]': 'Please Enter the year',
+                'degree[][percentage]': 'Please Enter Percentage %'
+            },
+            submitHandler: function(form) {
+                createQualification(form);
+            }
+        });
     });
+
+
+    function createQualification(form) {
+        var qualification_details_data = $(form).serialize();
+        $.ajax({
+            url: "{{ route('employee.qualification.details') }}",
+            type: 'POST',
+            data: qualification_details_data,
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                jQuery('.nav-pills a[href="#past_work_tab"]').tab('show');
+                // This variable is used on save all records button
+                all_data_saved = true;
+            },
+            error: function(error_messages) {
+                for (let [key, value] of Object.entries(error_messages.responseJSON.errors)) {
+                    let split_arr = key.split('.');
+                    let error_key = 'input[name="' + split_arr[0] +'['+split_arr[1]+']'+'['+split_arr[2]+']"]';
+                    $(document).find(error_key).after(
+                        '<span class="_error'+split_arr[1]+' text text-danger">' + value[0].replace(split_arr[0]+'.'+split_arr[1]+'.',' ') + '</span>');
+                    setTimeout(function() {
+                        jQuery('._error'+split_arr[1]).remove();
+                    }, 3000);
+                }
+                // This variable is used on save all records button
+                all_data_saved = false;
+                jQuery('.nav-pills a[href="#qualification_tab"]').tab('show');
+            }
+        });
+    }
 </script>

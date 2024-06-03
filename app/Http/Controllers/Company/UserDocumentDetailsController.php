@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use Exception;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Services\UserDocumentDetailServices;
 use App\Http\Requests\UserDocumentDetailsRequest;
 
@@ -20,8 +18,7 @@ class UserDocumentDetailsController extends Controller
     public function store(UserDocumentDetailsRequest $userDocumentDetailsRequest)
     {
         try {
-            $data  = $userDocumentDetailsRequest->validated();
-            if ($this->userDocumentDetailsService->create($data)) {
+            if ($this->userDocumentDetailsService->create($userDocumentDetailsRequest)) {
                 return response()->json([
                     'message' => 'Document Uploaded Added Successfully! Please Continue',
                 ]);

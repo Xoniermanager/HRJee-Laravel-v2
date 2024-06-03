@@ -14,13 +14,13 @@ class UserRelativeDetailServices
 
   public function create(array $allfamilyDetails)
   {
-    $user_id = $allfamilyDetails['user_id'] ?? '2';
-    
-    foreach ($allfamilyDetails['family_details'] as $familyDetails) {
-      $familyDetails[] = $this->userRelativeDetailRepository->updateOrCreate([
+    $user_id = $allfamilyDetails['user_id'];
+    foreach ($allfamilyDetails['family_details'] as $singleFamilyDetails) {
+      $response[] = $this->userRelativeDetailRepository->updateOrCreate([
         'user_id'           =>  $user_id,
-      ], $familyDetails);
+        'relation_name'     => $singleFamilyDetails['relation_name'],
+      ], $singleFamilyDetails);
     }
-    return true;
+    return $response;
   }
 }

@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employee_language', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('user_id')->nullable();
+        Schema::create('attendance_statuses', function (Blueprint $table) {
+            $table->id();
             $table->string('name')->unique();
-            $table->boolean('read')->default(false);
-            $table->boolean('write')->default(false);
-            $table->boolean('speak')->default(false);
+            $table->string('required_hours');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employee_language');
+        Schema::dropIfExists('attendance_statuses');
     }
 };

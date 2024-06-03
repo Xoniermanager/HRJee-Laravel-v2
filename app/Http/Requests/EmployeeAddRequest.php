@@ -22,18 +22,18 @@ class EmployeeAddRequest extends FormRequest
     public function rules(): array
     {
         return [
-                'name' => ['required', 'string'],
-                'email' => ['required', 'unique:users,email'],
-                'password' => ['required', 'string'],
-                'official_email_id' => ['required', 'unique:users,official_email_id'],
-                'blood_group' => ['required', 'in:A-,A+,B-,B+,O-,O+'],
-                'gender' => ['required', 'in:M,F,O'],
-                'marital_status' => ['required', 'in:M,S'],
-                'employee_status_id' => ['required', 'exists:employee_statuses,id'],
-                'date_of_birth' => ['required', 'date'],
-                'joining_date' => ['required', 'date'],
-                'phone' => ['required', 'min:10', 'numeric'],
-                'profile_image' => ['required', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048']
+            'name' => ['required', 'string'],
+            'email' => ['required', 'unique:users,email,' . request()->get('id')],
+            // 'password' => ['required', 'string'],
+            'official_email_id' => ['required', 'unique:users,official_email_id,' . request()->get('id')],
+            'blood_group' => ['required', 'in:A-,A+,B-,B+,O-,O+'],
+            'gender' => ['required', 'in:M,F,O'],
+            'marital_status' => ['required', 'in:M,S'],
+            'employee_status_id' => ['required', 'exists:employee_statuses,id'],
+            'date_of_birth' => ['required', 'date'],
+            'joining_date' => ['required', 'date'],
+            'phone' => ['required', 'min:10', 'numeric'],
+            'profile_image' => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048']
         ];
     }
 }

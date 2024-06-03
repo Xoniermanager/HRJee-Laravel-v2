@@ -18,4 +18,9 @@ class UserPastWorkDetail extends Model
         'duration',
         'current_company',
     ];
+
+    public function previousCompanies()
+    {
+        return $this->belongsTo(PreviousCompany::class, 'previous_company_id');
+    }
 }

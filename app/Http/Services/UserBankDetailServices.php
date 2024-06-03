@@ -12,12 +12,10 @@ class UserBankDetailServices
     $this->userBankDetailRepository = $userBankDetailRepository;
   }
 
-  public function create(array $data)
+  public function create($data)
   {
     $user_id = $data['user_id'];
-    $response = $this->userBankDetailRepository->updateOrCreate([
-      'user_id'           =>  $user_id,
-    ], $data);
+    $response = $this->userBankDetailRepository->updateOrCreate(['user_id' =>  $user_id],$data);
     return $response;
   }
 }
