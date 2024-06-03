@@ -107,9 +107,14 @@ class QualificationController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->qualificationService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'Qualification Status Updated Successfully! ',
+                'data'   =>  view('super_admin.qualification.qualification_list', [
+                    'allQualificationDetails' => $this->qualificationService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
 

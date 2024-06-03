@@ -4,128 +4,100 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use App\Rules\OnlyString;
-use App\Models\Permissions;
+use App\Models\permission;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Http\Services\permissionServices;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Services\permissionsServices;
+use App\Http\Services\PermissionsServices;
 
 class PermissionsController extends Controller
 {
-    private $permissions_services; 
-    public function __construct(PermissionsServices $permissions_services)
+    private $permissionServices; 
+    public function __construct(PermissionsServices $permissionServices)
     {
-            $this->permissions_services = $permissions_services;
+            $this->permissionServices = $permissionServices;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $permissions = $this->permissions_services->get_permissions();
-        return view('company.roles_and_permission.permissions-list')->with(['permissions'=> $permissions]);
+        $permission = $this->permissionServices->all();
+        return view('company.roles_and_permission.permission.index')->with(['permissions'=> $permission]);
     }
 
-    public function permissions_form()
+    public function role_form()
     {
-        return view('company.roles_and_permission.create-permissions-form');
+        return view('company.roles_and_permission.create-permission-form');
     }
-    public function add_permissions(Request $request)
+    public function store(Request $request)
     {
-        try
-        {
 
-        $validatepermissions  = Validator::make($request->all(), [
-            'name' => ['required', 'string', new OnlyString, 'unique:permissions,name'],
-        ]);
-
-        if ($validatepermissions->fails()) {
-            return redirect('permissions/create')->withErrors($validatepermissions)->withInput();
+        try {
+            $validator  = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'unique:permissions,name'],
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->messages()], 400);
+            }
+            $data = $request->all();
+            if ($this->permissionServices->create($data)) {
+                return response()->json([
+                    'message' => 'Permission Created Successfully!',
+                    'data'   =>  view('company/roles_and_permission/permission/permissions_list', [
+                        'permissions' => $this->permissionServices->all()
+                    ])->render()
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' =>  $e->getMessage()], 400);
         }
-       
-        if(Permissions::create($request->all()))
-        { 
-            smilify('succes','permissions Created Succesfully!');
-            return redirect('/permissions');
-        }
-    }
-    catch (Exception $e) {
-        return $e->getmessage();
-    }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit_permissions($id)
+    public function update(Request $request)
     {
-        try{
-        $permissions = $this->permissions_services->get_permissions_by_id($id)->first();
-
-        if (!$permissions) {
-            smilify('error','Item Does Not Exists !');
-            return redirect('/permissions');
-        }
-         return view('company.roles_and_permission.create-permissions-form', compact('permissions'));
-    }
-        catch (Exception $e) {
-            return $e->getmessage();
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-
-    public function update_permissions(Request $request, $id)
-    {
-        $validatepermissions  = Validator::make($request->all(), [
-            'name' => ['required', 'string', new OnlyString, Rule::unique('permissions')->ignore($id)],
+        $validator  = Validator::make($request->all(), [
+            'name' => ['required', 'string', new OnlyString, 'unique:states,name,' . $request->id],
         ]);
-    
-        if ($validatepermissions->fails()) {
-            return redirect()->route('edit.role', $id)->withErrors($validatepermissions)->withInput();
-        }
 
-        // Find the permissions by ID
-        $permissions = $this->permissions_services->get_permissions_by_id($id)->first();
-
-        if (!$permissions) {
-            smilify('error','permissions Not Found!');
-            return redirect('/permissions');
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages()], 400);
         }
-    
-        // Update the permissions's name
-        $permissions->name = $request->input('name');
-        $permissions->save();
-    
-        smilify('succes','permissions Updated Succesfully!');
-        return redirect('/permissions');
+        $updateRole = $request->except(['_token', 'id']);
+        $companyStatus = $this->permissionServices->updateDetails($updateRole, $request->id);
+        if ($companyStatus) {
+            return response()->json(
+                [
+                    'message' => 'Permission Updated Successfully!',
+                    'data'   =>  view('company/roles_and_permission/permission/permissions_list', [
+                        'permissions' => $this->permissionServices->all()
+                    ])->render()
+                ]
+            );
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function delete_permissions($id)
+    public function destroy(Request $request)
     {
-        try {
-        $validatepermissions = Validator::make(['id' => $id],
-            ['id' => 'required|exists:permissions,id']
-        );
-        if ($validatepermissions->fails()) {
-            smilify('error','Item Does Not Exists !');
-            return redirect('/permissions');
+        $id = $request->id;
+        $data = $this->permissionServices->deleteDetails($id);
+        if ($data) {
+            return response()->json([
+                'message' => 'Permission Deleted Successfully!',
+                'data'   =>  view('company/roles_and_permission/permission/permissions_list', [
+                    'permissions' => $this->permissionServices->all()
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
-        $response  = $this->permissions_services->delete_permissions_by_id($id);
-        if($response)
-        {
-            smilify('succes','permissions Deleted Succesfully!');
-            return redirect('/permissions');
-        }
-    }
-    catch (Exception $e) {
-        return $e->getmessage();
-    }
     }
 }

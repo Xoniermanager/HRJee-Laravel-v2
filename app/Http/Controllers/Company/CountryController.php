@@ -12,9 +12,19 @@ class CountryController extends Controller
 {
 
     private $countryService;
+    private $view;
     public function __construct(CountryServices $countryService)
     {
         $this->countryService = $countryService;
+        $role = 'super_admin';
+        if($role == 'super_admin') 
+        {
+            $this->view  = 'super_admin.country';
+        }
+        else
+        {
+            $this->view = 'company.country';
+        }
     }
 
     /**
@@ -22,7 +32,7 @@ class CountryController extends Controller
      */
     public function index()
     {
-        return view('company.country.index', [
+        return view($this->view.'.index', [
             'allCountryDetails' => $this->countryService->all()
         ]);
     }
@@ -43,7 +53,7 @@ class CountryController extends Controller
             if ($this->countryService->create($data)) {
                 return response()->json([
                     'message' => 'Country Created Successfully!',
-                    'data'   =>  view('company.country.country_list', [
+                    'data'   =>  view($this->view.'.country_list', [
                         'allCountryDetails' => $this->countryService->all()
                     ])->render()
                 ]);
@@ -71,7 +81,7 @@ class CountryController extends Controller
             return response()->json(
                 [
                     'message' => 'Country Updated Successfully!',
-                    'data'   =>  view('company.country.country_list', [
+                    'data'   =>  view($this->view.'.country_list', [
                         'allCountryDetails' => $this->countryService->all()
                     ])->render()
                 ]
@@ -89,7 +99,7 @@ class CountryController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Country Deleted Successfully',
-                'data'   =>  view('company.country.country_list', [
+                'data'   =>  view($this->view.'.country_list', [
                     'allCountryDetails' => $this->countryService->all()
                 ])->render()
             ]);
@@ -103,9 +113,29 @@ class CountryController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->countryService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'Country Status Updated Successfully',
+                'data'   =>  view($this->view.".country_list", [
+                    'allCountryDetails' => $this->countryService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+
+    public function search(Request $request)
+    {   
+        $searchedItems = $this->countryService->searchInCountry($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching...',
+                'data'   =>  view($this->view.".country_list", [
+                    'allCountryDetails' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 }

@@ -86,7 +86,7 @@ class EmployeeController extends Controller
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
         $languages =   $this->languagesServices->defaultLanguages();
         $allBranches = $this->branchService->get_branches();
-        $allRoles = $this->roleService->get_roles();
+        $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->all()->where('status', '1');
 
         return view('company.employee.add_employee', compact(

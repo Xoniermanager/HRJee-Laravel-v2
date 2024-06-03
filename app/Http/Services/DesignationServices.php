@@ -33,4 +33,25 @@ class DesignationServices
   {
     return $this->designationRepository->where('department_id', $department_id)->where('status', '1')->get();
   }
+  public function searchInDesignation($searchKey)
+  {
+
+    $data['key']          = array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
+    $data['status']       = array_key_exists('status', $searchKey) ? $searchKey['status'] : '';
+    $data['departmentID'] = array_key_exists('departmentID', $searchKey) ? $searchKey['departmentID'] : '';
+
+    return $this->designationRepository->where(function($query) use ($data) {
+      if (!empty($data['key'])) {
+          $query->where('name', 'like', "%{$data['key']}%");
+      }
+      if (!empty($data['departmentID'])) {
+          $query->where('department_id', $data['departmentID']);
+      }
+      if (isset($data['status'])) {
+          $query->where('status', $data['status']);
+      }
+    })->get();
+
+  }
+
 }

@@ -14,10 +14,20 @@ class DesignationsController extends Controller
 
     private $designationService;
     private $departmentService;
+    private $view;
     public function __construct(DesignationServices $designationService, DepartmentServices $departmentService)
     {
         $this->designationService = $designationService;
         $this->departmentService = $departmentService;
+        $role = 'super_admin';
+        if($role == 'super_admin') 
+        {
+            $this->view  = 'super_admin.designation';
+        }
+        else
+        {
+            $this->view = 'company.designation';
+        }
     }
 
     /**
@@ -25,7 +35,7 @@ class DesignationsController extends Controller
      */
     public function index()
     {
-        return view('company.designation.index', [
+        return view($this->view.'.index', [
             'allDesignationDetails' => $this->designationService->all(),
             'allDepartments' => $this->departmentService->all()->where('status', '1')
         ]);
@@ -48,7 +58,7 @@ class DesignationsController extends Controller
                 return response()->json(
                     [
                         'message' => 'Designation Created Successfully!',
-                        'data'   =>  view('company.designation.designation_list', [
+                        'data'   =>  view($this->view.'.designation_list', [
                             'allDesignationDetails' => $this->designationService->all()
                         ])->render()
                     ]
@@ -76,13 +86,12 @@ class DesignationsController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Designation Updated Successfully!',
-                'data'   =>  view('company.designation.designation_list', [
+                'data'   =>  view($this->view.'.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
         }
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -93,14 +102,14 @@ class DesignationsController extends Controller
         if ($data) {
             return response()->json([
                 'success', 'Deleted Successfully!',
-                'data'   =>  view('company.designation.designation_list', [
+                'data'   =>  view($this->view.'.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
         } else {
             return response()->json([
-                'error', 'Something Went Wrong! Pleaase try Again',
-                'data'   =>  view('company.designation.designation_list', [
+                'error', 'Something Went Wrong! Please try Again',
+                'data'   =>  view($this->view.'.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
@@ -112,9 +121,14 @@ class DesignationsController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->designationService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'Designation Status Updated Successfully',
+                'data'   =>  view($this->view.".designation_list", [
+                    'allDesignationDetails' => $this->designationService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 
@@ -134,5 +148,20 @@ class DesignationsController extends Controller
             ];
         }
         return json_encode($response);
+    }
+    public function search(Request $request)
+    {   
+        $searchedItems = $this->designationService->searchInDesignation($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view($this->view.".designation_list", [
+                    'allDesignationDetails' => $searchedItems 
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+        
     }
 }

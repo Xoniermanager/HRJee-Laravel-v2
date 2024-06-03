@@ -77,6 +77,11 @@ public function signin()
     return view('signin');
 }
 
+public function super_admin_login_form()
+{        
+    return view('super_admin.account.login');
+}
+
 }
 
 

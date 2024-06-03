@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Company\LanguagesController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Company\RolesController;
@@ -15,6 +15,7 @@ use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Employee\AccountController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Admin\CompanySizeController;
+use App\Http\Controllers\Company\LanguagesController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\DepartmentController;
@@ -25,13 +26,14 @@ use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\Company\UserDetailsController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
-use App\Http\Controllers\Company\UserDetailsController;
+use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Employee\LeaveMangementController;
 use App\Http\Controllers\company\EmployeeLanguageController;
@@ -65,17 +67,20 @@ Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_da
 Route::middleware(['dashboard.access'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
 
-    Route::get('company/profile', [CompanyController::class, 'company_profile'])->name('company.profile');
-    Route::patch('company/update/{id}/', [CompanyController::class, 'update_company'])->name('update.company');
-    Route::post('company/change/password', [CompanyController::class, 'company_change_password'])->name('company.change.password');
+    Route::controller(CompanyController::class)->group(function () {
+        Route::get('company/profile', 'company_profile')->name('company.profile');
+        Route::patch('company/update/{id}/', 'update_company')->name('update.company');
+        Route::post('company/change/password', 'company_change_password')->name('company.change.password');
+    });
 
-    Route::get('branch', [CompanyBranchesController::class, 'index'])->name('branch');
-    Route::get('branch/create', [CompanyBranchesController::class, 'branch_form'])->name('create.branch.form');
-    Route::post('add-branch', [CompanyBranchesController::class, 'add_branch'])->name('add.branch');
-
-    Route::get('branch/{id}/edit', [CompanyBranchesController::class, 'edit_branch'])->name('edit.branch');
-    Route::post('branch/{id}/', [CompanyBranchesController::class, 'update_branch'])->name('update.branch');
-    Route::get('delete-branch/{id}', [CompanyBranchesController::class, 'delete_branch'])->name('delete.branch');
+    Route::controller(CompanyBranchesController::class)->group(function () {
+        Route::get('branch', 'index')->name('branch');
+        Route::get('branch/create', 'branch_form')->name('create.branch.form');
+        Route::post('add-branch', 'add_branch')->name('add.branch');
+        Route::get('branch/{id}/edit', 'edit_branch')->name('edit.branch');
+        Route::post('branch/{id}/', 'update_branch')->name('update.branch');
+        Route::get('delete-branch/{id}', 'delete_branch')->name('delete.branch');
+    });
 
     //Department Module
     Route::prefix('/department')->controller(DepartmentController::class)->group(function () {
@@ -139,7 +144,6 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/delete', 'destroy')->name('language.delete');
     });
 
-    
 
     // Route::get('employee/index', [EmployeeController::class, 'index'])->name('employee.index');
     // Route::get('employee/{id}/view', [EmployeeController::class, 'view_employee'])->name('view.employee');
@@ -149,12 +153,38 @@ Route::middleware(['dashboard.access'])->group(function () {
     // Route::patch('employee/{id}/', [EmployeeController::class, 'update_employee'])->name('update.employee');
     // Route::get('delete-employee/{id}', [EmployeeController::class, 'delete_employee'])->name('delete.employee');
 
-    Route::get('roles', [RolesController::class, 'index'])->name('roles');
-    Route::get('roles/create', [RolesController::class, 'role_form'])->name('create.role.form');
-    Route::post('add-roles', [RolesController::class, 'add_roles'])->name('add.roles');
-    Route::get('roles/{id}/edit', [RolesController::class, 'edit_roles'])->name('edit.role');
-    Route::patch('roles/{id}/', [RolesController::class, 'update_roles'])->name('update.roles');
-    Route::get('delete-roles/{id}', [RolesController::class, 'delete_roles'])->name('delete.roles');
+
+    //Roles and Permission Module
+    Route::prefix('/roles')->controller(RolesController::class)->group(function () {
+        Route::get('/', 'index')->name('roles');
+        Route::post('/create', 'store')->name('role.store');
+        Route::post('/update', 'update')->name('role.update');
+        Route::get('/delete', 'destroy')->name('role.delete');
+        Route::get('/status/update', 'statusUpdate')->name('role.statusUpdate');
+    });
+
+    Route::prefix('/permissions')->controller(PermissionsController::class)->group(function () {
+        Route::get('/', 'index')->name('permissions');
+        Route::post('/create', 'store')->name('permission.store');
+        Route::post('/update', 'update')->name('permission.update');
+        Route::get('/delete', 'destroy')->name('permission.delete');
+        Route::get('/status/update', 'statusUpdate')->name('permission.statusUpdate');
+    });
+
+    // Route::prefix('/assign_permissions')->controller(PermissionsController::class)->group(function () {
+    //     Route::get('/', 'index')->name('assign_permission');
+    //     Route::post('/create', 'store')->name('assign_permissions.store');
+    //     Route::post('/update', 'update')->name('assign_permissions.update');
+    //     Route::get('/delete', 'destroy')->name('assign_permissions.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('assign_permissions.statusUpdate');
+    // });
+
+    // Route::get('roles', [RolesController::class, 'index'])->name('roles');
+    // Route::get('roles/create', [RolesController::class, 'role_form'])->name('create.role.form');
+    // Route::post('add-roles', [RolesController::class, 'add_roles'])->name('add.roles');
+    // Route::get('roles/{id}/edit', [RolesController::class, 'edit_roles'])->name('edit.role');
+    // Route::patch('roles/{id}/', [RolesController::class, 'update_roles'])->name('update.roles');
+    // Route::get('delete-roles/{id}', [RolesController::class, 'delete_roles'])->name('delete.roles');
 
     Route::get('permissions', [PermissionsController::class, 'index'])->name('permissions');
     Route::get('permissions/create', [PermissionsController::class, 'permissions_form'])->name('create.permissions.form');
@@ -182,10 +212,19 @@ Route::middleware(['dashboard.access'])->group(function () {
     });
 });
 
-Route::post('/company_login', [AdminController::class, 'companyLogin'])->name('company_login');
-Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
-Route::get('/signin', [AdminController::class, 'signin'])->name('signin');
-Route::get('/signup', [AdminController::class, 'signup'])->name('signup');
+Route::controller(AdminController::class)->group(function () {
+    Route::post('/company_login', 'companyLogin')->name('company_login');
+    Route::post('/logout', 'logout')->name('logout');
+    Route::get('/signin', 'signin')->name('signin');
+    Route::get('/signup', 'signup')->name('signup');
+});
+
+Route::prefix('/super-admin')->controller(AdminController::class)->group(function () {
+    Route::get('/login', 'super_admin_login_form')->name('super.admin.login.form');
+    Route::post('/login', 'login')->name('super.admin.login');
+    Route::post('/logout', 'logout')->name('logout');
+    // Route::get('/signup', 'signup')->name('signup');
+});
 
 //Employee Module
 Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
@@ -296,8 +335,71 @@ Route::controller(ForgetPasswordController::class)->group(function () {
     });
 });
 
-
 /** -----------------Super Admin Started--------------------*/
+
+Route::prefix('/super-admin')->group(function () {
+    Route::view('/', 'super_admin.dashboard')->name('super_admin.dashboard');
+    
+    Route::prefix('/department')->controller(DepartmentController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.departments');
+        Route::post('/create', 'store')->name('super_admin.department.store');
+        Route::post('/update', 'update')->name('super_admin.department.update');
+        Route::get('/delete', 'destroy')->name('super_admin.department.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.department.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.department.search');
+    });
+
+    Route::prefix('/designation')->controller(DesignationsController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.designations');
+        Route::post('/create', 'store')->name('super_admin.designation.store');
+        Route::post('/update', 'update')->name('super_admin.designation.update');
+        Route::get('/delete', 'destroy')->name('super_admin.designation.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.designation.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.designation.search'); 
+    });
+
+    Route::prefix('/state')->controller(StateController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.state');
+        Route::post('/create', 'store')->name('super_admin.state.store');
+        Route::post('/update', 'update')->name('super_admin.state.update');
+        Route::get('/delete', 'destroy')->name('super_admin.state.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.state.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.state.search'); 
+        Route::get('/get/all/state', 'getAllStates')->name('super_admin.get.all.country.state');
+    });
+
+    Route::prefix('/country')->controller(CountryController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.country');
+        Route::post('/create', 'store')->name('super_admin.country.store');
+        Route::post('/update', 'update')->name('super_admin.country.update');
+        Route::get('/delete', 'destroy')->name('super_admin.country.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.country.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.country.search'); 
+    });
+
+    Route::prefix('/qualifications')->controller(QualificationController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.qualification');
+        Route::post('/create', 'store')->name('super_admin.qualification.store');
+        Route::post('/update', 'update')->name('super_admin.qualification.update');
+        Route::get('/delete', 'destroy')->name('super_admin.qualification.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.qualification.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.qualification.search'); 
+         
+        // // for ajax call 
+        // Route::get('/qualification_data', 'get_all_qualification_ajax_call');
+        // Route::get('/ajax_store_qualification', 'ajax_store_qualification');
+
+        Route::prefix('/previous-company')->controller(QualificationController::class)->group(function () {
+            Route::get('/', 'index')->name('super_admin.previous_company');
+            Route::post('/create', 'store')->name('super_admin.previous_company.store');
+            Route::post('/update', 'update')->name('super_admin.previous_company.update');
+            Route::get('/delete', 'destroy')->name('super_admin.previous_company.delete');
+            Route::get('/status/update', 'statusUpdate')->name('super_admin.previous_company.statusUpdate');
+            Route::get('/search', 'search')->name('super_admin.previous_company.search');   
+    });
+});
+
+});
 
 //Company Status Module
 Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
