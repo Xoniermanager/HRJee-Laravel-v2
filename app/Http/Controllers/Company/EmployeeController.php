@@ -5,20 +5,20 @@ namespace App\Http\Controllers\Company;
 use Exception;
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\EmployeeAddRequest;
+use App\Http\Services\RolesServices;
+use App\Http\Services\ShiftServices;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
+use App\Http\Services\LanguagesServices;
+use App\Http\Requests\EmployeeAddRequest;
 use App\Http\Services\DepartmentServices;
 use App\Http\Services\DocumentTypeService;
-use App\Http\Services\EmployeeLanguageServices;
-use App\Http\Services\LanguagesServices;
 use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
-use App\Http\Services\RolesServices;
-use App\Http\Services\ShiftServices;
 
 class EmployeeController extends Controller
 {
@@ -33,7 +33,6 @@ class EmployeeController extends Controller
     private $branchService;
     private $roleService;
     private $shiftService;
-    private $employeeLanguageServices;
     private $languagesServices;
 
 

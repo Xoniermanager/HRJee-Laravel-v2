@@ -3,17 +3,21 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Company\AdminController;
+use App\Http\Controllers\Company\LeaveController;
 use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Employee\NewsController;
+use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
+use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Employee\AccountController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Admin\CompanySizeController;
+use App\Http\Controllers\Admin\LeaveStatusController;
 use App\Http\Controllers\Company\LanguagesController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
@@ -30,11 +34,13 @@ use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
+use App\Http\Controllers\company\LeaveStatusLogController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Employee\LeaveMangementController;
+use App\Http\Controllers\Company\AttendanceStatusController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
@@ -45,6 +51,7 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Company\UserDocumentDetailsController;
 use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
+use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 /*
@@ -57,7 +64,6 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 
 Route::get('demo', [SkillController::class, 'demo'])->name('demo');
 Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
@@ -126,22 +132,45 @@ Route::middleware(['dashboard.access'])->group(function () {
         // for ajax call 
         Route::get('/previous_company_data', 'get_all_previous_company_ajax_call');
         Route::get('/ajax_store_previous_company', 'ajax_store_previous_company');
-    
     });
     Route::prefix('/language')->controller(LanguagesController::class)->group(function () {
         Route::post('/create', 'store')->name('language.create');
         Route::get('/delete', 'destroy')->name('language.delete');
     });
 
-    
+    //Employee Module
+    Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
+        Route::get('/index', 'index')->name('employee.index');
+        Route::get('/add', 'add')->name('employee.add');
+        Route::post('/store', 'store')->name('employee.store');
+        Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
+    });
 
-    // Route::get('employee/index', [EmployeeController::class, 'index'])->name('employee.index');
-    // Route::get('employee/{id}/view', [EmployeeController::class, 'view_employee'])->name('view.employee');
-    // Route::get('employee/create', [EmployeeController::class, 'add_employee'])->name('create.employee');
-    // Route::post('add-employee', [EmployeeController::class, 'add_employee'])->name('add.employee');
-    // Route::get('employee/{id}/edit', [EmployeeController::class, 'edit_employee'])->name('edit.employee');
-    // Route::patch('employee/{id}/', [EmployeeController::class, 'update_employee'])->name('update.employee');
-    // Route::get('delete-employee/{id}', [EmployeeController::class, 'delete_employee'])->name('delete.employee');
+    //Holiday Module
+    Route::prefix('/holiday')->controller(HolidayController::class)->group(function () {
+        Route::get('/', 'index')->name('holiday.index');
+        Route::post('/create', 'store')->name('holiday.store');
+        Route::post('/update', 'update')->name('holiday.update');
+        Route::get('/delete', 'destroy')->name('holiday.delete');
+        Route::get('/status/update', 'statusUpdate')->name('holiday.statusUpdate');
+    });
+
+    //Leave Module
+    Route::prefix('/leave')->controller(LeaveController::class)->group(function () {
+        Route::get('/', 'index')->name('leave.index');
+        Route::get('/add', 'applyLeave')->name('leave.add');
+        Route::post('/create', 'store')->name('leave.store');
+        Route::post('/update', 'update')->name('leave.update');
+        Route::get('/delete', 'destroy')->name('leave.delete');
+    });
+
+    //Leave Status Log Module
+    Route::prefix('/leave-status-log')->controller(LeaveStatusLogController::class)->group(function () {
+        Route::get('/', 'index')->name('leave.status.log.index');
+        Route::get('/add', 'add')->name('leave.status.log.add');
+        Route::post('/create', 'create')->name('leave.status.log.create');
+        Route::get('/leave/details','getLeaveAppliedDetailsbyId')->name('leave.applied.details');
+    });
 
     Route::get('roles', [RolesController::class, 'index'])->name('roles');
     Route::get('roles/create', [RolesController::class, 'role_form'])->name('create.role.form');
@@ -161,18 +190,28 @@ Route::middleware(['dashboard.access'])->group(function () {
     Route::prefix('/office-time')->controller(OfficeTimingConfigController::class)->group(function () {
         Route::get('/', 'index')->name('office_time_config.index');
         Route::post('/create', 'store')->name('office_time_config.store');
-         Route::post('/update', 'update')->name('office_time_config.update');
-         Route::get('/delete', 'destroy')->name('office_time_config.delete');
-         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
+        Route::post('/update', 'update')->name('office_time_config.update');
+        Route::get('/delete', 'destroy')->name('office_time_config.delete');
+        Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
     });
-    
+
     // Office Shifts
     Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
         Route::get('/', 'index')->name('shifts.index');
-            Route::post('/create', 'store')->name('shift.store');
-            Route::post('/update', 'update')->name('shift.update');
-            Route::get('/delete', 'destroy')->name('shift.delete');
-            Route::get('/status/update', 'statusUpdate')->name('shift.statusUpdate');
+        Route::post('/create', 'store')->name('shift.store');
+        Route::post('/update', 'update')->name('shift.update');
+        Route::get('/delete', 'destroy')->name('shift.delete');
+        Route::get('/status/update', 'statusUpdate')->name('shift.statusUpdate');
+    });
+
+    //Attendance Status Module
+    Route::prefix('/attendance-status')->controller(AttendanceStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('attendance.status.index');
+        Route::get('/add', 'applyLeave')->name('attendance.status.add');
+        Route::post('/create', 'store')->name('attendance.status.store');
+        Route::post('/update', 'update')->name('attendance.status.update');
+        Route::get('/delete', 'destroy')->name('attendance.status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('attendance.status.statusUpdate');
     });
 });
 
@@ -180,14 +219,6 @@ Route::post('/company_login', [AdminController::class, 'companyLogin'])->name('c
 Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 Route::get('/signin', [AdminController::class, 'signin'])->name('signin');
 Route::get('/signup', [AdminController::class, 'signup'])->name('signup');
-
-//Employee Module
-Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
-    Route::get('/index', 'index')->name('employee.index');
-    Route::get('/add', 'add')->name('employee.add');
-    Route::post('/store', 'store')->name('employee.store');
-    Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
-});
 
 //Advance Details for employee
 Route::post('/employee/advance/details', [UserAdvanceDetailsController::class, 'store'])->name('employee.advance.details');
@@ -230,7 +261,7 @@ Route::controller(ForgetPasswordController::class)->group(function () {
 });
 
 // Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
-    Route::prefix('employee')->group(function () {
+Route::prefix('employee')->group(function () {
 
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
@@ -285,6 +316,9 @@ Route::controller(ForgetPasswordController::class)->group(function () {
         Route::get('/resignation', 'index')->name('employee.resignation');
         Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
     });
+
+    //Employee Attendance Management]
+    Route::post('/puch/in',[EmployeeAttendanceController::class ,'punchIn'])->name('punch.in');
 });
 
 
@@ -315,11 +349,10 @@ Route::prefix('/skills')->controller(SkillController::class)->group(function () 
     Route::post('/update', 'update')->name('skills.update');
     Route::get('/delete', 'destroy')->name('skills.delete');
     Route::get('/status/update', 'statusUpdate')->name('skills.statusUpdate');
-    
+
     // for ajax call 
     Route::get('/ajax_get_all', 'get_all_skills');
     Route::get('/ajax_store_skills', 'ajax_store_skills');
-    
 });
 
 //Qualification Module
@@ -329,11 +362,10 @@ Route::prefix('/qualifications')->controller(QualificationController::class)->gr
     Route::post('/update', 'update')->name('qualification.update');
     Route::get('/delete', 'destroy')->name('qualification.delete');
     Route::get('/status/update', 'statusUpdate')->name('qualification.statusUpdate');
-        
+
     // for ajax call 
     Route::get('/qualification_data', 'get_all_qualification_ajax_call');
     Route::get('/ajax_store_qualification', 'ajax_store_qualification');
-    
 });
 
 //Employee Status Module
@@ -361,4 +393,22 @@ Route::prefix('/document-type')->controller(DocumentTypeController::class)->grou
     Route::post('/update', 'update')->name('document.type.update');
     Route::get('/delete', 'destroy')->name('document.type.delete');
     Route::get('/status/update', 'statusUpdate')->name('document.type.statusUpdate');
+});
+
+//Leave Type Module
+Route::prefix('/leave-type')->controller(LeaveTypeController::class)->group(function () {
+    Route::get('/', 'index')->name('leave.type.index');
+    Route::post('/create', 'store')->name('leave.type.store');
+    Route::post('/update', 'update')->name('leave.type.update');
+    Route::get('/delete', 'destroy')->name('leave.type.delete');
+    Route::get('/status/update', 'statusUpdate')->name('leave.type.statusUpdate');
+});
+
+//Leave Status Module
+Route::prefix('/leave-status')->controller(LeaveStatusController::class)->group(function () {
+    Route::get('/', 'index')->name('leave.status.index');
+    Route::post('/create', 'store')->name('leave.status.store');
+    Route::post('/update', 'update')->name('leave.status.update');
+    Route::get('/delete', 'destroy')->name('leave.status.delete');
+    Route::get('/status/update', 'statusUpdate')->name('leave.status.statusUpdate');
 });

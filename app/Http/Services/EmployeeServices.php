@@ -2,9 +2,11 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Support\Facades\Auth;
+
+
 use Illuminate\Support\Facades\Hash;
-
-
+use App\Http\Services\FileUploadService;
 use App\Repositories\EmployeeRepository;
 
 class EmployeeServices
@@ -29,7 +31,7 @@ class EmployeeServices
       $data['profile_image'] = $imagePath;
     }
     $data['password'] = Hash::make(($data['password'] ?? 'password'));
-    $data['company_id'] = '1';
+    $data['company_id'] = Auth::guard('admin')->user()->id;
     $data['last_login_ip'] = request()->ip();
     if ($data['id'] != null) {
       $existingDetails = $this->employeeRepository->find($data['id']);

@@ -39192,3 +39192,6 @@ input:checked + .slider:before {
   height: 10px;
   }
   }
+  .border-radiusxl {
+    border-radius: var(--bs-border-radius-xl) !important;
+  }
