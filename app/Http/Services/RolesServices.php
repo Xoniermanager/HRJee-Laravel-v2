@@ -6,8 +6,8 @@ use App\Repositories\RolesRepository;
 
 class RolesServices 
 {
-  private $roles_repository ;
-  public function __construct(RolesRepository $roles_repository)
+  private $rolesRepository ;
+  public function __construct(RolesRepository $rolesRepository)
   {
     $this->rolesRepository = $rolesRepository;
   }
