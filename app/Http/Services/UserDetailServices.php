@@ -40,4 +40,8 @@ class UserDetailServices
     }
     return true;
   }
+  public function getDetailsByUserId($userId)
+  {
+    return $this->userDetailRepository->with('officeShift')->where('user_id', $userId)->first();
+  }
 }

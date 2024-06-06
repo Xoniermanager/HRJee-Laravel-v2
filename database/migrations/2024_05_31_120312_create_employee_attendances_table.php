@@ -19,10 +19,10 @@ return new class extends Migration
             $table->dateTime('punch_out')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
-            $table->enum('punch_in_using', ['Mobile', 'Web'])->default('Mobile');
+            $table->enum('punch_in_using', ['Mobile', 'Web']);
             $table->enum('punch_in_by', ['Self', 'Company'])->default('Self');
-            $table->enum('work_from', ['Office', 'Home'])->default('Home');
-            $table->unsignedBigInteger('attendance_status_id');
+            $table->enum('work_from', ['Office', 'Home'])->default('Office');
+            $table->unsignedBigInteger('attendance_status_id')->nullable();
             $table->foreign('attendance_status_id')->references('id')->on('attendance_statuses');
             $table->boolean('jiofence_auto_check_in')->default(false);
             $table->boolean('jiofence_auto_check_out')->default(false);

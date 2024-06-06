@@ -36,6 +36,7 @@ class OfficeShiftController extends Controller
                 'end_time'  => ['required', 'string'],
                 'check_in_buffer'  => ['required', 'string'],
                 'check_out_buffer' => ['required', 'string'],
+                'login_before_shift_time' => ['required', 'string'],
             ]);
             if ($validateOfficeTimeConfig->fails()) {
                 return response()->json(['error' => $validateOfficeTimeConfig->messages()], 400);
@@ -78,6 +79,7 @@ class OfficeShiftController extends Controller
             'end_time'  => ['required', 'string'],
             'check_in_buffer'  => ['required', 'string'],
             'check_out_buffer' => ['required', 'string'],
+            'login_before_shift_time' => ['required', 'string'],
         ]);
 
         if ($validateShift->fails()) {

@@ -368,7 +368,7 @@ Route::prefix('employee')->group(function () {
     });
 
     //Employee Attendance Management]
-    Route::post('/puch/in',[EmployeeAttendanceController::class ,'punchIn'])->name('punch.in');
+    Route::post('/employee/attendance',[EmployeeAttendanceController::class ,'makeAttendance'])->name('employee.attendance');
 });
 
 /** -----------------Super Admin Started--------------------*/

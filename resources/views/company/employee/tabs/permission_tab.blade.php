@@ -109,7 +109,7 @@
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Shirt Start Time</label>
-                <input class="form-control" type="time" name="start_time" id="start_time" readonly
+                <input class="form-control" type="time" id="start_time" readonly
                     value="{{ $userDetails->start_time ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
