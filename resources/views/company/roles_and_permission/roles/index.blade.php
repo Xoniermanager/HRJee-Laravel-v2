@@ -264,7 +264,8 @@
         });
 
         function handleStatus(id) {
-            var checked_value = $('#checked_value').prop('checked');
+            var checked_value = $('#checked_value_'+id).prop('checked');
+            console.log(checked_value);
             let status;
             let status_name;
             if (checked_value == true) {
@@ -275,7 +276,7 @@
                 status_name = 'Inactive';
             }
             $.ajax({
-                url: "{{ route('office_time_config.statusUpdate') }}",
+                url: "{{ route('role.statusUpdate') }}",
                 type: 'get',
                 data: {
                     'id': id,

@@ -81,6 +81,22 @@ class PermissionsController extends Controller
             );
         }
     }
+    public function statusUpdate(Request $request)
+    {
+        $id = $request->id;
+        $data['status'] = $request->status;
+        $statusDetails = $this->permissionServices->updateDetails($data, $id);
+        if ($statusDetails) {
+            return response()->json([
+                'message' => 'Permission Updated Successfully!',
+                'data'   =>  view('company/roles_and_permission/permission/permissions_list', [
+                    'permissions' => $this->permissionServices->all()
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error', 'Something Went Wrong! Please try Again']);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
