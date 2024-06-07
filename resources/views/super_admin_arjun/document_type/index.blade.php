@@ -39,7 +39,7 @@
             </div>
 
             <div class="mb-5 mb-xl-10">
-                @include('super_admin.document_type.document_type_list')
+                @include('super_admin_arjun.document_type.document_type_list')
             </div>
         </div>
         <!--end::Col-->

@@ -12,28 +12,18 @@ use Illuminate\Support\Facades\Validator;
 class DepartmentController extends Controller
 {
     private $departmentService;
-    private $view;
-    public function __construct(DepartmentServices $departmentService)
+
+    public function __construct(DepartmentServices $departmentService )
     {
-
         $this->departmentService = $departmentService;
-        $role = 'super_admin';
-        if($role == 'super_admin') 
-        {
-            $this->view  = 'super_admin.department';
-        }
-        else
-        {
-            $this->view = 'company.department';
-        }
     }
-
+    
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view($this->view. ".index", [
+        return view($request->get('view'). ".index", [
             'allDepartmentDetails' => $this->departmentService->all()
         ]);
     }
@@ -55,7 +45,7 @@ class DepartmentController extends Controller
             if ($this->departmentService->create($data)) {
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
-                    'data'   =>  view($this->view.".department_list", [
+                    'data'   =>  view($request->get('view').".department_list", [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]);
@@ -83,7 +73,7 @@ class DepartmentController extends Controller
             return response()->json(
                 [
                     'message' => 'Departments Updated Successfully!',
-                    'data'   =>  view($this->view.".department_list", [
+                    'data'   =>  view($request->get('view').".department_list", [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]
@@ -101,7 +91,7 @@ class DepartmentController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Departments Deleted Successfully',
-                'data'   =>  view($this->view.".department_list", [
+                'data'   =>  view($request->get('view').".department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -117,7 +107,7 @@ class DepartmentController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Departments Status Updated Successfully',
-                'data'   =>  view($this->view.".department_list", [
+                'data'   =>  view($request->get('view').".department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -131,7 +121,7 @@ class DepartmentController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view($this->view.".department_list", [
+                'data'   =>  view($request->get('view').".department_list", [
                     'allDepartmentDetails' =>  $searchedItems
                 ])->render()
             ]);

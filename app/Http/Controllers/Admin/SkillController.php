@@ -25,7 +25,7 @@ class SkillController extends Controller
      */
     public function index()
     {
-        return view('super_admin.skill.index', [
+        return view('super_admin.skills.index', [
             'allSkillDetails' => $this->skillsService->all()
         ]);
     }
@@ -48,7 +48,7 @@ class SkillController extends Controller
             if ($this->skillsService->create($data)) {
                 return response()->json([
                     'message' => 'Skills Created Successfully!',
-                    'data'   =>  view('super_admin.skill.skill_list', [
+                    'data'   =>  view('super_admin.skills.skill_list', [
                         'allSkillDetails' => $this->skillsService->all()
                     ])->render()
                 ]);
@@ -75,7 +75,7 @@ class SkillController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Skills Updated Successfully!',
-                'data'   =>  view('super_admin.skill.skill_list', [
+                'data'   =>  view('super_admin.skills.skill_list', [
                     'allSkillDetails' => $this->skillsService->all()
                 ])->render()
             ]);
@@ -92,7 +92,7 @@ class SkillController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Skills Deleted Successfully!',
-                'data'   =>  view('super_admin.skill.skill_list', [
+                'data'   =>  view('super_admin.skills.skill_list', [
                     'allSkillDetails' => $this->skillsService->all()
                 ])->render()
             ]);
@@ -107,9 +107,27 @@ class SkillController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->skillsService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'message' => 'Skill Status Updated Successfully!',
+                'data'   =>  view('super_admin.skills.skill_list', [
+                    'allSkillDetails' => $this->skillsService->all()
+                ])->render()
+            ]);
+        }
+    }
+
+    public function search(Request $request)
+    {   
+        $searchedItems = $this->skillsService->searchInSkills($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching...',
+                'data'   =>  view('super_admin.skills.skill_list', [
+                    'allSkillDetails' => $searchedItems
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 

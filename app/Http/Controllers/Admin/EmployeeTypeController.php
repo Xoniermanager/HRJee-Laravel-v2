@@ -17,7 +17,6 @@ class EmployeeTypeController extends Controller
     {
         $this->employeeTypeService = $employeeTypeService;
     }
-
     /**
      * Display a listing of the resource.
      */
@@ -102,10 +101,26 @@ class EmployeeTypeController extends Controller
         $id = $request->id;
         $data['status'] = $request->status;
         $statusDetails = $this->employeeTypeService->updateDetails($data, $id);
-        if ($statusDetails) {
-            echo 1;
+        return response()->json([
+            'message' => 'Employee Type Status Updated Successfully!',
+            'data'   =>  view('super_admin.employee_type.employee_type_list', [
+                'allEmployeeTypeDetails' => $this->employeeTypeService->all()
+            ])->render()
+        ]);
+    }
+
+    public function search(Request $request)
+    {   
+        $searchedItems = $this->employeeTypeService->searchInEmployeeType($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching...',
+                'data'   =>  view('super_admin.employee_type.employee_type_list', [
+                    'allEmployeeTypeDetails' => $searchedItems
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 }

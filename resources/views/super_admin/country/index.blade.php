@@ -75,7 +75,7 @@
                         <h4 class="text-dark">Add country</h4>
                         <p>
                             Fill in your information below to continue.</p>
-                        <form class="row g-3" id="super_country_form">
+                        <form class="row g-3" id="country_form">
                             @csrf
                             <div class="col-md-12">
                                 <label class="form-label" >Name</label>
@@ -133,7 +133,7 @@
 
         jQuery.noConflict();
         jQuery(document).ready(function($) {
-            jQuery("#super_country_form").validate({
+            jQuery("#country_form").validate({
                 rules: {
                     name: "required",
                 },

@@ -81,6 +81,23 @@ class RolesController extends Controller
         }
     }
 
+    public function statusUpdate(Request $request)
+    {
+        $id = $request->id;
+        $data['status'] = $request->status;
+        $statusDetails = $this->rolesServices->updateDetails($data, $id);
+        if ($statusDetails) {
+            return response()->json([
+                'message' => 'Role Status Updated Successfully!',
+                'data'   =>  view('company/roles_and_permission/roles/roles_list', [
+                    'roles' => $this->rolesServices->all()
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error', 'Something Went Wrong! Plesase try Again']);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */

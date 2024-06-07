@@ -15,20 +15,10 @@ class StateController extends Controller
     private $stateService;
 
     private $countryService;
-    private $view;
     public function __construct(StateServices $stateService, CountryServices $countryService)
     {
         $this->stateService = $stateService;
         $this->countryService = $countryService;
-        $role = 'super_admin';
-        if($role == 'super_admin') 
-        {
-            $this->view  = 'super_admin.state';
-        }
-        else
-        {
-            $this->view = 'company.state';
-        }
     }
 
     /**
@@ -36,7 +26,7 @@ class StateController extends Controller
      */
     public function index()
     {
-        return view($this->view.'.index', [
+        return view('company.state.index', [
             'allStateDetails' => $this->stateService->all(),
             'allcountryDetails' => $this->countryService->all()->where('status', '1')
         ]);
@@ -58,7 +48,7 @@ class StateController extends Controller
             if ($this->stateService->create($data)) {
                 return response()->json([
                     'message' => 'State Created Successfully!',
-                    'data'   =>  view($this->view.'.state_list', [
+                    'data'   =>  view('company.state.state_list', [
                         'allStateDetails' => $this->stateService->all()
                     ])->render()
                 ]);
@@ -86,7 +76,7 @@ class StateController extends Controller
             return response()->json(
                 [
                     'message' => 'State Updated Successfully!',
-                    'data'   =>  view($this->view.'.state_list', [
+                    'data'   =>  view('company.state.state_list', [
                         'allStateDetails' => $this->stateService->all()
                     ])->render()
                 ]
@@ -104,7 +94,7 @@ class StateController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'State Deleted Successfully',
-                'data'   =>  view($this->view.'.state_list', [
+                'data'   =>  view('company.state.state_list', [
                     'allStateDetails' => $this->stateService->all()
                 ])->render()
             ]);
@@ -120,7 +110,7 @@ class StateController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'State Status Updated Successfully',
-                'data'   =>  view($this->view.".state_list", [
+                'data'   =>  view("company.state.state_list", [
                     'allStateDetails' => $this->stateService->all()
                 ])->render()
             ]);
@@ -153,7 +143,7 @@ class StateController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view($this->view.".state_list", [
+                'data'   =>  view("company.state.state_list", [
                     'allStateDetails' => $searchedItems
                 ])->render()
             ]);

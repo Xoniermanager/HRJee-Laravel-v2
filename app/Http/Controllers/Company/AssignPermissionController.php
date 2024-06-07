@@ -2,22 +2,29 @@
 
 namespace App\Http\Controllers\Company;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Services\PermissionsServices;
+use App\Http\Services\RolesServices;
 
 class AssignPermissionController extends Controller
 {
-    // private $rolesServices; 
-    // public function __construct(RolesServices $rolesServices)
-    // {
-    //         $this->rolesServices = $rolesServices;
-    // }
+    private $rolesServices;
+    private $permissionServices ; 
+    public function __construct(RolesServices $rolesServices , PermissionsServices $permissionServices )
+    {
+            $this->rolesServices = $rolesServices;
+            $this->permissionServices = $permissionServices;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('company.roles_and_permission.assign_permission.index');
+        return view('company.roles_and_permission.assign_permission.index',[
+            'roles' => $this->rolesServices->all() ,
+            'permissions' => $this->permissionServices->all()
+        ]);
     }
 
 //     public function role_form()

@@ -75,7 +75,7 @@
                         <h4 class="text-dark">Add Department</h4>
                         <p>
                             Fill in your information below to continue.</p>
-                        <form class="row g-3" id="super_department_form">
+                        <form class="row g-3" id="department_form">
                             @csrf
                             <div class="col-md-12">
                                 <label class="form-label" >Name</label>
@@ -131,7 +131,7 @@
 
         jQuery.noConflict();
         jQuery(document).ready(function($) {
-            jQuery("#super_department_form").validate({
+            jQuery("#department_form").validate({
                 rules: {
                     name: "required",
                 },

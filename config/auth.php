@@ -44,24 +44,11 @@ return [
             'driver' => 'session',
             'provider' => 'companies',
         ],
+        'super_admin' => [
+            'driver' => 'session',
+            'provider' => 'super_admin',
+        ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | User Providers
-    |--------------------------------------------------------------------------
-    |
-    | All authentication drivers have a user provider. This defines how the
-    | users are actually retrieved out of your database or other storage
-    | mechanisms used by this application to persist your user's data.
-    |
-    | If you have multiple user tables or models you may configure multiple
-    | sources which represent each model / table. These sources may then
-    | be assigned to any extra authentication guards you have defined.
-    |
-    | Supported: "database", "eloquent"
-    |
-    */
 
     'providers' => [
         'users' => [
@@ -72,11 +59,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Company::class,
         ],
+        'super_admin' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\SuperAdminAuthentication::class,
+        ]
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -107,6 +94,12 @@ return [
         ],
         'admin' => [
             'provider' => 'companies',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'super_admin' => [
+            'provider' => 'admin',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,

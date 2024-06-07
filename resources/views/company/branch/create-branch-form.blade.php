@@ -42,12 +42,12 @@
                                 <td>
                                     <select class="form-select mb-3" name="branch_type">
                                         <option value="">Select Branch Type</option>
-                                        <option value="Primary"
+                                        <option value="primary"
                                             {{ collect(isset($branch['branch_type']) ? $branch['branch_type'] : '')->contains('primary') ? 'selected' : '' }}>
                                             Primary</option>
                                         <option value="Secondary"
                                             {{ collect(isset($branch['branch_type']) ? $branch['branch_type'] : '')->contains('secondary') ? 'selected' : '' }}>
-                                            Secondary</option>
+                                            secondary</option>
                                     </select>
                                     @error('branch_type')
                                         <div class="text-danger">{{ $message }}</div>

@@ -98,7 +98,7 @@
                         <h4 class="text-dark">Add designation</h4>
                         <p>
                             Fill in your information below to continue.</p>
-                        <form class="row g-3" id="super_designation_form">
+                        <form class="row g-3" id="designation_form">
                             @csrf
                             <div class="col-md-12">
                                 <label class="form-label" >Name</label>
@@ -133,30 +133,21 @@
 
         $(document).on("input", "#search", function(e) {
             var key = $(this).val();
-            search_designation(key,departmentID=null)
-        });
-
-        $('#filterByDepartmentID').change(function(){
-            var departmentID = $(this).val();
-            var status = $('#filterByStatus').val()
-            search_designation(key=null,departmentID, status)
+            search_previous_company(key,status=null)
         });
 
         $('#filterByStatus').change(function(){
             var status= $(this).val();
-            var departmentID = $('#filterByDepartmentID').val()
-            search_designation(key=null,departmentID,status)
+            search_previous_company(key=null,status)
         });
-
-            function search_designation(key, departmentID, status=null)
+            function search_previous_company(key,, status=null)
             {
                 $.ajax({
-                        url: "{{ route('super_admin.designation.search') }}",
+                        url: "{{ route('super_admin.previous_company.search') }}",
                         type: 'get',
                         data: {
                             'key': key,
                             'status': status,
-                            'departmentID': departmentID,
                         },
                         success: function(res) {
                             if (res) {
@@ -175,7 +166,7 @@
 
         jQuery.noConflict();
         jQuery(document).ready(function($) {
-            jQuery("#super_designation_form").validate({
+            jQuery("#designation_form").validate({
                 rules: {
                     name: "required",
                 },
