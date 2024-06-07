@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AssetCategoryController;
+use App\Http\Controllers\Admin\AssetManufacturerController;
+use App\Http\Controllers\Admin\AssetStatusController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\Admin\SkillController;
@@ -524,4 +527,31 @@ Route::prefix('/leave-status')->controller(LeaveStatusController::class)->group(
     Route::post('/update', 'update')->name('leave.status.update');
     Route::get('/delete', 'destroy')->name('leave.status.delete');
     Route::get('/status/update', 'statusUpdate')->name('leave.status.statusUpdate');
+});
+
+//Asset Manufacturer Module
+Route::prefix('/asset-manufacturer')->controller(AssetManufacturerController::class)->group(function () {
+    Route::get('/', 'index')->name('asset.manufacturer.index');
+    Route::post('/create', 'store')->name('asset.manufacturer.store');
+    Route::post('/update', 'update')->name('asset.manufacturer.update');
+    Route::get('/delete', 'destroy')->name('asset.manufacturer.delete');
+    Route::get('/status/update', 'statusUpdate')->name('asset.manufacturer.statusUpdate');
+});
+
+//Asset Status Module
+Route::prefix('/asset-status')->controller(AssetStatusController::class)->group(function () {
+    Route::get('/', 'index')->name('asset.status.index');
+    Route::post('/create', 'store')->name('asset.status.store');
+    Route::post('/update', 'update')->name('asset.status.update');
+    Route::get('/delete', 'destroy')->name('asset.status.delete');
+    Route::get('/status/update', 'statusUpdate')->name('asset.status.statusUpdate');
+});
+
+//Asset Category Module
+Route::prefix('/asset-category')->controller(AssetCategoryController::class)->group(function () {
+    Route::get('/', 'index')->name('asset.category.index');
+    Route::post('/create', 'store')->name('asset.category.store');
+    Route::post('/update', 'update')->name('asset.category.update');
+    Route::get('/delete', 'destroy')->name('asset.category.delete');
+    Route::get('/status/update', 'statusUpdate')->name('asset.category.statusUpdate');
 });

@@ -115,7 +115,7 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
         $allBranches = $this->branchService->get_branches();
-        $allRoles = $this->roleService->get_roles();
+        $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->all()->where('status', '1');
         $languages =   $this->languagesServices->defaultLanguages();
 

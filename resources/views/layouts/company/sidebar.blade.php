@@ -240,20 +240,61 @@
                                 </div>
                                 <!--end:Menu sub-->
                             </div>
-                            <!--end:Menu item-->
-                            <!-- <div class="menu-item ">
-         
-           <a class="menu-link" href="role_management.html">
-            <span class="menu-icon">
-             <span class="svg-icon svg-icon-5">
-              <i class="fa fa-key"></i>
-             </span>
-           
-            </span>
-            <span class="menu-title"> Role Management</span>
-           </a>
-           
-          </div> -->
+                            <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+                                <!--begin:Menu link-->
+                                <span class="menu-link">
+                                    <span class="menu-icon">
+                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr001.svg-->
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-key"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Assets Management</span>
+                                    <span class="menu-arrow"></span>
+                                </span>
+                                <!--end:Menu link-->
+                                <!--begin:Menu sub-->
+                                <div class="menu-sub menu-sub-accordion">
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item" data-url="{{ route('asset.manufacturer.index') }}">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{ route('asset.manufacturer.index') }}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Asset Manufacturer </span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item" data-url="{{ route('asset.status.index') }}">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{ route('asset.status.index') }}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Asset Status</span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item" data-url="{{ route('asset.category.index') }}">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{route('asset.category.index')}}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Asset Category</span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                </div>
+                                <!--end:Menu sub-->
+                            </div>
                             <!--begin:Menu item-->
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                                 <!--begin:Menu link-->

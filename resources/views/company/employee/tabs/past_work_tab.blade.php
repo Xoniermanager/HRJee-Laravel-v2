@@ -96,12 +96,8 @@
     var previous_company_counter = {{ $i }};
 
     function get_previous_company_html() {
-
-        var previous_company = $('.old_company .k-picker .k-input-value-text').text().trim();
-        var previous_company_id = $('previous_company_id').val();
-
-        // var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
-        // var previous_company_id = $('select[name=previous_company_id]').find(':selected').val();
+        var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
+        var previous_company_id = $('select[name=previous_company_id]').find(':selected').val();
         var exist = false;
         if (previous_company_id != '') {
             jQuery('.previous_company').each(function(key, ele) {
