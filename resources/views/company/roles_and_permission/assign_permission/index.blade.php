@@ -37,13 +37,13 @@
                     <!--begin::Action-->
                     <a href="#" data-bs-toggle="modal" data-bs-target="#add_role"
                         class="btn btn-sm btn-primary align-self-center">
-                        Add Roles</a>
+                        Assign Permission</a>
 
                     <!--end::Action-->
                 </div>
 
                 <div class="mb-5 mb-xl-10">
-                    @include('company.roles_and_permission.roles.roles_list')
+                    @include('company.roles_and_permission.assign_permission.assign_permission_list')
                 </div>
                 <!--end::Col-->
             </div>
@@ -59,7 +59,7 @@
                 <!--begin::Modal header-->
                 <div class="modal-header">
                     <!--begin::Close-->
-                    <h2>Edit role</h2>
+                    <h2>Edit Assign Permission</h2>
                     <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                         <span class="svg-icon svg-icon-1">
@@ -126,7 +126,7 @@
                 <!--begin::Modal header-->
                 <div class="modal-header">
                     <!--begin::Close-->
-                    <h2>Add Roles</h2>
+                    <h2>Assign Permission</h2>
                     <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                         <span class="svg-icon svg-icon-1">
@@ -152,12 +152,28 @@
                         
                         <div class="row">
                             <div class="col-md-12">
-                                <label>Name<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="text" name="name">
-                                @error('name')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+
+                                <label for="">Select Roles*</label>
+                                <select class="form-control" name="roles" id="roles">
+                                    <option value="">Select The Qualification</option>
+                                    @forelse ($roles as $role)
+                                        <option value="{{ $role->id }}">
+                                            {{ $role->name }}</option>
+                                    @empty
+                                        <option value="">No Qualification Found</option>
+                                    @endforelse
+                                </select>
                             </div>
+                        <div class="col-md-12 selectpermission">
+                            <label>Assign Permission</label>
+                            <div class="permisionList">
+                            @forelse ($permissions as $permission)
+                            <input type="checkbox" id="{{$permission->id}}" name="{{$permission->name}}" value="Bike"> <label>{{$permission->name}}</label>
+                            @empty
+                            @endforelse
+                        </div>
+                        </div>
+
                         </div>
 
                             <!--end::Input group-->
@@ -199,31 +215,32 @@
                 name: "Please enter name",
             },
                 submitHandler: function(form) {
-                    var role = $(form).serialize();
-                    $.ajax({
-                        url: "{{ route('role.store') }}",
-                        type: 'POST',
-                        data: role,
-                        success: function(response) {
-                            jQuery('#add_role').modal('hide');
-                            swal.fire("Done!", response.message, "success");
-                            $('#office_time_list').replaceWith(response.data);
-                            jQuery("#add_roles")[0].reset();
+                    var assignPermission = $(form).serialize();
+console.log(assignPermission);
+                    // $.ajax({
+                    //     url: "{{ route('role.store') }}",
+                    //     type: 'POST',
+                    //     data: role,
+                    //     success: function(response) {
+                    //         jQuery('#add_role').modal('hide');
+                    //         swal.fire("Done!", response.message, "success");
+                    //         $('#office_time_list').replaceWith(response.data);
+                    //         jQuery("#add_roles")[0].reset();
 
-                        },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span class="' + error_key +
-                                    '_error text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("." + error_key + "_error").remove();
-                                }, 5000);
-                            }
-                        }
-                    });
+                    //     },
+                    //     error: function(error_messages) {
+                    //         let errors = error_messages.responseJSON.error;
+                    //         for (var error_key in errors) {
+                    //             $(document).find('[name=' + error_key + ']').after(
+                    //                 '<span class="' + error_key +
+                    //                 '_error text text-danger">' + errors[
+                    //                     error_key] + '</span>');
+                    //             setTimeout(function() {
+                    //                 jQuery("." + error_key + "_error").remove();
+                    //             }, 5000);
+                    //         }
+                    //     }
+                    // });
                 }
             });
         });
@@ -326,5 +343,11 @@
 <style>
 .error {
     color: red;
+}
+.permisionList label {
+    padding: 10px;
+}
+.col-md-12.selectpermission {
+    margin-top: 20px;
 }
 </style>

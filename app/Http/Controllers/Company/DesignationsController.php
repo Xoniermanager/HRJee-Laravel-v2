@@ -14,20 +14,10 @@ class DesignationsController extends Controller
 
     private $designationService;
     private $departmentService;
-    private $view;
     public function __construct(DesignationServices $designationService, DepartmentServices $departmentService)
     {
         $this->designationService = $designationService;
         $this->departmentService = $departmentService;
-        $role = 'super_admin';
-        if($role == 'super_admin') 
-        {
-            $this->view  = 'super_admin.designation';
-        }
-        else
-        {
-            $this->view = 'company.designation';
-        }
     }
 
     /**
@@ -35,7 +25,7 @@ class DesignationsController extends Controller
      */
     public function index()
     {
-        return view($this->view.'.index', [
+        return view('company.designation.index', [
             'allDesignationDetails' => $this->designationService->all(),
             'allDepartments' => $this->departmentService->all()->where('status', '1')
         ]);
@@ -58,7 +48,7 @@ class DesignationsController extends Controller
                 return response()->json(
                     [
                         'message' => 'Designation Created Successfully!',
-                        'data'   =>  view($this->view.'.designation_list', [
+                        'data'   =>  view('company.designation.designation_list', [
                             'allDesignationDetails' => $this->designationService->all()
                         ])->render()
                     ]
@@ -86,7 +76,7 @@ class DesignationsController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Designation Updated Successfully!',
-                'data'   =>  view($this->view.'.designation_list', [
+                'data'   =>  view('company.designation.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
@@ -102,14 +92,14 @@ class DesignationsController extends Controller
         if ($data) {
             return response()->json([
                 'success', 'Deleted Successfully!',
-                'data'   =>  view($this->view.'.designation_list', [
+                'data'   =>  view('company.designation.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
         } else {
             return response()->json([
                 'error', 'Something Went Wrong! Please try Again',
-                'data'   =>  view($this->view.'.designation_list', [
+                'data'   =>  view('company.designation.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
@@ -123,7 +113,7 @@ class DesignationsController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Designation Status Updated Successfully',
-                'data'   =>  view($this->view.".designation_list", [
+                'data'   =>  view("company.designation.designation_list", [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
@@ -155,7 +145,7 @@ class DesignationsController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view($this->view.".designation_list", [
+                'data'   =>  view("company.designation.designation_list", [
                     'allDesignationDetails' => $searchedItems 
                 ])->render()
             ]);

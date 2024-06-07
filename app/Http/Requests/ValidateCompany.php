@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class ValidateCompany extends FormRequest
 {
@@ -11,7 +12,7 @@ class ValidateCompany extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -19,18 +20,20 @@ class ValidateCompany extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(Request $request): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:companies',
-            'contact_no' => 'required|string|max:20',
-            'email' => 'required|string|email|max:255|unique:companies',
-            'password' => 'required|string|min:8',
-            'company_size' => 'required|string',
-            'company_url' => 'required|string|url|max:100',
-            'company_address' => 'required|string|max:255',
-            'industry_type' => 'required|string|max:255',
+            'name' => 'sometimes|required|string|max:255,',
+            'username' => 'sometimes|required|string|max:255',
+            'contact_no' => 'sometimes|required|string|max:20',
+            'email' => 'sometimes|required|string|email|max:255',
+            'password' => 'sometimes|required|confirmed',
+            'password_confirmation' => 'sometimes|required',
+            'company_size' => 'sometimes|required|string',
+            'company_url' => 'sometimes|required|string|url|max:100',
+            'company_address' => 'sometimes|sometimes|required|string|max:255',
+            'industry_type' => 'sometimes|required|string|max:255',
+             'logo' => 'sometimes|max:2048', 
         ];
     }
 }

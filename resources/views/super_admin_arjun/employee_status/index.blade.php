@@ -21,7 +21,7 @@
                     <!--end::Action-->
                 </div>
                 <div class="mb-5 mb-xl-10">
-                    @include('super_admin.employee_status.employee_status_list')
+                    @include('super_admin_arjun.employee_status.employee_status_list')
                 </div>
             </div>
             <!--end::Col-->

@@ -29,4 +29,21 @@ class CompanySizeService
   {
     return $this->companySizeRepository->find($id)->delete();
   }
+
+  public function searchInCompanySize($searchKey)
+  {
+    $data['key']     =  array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
+    $data['status']  =  array_key_exists('status', $searchKey) ? $searchKey['status'] : '';
+
+    return $this->companySizeRepository->where(function($query) use ($data) {
+      if (!empty($data['key'])) {
+          $query->where('company_size', 'like', "%{$data['key']}%")
+          ->orWhere('description', 'like', "%{$data['key']}%");
+      }
+
+      if (isset($data['status'])) {
+          $query->where('status', $data['status']);
+      }
+    })->get();
+  }
 }

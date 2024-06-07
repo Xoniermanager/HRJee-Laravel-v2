@@ -75,7 +75,7 @@
                         <h4 class="text-dark">Add qualification</h4>
                         <p>
                             Fill in your information below to continue.</p>
-                        <form class="row g-3" id="super_qualification_form">
+                        <form class="row g-3" id="qualification_form">
                             @csrf
                             <div class="col-md-12">
                                 <label class="form-label" >Name</label>
@@ -131,7 +131,7 @@
 
         jQuery.noConflict();
         jQuery(document).ready(function($) {
-            jQuery("#super_qualification_form").validate({
+            jQuery("#qualification_form").validate({
                 rules: {
                     name: "required",
                 },
@@ -235,7 +235,6 @@
 
         function handleStatus(id) {
             var checked_value = $('#checked_value_'+id).prop('checked');
-            console.log(checked_value);
             let status;
 
             let status_name;

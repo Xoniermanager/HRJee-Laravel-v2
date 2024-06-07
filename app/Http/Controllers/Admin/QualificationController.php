@@ -118,6 +118,20 @@ class QualificationController extends Controller
         }
     }
 
+    public function search(Request $request)
+    {   
+        $searchedItems = $this->qualificationService->searchInQualification($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching...',
+                'data'   =>  view('super_admin.qualification.qualification_list', [
+                    'allQualificationDetails' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
 
 
     public function get_all_qualification_ajax_call()
@@ -148,4 +162,5 @@ class QualificationController extends Controller
             return response()->json(['error' => $e->getMessage()()], 400);
         }
     }
+
 }

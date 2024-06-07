@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Company\LeaveController;
@@ -17,12 +16,16 @@ use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Employee\PolicyController;
+use App\Http\Controllers\Admin\AdminStateController;
+use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Employee\AccountController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
 use App\Http\Controllers\Company\LanguagesController;
+use App\Http\Controllers\Admin\AdminCompanyController;
+use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\DepartmentController;
@@ -34,16 +37,20 @@ use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
 use App\Http\Controllers\Company\UserDetailsController;
+use App\Http\Controllers\Admin\AdminLanguagesController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Employee\ResignationController;
+use App\Http\Controllers\Admin\AdminDepartmentController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\company\LeaveStatusLogController;
+use App\Http\Controllers\Admin\AdminDesignationsController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Employee\LeaveMangementController;
+use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
@@ -56,6 +63,7 @@ use App\Http\Controllers\Company\UserDocumentDetailsController;
 use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
+use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 /*
@@ -179,7 +187,6 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/leave/details','getLeaveAppliedDetailsbyId')->name('leave.applied.details');
     });
 
-
     //Roles and Permission Module
     Route::prefix('/roles')->controller(RolesController::class)->group(function () {
         Route::get('/', 'index')->name('roles');
@@ -197,13 +204,14 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('permission.statusUpdate');
     });
 
-    // Route::prefix('/assign_permissions')->controller(PermissionsController::class)->group(function () {
-    //     Route::get('/', 'index')->name('assign_permission');
-    //     Route::post('/create', 'store')->name('assign_permissions.store');
-    //     Route::post('/update', 'update')->name('assign_permissions.update');
-    //     Route::get('/delete', 'destroy')->name('assign_permissions.delete');
-    //     Route::get('/status/update', 'statusUpdate')->name('assign_permissions.statusUpdate');
-    // });
+    //TODO assign permission
+    Route::prefix('/assign_permissions')->controller(AssignPermissionController::class)->group(function () {
+        Route::get('/', 'index')->name('assign_permission');
+        Route::post('/create', 'store')->name('assign_permissions.store');
+        Route::post('/update', 'update')->name('assign_permissions.update');
+        Route::get('/delete', 'destroy')->name('assign_permissions.delete');
+        Route::get('/status/update', 'statusUpdate')->name('assign_permissions.statusUpdate');
+    });
 
     // Route::get('roles', [RolesController::class, 'index'])->name('roles');
     // Route::get('roles/create', [RolesController::class, 'role_form'])->name('create.role.form');
@@ -255,12 +263,11 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/signup', 'signup')->name('signup');
 });
 
-Route::prefix('/super-admin')->controller(AdminController::class)->group(function () {
-    Route::get('/login', 'super_admin_login_form')->name('super.admin.login.form');
-    Route::post('/login', 'login')->name('super.admin.login');
-    Route::post('/logout', 'logout')->name('logout');
-    // Route::get('/signup', 'signup')->name('signup');
-});
+// Route::prefix('/super-admin')->controller(AdminController::class)->group(function () {
+//     Route::get('/login', 'super_admin_login_form')->name('super.admin.login.form');
+//     Route::post('/login', 'login')->name('super.admin.login');
+//     Route::post('/logout', 'logout')->name('logout');
+// });
 
 //Employee Module
 Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
@@ -298,9 +305,8 @@ Route::post('/employee/document/details', [UserDocumentDetailsController::class,
 Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
 
 
-/** ---------------Employee Pannel Started--------------  */
+/** ---------------Employee Panel Started--------------  */
 
-//Login Process
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('employee');
     Route::post('/login', 'login')->name('login');
@@ -346,25 +352,25 @@ Route::prefix('employee')->group(function () {
     //Account Module
     Route::get('/account', [AccountController::class, 'index'])->name('employee.account');
 
-    //Contact Module
+    // Contact Module
     Route::get('/contact-us', [ContactUsController::class, 'index'])->name('employee.contact.us');
 
-    //Attendance Service
+    // Attendance Service
     Route::get('/attendance/service', [AttendanceServiceController::class, 'index'])->name('employee.attendance.service');
 
-    //Leave Management
+    // Leave Management
     Route::controller(LeaveMangementController::class)->group(function () {
         Route::get('/leave', 'index')->name('employee.leave');
         Route::get('/apply/leave', 'applyLeave')->name('employee.apply.leave');
     });
 
-    //Holidays Management
+    // Holidays Management
     Route::get('/holidays', [HolidaysMangementController::class, 'index'])->name('employee.holidays');
 
-    //Payslips Management
+    // Payslips Management
     Route::get('/payslips', [PayslipsMangementController::class, 'index'])->name('employee.payslips');
 
-    //Resignation Management
+    // Resignation Management
     Route::controller(ResignationController::class)->group(function () {
         Route::get('/resignation', 'index')->name('employee.resignation');
         Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
@@ -374,12 +380,18 @@ Route::prefix('employee')->group(function () {
     Route::post('/employee/attendance',[EmployeeAttendanceController::class ,'makeAttendance'])->name('employee.attendance');
 });
 
-/** -----------------Super Admin Started--------------------*/
+/** ----------------- Super Admin Started -------------------- **/
+Route::prefix('/super-admin')->controller(SuperAdminController::class)->group(function () {
+    Route::get('/login', 'login')->name('super_admin.login.form');
+    Route::post('/super_admin_login', 'super_admin_login')->name('super.admin.login');
+    // Route::post('/login', 'login')->name('super_admin.login');
+    // Route::post('/logout', 'logout')->name('super_logout');
+});
 
 Route::prefix('/super-admin')->group(function () {
-    Route::view('/', 'super_admin.dashboard')->name('super_admin.dashboard');
-    
-    Route::prefix('/department')->controller(DepartmentController::class)->group(function () {
+    Route::view('/dashboard', 'super_admin.dashboard')->name('super_admin.dashboard');
+
+    Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
         Route::get('/', 'index')->name('super_admin.departments');
         Route::post('/create', 'store')->name('super_admin.department.store');
         Route::post('/update', 'update')->name('super_admin.department.update');
@@ -388,7 +400,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::get('/search', 'search')->name('super_admin.department.search');
     });
 
-    Route::prefix('/designation')->controller(DesignationsController::class)->group(function () {
+    Route::prefix('/designation')->controller(AdminDesignationsController::class)->group(function () {
         Route::get('/', 'index')->name('super_admin.designations');
         Route::post('/create', 'store')->name('super_admin.designation.store');
         Route::post('/update', 'update')->name('super_admin.designation.update');
@@ -397,7 +409,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::get('/search', 'search')->name('super_admin.designation.search'); 
     });
 
-    Route::prefix('/state')->controller(StateController::class)->group(function () {
+    Route::prefix('/state')->controller(AdminStateController::class)->group(function () {
         Route::get('/', 'index')->name('super_admin.state');
         Route::post('/create', 'store')->name('super_admin.state.store');
         Route::post('/update', 'update')->name('super_admin.state.update');
@@ -407,7 +419,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::get('/get/all/state', 'getAllStates')->name('super_admin.get.all.country.state');
     });
 
-    Route::prefix('/country')->controller(CountryController::class)->group(function () {
+    Route::prefix('/country')->controller(AdminCountryController::class)->group(function () {
         Route::get('/', 'index')->name('super_admin.country');
         Route::post('/create', 'store')->name('super_admin.country.store');
         Route::post('/update', 'update')->name('super_admin.country.update');
@@ -423,22 +435,117 @@ Route::prefix('/super-admin')->group(function () {
         Route::get('/delete', 'destroy')->name('super_admin.qualification.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.qualification.statusUpdate');
         Route::get('/search', 'search')->name('super_admin.qualification.search'); 
-         
-        // // for ajax call 
-        // Route::get('/qualification_data', 'get_all_qualification_ajax_call');
-        // Route::get('/ajax_store_qualification', 'ajax_store_qualification');
-
-        Route::prefix('/previous-company')->controller(QualificationController::class)->group(function () {
-            Route::get('/', 'index')->name('super_admin.previous_company');
-            Route::post('/create', 'store')->name('super_admin.previous_company.store');
-            Route::post('/update', 'update')->name('super_admin.previous_company.update');
-            Route::get('/delete', 'destroy')->name('super_admin.previous_company.delete');
-            Route::get('/status/update', 'statusUpdate')->name('super_admin.previous_company.statusUpdate');
-            Route::get('/search', 'search')->name('super_admin.previous_company.search');   
     });
+
+    Route::prefix('/previous-company')->controller(PreviousCompanyController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.previous_company');
+        Route::post('/create', 'store')->name('super_admin.previous_company.store');
+        Route::post('/update', 'update')->name('super_admin.previous_company.update');
+        Route::get('/delete', 'destroy')->name('super_admin.previous_company.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.previous_company.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.previous_company.search');   
+    });
+
+    Route::prefix('/skills')->controller(SkillController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.skill');
+        Route::post('/create', 'store')->name('super_admin.skill.store');
+        Route::post('/update', 'update')->name('super_admin.skill.update');
+        Route::get('/delete', 'destroy')->name('super_admin.skill.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.skill.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.skill.search'); 
+    });
+
+    Route::prefix('/document-type')->controller(DocumentTypeController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.document.type');
+        Route::post('/create', 'store')->name('super_admin.document.type.store');
+        Route::post('/update', 'update')->name('super_admin.document.type.update');
+        Route::get('/delete', 'destroy')->name('super_admin.document.type.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.document.type.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.document.type.search'); 
+    });
+
+    Route::prefix('/employee-status')->controller(EmployeeStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.employee_status');
+        Route::post('/create', 'store')->name('super_admin.employee_status.store');
+        Route::post('/update', 'update')->name('super_admin.employee_status.update');
+        Route::get('/delete', 'destroy')->name('super_admin.employee_status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.employee_status.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.document.employee_status.search'); 
+    });
+
+    Route::prefix('/employee-type')->controller(EmployeeTypeController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.employee_type');
+        Route::post('/create', 'store')->name('super_admin.employee_type.store');
+        Route::post('/update', 'update')->name('super_admin.employee_type.update');
+        Route::get('/delete', 'destroy')->name('super_admin.employee_type.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.employee_type.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.employee_type.search'); 
+    });
+
+    // Route::prefix('/languages')->controller(AdminLanguagesController::class)->group(function () {
+    //     Route::post('/create', 'store')->name('language.create');
+    //     Route::get('/delete', 'destroy')->name('language.delete');
+    // });
+
+    Route::prefix('/languages')->controller(AdminLanguagesController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.languages');
+        Route::post('/create', 'store')->name('super_admin.languages.store');
+        Route::post('/update', 'update')->name('super_admin.languages.update');
+        Route::get('/delete', 'destroy')->name('super_admin.languages.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.languages.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.languages.search'); 
+    });
+
+    Route::prefix('/company')->controller(AdminCompanyController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.company');
+        Route::get('/add-company', 'add_company')->name('super_admin.add_company');
+        Route::get('/edit-company', 'edit_company')->name('super_admin.edit_company');
+        Route::post('/create-or-update', 'store')->name('super_admin.company.store');
+        Route::get('/delete', 'destroy')->name('super_admin.company.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.company.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.company.search'); 
+    });
+
+    //Company Status Module
+    Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('company.status.index');
+        Route::post('/create', 'store')->name('company.status.store');
+        Route::post('/update', 'update')->name('company.status.update');
+        Route::get('/delete', 'destroy')->name('company.status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
+    });
+
+    //Company Size Module
+    Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.company.size');
+        Route::post('/create', 'store')->name('super_admin.company.size.store');
+        Route::post('/update', 'update')->name('super_admin.company.size.update');
+        Route::get('/delete', 'destroy')->name('super_admin.company.size.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.company.size.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.company.size.search'); 
+    });
+
+    Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.company.status');
+        Route::post('/create', 'store')->name('super_admin.company.status.store');
+        Route::post('/update', 'update')->name('super_admin.company.status.update');
+        Route::get('/delete', 'destroy')->name('super_admin.company.status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.company.status.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.company.status.search'); 
+    });
+
+    Route::prefix('/company-branch')->controller(AdminCompanyBranchesController::class)->group(function () {
+        Route::get('/', 'index')->name('super_admin.branch');
+        Route::post('/create', 'store')->name('super_admin.company.branch.store');
+        Route::post('/update', 'update')->name('super_admin.company.branch.update');
+        Route::get('/delete', 'destroy')->name('super_admin.company.branch.delete');
+        Route::get('/status/update', 'statusUpdate')->name('super_admin.company.branch.statusUpdate');
+        Route::get('/search', 'search')->name('super_admin.company.branch.search'); 
+    });
+
+    
 });
 
-});
 
 //Company Status Module
 Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {

@@ -102,9 +102,27 @@ class EmployeeStatusController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->employeeStatusService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
-        } else {
-            echo 0;
+            return response()->json([
+                'message' => 'Employee Status Updated Successfully!',
+                'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                    'allEmployeeStatusDetails' => $this->employeeStatusService->all()
+                ])->render()
+            ]);
         }
     }
+    public function search(Request $request)
+    {   
+        $searchedItems = $this->employeeStatusService->searchInEmployeeStatus($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching...',
+                'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                    'allEmployeeStatusDetails' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+
 }

@@ -24,7 +24,7 @@ class ValidateBranch extends FormRequest
         return [
             'name' => 'required|string',
             'company_id' => 'nullable',
-            'branch_type' => 'required|in:Primary,Secondary',
+            'branch_type' => 'required|in:primary,secondary',
             'contact_no' => 'required|numeric',
             'email' => 'required|email|unique:company_branches,email',
             'hr_email' => 'required|email|unique:company_branches,email',

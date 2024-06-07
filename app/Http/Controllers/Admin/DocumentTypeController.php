@@ -21,6 +21,7 @@ class DocumentTypeController extends Controller
      */
     public function index()
     {
+
         return view('super_admin.document_type.index', [
             'allDocumentTypes' => $this->documentTypeService->all()
         ]);
@@ -104,9 +105,31 @@ class DocumentTypeController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->documentTypeService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'Document Type Status Updated Successfully!!',
+                'data'   =>  view('super_admin.document_type.document_type_list', [
+                    'allDocumentTypes' => $this->documentTypeService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return back()->with('error', 'Something Went Wrong! Pleaase try Again');
         }
+}
+
+public function search(Request $request)
+{   
+    $searchedItems = $this->documentTypeService->searchInDocumentType($request->all());
+
+    if ($searchedItems) {
+        return response()->json([
+            'success' => 'Searching...',
+            'data'   =>  view('super_admin.document_type.document_type_list', [
+                'allDocumentTypes' => $searchedItems
+            ])->render()
+        ]);
+    } else {
+        return response()->json(['error' => 'Something Went Wrong!! Please try again']);
     }
+}
+
 }

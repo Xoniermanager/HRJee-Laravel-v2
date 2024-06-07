@@ -15,20 +15,20 @@
 <!-- Bootstrap js-->
 <script src="{{ asset('super_admin/assets/js/bootstrap.bundle.min.js')}}"></script>
 <!-- feather icon js-->
-<script src="{{ asset('super_admin/assets/js/icons/feather-icon/feather.min.js')}}"></script>
-<script src="{{ asset('super_admin/assets/js/icons/feather-icon/feather-icon.js')}}"></script>
+{{-- <script src="{{ asset('super_admin/assets/js/icons/feather-icon/feather.min.js')}}"></script>
+<script src="{{ asset('super_admin/assets/js/icons/feather-icon/feather-icon.js')}}"></script> --}}
 <!-- scrollbar js-->
 <script src="{{ asset('super_admin/assets/js/scrollbar/simplebar.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/scrollbar/custom.js')}}"></script>
 <!-- Sidebar jquery-->
-<script src="{{ asset('super_admin/assets/js/config.js')}}"></script>
+{{-- <script src="{{ asset('super_admin/assets/js/config.js')}}"></script> --}}
 <!-- Plugins JS start-->
 <script src="{{ asset('super_admin/assets/js/sidebar-menu.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/sidebar-pin.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/slick/slick.min.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/slick/slick.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/header-slick.js')}}"></script>
-<script src="{{ asset('super_admin/assets/js/chart/morris-chart/raphael.js')}}"></script>
+{{-- <script src="{{ asset('super_admin/assets/js/chart/morris-chart/raphael.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/chart/morris-chart/morris.js')}}"> </script>
 <script src="{{ asset('super_admin/assets/js/chart/morris-chart/prettify.min.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/chart/apex-chart/apex-chart.js')}}"></script>
@@ -37,19 +37,19 @@
 <script src="{{ asset('super_admin/assets/js/chart/echart/pie-chart/facePrint.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/chart/echart/pie-chart/testHelper.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/chart/echart/pie-chart/custom-transition-texture.js')}}"></script>
-<script src="{{ asset('super_admin/assets/js/chart/echart/data/symbols.js')}}"></script>
+<script src="{{ asset('super_admin/assets/js/chart/echart/data/symbols.js')}}"></script> --}}
 <script src="{{ asset('super_admin/assets/js/slick/slick.min.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/slick/slick-theme.js')}}"></script>
-<script src="{{ asset('super_admin/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js')}}"></script>
+{{-- <script src="{{ asset('super_admin/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/vector-map/map/jquery-jvectormap-uk-mill-en.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/vector-map/map/jquery-jvectormap-au-mill.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/vector-map/map/jquery-jvectormap-chicago-mill-en.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/vector-map/map/jquery-jvectormap-in-mill.js')}}"></script>
-<script src="{{ asset('super_admin/assets/js/vector-map/map/jquery-jvectormap-asia-mill.js')}}"></script>
+<script src="{{ asset('super_admin/assets/js/vector-map/map/jquery-jvectormap-asia-mill.js')}}"></script> --}}
 <!-- calendar js-->
-<script src="{{ asset('super_admin/assets/js/datatable/datatables/jquery.dataTables.min.js')}}"></script>
+{{-- <script src="{{ asset('super_admin/assets/js/datatable/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/datatable/datatables/datatable.custom.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/datatable/datatables/datatable.custom1.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/datepicker/date-picker/datepicker.js')}}"></script>
@@ -63,7 +63,7 @@
 <script src="{{ asset('super_admin/assets/js/dashboard/dashboard_3.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/dashboard/dashboard_4.js')}}"></script>
 <script src="{{ asset('super_admin/assets/js/dashboard/default.js')}}"></script>
-<script src="{{ asset('super_admin/assets/js/ecommerce.js')}}"></script>
+<script src="{{ asset('super_admin/assets/js/ecommerce.js')}}"></script> --}}
 <!-- Plugins JS Ends-->
 <!-- Theme js-->
 <script src="{{ asset('super_admin/assets/js/script.js')}}"></script>

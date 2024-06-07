@@ -74,10 +74,10 @@
                             </svg>
                             <span class="">Company</span></a>
                         <ul class="sidebar-submenu">
-                            <li><a href="list.html">Companies</a></li>
-                            <li><a href="list.html">Company Size</a></li>
-                            <li><a href="list.html">Company Status</a></li>
-                            <li><a href="list.html">Company Branches</a></li>
+                            <li><a href="{{route('super_admin.company')}}">Companies</a></li>
+                            <li><a href="{{route('super_admin.company.size')}}">Company Size</a></li>
+                            <li><a href="{{route('super_admin.company.status')}}">Company Status</a></li>
+                            <li><a href="{{route('super_admin.branch')}}">Company Branches</a></li>
                         </ul>
                     </li>
 
@@ -109,15 +109,16 @@
                         <ul class="sidebar-submenu">
                             <li><a href="{{route('super_admin.departments')}}">Departments</a></li>
                             <li><a href="{{route('super_admin.designations')}}">Designations</a></li>
-                            <li><a href="{{route('super_admin.state')}}">State</a></li>
-                            <li><a href="{{route('super_admin.country')}}">Country</a></li>
-                            <li><a href="{{route('super_admin.previous_company')}}">Previous Company</a></li>
-                            <li><a href="{{route('super_admin.qualification')}}">Qualification</a></li>
-                            <li><a href="list.html">Skills</a></li>
-                            <li><a href="list.html">Document Type</a></li>
-                            <li><a href="list.html">Employee Status</a></li>
-                            <li><a href="list.html">Employee Type</a></li>
-                            <li><a href="list.html">Languages</a></li>
+                            <li><a href="{{route('super_admin.state')}}">States</a></li>
+                            <li><a href="{{route('super_admin.country')}}">Countries</a></li>
+                            <li><a href="{{route('super_admin.previous_company')}}">Previous Companies</a></li>
+                            <li><a href="{{route('super_admin.qualification')}}">Qualifications</a></li>
+                            <li><a href="{{route('super_admin.skill')}}">Skills</a></li>
+                            <li><a href="{{route('super_admin.document.type')}}">Document Type</a></li>
+                            <li><a href="{{route('super_admin.employee_status')}}">Employee Status</a></li>
+                            <li><a href="{{route('super_admin.employee_type')}}">Employee Type</a></li>
+                            <li><a href="{{route('super_admin.languages')}}">Languages</a></li>
+                            
 
                         </ul>
                     </li>

@@ -17,6 +17,7 @@ class PreviousCompanyController extends Controller
     public function __construct(PreviousCompanyService $previousCompanyService)
     {
         $this->previousCompanyService = $previousCompanyService;
+
     }
 
     /**
@@ -35,11 +36,11 @@ class PreviousCompanyController extends Controller
     public function store(Request $request)
     {
         try {
-            $validatePreviousCompanyData  = Validator::make($request->all(), [
+            $validator  = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:previous_companies,name'],
             ]);
-            if ($validatePreviousCompanyData->fails()) {
-                return response()->json(['error' => $validatePreviousCompanyData->messages()], 400);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->messages()], 400);
             }
             $data = $request->all();
             if ($this->previousCompanyService->create($data)) {
@@ -60,12 +61,12 @@ class PreviousCompanyController extends Controller
      */
     public function update(Request $request)
     {
-        $validatePreviousCompanyData  = Validator::make($request->all(), [
+        $validator  = Validator::make($request->all(), [
             'name' => ['required', 'string', 'unique:previous_companies,name,' . $request->id],
         ]);
 
-        if ($validatePreviousCompanyData->fails()) {
-            return response()->json(['error' => $validatePreviousCompanyData->messages()], 400);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages()], 400);
         }
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->previousCompanyService->updateDetails($updateData, $request->id);
@@ -105,9 +106,14 @@ class PreviousCompanyController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->previousCompanyService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'Status Successfully',
+                'data'   =>  view('company.previous_company.previous_company_list', [
+                    'allPreviousCompanyDetails' => $this->previousCompanyService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 
@@ -137,6 +143,22 @@ class PreviousCompanyController extends Controller
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()()], 400);
+        }
+    }
+
+
+    public function search(Request $request)
+    {   
+        $searchedItems = $this->previousCompanyService->searchInPreviousCompany($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching...',
+                'data'   =>  view("company.previous_company.previous_company_list", [
+                    'allPreviousCompanyDetails' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 }

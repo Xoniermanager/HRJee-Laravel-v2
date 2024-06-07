@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\PermissionsRepository;
 
-class permissionsServices 
+class PermissionsServices 
 {
   private $permissionRepository ;
   public function __construct(PermissionsRepository $permissionRepository)

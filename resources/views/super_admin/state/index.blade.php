@@ -75,7 +75,7 @@
                         <h4 class="text-dark">Add state</h4>
                         <p>
                             Fill in your information below to continue.</p>
-                        <form class="row g-3" id="super_state_form">
+                        <form class="row g-3" id="state_form">
                             @csrf
                             <div class="col-md-12">
                                 <label class="form-label" >Name</label>
@@ -130,7 +130,7 @@
 
         jQuery.noConflict();
         jQuery(document).ready(function($) {
-            jQuery("#super_state_form").validate({
+            jQuery("#state_form").validate({
                 rules: {
                     name: "required",
                 },

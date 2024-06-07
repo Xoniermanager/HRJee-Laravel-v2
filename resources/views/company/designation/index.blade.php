@@ -172,7 +172,7 @@
                         <div class="mt-3 mb-3">
                             <label>Department</label>
                             <select class="form-control mb-3" name="department_id">
-                                <option value="">Select Development</option>
+                                <option value="">Select Departments</option>
                                 @forelse ($allDepartments as $departments)
                                     <option value="{{ $departments->id }}">{{ $departments->name }}</option>
                                 @empty
