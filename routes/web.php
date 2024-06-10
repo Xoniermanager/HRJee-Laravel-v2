@@ -64,6 +64,7 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
+use App\Http\Controllers\Admin\AssetController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 /*
@@ -184,7 +185,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/', 'index')->name('leave.status.log.index');
         Route::get('/add', 'add')->name('leave.status.log.add');
         Route::post('/create', 'create')->name('leave.status.log.create');
-        Route::get('/leave/details','getLeaveAppliedDetailsbyId')->name('leave.applied.details');
+        Route::get('/leave/details', 'getLeaveAppliedDetailsbyId')->name('leave.applied.details');
     });
 
     //Roles and Permission Module
@@ -377,7 +378,7 @@ Route::prefix('employee')->group(function () {
     });
 
     //Employee Attendance Management]
-    Route::post('/employee/attendance',[EmployeeAttendanceController::class ,'makeAttendance'])->name('employee.attendance');
+    Route::post('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
 });
 
 /** ----------------- Super Admin Started -------------------- **/
@@ -406,7 +407,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.designation.update');
         Route::get('/delete', 'destroy')->name('super_admin.designation.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.designation.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.designation.search'); 
+        Route::get('/search', 'search')->name('super_admin.designation.search');
     });
 
     Route::prefix('/state')->controller(AdminStateController::class)->group(function () {
@@ -415,7 +416,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.state.update');
         Route::get('/delete', 'destroy')->name('super_admin.state.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.state.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.state.search'); 
+        Route::get('/search', 'search')->name('super_admin.state.search');
         Route::get('/get/all/state', 'getAllStates')->name('super_admin.get.all.country.state');
     });
 
@@ -425,7 +426,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.country.update');
         Route::get('/delete', 'destroy')->name('super_admin.country.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.country.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.country.search'); 
+        Route::get('/search', 'search')->name('super_admin.country.search');
     });
 
     Route::prefix('/qualifications')->controller(QualificationController::class)->group(function () {
@@ -434,7 +435,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.qualification.update');
         Route::get('/delete', 'destroy')->name('super_admin.qualification.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.qualification.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.qualification.search'); 
+        Route::get('/search', 'search')->name('super_admin.qualification.search');
     });
 
     Route::prefix('/previous-company')->controller(PreviousCompanyController::class)->group(function () {
@@ -443,7 +444,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.previous_company.update');
         Route::get('/delete', 'destroy')->name('super_admin.previous_company.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.previous_company.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.previous_company.search');   
+        Route::get('/search', 'search')->name('super_admin.previous_company.search');
     });
 
     Route::prefix('/skills')->controller(SkillController::class)->group(function () {
@@ -452,7 +453,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.skill.update');
         Route::get('/delete', 'destroy')->name('super_admin.skill.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.skill.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.skill.search'); 
+        Route::get('/search', 'search')->name('super_admin.skill.search');
     });
 
     Route::prefix('/document-type')->controller(DocumentTypeController::class)->group(function () {
@@ -461,7 +462,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.document.type.update');
         Route::get('/delete', 'destroy')->name('super_admin.document.type.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.document.type.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.document.type.search'); 
+        Route::get('/search', 'search')->name('super_admin.document.type.search');
     });
 
     Route::prefix('/employee-status')->controller(EmployeeStatusController::class)->group(function () {
@@ -470,7 +471,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.employee_status.update');
         Route::get('/delete', 'destroy')->name('super_admin.employee_status.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.employee_status.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.document.employee_status.search'); 
+        Route::get('/search', 'search')->name('super_admin.document.employee_status.search');
     });
 
     Route::prefix('/employee-type')->controller(EmployeeTypeController::class)->group(function () {
@@ -479,7 +480,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.employee_type.update');
         Route::get('/delete', 'destroy')->name('super_admin.employee_type.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.employee_type.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.employee_type.search'); 
+        Route::get('/search', 'search')->name('super_admin.employee_type.search');
     });
 
     // Route::prefix('/languages')->controller(AdminLanguagesController::class)->group(function () {
@@ -493,7 +494,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.languages.update');
         Route::get('/delete', 'destroy')->name('super_admin.languages.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.languages.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.languages.search'); 
+        Route::get('/search', 'search')->name('super_admin.languages.search');
     });
 
     Route::prefix('/company')->controller(AdminCompanyController::class)->group(function () {
@@ -503,7 +504,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/create-or-update', 'store')->name('super_admin.company.store');
         Route::get('/delete', 'destroy')->name('super_admin.company.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.company.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.company.search'); 
+        Route::get('/search', 'search')->name('super_admin.company.search');
     });
 
     //Company Status Module
@@ -522,7 +523,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.company.size.update');
         Route::get('/delete', 'destroy')->name('super_admin.company.size.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.company.size.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.company.size.search'); 
+        Route::get('/search', 'search')->name('super_admin.company.size.search');
     });
 
     Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
@@ -531,7 +532,7 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.company.status.update');
         Route::get('/delete', 'destroy')->name('super_admin.company.status.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.company.status.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.company.status.search'); 
+        Route::get('/search', 'search')->name('super_admin.company.status.search');
     });
 
     Route::prefix('/company-branch')->controller(AdminCompanyBranchesController::class)->group(function () {
@@ -540,10 +541,8 @@ Route::prefix('/super-admin')->group(function () {
         Route::post('/update', 'update')->name('super_admin.company.branch.update');
         Route::get('/delete', 'destroy')->name('super_admin.company.branch.delete');
         Route::get('/status/update', 'statusUpdate')->name('super_admin.company.branch.statusUpdate');
-        Route::get('/search', 'search')->name('super_admin.company.branch.search'); 
+        Route::get('/search', 'search')->name('super_admin.company.branch.search');
     });
-
-    
 });
 
 
@@ -661,4 +660,14 @@ Route::prefix('/asset-category')->controller(AssetCategoryController::class)->gr
     Route::post('/update', 'update')->name('asset.category.update');
     Route::get('/delete', 'destroy')->name('asset.category.delete');
     Route::get('/status/update', 'statusUpdate')->name('asset.category.statusUpdate');
+});
+
+//Asset Module
+Route::prefix('/asset')->controller(AssetController::class)->group(function () {
+    Route::get('/', 'index')->name('asset.index');
+    Route::get('/add', 'add')->name('asset.add');
+    Route::post('/store', 'store')->name('asset.store');
+    Route::get('/edit/{assets:id}', 'edit')->name('asset.edit');
+    Route::post('/update/{id}', 'update')->name('asset.update');
+    Route::get('/delete', 'destroy')->name('asset.delete');
 });

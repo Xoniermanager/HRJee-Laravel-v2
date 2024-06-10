@@ -28,4 +28,8 @@ class AssetStatusService
   {
     return $this->assetStatusRepository->find($id)->delete();
   }
+  public function getAllActiveAssetStatus()
+  {
+    return $this->assetStatusRepository->where('status','1')->get();
+  }
 }

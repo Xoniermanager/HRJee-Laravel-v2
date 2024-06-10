@@ -292,6 +292,17 @@
                                         </a>
                                         <!--end:Menu link-->
                                     </div>
+                                    <div class="menu-item" data-url="{{ route('asset.index') }}">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{route('asset.index')}}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Asset</span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
                                 </div>
                                 <!--end:Menu sub-->
                             </div>

@@ -28,4 +28,9 @@ class AssetCategoryService
   {
     return $this->assetCategoryRepository->find($id)->delete();
   }
+
+  public function getAllActiveAssetCategory()
+  {
+    return $this->assetCategoryRepository->where('status', '1')->get();
+  }
 }

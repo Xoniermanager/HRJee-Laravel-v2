@@ -28,4 +28,8 @@ class AssetManufacturerService
   {
     return $this->assetManufacturerRepository->find($id)->delete();
   }
+  public function getAllActiveAssetManufacturer()
+  {
+    return $this->assetManufacturerRepository->where('status', '1')->get();
+  }
 }
