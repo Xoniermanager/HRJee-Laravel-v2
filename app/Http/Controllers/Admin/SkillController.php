@@ -97,7 +97,7 @@ class SkillController extends Controller
                 ])->render()
             ]);
         } else {
-            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
+            return response()->json(['error', 'Something Went Wrong! Please try Again']);
         }
     }
 
