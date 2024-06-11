@@ -7,27 +7,37 @@ use Illuminate\Http\Request;
 use App\Models\CompanyBranch;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Services\StateServices;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ValidateBranch;
 use App\Http\Services\BranchServices;
+use App\Http\Services\CountryServices;
 use Illuminate\Support\Facades\Validator;
 
 class CompanyBranchesController extends Controller
 {
     private $branch_services;
-    public function __construct(
-        BranchServices $branch_services,
-        )
+    private $countryService;
+    private $stateService;
+    public function __construct(BranchServices $branch_services , CountryServices $countryService, StateServices $stateService)
     {
             $this->branch_services = $branch_services;
+            $this->countryService = $countryService;
+            $this->stateService = $stateService;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $branches = $this->branch_services->get_branches();
-        return view('company.branch.branches-list')->with(['branches'=> $branches]);
+        $branches  = $this->branch_services->get_branches();
+        $countries = $this->countryService->all()->where('status', '1');
+        $states    = $this->stateService->all()->where('status', '1');
+        return view('company.branch.index',[
+                'branches' => $branches,
+                'countries' => $countries,
+                'states' => $states,
+            ]);
     }
 
     /**
@@ -37,61 +47,61 @@ class CompanyBranchesController extends Controller
     {
         $states = DB::table('states')->get();
         $countries = DB::table('countries')->get();
-        return view('company.branch.create-branch-form',compact('states','countries'));
+        return view('company.branch.index',compact('states','countries'));
     }
-    public function add_branch(ValidateBranch $request)
+    public function store(ValidateBranch $request)
     {
-
     try {
-        $data = $request->all();
+        $validator  = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
+        ]);
 
-
-            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
-            if(CompanyBranch::create($data))
-        { 
-            smilify('success','Branch Created Successfully!');
-            return redirect('/branch');
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages()], 400);
+        }
+        $companyStatus = $this->branch_services->create($request->all());
+        if ($companyStatus) {
+            return response()->json(
+                [
+                    'message' => 'Created Successfully!',
+                    'data'   =>  view('company.branch.branches-list', [
+                        'branches' => $this->branch_services->get_branches()
+                    ])->render()
+                ]
+            );
         }
     }
     catch (Exception $e) {
         return $e->getMessage();
     }
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit_branch($id)
-    {
-        try{
-        $countries = DB::table('countries')->get();
-        $states = DB::table('states')->get();
-        $branch = $this->branch_services->get_branch_by_id($id)->first();
-        if (!$branch) {
-            smilify('error','Item Does Not Exists !');
-            return redirect('/branch');
-        }
-         return view('company.branch.create-branch-form', compact('branch','states','countries'));
-    }
-        catch (Exception $e) {
-            return $e->getMessage();
-        }
-    }
 
     /**
      * Update the specified resource in storage.
      */
 
-     public function update_branch(Request $request, $id)
+     public function update(Request $request)
      {
          try {
-             $data =  $request->except(['_token']);
-             $branchUpdated = $this->branch_services->update_branch($data,$id);
-             if(   $branchUpdated )
-             {
-                smilify('success','Branch Updated Successfully!');
-                return redirect('/branch');
-             }
-             
+            $validator  = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->messages()], 400);
+            }
+            $updateData = $request->except(['_token', 'id']);
+            $companyStatus = $this->branch_services->updateDetails($updateData, $request->id);
+            if ($companyStatus) {
+                return response()->json(
+                    [
+                        'message' => 'Updated Successfully!',
+                        'data'   =>  view('company.branch.branches-list', [
+                            'branches' => $this->branch_services->get_branches()
+                        ])->render()
+                    ]
+                );
+            }
          } catch (Exception $e) {
              return $e->getMessage();
          }
@@ -100,25 +110,52 @@ class CompanyBranchesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete_branch($id)
+    public function destroy(Request $request)
     {
-        try {
-        $validatebranch = Validator::make(['id' => $id],
-            ['id' => 'required|exists:company_branches,id']
-        );
-        if ($validatebranch->fails()) {
-            smilify('error','Item Does Not Exists !');
-            return redirect('/branch');
-        }
-        $response  = $this->branch_services->delete_branch_by_id($id);
-        if($response)
-        {
-            smilify('success','branch Deleted Successfully!');
-            return redirect('/branch');
+        $id = $request->id;
+        $data = $this->branch_services->deleteDetails($id);
+        if ($data) {
+            return response()->json([
+                'success' => 'Country Deleted Successfully',
+                'data'    =>  view('company.branch.branches-list', [
+                    'branches' => $this->branch_services->get_branches()
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-    catch (Exception $e) {
-        return $e->getMessage();
+
+    public function statusUpdate(Request $request)
+    {
+        $id = $request->id;
+        $data['status'] = $request->status;
+        $statusDetails = $this->branch_services->updateDetails($data, $id);
+        if ($statusDetails) {
+            return response()->json([
+                'success' => 'Branch Status Updated Successfully',
+                'data'    =>  view('company.branch.branches-list', [
+                    'branches' => $this->branch_services->get_branches()
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
     }
+
+    public function search(Request $request)
+    {   
+        $searchedItems = $this->branch_services->searchInCompanyBranch($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'    =>  view('company.branch.branches-list', [
+                    'branches' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+        
     }
 }

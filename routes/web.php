@@ -91,11 +91,12 @@ Route::middleware(['dashboard.access'])->group(function () {
 
     Route::controller(CompanyBranchesController::class)->group(function () {
         Route::get('branch', 'index')->name('branch');
-        Route::get('branch/create', 'branch_form')->name('create.branch.form');
-        Route::post('add-branch', 'add_branch')->name('add.branch');
-        Route::get('branch/{id}/edit', 'edit_branch')->name('edit.branch');
-        Route::post('branch/{id}/', 'update_branch')->name('update.branch');
-        Route::get('delete-branch/{id}', 'delete_branch')->name('delete.branch');
+       // Route::get('branch/create', 'branch_form')->name('create.branch.form');
+        Route::post('create', 'store')->name('company.branch.store');
+        Route::post('/update', 'update')->name('company.branch.update');
+        Route::get('/delete', 'destroy')->name('company.branch.delete');
+        Route::get('/status/update', 'statusUpdate')->name('company.branch.statusUpdate');
+        Route::get('/search', 'search')->name('company.branch.search');
     });
 
     //Department Module
