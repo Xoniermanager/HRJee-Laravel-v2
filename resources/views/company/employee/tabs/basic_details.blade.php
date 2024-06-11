@@ -150,8 +150,8 @@
         <button class="btn btn-primary" id="submit">Save &
             Continue</button>
     </form>
-    <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary float-right {{$buttonDisabled}}">Next <i
-            class="fa fa-arrow-right"></i> </button>
+    <button onclick="show_next_tab('advance_details_tab')"
+        class="btn btn-primary float-right {{ $buttonDisabled }}">Next <i class="fa fa-arrow-right"></i> </button>
     <!--end::Wrapper-->
 </div>
 <script>
@@ -203,15 +203,17 @@
             success: function(response) {
                 if (response.data.status == 'createData') {
                     location.href = '/employee/edit/' + response.data.id;
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    jQuery('.nav-pills a[href="#advance_details_tab"]').tab(
-                        'show');
+                    setTimeout(function() {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        jQuery('.nav-pills a[href="#advance_details_tab"]').tab(
+                            'show');
+                    },4000);
                 } else {
                     Swal.fire({
                         position: "top-end",

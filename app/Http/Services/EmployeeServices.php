@@ -56,13 +56,4 @@ class EmployeeServices
       ];
     return $response;
   }
-
-  public function updateDetails(array $data, $id)
-  {
-    return $this->employeeRepository->find($id)->update($data);
-  }
-  public function deleteDetails($id)
-  {
-    return $this->employeeRepository->find($id)->delete();
-  }
 }

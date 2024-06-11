@@ -2,7 +2,7 @@
     <!--begin::Wrapper-->
     <form id="document_details">
         @csrf
-        <input type="hidden" name="user_id" class="id"
+        <input type="hidden" name="user_id"
             value="{{ $userdocumentDetails[0]['user_id'] ?? (Request::segment(3) ?? '11') }}">
         <div class="row">
             @forelse ($allDocumentTypeDetails as $key => $item)
@@ -70,8 +70,9 @@
                     showConfirmButton: false,
                     timer: 1500
                 });
-                $('.id').val(response.data);
-                jQuery('.nav-pills a[href="#document_tab"]').tab('show');
+                setTimeout(function() {
+                    location.href = "/employee/index";
+                }, 3000);
                 // This variable is used on save all records button
                 all_data_saved = true;
             },

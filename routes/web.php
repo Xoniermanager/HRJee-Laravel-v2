@@ -78,7 +78,6 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 |
 */
 
-Route::get('demo', [SkillController::class, 'demo'])->name('demo');
 Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
 
 Route::middleware(['dashboard.access'])->group(function () {
@@ -264,21 +263,13 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/signup', 'signup')->name('signup');
 });
 
-// Route::prefix('/super-admin')->controller(AdminController::class)->group(function () {
-//     Route::get('/login', 'super_admin_login_form')->name('super.admin.login.form');
-//     Route::post('/login', 'login')->name('super.admin.login');
-//     Route::post('/logout', 'logout')->name('logout');
-// });
-
 //Employee Module
 Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
     Route::get('/index', 'index')->name('employee.index');
     Route::get('/add', 'add')->name('employee.add');
     Route::post('/store', 'store')->name('employee.store');
     Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
-    // Route::post('/update', 'update')->name('previous.company.update');
-    // Route::get('/delete', 'destroy')->name('previous.company.delete');
-    // Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
+    Route::get('/get/personal/details/{id}', 'getPersonalDetails')->name('employee.personal.details');
 });
 
 //Advance Details for employee
@@ -382,14 +373,14 @@ Route::prefix('employee')->group(function () {
 });
 
 /** ----------------- Super Admin Started -------------------- **/
-Route::prefix('/super-admin')->controller(SuperAdminController::class)->group(function () {
+Route::prefix('/admin')->controller(SuperAdminController::class)->group(function () {
     Route::get('/login', 'login')->name('super_admin.login.form');
     Route::post('/super_admin_login', 'super_admin_login')->name('super.admin.login');
     // Route::post('/login', 'login')->name('super_admin.login');
     // Route::post('/logout', 'logout')->name('super_logout');
 });
 
-Route::prefix('/super-admin')->group(function () {
+Route::prefix('/admin')->group(function () {
     Route::view('/dashboard', 'super_admin.dashboard')->name('super_admin.dashboard');
 
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {

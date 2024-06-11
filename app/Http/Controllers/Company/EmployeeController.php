@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\RolesServices;
 use App\Http\Services\ShiftServices;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
@@ -37,7 +37,7 @@ class EmployeeController extends Controller
 
 
     public function __construct(
-        
+
         CountryServices $countryService,
         PreviousCompanyService $previousCompanyService,
         QualificationService $qualificationService,
@@ -64,14 +64,15 @@ class EmployeeController extends Controller
         $this->roleService = $roleService;
         $this->shiftService = $shiftService;
         $this->languagesServices = $languagesServices;
-
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('company.employee.index');
+        $allUserDetails = $this->employeeService->all();
+        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
+        return view('company.employee.index', compact('allUserDetails','allEmployeeStatus'));
     }
 
     public function add()
@@ -97,7 +98,8 @@ class EmployeeController extends Controller
                 'allEmployeeType',
                 'allEmployeeStatus',
                 'alldepartmentDetails',
-                'allDocumentTypeDetails','languages',
+                'allDocumentTypeDetails',
+                'languages',
                 'allBranches',
                 'allRoles',
                 'allShifts'
@@ -154,5 +156,9 @@ class EmployeeController extends Controller
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
+    }
+    public function getPersonalDetails($id)
+    {
+        dd($id);
     }
 }

@@ -34,4 +34,8 @@ class UserDetail extends Model
     {
         return $this->belongsTo(OfficeShift::class, 'shift_id', 'id');
     }
+    public function designation()
+    {
+        return $this->belongsTo(Designations::class, 'designation_id', 'id');
+    }
 }
