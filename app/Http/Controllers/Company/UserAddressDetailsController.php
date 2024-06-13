@@ -30,4 +30,9 @@ class UserAddressDetailsController extends Controller
             return response()->json(['error' =>  $e->getMessage()], 400);
         }
     }
+    public function getAddressDetails($id)
+    {
+        $data = $this->userAddressDetailsService->getDetailById($id);
+        return response()->json(['data' => $data]);
+    }
 }

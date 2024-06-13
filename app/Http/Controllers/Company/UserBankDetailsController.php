@@ -38,4 +38,10 @@ class UserBankDetailsController extends Controller
             return response()->json(['error' =>  $e->getMessage()], 400);
         }
     }
+
+    public function getBankDetails($id)
+    {
+        $data = $this->userBankDetailsService->getDetailById($id);
+        return response()->json(['data' => $data]);
+    }
 }

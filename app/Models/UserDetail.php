@@ -38,4 +38,16 @@ class UserDetail extends Model
     {
         return $this->belongsTo(Designations::class, 'designation_id', 'id');
     }
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id');
+    }
+    public function employeeTypes()
+    {
+        return $this->belongsTo(EmployeeType::class, 'employee_type_id', 'id');
+    }
+    public function companyBranches()
+    {
+        return $this->belongsTo(CompanyBranch::class, 'company_branch_id', 'id');
+    }
 }

@@ -91,7 +91,7 @@ Route::middleware(['dashboard.access'])->group(function () {
 
     Route::controller(CompanyBranchesController::class)->group(function () {
         Route::get('branch', 'index')->name('branch');
-       // Route::get('branch/create', 'branch_form')->name('create.branch.form');
+        // Route::get('branch/create', 'branch_form')->name('create.branch.form');
         Route::post('create', 'store')->name('company.branch.store');
         Route::post('/update', 'update')->name('company.branch.update');
         Route::get('/delete', 'destroy')->name('company.branch.delete');
@@ -270,17 +270,27 @@ Route::prefix('/employee')->controller(EmployeeController::class)->group(functio
     Route::get('/add', 'add')->name('employee.add');
     Route::post('/store', 'store')->name('employee.store');
     Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
-    Route::get('/get/personal/details/{id}', 'getPersonalDetails')->name('employee.personal.details');
+    Route::get('/get/personal/details/{users:id}', 'getPersonalDetails')->name('employee.personal.details');
 });
 
 //Advance Details for employee
-Route::post('/employee/advance/details', [UserAdvanceDetailsController::class, 'store'])->name('employee.advance.details');
+Route::controller(UserAdvanceDetailsController::class)->group(function () {
+    Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
+    Route::get('/get/advance/details/{id}', 'getAdvanceDetails');
+});
 
 //Address Details for employee
-Route::post('/employee/addresss/details', [UserAddressDetailsController::class, 'store'])->name('employee.address.details');
+Route::controller(UserAddressDetailsController::class)->group(function () {
+    Route::post('/employee/addresss/details', 'store')->name('employee.address.details');
+    Route::get('/get/address/details/{id}', 'getAddressDetails');
+});
 
 //Bank Details for employee
-Route::post('/employee/bank/details', [UserBankDetailsController::class, 'store'])->name('employee.banks.details');
+Route::controller(UserBankDetailsController::class)->group(function () {
+    Route::post('/employee/bank/details','store')->name('employee.banks.details');
+    Route::get('/get/bank/details/{id}', 'getBankDetails');
+
+});
 
 //Qualification Details for employee
 Route::post('/employee/qualification/details', [UserQualificationDetailsController::class, 'store'])->name('employee.qualification.details');

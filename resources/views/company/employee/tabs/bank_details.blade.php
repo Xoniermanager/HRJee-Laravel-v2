@@ -2,8 +2,8 @@
     <!--begin::Wrapper-->
     <form id="bank_details_form">
         @csrf
-        <input type="hidden" name="user_id" value="{{ $userbankDetails->user_id ?? Request::segment(3) ?? '' }}">
-        <input type="hidden" name="id" value="{{ $userbankDetails->id ?? ''}}">
+        <input type="hidden" name="user_id" value="{{ $userbankDetails->user_id ?? (Request::segment(3) ?? '') }}">
+        <input type="hidden" name="id" value="{{ $userbankDetails->id ?? '' }}">
 
         <div class="row">
             <div class="col-md-12">
@@ -40,28 +40,6 @@
     <!--end::Wrapper-->
 </div>
 <script>
-    jQuery(document).ready(function()
-    {
-        /** Bank Details created Ajax*/
-        jQuery("#bank_details_form").validate({
-            rules: {
-                account_name: 'required',
-                account_number: 'required',
-                bank_name: 'required',
-                ifsc_code: 'required'
-            },
-            messages: {
-                account_name: 'Please Enter the Account Name',
-                account_number: 'Please Enter the Account Number ',
-                bank_name: 'Please Enter the Bank Name',
-                ifsc_code: 'Please Enter the IFSC Code'
-            },
-            submitHandler: function(form) {
-                createBankDetails(form);
-            }
-        });
-    });
-    
     function createBankDetails(form) {
         var bank_details_data = $(form).serialize();
         $.ajax({
@@ -84,9 +62,9 @@
                 // This variable is used on save all records button
                 all_data_saved = false;
 
-                setTimeout(function(){
+                setTimeout(function() {
                     jQuery('.nav-pills a[href="#bank_details_tab"]').tab('show');
-                },1000);
+                }, 1000);
                 let errors = error_messages.responseJSON.error;
                 for (var error_key in errors) {
                     $(document).find('[name=' + error_key + ']').after(

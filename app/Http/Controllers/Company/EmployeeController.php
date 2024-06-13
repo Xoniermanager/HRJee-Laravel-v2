@@ -19,6 +19,7 @@ use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
+use App\Http\Services\SkillsService;
 
 class EmployeeController extends Controller
 {
@@ -34,6 +35,7 @@ class EmployeeController extends Controller
     private $roleService;
     private $shiftService;
     private $languagesServices;
+    private $skillServices;
 
 
     public function __construct(
@@ -49,7 +51,8 @@ class EmployeeController extends Controller
         BranchServices $branchService,
         RolesServices $roleService,
         ShiftServices $shiftService,
-        LanguagesServices $languagesServices
+        LanguagesServices $languagesServices,
+        SkillsService $skillServices
 
     ) {
         $this->countryService = $countryService;
@@ -64,15 +67,24 @@ class EmployeeController extends Controller
         $this->roleService = $roleService;
         $this->shiftService = $shiftService;
         $this->languagesServices = $languagesServices;
+        $this->skillServices = $skillServices;
     }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $allUserDetails = $this->employeeService->all();
+        $allUserDetails = $this->employeeService->all($request);
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
-        return view('company.employee.index', compact('allUserDetails','allEmployeeStatus'));
+        $allCountries = $this->countryService->all()->where('status', '1');
+        $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');
+        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
+        $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
+        $allShifts = $this->shiftService->all()->where('status', '1');
+        $allBranches = $this->branchService->get_branches();
+        $allQualification = $this->qualificationService->all()->where('status', '1');
+        $allSkills = $this->skillServices->all()->where('status','1');
+        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts','allBranches','allQualification','allSkills'));
     }
 
     public function add()
@@ -150,7 +162,10 @@ class EmployeeController extends Controller
             if ($userDetails) {
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
-                    'data' => $userDetails
+                    'data' => $userDetails,
+                    'allUserDetails' => view('company.employee.list', [
+                        'allUserDetails' => $this->employeeService->all()
+                    ])->render()
                 ]);
             }
         } catch (Exception $e) {
@@ -159,6 +174,7 @@ class EmployeeController extends Controller
     }
     public function getPersonalDetails($id)
     {
-        dd($id);
+        $data = $this->employeeService->getUserDetailById($id);
+        return response()->json(['data' => $data]);
     }
 }

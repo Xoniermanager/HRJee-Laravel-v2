@@ -29,7 +29,7 @@
             <div class="col-md-4 form-group">
                 <label for="">Insurance Number </label>
                 <input class="form-control" type="text" name="insurance_no"
-                    value="{{ $userAdvanceDetails->pan_no ?? '' }}">
+                    value="{{ $userAdvanceDetails->insurance_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Driving Licence No. </label>
@@ -67,22 +67,6 @@
             class="fa fa-arrow-right"></i> </button>
 </div>
 <script>
-    jQuery(document).ready(function() {
-        jQuery("#advance_details_form").validate({
-            rules: {
-                aadhar_no: "required",
-                pan_no: "required",
-            },
-            messages: {
-                aadhar_no: "Please enter the Aadhar Number",
-                pan_no: "Please enter the Pan Card Number",
-            },
-            submitHandler: function(form) {
-                createAdvanceDetails(form)
-            }
-        });
-    });
-
     function createAdvanceDetails(form) {
         var advance_details_details = $(form).serialize();
         $.ajax({

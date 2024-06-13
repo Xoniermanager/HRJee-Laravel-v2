@@ -155,43 +155,6 @@
     <!--end::Wrapper-->
 </div>
 <script>
-    /** Basic Details created Ajax*/
-    jQuery(document).ready(function() {
-        jQuery("#basic_create_form").validate({
-            rules: {
-                name: "required",
-                email: "required",
-                // password: "required",
-                official_email_id: "required",
-                blood_group: "required",
-                gender: "required",
-                marital_status: "required",
-                employee_status_id: "required",
-                date_of_birth: "required",
-                joining_date: "required",
-                phone: "required",
-                // profile_image: "required",
-            },
-            messages: {
-                name: "Please enter the Full Name",
-                email: "Please enter the Email",
-                // password: "Please enter the Password",
-                official_email_id: "Please enter the Official Email",
-                blood_group: "Please select the Blood Group",
-                gender: "Please select the Gender",
-                marital_status: "Please select the Marital Status",
-                employee_status_id: "Please select the Employee Status",
-                date_of_birth: "Please fill the Date of Birth",
-                joining_date: "Please fill the Joining Date",
-                phone: "Please enter the Phone",
-                // profile_image: "Please upload the profile images",
-            },
-            submitHandler: function(form) {
-                createBasicDetails(form);
-            }
-        });
-    });
-
     function createBasicDetails(form) {
         var basic_details_Data = new FormData(form);
         $.ajax({

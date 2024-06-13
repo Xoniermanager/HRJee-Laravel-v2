@@ -237,6 +237,8 @@
 
         /** Submitting All Details */
         var all_data_saved = true;
+        let submit_handler = true;
+
 
         jQuery('#submit_all').click(function() {
             //Basic Details

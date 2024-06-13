@@ -135,7 +135,7 @@
                                         </span>
                                         <!--end::Svg Icon-->
                                     </span>
-                                    <span class="menu-title">OT config</span>
+                                    <span class="menu-title">Office Timing Config</span>
                                     <span class="menu-arrow"></span>
                                 </span>
                                 <!--end:Menu link-->
@@ -149,7 +149,7 @@
                                                 <span class="bullet bullet-dot"></span>
                                             </span>
                                             <span class="menu-title">
-                                                shifts </span>
+                                                Shifts </span>
                                         </a>
                                         <!--end:Menu link-->
                                     </div>
@@ -161,7 +161,7 @@
                                                 <span class="bullet bullet-dot"></span>
                                             </span>
                                             <span class="menu-title">
-                                                Office time Config</span>
+                                                Office Time Config</span>
                                         </a>
                                         <!--end:Menu link-->
                                     </div>

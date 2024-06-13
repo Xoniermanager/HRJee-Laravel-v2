@@ -23,7 +23,7 @@ class DepartmentController extends Controller
      */
     public function index(Request $request)
     {
-        return view($request->get('view'). ".index", [
+        return view("company.department.index", [
             'allDepartmentDetails' => $this->departmentService->all()
         ]);
     }
@@ -73,7 +73,7 @@ class DepartmentController extends Controller
             return response()->json(
                 [
                     'message' => 'Departments Updated Successfully!',
-                    'data'   =>  view($request->get('view').".department_list", [
+                    'data'   =>  view('company.department.department_list', [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]
@@ -91,7 +91,7 @@ class DepartmentController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Departments Deleted Successfully',
-                'data'   =>  view($request->get('view').".department_list", [
+                'data'   =>  view("company.department.department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -107,7 +107,7 @@ class DepartmentController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Departments Status Updated Successfully',
-                'data'   =>  view($request->get('view').".department_list", [
+                'data'   =>  view("company.department.department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -121,7 +121,7 @@ class DepartmentController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view($request->get('view').".department_list", [
+                'data'   =>  view("company.department.department_list", [
                     'allDepartmentDetails' =>  $searchedItems
                 ])->render()
             ]);
