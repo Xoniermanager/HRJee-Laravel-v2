@@ -21,7 +21,7 @@ class EmployeeServices
   }
   public function all($request)
   {
-    $allEmployeeDetails = $this->employeeRepository->load('userDetails')->orderBy('id', 'DESC')->paginate(10);
+    $allEmployeeDetails = $this->employeeRepository->load('userDetails');
 
     //List Selected by Gender
     if (isset($request->gender) && !empty($request->gender)) {
@@ -46,7 +46,7 @@ class EmployeeServices
         function ($query) use ($empTypeId) {
           $query->where('employee_type_id', '=', $empTypeId);
         }
-      )->get();
+      );
     }
 
     //List Selected by Department
@@ -57,7 +57,7 @@ class EmployeeServices
         function ($query) use ($departmentId) {
           $query->where('department_id', '=', $departmentId);
         }
-      )->get();
+      );
     }
     //List Selected by Shift
     if (isset($request->shift_id) && !empty($request->shift_id)) {
@@ -67,7 +67,7 @@ class EmployeeServices
         function ($query) use ($shiftId) {
           $query->where('shift_id', '=', $shiftId);
         }
-      )->get();
+      );
     }
     //List Selected by Branch
     if (isset($request->branch_id) && !empty($request->branch_id)) {
@@ -77,7 +77,7 @@ class EmployeeServices
         function ($query) use ($branchId) {
           $query->where('company_branch_id', '=', $branchId);
         }
-      )->get();
+      );
     }
     //List Selected by Qualification
     if (isset($request->qualification_id) && !empty($request->qualification_id)) {
@@ -87,7 +87,7 @@ class EmployeeServices
         function ($query) use ($qualificationId) {
           $query->where('qualification_id', '=', $qualificationId);
         }
-      )->get();
+      );
     }
     //List Selected by Skill Id
     if (isset($request->skill_id) && !empty($request->skill_id)) {
@@ -97,10 +97,27 @@ class EmployeeServices
         function ($query) use ($skillId) {
           $query->where('skill_id', '=', $skillId);
         }
-      )->get();
+      );
     }
-
-    return $allEmployeeDetails;
+    //List Search Operation
+    if (isset($request->search) && !empty($request->search)) {
+      $searchKeyword = $request->search;
+      $allEmployeeDetails = User::where('name', 'Like', '%' . $searchKeyword . '%')
+        ->orWhere('official_email_id', 'Like', '%' . $searchKeyword . '%')
+        ->orWhere('email', 'Like', '%' . $searchKeyword . '%')
+        ->orWhere('phone', 'Like', '%' . $searchKeyword . '%')
+        ->orWhere('emp_id', 'Like', '%' . $searchKeyword . '%')
+        ->orWhere('father_name', 'Like', '%' . $searchKeyword . '%')
+        ->orWhere('mother_name', 'Like', '%' . $searchKeyword . '%')
+        ->orWhereHas(
+          'userDetails',
+          function ($query) use ($searchKeyword) {
+            $query->where('offer_letter_id', 'Like', '%' . $searchKeyword . '%')
+              ->orwhere('official_mobile_no', 'Like', '%' . $searchKeyword . '%');
+          }
+        );
+    }
+    return $allEmployeeDetails->orderBy('id', 'DESC')->paginate(10);
   }
   public function create($data)
   {

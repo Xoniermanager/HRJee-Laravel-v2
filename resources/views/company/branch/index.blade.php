@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    Country
+    Branches
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -12,8 +12,8 @@
             <div class="card card-body col-md-12">
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
-                    <div class="card-title m-0">
-                        <div class="d-flex align-items-center position-relative my-1">
+                    <div class="card-title">
+                        <div class="min-w-200px me-2 d-flex align-items-center position-relative my-1">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                             <span class="svg-icon svg-icon-1 position-absolute ms-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -26,12 +26,29 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
-                                placeholder="Search " type="text" id="search" name="search"
-                                value="">
-                            <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+                            <input class="form-control form-control-solid ps-14" placeholder="Search " type="text"
+                                value="{{ request()->get('search') }}" id="search">
                         </div>
-
+                        <select class="me-2 form-control min-w-200px" id="status">
+                            <option value="">Status</option>
+                            <option {{ request()->get('status') == '1' ? 'selected' : '' }} value="1">Active
+                            </option>
+                            <option {{ request()->get('status') == '2' ? 'selected' : '' }} value="2">Inactive
+                            </option>
+                        </select>
+                        <select class="form-control min-w-200px me-2" id="filter_country">
+                            <option value="">Please Select Country</option>
+                            @forelse ($countries as $country)
+                                <option value="{{ $country->id }}"
+                                    {{ request()->get('country_id') == $country->id ? 'selected' : '' }}>
+                                    {{ $country->name }}
+                                </option>
+                            @empty
+                                <option value="">No Country Found</option>
+                            @endforelse
+                        </select>
+                        <select class="form-control min-w-200px me-2" id="filter_state_id" style="display: none">
+                        </select>
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
@@ -83,117 +100,107 @@
                         @csrf
                         <input type="hidden" name="id" id="id">
                         <div class="col-md-6">
-                            <label class="form-label" >Branch Name</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Branch Name" name="name" id="name">
+                            <label class="form-label">Branch Name</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Branch Name"
+                                name="name" id="name">
                         </div>
                         @error('name')
-                        <div class="text-danger">{{ $message }}</div>
+                            <div class="text-danger">{{ $message }}</div>
                         @enderror
-                        <div class="col-md-6"> 
-                            <label class="form-label" >Select Branch</label>
-                            <select class="form-select" name="branch_type" id="branch_type">
-                                <option value="">Select Branch</option>
-                                <option value="primary">primary</option>
-                                <option value="secondary">secondary</option>
-                            </select> 
-                            @error('branch_type')
-                            <span  class="text-denger">{{ $message}} </span>
+                        <div class="col-md-6">
+                            <label class="form-label">Branch Type</label>
+                            <select class="form-select" name="type" id="type">
+                                <option value="">Select Type</option>
+                                <option value="primary">Primary</option>
+                                <option value="secondary">Secondary</option>
+                            </select>
+                            @error('type')
+                                <span class="text-denger">{{ $message }} </span>
                             @enderror
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" >Contact No</label>
-                            <input class="form-control" type="number" placeholder="Enter Your Contact No" name="contact_no" id="contact_no">
-                                @error('contact_no')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">Contact No</label>
+                            <input class="form-control" type="number" placeholder="Enter Your Contact No"
+                                name="contact_no" id="contact_no">
+                            @error('contact_no')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
 
 
                         <div class="col-md-6">
-                            <label class="form-label" >Email</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Email" name="email" id="email">
-                                @error('email')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
-                        </div>
-        
-                        <div class="col-md-6">
-                            <label class="form-label" >Hr Email</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Hr Email" name="hr_email" id="hr_email">
-                                @error('hr_email')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">Email</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Email" name="email"
+                                id="email">
+                            @error('email')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" >Address</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Address" name="address" id="address">
-                                @error('address')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">Hr Email</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Hr Email"
+                                name="hr_email" id="hr_email">
+                            @error('hr_email')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" >City</label>
-                            <input class="form-control" type="text" placeholder="Enter Your City" name="city" id="city">
-                                @error('city')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">Address</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Address"
+                                name="address" id="address">
+                            @error('address')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">City</label>
+                            <input class="form-control" type="text" placeholder="Enter Your City" name="city"
+                                id="city">
+                            @error('city')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
 
 
                         <div class="col-md-6">
-                            <label class="form-label" >Pincode</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Pincode" name="pincode" id="pincode">
-                                @error('pincode')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">Pincode</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Pincode"
+                                name="pincode" id="pincode">
+                            @error('pincode')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
-        
-
                         <div class="col-md-6">
-                            <label class="form-label" >State</label>
-                            <select class="form-select" name="state" id="state">
-                            <option value="">Please Select state</option>
-                            @forelse ($states as $state)
-                                <option value="{{ $state->id }}"> {{ $state->name }}</option>
-                            @empty
-                                <option value="">No state Found</option>
-                            @endforelse
+                            <label class="form-label">Country</label>
+                            <select class="form-select" name="country_id" id="edit_country_id">
+                                <option value="">Please Select Country</option>
+                                @forelse ($countries as $country)
+                                    <option value="{{ $country->id }}"
+                                        {{ old('country') == $country->id ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @empty
+                                    <option value="">No Country Found</option>
+                                @endforelse
                             </select>
-                                @error('state')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            @error('country')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
-        
-                        
                         <div class="col-md-6">
-                            <label class="form-label" >Country</label>
-                            <select class="form-select" name="country_id" id="country_id">
-                            <option value="">Please Select Country</option>
-                            @forelse ($countries as $country)
-                            <option value="{{ $country->id }}" {{ old('country') == $country->id ? 'selected' : '' }}>
-                                {{ $country->name }}
-                            </option>
-                            @empty
-                                <option value="">No Country Found</option>
-                            @endforelse
-                        </select>
-                                @error('country')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">State</label>
+                            <select class="form-select" name="state_id" id="edit_state">
+                            </select>
+                            @error('state_id')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
-{{--         
-                        <div class="col-md-12">
-                            <label class="form-label" >Description</label>
-                            <textarea class="form-control" id="text-area" row="2" name="description" placeholder="Enter Your description" id="description"></textarea>
-                                @error('description')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
-                        </div> --}}
                         <div class="col-12">
-                            <button class="btn btn-primary" type="submit" >Save</button>
+                            <button class="btn btn-primary" type="submit">Save</button>
                         </div>
                     </form>
                 </div>
@@ -213,7 +220,7 @@
                 <div class="modal-header">
                     <!--begin::Close-->
                     <h2>Add Branch</h2>
-                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal" >
+                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                         <span class="svg-icon svg-icon-1">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -231,94 +238,86 @@
                 <!--begin::Modal header-->
                 <!--begin::Modal body-->
                 <div class="modal-body scroll-y pt-0 pb-5 border-top">
-                    <form class="row g-3" id="company_branch_update_form">
+                    <form class="row g-3" id="branch_create_form">
                         @csrf
                         <input type="hidden" name="id" id="id">
                         <div class="col-md-6">
-                            <label class="form-label" >Branch Name</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Branch Name" name="name" id="name">
-                                @error('name')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">Branch Name</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Branch Name"
+                                name="name" id="name">
+                            @error('name')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
-                        <div class="col-md-6"> 
-                            <label class="form-label" >Select Branch</label>
-                            <select class="form-select" name="branch_type" id="branch_type">
-                                <option value="">Select Branch</option>
+                        <div class="col-md-6">
+                            <label class="form-label">Branch Type</label>
+                            <select class="form-select" name="type">
+                                <option value="">Select Type</option>
                                 <option value="primary">primary</option>
                                 <option value="secondary">secondary</option>
-                            </select> 
-                            @error('branch_type')
-                            <span  class="text-denger">{{ $message}} </span>
-                        @enderror
+                            </select>
+                            @error('type')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" >Contact No</label>
-                            <input class="form-control" type="number" placeholder="Enter Your Contact No" name="contact_no" id="contact_no">
-                                @error('contact_no')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label class="form-label" >Email</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Email" name="email" id="email">
-                                @error('email')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
-                        </div>
-        
-                        <div class="col-md-6">
-                            <label class="form-label" >Hr Email</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Hr Email" name="hr_email" id="hr_email">
-                                @error('hr_email')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label" >Address</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Address" name="address" id="address">
-                                @error('address')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label" >City</label>
-                            <input class="form-control" type="text" placeholder="Enter Your City" name="city" id="city">
-                                @error('city')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">Contact No</label>
+                            <input class="form-control" type="number" placeholder="Enter Your Contact No"
+                                name="contact_no" id="contact_no">
+                            @error('contact_no')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
 
 
                         <div class="col-md-6">
-                            <label class="form-label" >Pincode</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Pincode" name="pincode" id="pincode">
-                                @error('pincode')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            <label class="form-label">Email</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Email" name="email"
+                                id="email">
+                            @error('email')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Hr Email</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Hr Email"
+                                name="hr_email" id="hr_email">
+                            @error('hr_email')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Address</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Address"
+                                name="address" id="address">
+                            @error('address')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">City</label>
+                            <input class="form-control" type="text" placeholder="Enter Your City" name="city"
+                                id="city">
+                            @error('city')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Pincode</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Pincode"
+                                name="pincode" id="pincode">
+                            @error('pincode')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" >State</label>
-                            <select class="form-select" name="state" id="state">
-                            <option value="">Please Select State</option>
-                            @forelse ($states as $state)
-                                <option value="{{ $state->id }}"> {{ $state->name }}</option>
-                            @empty
-                                <option value="">No state Found</option>
-                            @endforelse
-                        </select>
-                                @error('state')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
-                        </div>
-        
-                        <div class="col-md-6">
-                            <label class="form-label" >Country</label>
+                            <label class="form-label">Country</label>
                             <select class="form-select" name="country_id" id="country_id">
                                 <option value="">Please Select Country</option>
                                 @forelse ($countries as $country)
@@ -329,20 +328,20 @@
                                     <option value="">No Country Found</option>
                                 @endforelse
                             </select>
-                                @error('country')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
+                            @error('country_id')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
                         </div>
-        
-                        {{-- <div class="col-md-12">
-                            <label class="form-label" >Description</label>
-                            <textarea class="form-control" id="text-area" row="2" name="description" placeholder="Enter Your description" id="description"></textarea>
-                                @error('description')
-                                    <span  class="text-denger">{{ $message}} </span>
-                                @enderror
-                        </div> --}}
+                        <div class="col-md-6">
+                            <label class="form-label">State</label>
+                            <select class="form-select" name="state_id" id="state">
+                            </select>
+                            @error('state_id')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
                         <div class="col-12">
-                            <button class="btn btn-primary" type="submit" >Save</button>
+                            <button class="btn btn-primary" type="submit">Save</button>
                         </div>
                     </form>
                 </div>
@@ -353,78 +352,82 @@
         <!--end::Modal dialog-->
     </div>
     <script>
-       
-    $(document).on("input", "#search", function(e) {
-        var key = $(this).val();
-        search_company_branchs(key,status= null)
+        /** Get All State From Country ID*/
+        jQuery('#country_id').on('change', function() {
+            var country_id = $(this).val();
+            var div_id = 'state';
+            get_all_state_using_country_id(country_id, div_id);
+        });
+        jQuery('#edit_country_id').on('change', function() {
+            var country_id = $(this).val();
+            var div_id = 'edit_state';
+            get_all_state_using_country_id(country_id, div_id);
+        });
+        jQuery('#filter_country').on('change', function() {
+            var country_id = $(this).val();
+            var div_id = 'filter_state_id';
+            get_all_state_using_country_id(country_id, div_id);
+            $('#filter_state_id').show();
+        });
+        /**-------------End----------*/
+
+        /** Filter By Search By Dropdown*/
+        jQuery("#search").on('blur', function() {
+            search_filter_results();
+        });
+        jQuery("#status").on('change', function() {
+            search_filter_results();
+        });
+        jQuery("#filter_country").on('change', function() {
+            $('#filter_state_id').val('')
+            search_filter_results();
+        });
+        jQuery("#filter_state_id").on('change', function() {
+            search_filter_results();
         });
 
-        $('#filterByStatus').change(function(){
-            var status= $(this).val();
-            search_company_branchs(key=null,status)
-        });
-
-        function search_company_branchs(key,status)
-        {
+        function search_filter_results() {
             $.ajax({
-                    url: "{{ route('company.branch.search') }}",
-                    type: 'get',
-                    data: {
-                        'key': key,
-                        'status': status,
-                    },
-                    success: function(res) {
-                        if (res) {
-                            jQuery('#company_branch_list').replaceWith(res.data);
-                        } 
-                    }
-                })
+                type: 'GET',
+                url: company_ajax_base_url + '/company/branch/search',
+                data: {
+                    'status': $('#status').val(),
+                    'search': $('#search').val(),
+                    'country_id': $('#filter_country').val(),
+                    'state_id': $('#filter_state_id').val(),
+                },
+                success: function(response) {
+                    $('#company_branch_list').replaceWith(response.data);
+                }
+            });
         }
+        /**-------------End----------*/
 
-        function edit_company_branch_details(companyBranchDetails) {
-
-            companyBranchDetails= JSON.parse(companyBranchDetails);
-            $('#id').val(companyBranchDetails.id);
-            $('#name').val(companyBranchDetails.name);
-            $('#address').val(companyBranchDetails.address);
-            $('#branch_type').val(companyBranchDetails.branch_type);
-            $('#contact_no').val(companyBranchDetails.contact_no);
-            $('#email').val(companyBranchDetails.email);
-            $('#hr_email').val(companyBranchDetails.hr_email);
-            $('#address').val(companyBranchDetails.address);
-            $('#city').val(companyBranchDetails.city);
-            $('#pincode').val(companyBranchDetails.pincode);
-            $('#state').val(companyBranchDetails.state);
-            $('#country_id').val(companyBranchDetails.country_id);
-            $('#description').val(companyBranchDetails.description);
-            jQuery('#edit_company_branch').modal('show');
-        }
-
-        jQuery.noConflict();
+        /** Validation and Ajax Creation and Updated*/
         jQuery(document).ready(function($) {
             jQuery("#edit_company_branch_form").validate({
                 rules: {
                     name: "required",
-                    branch_type:"required",
+                    type: "required",
                     contact_no: "required",
-                    email:"required",
+                    email: "required",
                     hr_email: "required",
                     address: "required",
-                    city:"required",
-                    pincode:"required",
-                    state:"required",
+                    city: "required",
+                    pincode: "required",
+                    state_id: "required",
                     country_id: "required",
                 },
                 messages: {
-                    name: "Please enter branch branch name",
-                    branch_type: "Please enter branch branch type",
+                    name: "Please enter branch name",
+                    type: "Please enter Select  Branch",
                     contact_no: "Please enter contract number",
                     email: "Please enter branch email ",
                     hr_email: "Please enter branch hr email ",
                     address: "Please enter branch address",
                     city: "Please enter branch city",
                     pincode: "Please enter branch pincode",
-                    state: "Please enter branch state",
+                    state_id: "Please enter branch state",
                     country_id: "Please enter branch country",
                 },
                 submitHandler: function(form) {
@@ -437,14 +440,14 @@
                             jQuery('#edit_company_branch').modal('hide');
                             swal.fire("Done!", response.message, "success");
                             $('#company_branch_list').replaceWith(response.data);
-
-
                         },
                         error: function(error_messages) {
                             let errors = error_messages.responseJSON.errors;
                             for (var error_key in errors) {
                                 $(document).find('[name=' + error_key + ']').after(
-                                    '<span class="' + error_key + '_error text text-danger">' + errors[error_key] + '</span>'
+                                    '<span class="' + error_key +
+                                    '_error text text-danger">' + errors[error_key] +
+                                    '</span>'
                                 );
                             }
                             setTimeout(function() {
@@ -452,68 +455,85 @@
                                     $("." + error_key + "_error").remove();
                                 }
                             }, 2000);
-
                         }
                     });
                 }
             });
-        });
 
 
-
-        jQuery("#company_branch_update_form").validate({
-            rules: {
+            jQuery("#branch_create_form").validate({
+                rules: {
                     name: "required",
-                    branch_type:"required",
+                    type: "required",
                     contact_no: "required",
-                    email:"required",
+                    email: "required",
                     hr_email: "required",
                     address: "required",
-                    city:"required",
-                    pincode:"required",
-                    state:"required",
+                    city: "required",
+                    pincode: "required",
+                    state_id: "required",
                     country_id: "required",
                 },
                 messages: {
-                    name: "Please enter branch branch name",
-                    branch_type: "Please enter branch branch type",
+                    name: "Please enter branch name",
+                    type: "Please Select the Branch type",
                     contact_no: "Please enter contract number",
                     email: "Please enter branch email ",
                     hr_email: "Please enter branch hr email ",
                     address: "Please enter branch address",
                     city: "Please enter branch city",
                     pincode: "Please enter branch pincode",
-                    state: "Please enter branch state",
+                    state_id: "Please enter branch state",
                     country_id: "Please enter branch country",
                 },
-            submitHandler: function(form) {
-                var company_branch_data = $(form).serialize();
-                $.ajax({
-                    url: "<?= route('company.branch.store') ?>",
-                    type: 'post',
-                    data: company_branch_data,
-                    success: function(response) {
-                        jQuery('#add_company_branch').modal('hide');
-                        swal.fire("Done!", response.message, "success");
-                        jQuery('#company_branch_list').replaceWith(response.data);
-                        jQuery("#add_company_branch")[0].reset();
-                    },
-                    error: function(error_messages) {
-                        let errors = error_messages.responseJSON.error;
-                        for (var error_key in errors) {
-                            $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
-                                    error_key] + '</span>');
-                            setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                submitHandler: function(form) {
+                    var company_branch_data = $(form).serialize();
+                    $.ajax({
+                        url: "<?= route('company.branch.store') ?>",
+                        type: 'post',
+                        data: company_branch_data,
+                        success: function(response) {
+                            jQuery('#add_company_branch').modal('hide');
+                            swal.fire("Done!", response.message, "success");
+                            jQuery('#company_branch_list').replaceWith(response.data);
+                            jQuery("#branch_create_form")[0].reset();
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.errors;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span id="' + error_key +
+                                    '_error" class="text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("#" + error_key + "_error").remove();
+                                }, 4000);
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
- 
+
+        function edit_company_branch_details(companyBranchDetails) {
+
+            companyBranchDetails = JSON.parse(companyBranchDetails);
+            $('#id').val(companyBranchDetails.id);
+            $('#name').val(companyBranchDetails.name);
+            $('#address').val(companyBranchDetails.address);
+            $('#type').val(companyBranchDetails.type);
+            $('#contact_no').val(companyBranchDetails.contact_no);
+            $('#email').val(companyBranchDetails.email);
+            $('#hr_email').val(companyBranchDetails.hr_email);
+            $('#address').val(companyBranchDetails.address);
+            $('#city').val(companyBranchDetails.city);
+            $('#pincode').val(companyBranchDetails.pincode);
+            $('#edit_country_id').val(companyBranchDetails.country_id);
+            get_all_state_using_country_id(companyBranchDetails.country_id, 'edit_state', companyBranchDetails.state_id);
+            $('#description').val(companyBranchDetails.description);
+            jQuery('#edit_company_branch').modal('show');
+        }
+
         function deleteFunction(id) {
             event.preventDefault();
             Swal.fire({
@@ -543,8 +563,9 @@
                 }
             });
         }
+
         function handleStatus(id) {
-            var checked_value = $('#checked_value_'+id).prop('checked');
+            var checked_value = $('#checked_value_' + id).prop('checked');
             let status;
 
             let status_name;
@@ -573,6 +594,6 @@
                 }
             })
         }
-
+        /**-------------End----------*/
     </script>
 @endsection

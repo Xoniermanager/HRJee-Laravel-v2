@@ -11,7 +11,7 @@ class CountryServices
   {
     $this->countryRepository = $countryRepository;
   }
-  public function all()
+  public function all($request = null)
   {
     return $this->countryRepository->orderBy('id', 'DESC')->paginate(10);
   }
@@ -28,27 +28,24 @@ class CountryServices
   {
     return $this->countryRepository->find($id)->delete();
   }
-  // public function searchCountry($key)
-  // {
-  //   return $this->countryRepository->where(function($query) use ($key) {
-  //       $query->where('name', 'like', "%$key%");
-  //   })->get();
-  // }
 
-  public function searchInCountry($searchKey)
+  public function serachFilterList($request)
   {
-    $data['key']    = array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
-    $data['status'] = array_key_exists('status', $searchKey) ? $searchKey['status'] : '';
+    $countryDetails = $this->countryRepository;
 
-    return $this->countryRepository->where(function($query) use ($data) {
-      if (!empty($data['key'])) {
-          $query->where('name', 'like', "%{$data['key']}%");
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $countryDetails = $countryDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status) && !empty($request->status)) {
+      if ($request->status == 2) {
+        $status = 0;
+      } else {
+        $status = $request->status;
       }
-
-      if (isset($data['status'])) {
-          $query->where('status', $data['status']);
-      }
-    })->get();
-
+      $countryDetails = $countryDetails->where('status', $status);
+    }
+    return $countryDetails->orderBy('id', 'DESC')->paginate(10);
   }
 }

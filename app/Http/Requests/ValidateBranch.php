@@ -23,16 +23,15 @@ class ValidateBranch extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'company_id' => 'nullable',
-            'branch_type' => 'required|in:primary,secondary',
+            'type' => 'required|in:primary,secondary',
             'contact_no' => 'required|numeric',
             'email' => 'required|email|unique:company_branches,email',
             'hr_email' => 'required|email|unique:company_branches,email',
             'address' => 'required|string',
             'city' => 'required|string',
             'pincode' => 'required|string',
-            'state' => 'required|string',
-            'country_id' => 'string',
+            'country_id' => ['required_if:address_type,==,0', 'exists:countries,id'],
+            'state_id' => ['required_if:address_type,==,0', 'exists:states,id'],
         ];
     }
     

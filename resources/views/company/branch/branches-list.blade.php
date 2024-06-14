@@ -6,16 +6,18 @@
             <!--begin::Table head-->
             <thead>
                 <tr class="fw-bold">
-					<tr class="fw-bold">
-                        <th>Sr. No.</th>
-                        <th>Branch Name</th>
-                        <th>Branch Type</th>
-                        <th>Contact Number</th>
-                        <th>Email</th>
-                        {{-- <th>Address</th> --}}
-                        <th>Status</th>
-                        <th class="float-right">Action</th>
-                    </tr>
+                <tr class="fw-bold">
+                    <th>Sr. No.</th>
+                    <th class="min-w-150px">Branch Name</th>
+                    <th class="min-w-150px">Type</th>
+                    <th class="min-w-150px">Contact Number</th>
+                    <th class="min-w-150px">Email</th>
+                    <th class="min-w-150px">HR Email</th>
+                    <th class="min-w-150px">Country</th>
+                    <th class="min-w-150px">State</th>
+                    <th>Status</th>
+                    <th class="float-right">Action</th>
+                </tr>
                 </tr>
             </thead>
             @forelse ($branches as $key => $branch)
@@ -23,15 +25,14 @@
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <td><a href="#" data-bs-toggle="modal"
-                                onClick="edit_company_branch_details('{{ $branch}}')">{{ $branch->name }}</a>
+                                onClick="edit_company_branch_details('{{ $branch }}')">{{ $branch->name }}</a>
                         </td>
-
-                        <td>{{ $branch->branch_type }}</td>
+                        <td>{{ ucfirst($branch->type) }}</td>
                         <td>{{ $branch->contact_no }}</td>
                         <td>{{ $branch->email }}</td>
-                        {{-- <td>{{ $branch->address }}</td> --}}
-
-
+                        <td>{{ $branch->hr_email }}</td>
+                        <td>{{ $branch->country->name }}</td>
+                        <td>{{ $branch->state->name }}</td>
                         <td data-order="Invalid date">
                             <label class="switch">
                                 <input type="checkbox" <?= $branch->status == '1' ? 'checked' : '' ?>
@@ -60,7 +61,7 @@
             @empty
                 <td colspan="3">
                     <span class="text-danger">
-                        <strong>No Country Found!</strong>
+                        <strong>No Branches Found!</strong>
                     </span>
                 </td>
             @endforelse

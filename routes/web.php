@@ -91,12 +91,11 @@ Route::middleware(['dashboard.access'])->group(function () {
 
     Route::controller(CompanyBranchesController::class)->group(function () {
         Route::get('branch', 'index')->name('branch');
-        // Route::get('branch/create', 'branch_form')->name('create.branch.form');
         Route::post('create', 'store')->name('company.branch.store');
         Route::post('/update', 'update')->name('company.branch.update');
         Route::get('/delete', 'destroy')->name('company.branch.delete');
         Route::get('/status/update', 'statusUpdate')->name('company.branch.statusUpdate');
-        Route::get('/search', 'search')->name('company.branch.search');
+        Route::get('/company/branch/search', 'searchBranchFilter')->name('company.branch.search');
     });
 
     //Department Module
@@ -125,6 +124,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('country.update');
         Route::get('/delete', 'destroy')->name('country.delete');
         Route::get('/status/update', 'statusUpdate')->name('country.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
     });
 
     //State Module
@@ -135,6 +135,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/delete', 'destroy')->name('state.delete');
         Route::get('/status/update', 'statusUpdate')->name('state.statusUpdate');
         Route::get('/get/all/state', 'getAllStates')->name('get.all.country.state');
+        Route::get('/search', 'searchStateFilter');
     });
 
     //Previous Company Module
@@ -160,6 +161,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/add', 'add')->name('employee.add');
         Route::post('/store', 'store')->name('employee.store');
         Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
+        Route::get('/get/filter/list', 'getfilterlist');
     });
 
     //Holiday Module
@@ -287,9 +289,8 @@ Route::controller(UserAddressDetailsController::class)->group(function () {
 
 //Bank Details for employee
 Route::controller(UserBankDetailsController::class)->group(function () {
-    Route::post('/employee/bank/details','store')->name('employee.banks.details');
+    Route::post('/employee/bank/details', 'store')->name('employee.banks.details');
     Route::get('/get/bank/details/{id}', 'getBankDetails');
-
 });
 
 //Qualification Details for employee

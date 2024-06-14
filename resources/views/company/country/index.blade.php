@@ -13,7 +13,7 @@
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
-                        <div class="d-flex align-items-center position-relative my-1">
+                        <div class="d-flex align-items-center position-relative my-1  min-w-250px me-2">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                             <span class="svg-icon svg-icon-1 position-absolute ms-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -26,20 +26,20 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
-                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
-                                value="">
-                            <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+                            <input class="form-control form-control-solid ps-14" placeholder="Search " type="text"
+                                name="search" value="{{ request()->get('search') }}" id="search">
                         </div>
-
+                        <select name="status" class="form-control min-w-250px" id="status">
+                            <option value="">Status</option>
+                            <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
+                                value="1">Active</option>
+                            <option {{ old('status') == '2' || request()->get('status') == '2' ? 'selected' : '' }}
+                                value="2">Inactive</option>
+                        </select>
                     </div>
-                    <!--end::Card title-->
-                    <!--begin::Action-->
                     <a href="#" data-bs-toggle="modal" data-bs-target="#add_country"
                         class="btn btn-sm btn-primary align-self-center">
                         Add Country</a>
-
-                    <!--end::Action-->
                 </div>
 
                 <div class="mb-5 mb-xl-10">
@@ -308,6 +308,26 @@
                             Swal.fire("Error deleting!", "Please try again", "error");
                         }
                     });
+                }
+            });
+        }
+        jQuery("#search").on('blur', function() {
+            search_filter_results();
+        });
+        jQuery("#status").on('change', function() {
+            search_filter_results();
+        });
+        function search_filter_results()
+        {
+            $.ajax({
+                type: 'GET',
+                url: company_ajax_base_url + '/country/search/filter',
+                data: {
+                    'status': $('#status').val(),
+                    'search': $('#search').val()
+                },
+                success: function(response) {
+                    $('#contact_list').replaceWith(response.data);
                 }
             });
         }

@@ -26,16 +26,26 @@
                             </span>
                             <!--end::Svg Icon-->
                             <input data-kt-patient-filter="search"
-                                class="min-w-200px form-control form-control-solid ps-14" placeholder="Search "
-                                type="text" id="SearchByPatientName" name="SearchByPatientName" value="">
+                                class="min-w-200px me-2 form-control form-control-solid ps-14" placeholder="Search "
+                                type="text" id="search">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
                         </div>
-                        {{-- <select class="form-control ml-2">
-                            <option value="">Select Department</option>
-                            <option value="">Development</option>
-                            <option value="">Marketing</option>
-                            <option value="">Management</option>
-                        </select> --}}
+                        <select class="form-control min-w-200px me-2" id="filter_country">
+                            <option value="">Select County</option>
+                            @forelse ($allcountryDetails as $countryDetail)
+                                <option value="{{$countryDetail->id }}" {{request()->get('country_id') == $countryDetail->id ? 'selected' : '' }}>{{ $countryDetail->name }}</option>
+                            @empty
+                                <option value="">No Country Available</option>
+                            @endforelse
+                        </select>
+                        <select class="form-control min-w-200px me-2" id="status">
+                            <option value="">Status</option>
+                            <option {{ request()->get('status') == '1' ? 'selected' : '' }} value="1">Active
+                            </option>
+                            <option {{ request()->get('status') == '2' ? 'selected' : '' }} value="2">Inactive
+                            </option>
+                        </select>
+
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
@@ -346,6 +356,32 @@
                         Swal.fire("Error deleting!", "Please try again", "error");
                     }
                 });
+            }
+        });
+    }
+
+    /** Filter By Search By Dropdown*/
+    jQuery("#search").on('blur', function() {
+        search_filter_results();
+    });
+    jQuery("#status").on('change', function() {
+        search_filter_results();
+    });
+    jQuery("#filter_country").on('change', function() {
+        search_filter_results();
+    });
+
+    function search_filter_results() {
+        $.ajax({
+            type: 'GET',
+            url: company_ajax_base_url + '/state/search',
+            data: {
+                'status': $('#status').val(),
+                'search': $('#search').val(),
+                'country_id': $('#filter_country').val(),
+            },
+            success: function(response) {
+                $('#state_list').replaceWith(response.data);
             }
         });
     }

@@ -143,7 +143,7 @@ function get_all_state_using_country_id(country_id, div_id, state_id = '') {
                 select.html('');
                 if (response.status == true) {
                     $("#" + div_id).append(
-                        '<option>Select State</option>');
+                        '<option value="">Select State</option>');
                     $.each(response.data, function (key, value) {
                         select.append('<option ' + ((state_id == value.id) ? "selected" : "") +
                             ' value=' + value.id + ' >' + value.name + '</option>');

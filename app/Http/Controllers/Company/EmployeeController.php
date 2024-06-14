@@ -74,7 +74,7 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->employeeService->all($request);
+        $allUserDetails = $this->employeeService->all($request == null);
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
         $allCountries = $this->countryService->all()->where('status', '1');
         $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');
@@ -83,8 +83,8 @@ class EmployeeController extends Controller
         $allShifts = $this->shiftService->all()->where('status', '1');
         $allBranches = $this->branchService->get_branches();
         $allQualification = $this->qualificationService->all()->where('status', '1');
-        $allSkills = $this->skillServices->all()->where('status','1');
-        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts','allBranches','allQualification','allSkills'));
+        $allSkills = $this->skillServices->all()->where('status', '1');
+        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills'));
     }
 
     public function add()
@@ -176,5 +176,19 @@ class EmployeeController extends Controller
     {
         $data = $this->employeeService->getUserDetailById($id);
         return response()->json(['data' => $data]);
+    }
+
+    public function getfilterlist(Request $request)
+    {
+        try {
+            $allUserDetails = $this->employeeService->all($request);
+            if ($allUserDetails) {
+                return response()->json([
+                    'data' => view('company.employee.list',compact('allUserDetails'))->render()
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 }

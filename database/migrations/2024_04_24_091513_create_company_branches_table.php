@@ -13,23 +13,24 @@ return new class extends Migration
     {
         Schema::create('company_branches', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('company_id')->nullable();
             $table->string('name');
-            $table->enum('branch_type',['primary','secondary']);
-            $table->string('contact_no');
+            $table->enum('type', ['primary', 'secondary']);
+            $table->string('contact_no')->unique();;
             $table->string('email')->unique();
             $table->string('hr_email')->unique();
             $table->string('address')->unique();
-            $table->string('city'); 
+            $table->string('city');
             $table->string('pincode');
-            $table->string('state');
-            $table->string('country_id')->default(1);
-            $table->string('status')->nullable();
+            $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('state_id');
+            $table->unsignedBigInteger('company_id');
+            $table->foreign('country_id')->references('id')->on('countries');
+            $table->foreign('state_id')->references('id')->on('states');
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->boolean('status')->default(true);
             $table->timestamps();
-
         });
     }
-
     /**
      * Reverse the migrations.
      */

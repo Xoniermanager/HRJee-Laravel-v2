@@ -136,10 +136,10 @@ class StateController extends Controller
         }
         return json_encode($response);
     }
-    public function search(Request $request)
-    {   
 
-        $searchedItems = $this->stateService->searchInState($request->all());
+    public function searchStateFilter(Request $request)
+    {
+        $searchedItems = $this->stateService->searchStateFilter($request);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',

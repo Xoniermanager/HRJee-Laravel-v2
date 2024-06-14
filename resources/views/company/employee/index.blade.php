@@ -31,10 +31,13 @@
                         <!--begin::Menu toggle-->
 
                         <div class="col-md-2 me-0">
-                            <button class="btn btn-sm btn-danger ms-3 align-self-center" data-kt-menu-trigger="click"
+                            <div class="col-md-2 mb-1" data-bs-toggle="modal" data-bs-target="#export_popup">
+                                <a href="#" class="btn btn-sm btn-danger ms-3 align-self-center">Export</a>
+                            </div>
+                            {{-- <button class="" data-kt-menu-trigger="click"
                                 data-kt-menu-placement="bottom-end">
                                 Export
-                            </button>
+                            </button> --}}
 
                         </div>
 
@@ -53,8 +56,8 @@
                                     </svg>
                                 </span>
                                 <!--end::Svg Icon-->
-                                <input data-kt-patient-filter="search" class="form-control ps-14" placeholder="Search "
-                                    type="text" value="">
+                                <input data-kt-patient-filter="search" class="form-control ps-14" placeholder="Search"
+                                    type="text" id="search">
                                 <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
                             </div>
                         </div>
@@ -72,9 +75,9 @@
                         <!--begin::Card title-->
                         <!--begin::Action-->
                         <div>
-                            <form action="{{ route('employee.index') }}" method="get" class="row">
+                            <form class="row" id="filter_id">
                                 <div class="col-md-2 mb-1" id="gender_div">
-                                    <select class="form-control" name="gender" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="gender">
                                         <option value="">Gender</option>
                                         <option value="M"
                                             {{ request()->get('gender') == 'M' || old('gender') == 'M' ? 'selected' : '' }}>
@@ -89,7 +92,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="emp_status_id_div">
-                                    <select class="form-control" name="emp_status_id" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="emp_status_id">
                                         <option value="">Employee Status</option>
                                         @foreach ($allEmployeeStatus as $employeeStatus)
                                             <option
@@ -99,7 +102,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="marital_status_div">
-                                    <select class="form-control" name="marital_status" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="marital_status">
                                         <option value="">Marital Status</option>
                                         <option value="S"
                                             {{ request()->get('marital_status') == 'S' || old('marital_status') == 'S' ? 'selected' : '' }}>
@@ -111,7 +114,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="emp_type_div_id">
-                                    <select class="form-control" name="emp_type_id" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="emp_type_id">
                                         <option value="">Employee Type</option>
                                         @foreach ($allEmployeeType as $employeeType)
                                             <option
@@ -121,7 +124,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="department_div_id">
-                                    <select class="form-control" name="department_id" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="department_id">
                                         <option value="">Department</option>
                                         @foreach ($alldepartmentDetails as $departmentDetails)
                                             <option
@@ -132,7 +135,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="shift_div_id" style="display: none">
-                                    <select class="form-control" name="shift_id" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="shift_id">
                                         <option value="">Shift</option>
                                         @foreach ($allShifts as $shiftDetail)
                                             <option
@@ -142,7 +145,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="branch_div_id" style="display: none">
-                                    <select class="form-control" name="branch_id" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="branch_id">
                                         <option value="">Branch</option>
                                         @foreach ($allBranches as $branchDetails)
                                             <option
@@ -152,7 +155,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="qualification_div_id" style="display: none">
-                                    <select class="form-control" name="qualification_id" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="qualification_id">
                                         <option value="">Qualification</option>
                                         @foreach ($allQualification as $qualificationDetails)
                                             <option
@@ -163,7 +166,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="skill_div_id" style="display: none">
-                                    <select class="form-control" name="skill_id" onchange="this.form.submit();">
+                                    <select class="form-control filter_form" name="skill_id">
                                         <option value="">Skills</option>
                                         @foreach ($allSkills as $skillsDetails)
                                             <option
@@ -327,6 +330,107 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="export_popup" tabindex="-1" aria-hidden="true">
+            <div>
+                <div class="modal-dialog mw-400px">
+                    <!--begin::Modal content-->
+                    <div class="modal-content">
+                        <!--begin::Modal header-->
+                        <div class="modal-header pb-0">
+                            <!--begin::Close-->
+                            <h3 class="fw-bold m-0">Export</h3>
+                            <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                                <span class="svg-icon svg-icon-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2"
+                                            rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                                        <rect x="7.41422" y="6" width="16" height="2" rx="1"
+                                            transform="rotate(45 7.41422 6)" fill="currentColor" />
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->
+                            </div>
+                            <!--end::Close-->
+                        </div>
+                        <!--begin::Modal header-->
+                        <!--begin::Modal body-->
+                        <div class="modal-body scroll-y p-4">
+                            <div class="row w-100">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox" value="gender_div"
+                                            checked>
+                                        <label for="gender">Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="emp_status_id_div" checked>
+                                        <label for="gender">Official Email ID</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="marital_status_div" checked>
+                                        <label for="gender">Email</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="emp_type_div_id" checked>
+
+                                        <label for="gender">Gender</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="department_div_id" checked>
+
+                                        <label for="gender">Marital Status</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox" value="shift_div_id">
+
+                                        <label for="gender">Joining Date</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="branch_div_id">
+
+                                        <label for="gender">DOB</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="qualification_div_id">
+
+                                        <label for="gender">Blood Group</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox" value="skill_div_id">
+
+                                        <label for="gender">Phone</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             let submit_handler = false;
             $(".filter").on("click", function(event) {
@@ -337,6 +441,30 @@
                 } else {
                     jQuery('#' + filter_id).hide();
                 }
+            });
+            $('.filter_form').on('change', function() {
+                var data = $('#filter_id').serialize();
+                $.ajax({
+                    method: 'GET',
+                    url: company_ajax_base_url + '/employee/get/filter/list',
+                    data: data,
+                    success: function(response) {
+                        $('#employee_list').replaceWith(response.data);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {}
+                });
+            });
+            $("#search").blur(function() {
+                $.ajax({
+                    type: 'GET',
+                    url: company_ajax_base_url + '/employee/get/filter/list',
+                    data: {
+                        'search': $(this).val()
+                    },
+                    success: function(response) {
+                        $('#employee_list').replaceWith(response.data);
+                    }
+                });
             });
         </script>
     @endsection

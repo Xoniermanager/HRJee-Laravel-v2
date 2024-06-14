@@ -113,16 +113,13 @@ class CountryController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-
-    public function search(Request $request)
-    {   
-        $searchedItems = $this->countryService->searchInCountry($request->all());
-        if ($searchedItems) {
+    public function serachFilterList(Request $request)
+    {
+        $allCountryDetails = $this->countryService->serachFilterList($request);
+        if ($allCountryDetails) {
             return response()->json([
-                'success' => 'Searching...',
-                'data'   =>  view("company.country.country_list", [
-                    'allCountryDetails' => $searchedItems
-                ])->render()
+                'success' => 'Searching',
+                'data'    =>  view('company.country.country_list', compact('allCountryDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
