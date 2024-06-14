@@ -81,7 +81,7 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allShifts = $this->shiftService->all()->where('status', '1');
-        $allBranches = $this->branchService->get_branches();
+        $allBranches = $this->branchService->all();
         $allQualification = $this->qualificationService->all()->where('status', '1');
         $allSkills = $this->skillServices->all()->where('status', '1');
         return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills'));
@@ -97,7 +97,7 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
         $languages =   $this->languagesServices->defaultLanguages();
-        $allBranches = $this->branchService->get_branches();
+        $allBranches = $this->branchService->all();
         $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->all()->where('status', '1');
 
@@ -128,7 +128,7 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
-        $allBranches = $this->branchService->get_branches();
+        $allBranches = $this->branchService->all();
         $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->all()->where('status', '1');
         $languages =   $this->languagesServices->defaultLanguages();

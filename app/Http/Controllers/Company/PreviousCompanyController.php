@@ -146,10 +146,9 @@ class PreviousCompanyController extends Controller
         }
     }
 
-
-    public function search(Request $request)
+    public function searchPreviousCompanyFilter(Request $request)
     {   
-        $searchedItems = $this->previousCompanyService->searchInPreviousCompany($request->all());
+        $searchedItems = $this->previousCompanyService->searchPreviousCompanyFilter($request);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',

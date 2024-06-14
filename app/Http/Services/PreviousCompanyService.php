@@ -36,20 +36,23 @@ class PreviousCompanyService
   }
 
 
-  public function searchInPreviousCompany($searchKey)
+  public function searchPreviousCompanyFilter($request)
   {
-    $data['key']    = array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
-    $data['status'] = array_key_exists('status', $searchKey) ? $searchKey['status'] : '';
+    $previousCountryDetails = $this->previousCompanyRepository;
 
-    return $this->previousCompanyRepository->where(function($query) use ($data) {
-      if (!empty($data['key'])) {
-          $query->where('name', 'like', "%{$data['key']}%");
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $previousCountryDetails = $previousCountryDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status) && !empty($request->status)) {
+      if ($request->status == 2) {
+        $status = 0;
+      } else {
+        $status = $request->status;
       }
-
-      if (isset($data['status'])) {
-          $query->where('status', $data['status']);
-      }
-    })->get();
-
+      $previousCountryDetails = $previousCountryDetails->where('status', $status);
+    }
+    return $previousCountryDetails->orderBy('id', 'DESC')->paginate(10);
   }
 }

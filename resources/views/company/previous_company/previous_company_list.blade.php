@@ -22,7 +22,7 @@
                         <td data-order="Invalid date">
                             <label class="switch">
                                 <input type="checkbox" <?= $previousCompanyDetail->status == '1' ? 'checked' : '' ?>
-                                    onchange="handleStatus({{ $previousCompanyDetail->id }})" id="checked_value">
+                                    onchange="handleStatus({{ $previousCompanyDetail->id }})" id="checked_value_{{$previousCompanyDetail->id}}">
                                 <span class="slider round"></span>
                             </label>
                         </td>

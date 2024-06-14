@@ -105,6 +105,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('department.update');
         Route::get('/delete', 'destroy')->name('department.delete');
         Route::get('/status/update', 'statusUpdate')->name('department.statusUpdate');
+        Route::get('/search/filter', 'serachDepartmentFilterList');
     });
 
     //Designation Module
@@ -115,6 +116,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/delete', 'destroy')->name('designation.delete');
         Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
         Route::get('/get/all/designation', 'getAllDesignation')->name('get.all.designation');
+        Route::get('/search/filter', 'serachDesignationFilterList');
     });
 
     //Country Module
@@ -145,6 +147,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('previous.company.update');
         Route::get('/delete', 'destroy')->name('previous.company.delete');
         Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
+        Route::get('/search', 'searchPreviousCompanyFilter');
 
         // for ajax call 
         Route::get('/previous_company_data', 'get_all_previous_company_ajax_call');

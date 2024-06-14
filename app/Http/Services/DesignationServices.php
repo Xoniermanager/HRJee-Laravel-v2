@@ -33,25 +33,26 @@ class DesignationServices
   {
     return $this->designationRepository->where('department_id', $department_id)->where('status', '1')->get();
   }
-  public function searchInDesignation($searchKey)
+  public function serachDesignationFilterList($request)
   {
-
-    $data['key']          = array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
-    $data['status']       = array_key_exists('status', $searchKey) ? $searchKey['status'] : '';
-    $data['departmentID'] = array_key_exists('departmentID', $searchKey) ? $searchKey['departmentID'] : '';
-
-    return $this->designationRepository->where(function($query) use ($data) {
-      if (!empty($data['key'])) {
-          $query->where('name', 'like', "%{$data['key']}%");
+    $designationDetails = $this->designationRepository;
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $designationDetails = $designationDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status) && !empty($request->status)) {
+      if ($request->status == 2) {
+        $status = 0;
+      } else {
+        $status = $request->status;
       }
-      if (!empty($data['departmentID'])) {
-          $query->where('department_id', $data['departmentID']);
-      }
-      if (isset($data['status'])) {
-          $query->where('status', $data['status']);
-      }
-    })->get();
-
+      $designationDetails = $designationDetails->where('status', $status);
+    }
+    /**List By Department ID or Filter */
+    if (isset($request->department_id) && !empty($request->department_id)) {
+      $designationDetails = $designationDetails->where('department_id', $request->department_id);
+    }
+    return $designationDetails->orderBy('id', 'DESC')->paginate(10);
   }
-
 }

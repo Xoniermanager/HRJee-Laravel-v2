@@ -139,19 +139,18 @@ class DesignationsController extends Controller
         }
         return json_encode($response);
     }
-    public function search(Request $request)
-    {   
-        $searchedItems = $this->designationService->searchInDesignation($request->all());
+    public function serachDesignationFilterList(Request $request)
+    {
+        $searchedItems = $this->designationService->serachDesignationFilterList($request);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
                 'data'   =>  view("company.designation.designation_list", [
-                    'allDesignationDetails' => $searchedItems 
+                    'allDesignationDetails' => $searchedItems
                 ])->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
-        
     }
 }

@@ -303,7 +303,7 @@
     });
 
     function handleStatus(id) {
-        var checked_value = $('#checked_value').prop('checked');
+        var checked_value = $('#checked_value_'+id).prop('checked');
         let status;
         let status_name;
         if (checked_value == true) {

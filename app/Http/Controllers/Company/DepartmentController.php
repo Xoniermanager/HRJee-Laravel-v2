@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Company;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Services\DepartmentServices;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,15 +12,15 @@ class DepartmentController extends Controller
 {
     private $departmentService;
 
-    public function __construct(DepartmentServices $departmentService )
+    public function __construct(DepartmentServices $departmentService)
     {
         $this->departmentService = $departmentService;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         return view("company.department.index", [
             'allDepartmentDetails' => $this->departmentService->all()
@@ -45,7 +44,7 @@ class DepartmentController extends Controller
             if ($this->departmentService->create($data)) {
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
-                    'data'   =>  view($request->get('view').".department_list", [
+                    'data'   =>  view("company.department.department_list", [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]);
@@ -115,9 +114,9 @@ class DepartmentController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-    public function search(Request $request)
-    {   
-        $searchedItems = $this->departmentService->searchInDepartment($request->all());
+    public function serachDepartmentFilterList(Request $request)
+    {
+        $searchedItems = $this->departmentService->serachDepartmentFilterList($request);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
@@ -128,6 +127,5 @@ class DepartmentController extends Controller
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
-        
     }
 }

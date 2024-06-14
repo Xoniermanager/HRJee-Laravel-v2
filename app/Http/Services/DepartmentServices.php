@@ -13,7 +13,7 @@ class DepartmentServices
   }
   public function all()
   {
-    return $this->departmentRepository->orderBy('id','DESC')->paginate(10);
+    return $this->departmentRepository->orderBy('id', 'DESC')->paginate(10);
   }
   public function create(array $data)
   {
@@ -29,22 +29,22 @@ class DepartmentServices
     return $this->departmentRepository->find($id)->delete();
   }
 
-  public function searchInDepartment($searchKey)
+  public function serachDepartmentFilterList($request)
   {
-    $data['key']    = array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
-    $data['status'] = array_key_exists('status', $searchKey) ? $searchKey['status'] : '';
-
-    return $this->departmentRepository->where(function($query) use ($data) {
-      if (!empty($data['key'])) {
-          $query->where('name', 'like', "%{$data['key']}%");
+    $departmentDetails = $this->departmentRepository;
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $departmentDetails = $departmentDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status) && !empty($request->status)) {
+      if ($request->status == 2) {
+        $status = 0;
+      } else {
+        $status = $request->status;
       }
-
-      if (isset($data['status'])) {
-          $query->where('status', $data['status']);
-      }
-    })->get();
-
+      $departmentDetails = $departmentDetails->where('status',$status);
+    }
+    return $departmentDetails->orderBy('id', 'DESC')->paginate(10);
   }
-
-
 }
