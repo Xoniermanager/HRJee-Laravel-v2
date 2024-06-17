@@ -2,39 +2,65 @@
 
 namespace App\Http\Services;
 
-use App\Models\Employee;
-use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+
 use App\Repositories\EmployeeRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
-class EmployeeServices 
+class EmployeeServices
 {
-  private $employee_repository ;
-  public function __construct(EmployeeRepository $employee_repository)
+  private $employeeRepository;
+  private $imageUploadService;
+  public function __construct(EmployeeRepository $employeeRepository, FileUploadService $imageUploadService)
   {
-    $this->employee_repository = $employee_repository;
+    $this->employeeRepository = $employeeRepository;
+    $this->imageUploadService = $imageUploadService;
   }
-    public function get_employee()
-    { 
-      return  User::with('user_details')->get();
-    //  return $this->employee_repository->all();
+  public function all()
+  {
+    return $this->employeeRepository->orderBy('id', 'DESC')->paginate(10);
+  }
+  public function create($data)
+  {
+    $nameForImage = removingSpaceMakingName($data['name']);
+    if (isset($data['profile_image']) && !empty($data['profile_image'])) {
+      $upload_path = "/user_profile_picture";
+      $imagePath = $this->imageUploadService->imageUpload($data['profile_image'], $upload_path, $nameForImage);
+      $data['profile_image'] = $imagePath;
     }
-    public function delete_employee_by_id($id)
-    {    
-    return $this->employee_repository->getEmployeeById($id)->delete();
+    $data['password'] = Hash::make(($data['password'] ?? 'password'));
+    $data['company_id'] = '1';
+    $data['last_login_ip'] = request()->ip();
+    if ($data['id'] != null) {
+      $existingDetails = $this->employeeRepository->find($data['id']);
+      if ($existingDetails->profile_image != null) {
+        if (file_exists(storage_path('app/public') . $existingDetails->profile_image)) {
+          unlink(storage_path('app/public') . $existingDetails->profile_image);
+        }
+      }
+      $existingDetails->update($data);
+    } 
+    else {
+      $createData = $this->employeeRepository->create($data);
     }
-    public function get_employee_by_id($id)
-    {    
-      return $this->employee_repository->getEmployeeById($id);
+    if (isset($createData)) {
+      $status = 'createData';
+      $id = $createData->id;
     }
+    $response =
+      [
+        'status' => $status ?? 'updateData',
+         'id'     => $id ?? ''
+      ];
+    return $response;
+  }
 
-    public function get_employee_all_details_by_id($id)
-    {    
-      return $this->employee_repository->getEmployeeDetailsById($id);
-    }
-
-    
-    
-
+  public function updateDetails(array $data, $id)
+  {
+    return $this->employeeRepository->find($id)->update($data);
+  }
+  public function deleteDetails($id)
+  {
+    return $this->employeeRepository->find($id)->delete();
+  }
 }

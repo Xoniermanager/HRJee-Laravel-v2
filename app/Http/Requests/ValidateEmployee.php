@@ -11,7 +11,7 @@ class ValidateEmployee extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        return true;
     }
 
     /**
@@ -28,11 +28,11 @@ class ValidateEmployee extends FormRequest
             'phone'    => 'required|numeric|digits_between:9,11',
             'profile_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation rules as needed
             // 'profile_image' =>'required|string',
-            'joining_date' => 'required|date',
-            'branch' => 'required|numeric',
-            'department_id' => 'required|numeric',
-            'designation_id' => 'required|numeric',
-            'employee_id' => 'required|string',
+            //'joining_date' => 'required|date',
+            //'branch' => 'required|numeric',
+            // 'department_id' => 'required|numeric',
+            // 'designation_id' => 'required|numeric',
+           // 'employee_id' => 'required|string',
             'family_contact_number' => 'sometimes|numeric|digits_between:9,11'
         ];
     }

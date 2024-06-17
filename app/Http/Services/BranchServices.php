@@ -22,6 +22,10 @@ class BranchServices
     {    
     return $this->branch_repository->getbranchById($id)->get();
     }
+    public function update_branch($data,$id)
+    {
+      return $this->branch_repository->updateBranch($data,$id);
+    }
     
 
 }

@@ -27,9 +27,14 @@ class BranchRepository extends BaseRepository
     // {
     //    return $this->where('id',$id);
     // }
-    public function getbranchById($id)
+    public function getBranchById($id)
     {
        return $this->where('id',$id);
+    }
+
+    public function updateBranch($data, $id)
+    {
+        return  $this->getBranchById($id)->update($data);
     }
 
 

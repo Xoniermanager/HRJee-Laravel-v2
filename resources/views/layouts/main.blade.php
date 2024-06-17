@@ -20,7 +20,7 @@
 	<meta name="description" property='og:description' content='' />
 	<meta name="author" content="Jyoti Mishra Web Designer at Xonier">
 	<!--begin::Fonts(mandatory for all pages)-->
-	<link rel="stylesheet" href="assets/css/mark-pro.css" />
+	{{-- <link rel="stylesheet" href="assets/css/mark-pro.css" /> --}}
 	<!--end::Fonts-->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 	<!--end::Fonts-->
@@ -33,8 +33,19 @@
 <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
 <!--end::Global Stylesheets Bundle-->
 <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
+<style>html { font-size: 14px; font-family: Arial, Helvetica, sans-serif; }</style>
+<title></title>
+<link href="https://kendo.cdn.telerik.com/themes/7.2.1/default/default-main.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<script src="https://kendo.cdn.telerik.com/2024.1.319/js/kendo.all.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 	@notifyCss
+	<style>.error {
+		color: red;
+	}
+		</style>
 
 </head>
 <!--end::Head-->
