@@ -29,7 +29,6 @@ return new class extends Migration
             $table->foreign('qualification_id')->references('id')->on('qualifications');
             $table->unsignedBigInteger('shift_id');
             $table->foreign('shift_id')->references('id')->on('shifts');
-            $table->string('start_time');
             $table->string('offer_letter_id')->unique()->nullable();
             $table->boolean('work_from_office')->default(false);
             $table->date('exit_date')->nullable();

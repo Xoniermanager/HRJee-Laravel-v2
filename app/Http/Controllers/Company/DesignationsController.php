@@ -82,7 +82,6 @@ class DesignationsController extends Controller
             ]);
         }
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -99,7 +98,7 @@ class DesignationsController extends Controller
             ]);
         } else {
             return response()->json([
-                'error', 'Something Went Wrong! Pleaase try Again',
+                'error', 'Something Went Wrong! Please try Again',
                 'data'   =>  view('company.designation.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
@@ -112,9 +111,14 @@ class DesignationsController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->designationService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'Designation Status Updated Successfully',
+                'data'   =>  view("company.designation.designation_list", [
+                    'allDesignationDetails' => $this->designationService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 
@@ -134,5 +138,19 @@ class DesignationsController extends Controller
             ];
         }
         return json_encode($response);
+    }
+    public function serachDesignationFilterList(Request $request)
+    {
+        $searchedItems = $this->designationService->serachDesignationFilterList($request);
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view("company.designation.designation_list", [
+                    'allDesignationDetails' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
     }
 }

@@ -93,7 +93,7 @@ class User extends Authenticatable
 
     public function userDetails()
     {
-        return $this->hasOne(UserDetail::class, 'user_id');
+        return $this->hasOne(UserDetail::class, 'user_id','id');
     }
 
     protected function profileImage(): Attribute
@@ -110,6 +110,10 @@ class User extends Authenticatable
 
     public function languages()
     {
-        return $this->belongsToMany(Languages::class,'langauge_user','user_id','language_id')->withPivot('read','write','speak');
+        return $this->belongsToMany(Languages::class, 'langauge_user', 'user_id', 'language_id')->withPivot('read', 'write', 'speak');
+    }
+    public function employeeStatus()
+    {
+        return $this->belongsTo(EmployeeStatus::class, 'employee_status_id', 'id');
     }
 }

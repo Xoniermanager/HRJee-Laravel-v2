@@ -28,4 +28,21 @@ class EmployeeTypeService
   {
     return $this->employeeTypeRepository->find($id)->delete();
   }
+  public function searchInEmployeeType($searchKey)
+  {
+    $data['key']     =  array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
+    $data['status']  =  array_key_exists('status', $searchKey) ? $searchKey['status'] : '';
+
+    return $this->employeeTypeRepository->where(function($query) use ($data) {
+      if (!empty($data['key'])) {
+          $query->where('name', 'like', "%{$data['key']}%")
+           ->orWhere('description', 'like', "%{$data['key']}%");
+      }
+
+      if (isset($data['status'])) {
+          $query->where('status', $data['status']);
+      }
+    })->get();
+  }
+  
 }

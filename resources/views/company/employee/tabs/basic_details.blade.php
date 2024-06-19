@@ -150,48 +150,11 @@
         <button class="btn btn-primary" id="submit">Save &
             Continue</button>
     </form>
-    <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary float-right {{$buttonDisabled}}">Next <i
-            class="fa fa-arrow-right"></i> </button>
+    <button onclick="show_next_tab('advance_details_tab')"
+        class="btn btn-primary float-right {{ $buttonDisabled }}">Next <i class="fa fa-arrow-right"></i> </button>
     <!--end::Wrapper-->
 </div>
 <script>
-    /** Basic Details created Ajax*/
-    jQuery(document).ready(function() {
-        jQuery("#basic_create_form").validate({
-            rules: {
-                name: "required",
-                email: "required",
-                // password: "required",
-                official_email_id: "required",
-                blood_group: "required",
-                gender: "required",
-                marital_status: "required",
-                employee_status_id: "required",
-                date_of_birth: "required",
-                joining_date: "required",
-                phone: "required",
-                // profile_image: "required",
-            },
-            messages: {
-                name: "Please enter the Full Name",
-                email: "Please enter the Email",
-                // password: "Please enter the Password",
-                official_email_id: "Please enter the Official Email",
-                blood_group: "Please select the Blood Group",
-                gender: "Please select the Gender",
-                marital_status: "Please select the Marital Status",
-                employee_status_id: "Please select the Employee Status",
-                date_of_birth: "Please fill the Date of Birth",
-                joining_date: "Please fill the Joining Date",
-                phone: "Please enter the Phone",
-                // profile_image: "Please upload the profile images",
-            },
-            submitHandler: function(form) {
-                createBasicDetails(form);
-            }
-        });
-    });
-
     function createBasicDetails(form) {
         var basic_details_Data = new FormData(form);
         $.ajax({
@@ -203,15 +166,17 @@
             success: function(response) {
                 if (response.data.status == 'createData') {
                     location.href = '/employee/edit/' + response.data.id;
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    jQuery('.nav-pills a[href="#advance_details_tab"]').tab(
-                        'show');
+                    setTimeout(function() {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        jQuery('.nav-pills a[href="#advance_details_tab"]').tab(
+                            'show');
+                    },4000);
                 } else {
                     Swal.fire({
                         position: "top-end",

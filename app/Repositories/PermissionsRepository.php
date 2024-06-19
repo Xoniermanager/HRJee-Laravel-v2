@@ -3,8 +3,7 @@
 namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
-use App\Models\permissions;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 
 /**
  * Class permissionsRepositoryEloquent.

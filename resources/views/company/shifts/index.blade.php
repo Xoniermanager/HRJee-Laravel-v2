@@ -3,7 +3,7 @@
 @section('title')
     Office Shift
 @endsection
-{{$allConfigTimes}}
+{{ $allConfigTimes }}
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
@@ -27,11 +27,25 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
-                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
-                                value="">
+                            <input class="form-control form-control-solid ps-14 min-w-150px me-2" placeholder="Search "
+                                type="text" name="search" value="{{ request()->get('search') }}" id="search">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+
                         </div>
+                        <select class="form-control min-w-150px me-2" id="status">
+                            <option value="">Status</option>
+                            <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
+                                value="1">Active</option>
+                            <option {{ old('status') == '2' || request()->get('status') == '2' ? 'selected' : '' }}
+                                value="2">Inactive</option>
+                        </select>
+                        <select class="form-control min-w-150px me-2" id="default">
+                            <option value="">Is Default</option>
+                            <option {{ old('default') == '1' || request()->get('default') == '1' ? 'selected' : '' }}
+                                value="1">Yes</option>
+                            <option {{ old('default') == '2' || request()->get('default') == '2' ? 'selected' : '' }}
+                                value="2">No</option>
+                        </select>
 
                     </div>
                     <!--end::Card title-->
@@ -85,108 +99,134 @@
                         <!--begin::Wrapper-->
                         <div class="mw-lg-600px mx-auto p-4">
                             <input type="hidden" name="id" id="id">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Name<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
-                                @error('name')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Name<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
 
-                                <label>Office Time</label>
-                                <select name="office_timing_config_id" class="form-control mb-5 mt-3"  id="office_timing_config_id">
-                                <option value="">Select Time Config</option>    
-                                @forelse ($allConfigTimes as $allConfigTime)
-                                    <option value="{{ $allConfigTime->id }}">{{ $allConfigTime->name}}</option>      
-                                @empty
-                                    <p>No branches Available</p>
-                                @endforelse
-                                </select>
+                                    <label>Office Time</label>
+                                    <select name="office_timing_config_id" class="form-control mb-5 mt-3"
+                                        id="office_timing_config_id">
+                                        <option value="">Select Time Config</option>
+                                        @forelse ($allConfigTimes as $allConfigTime)
+                                            <option value="{{ $allConfigTime->id }}">{{ $allConfigTime->name }}</option>
+                                        @empty
+                                            <p>No branches Available</p>
+                                        @endforelse
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Start Time<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="time" name="start_time"  id="start_time">
-                                @error('start_time')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Start Time<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="time" name="start_time"
+                                        id="start_time">
+                                    @error('start_time')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label>End Time<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="time" name="end_time" id="end_time">
+                                    @error('end_time')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>End Time<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="time" name="end_time" id="end_time">
-                                @error('end_time')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
 
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Check-in Buffer(in minutes)<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="check_in_buffer"  id="check_in_buffer">
-                                @error('check_in_buffer')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Check-in Buffer(in minutes)<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="check_in_buffer"
+                                        id="check_in_buffer">
+                                    @error('check_in_buffer')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Check-out Buffer(in minutes)<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="check_out_buffer"
+                                        id="check_out_buffer">
+                                    @error('check_out_buffer')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>Check-out Buffer(in minutes)<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="check_out_buffer" id="check_out_buffer">
-                                @error('check_out_buffer')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Min Late Count</label>
-                                <input class="form-control mb-5 mt-3" type="number" name="min_late_count"  id="min_late_count">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Min Late Count</label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="min_late_count"
+                                        id="min_late_count">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Early Checkout Count</label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="early_checkout_count"
+                                        id="early_checkout_count">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>Early Checkout Count</label>
-                                <input class="form-control mb-5 mt-3" type="number" name="early_checkout_count" id="early_checkout_count">
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Half Day Login</label>
-                                <input class="form-control mb-5 mt-3" type="time" name="half_day_login"  id="half_day_login">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Half Day Login</label>
+                                    <input class="form-control mb-5 mt-3" type="time" name="half_day_login"
+                                        id="half_day_login">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Login Before Shift Time</label>
+                                    <select name="login_before_shift_time" id="login_before_shift_time"
+                                        class="form-control">
+                                        <option value="">Please Select the Time</option>
+                                        @php
+                                            for ($mins = 0; $mins <= 60; $mins += 5) {
+                                                echo '<option value= "' .
+                                                    $mins .
+                                                    '">' .
+                                                    $mins .
+                                                    ' Minutes' .
+                                                    '</option>';
+                                            }
+                                        @endphp
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="" id="status" class="status">isActive
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="" id="apply_late_count"
+                                            class="apply_late_count">Apply late count
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="" id="apply_early_checkout_count"
+                                            class="apply_early_checkout_count
+                                ">Apply
+                                        early checkout count
+                                    </label>
+                                </div>
+                            </div>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="" id="status" class="status">isActive
-                                </label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="" class="lock_attendance">Lock Attendence
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                              <label class="checkbox-inline">
-                                <input type="checkbox" value="" id="apply_late_count" class="apply_late_count">Apply late count
-                              </label>
-                            </div>
-                            <div class="col-md-4">
-                              <label class="checkbox-inline">
-                                <input type="checkbox" value="" id="apply_early_checkout_count" class="apply_early_checkout_count
-                                ">Apply early checkout count
-                              </label>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                        <div class="col-md-3">
-                            <label class="checkbox-inline">
-                              <input type="checkbox" value="" class="lock_attendance">Lock Attendence
-                            </label>
-                          </div>
-                        </div>
-                            
                             <!--end::Input group-->
                         </div>
                         <!--end::Wrapper-->
@@ -243,93 +283,119 @@
                         <!--begin::Wrapper-->
                         <div class="mw-lg-600px mx-auto p-4">
                             <input type="hidden" name="id" id="id">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Name<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
-                            </div>
-                            <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Name<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="text" name="name"
+                                        id="name">
+                                </div>
+                                <div class="col-md-6">
 
-                                <label>Office Time</label>
-                                <select name="office_timing_config_id" id="" class="form-control mb-5 mt-3"  id="office_timing_config_id">
-                                <option value="">Select Time Config</option>    
-                                @forelse ($allConfigTimes as $allConfigTime)
-                                    <option value="{{ $allConfigTime->id }}">{{ $allConfigTime->name}}</option>      
-                                @empty
-                                    <p>No branches Available</p>
-                                @endforelse
-                                </select>
+                                    <label>Office Time</label>
+                                    <select name="office_timing_config_id" id=""
+                                        class="form-control mb-5 mt-3" id="office_timing_config_id">
+                                        <option value="">Select Time Config</option>
+                                        @forelse ($allConfigTimes as $allConfigTime)
+                                            <option value="{{ $allConfigTime->id }}">{{ $allConfigTime->name }}
+                                            </option>
+                                        @empty
+                                            <p>No branches Available</p>
+                                        @endforelse
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Start Time<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="time" name="start_time"  id="start_time">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Start Time<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="time" name="start_time"
+                                        id="start_time">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>End Time<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="time" name="end_time"
+                                        id="end_time">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>End Time<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="time" name="end_time" id="end_time">
-                            </div>
-                        </div>
-
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Check-in Buffer(in minutes)<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="check_in_buffer"  id="check_in_buffer">
-                            </div>
-                            <div class="col-md-6">
-                                <label>Check-out Buffer(in minutes)<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="check_out_buffer" id="check_out_buffer">
-                            </div>
-                        </div>
 
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Min Late Count</label>
-                                <input class="form-control mb-5 mt-3" type="number" name="min_late_count"  id="min_late_count">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Check-in Buffer(in minutes)<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="check_in_buffer"
+                                        id="check_in_buffer">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Check-out Buffer(in minutes)<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="check_out_buffer"
+                                        id="check_out_buffer">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>Early Checkout Count</label>
-                                <input class="form-control mb-5 mt-3" type="number" name="early_checkout_count" id="early_checkout_count">
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Half Day Login</label>
-                                <input class="form-control mb-5 mt-3" type="time" name="half_day_login"  id="half_day_login">
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="">isActive
-                                  </label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Min Late Count</label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="min_late_count"
+                                        id="min_late_count">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Early Checkout Count</label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="early_checkout_count"
+                                        id="early_checkout_count">
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                              <label class="checkbox-inline">
-                                <input type="checkbox" value="" id="apply_late_count">Apply late count
-                              </label>
-                            </div>
-                              <div class="col-md-4">
-                              <label class="checkbox-inline">
-                                <input type="checkbox" value="" id="apply_early_checkout_count">Apply early checkout count
-                              </label>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                        <div class="col-md-3">
-                            <label class="checkbox-inline">
-                              <input type="checkbox" value="" id="lock_attendance"  >Lock Attendence
-                            </label>
-                          </div>
-                        </div>
-                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Half Day Login</label>
+                                    <input class="form-control mb-5 mt-3" type="time" name="half_day_login"
+                                        id="half_day_login">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Login Before Shift Time</label>
+                                    <select name="login_before_shift_time" id="" class="form-control">
+                                        <option value="">Please Select the Time</option>
+                                        @php
+                                            for ($mins = 0; $mins <= 60; $mins += 5) {
+                                                echo '<option value= "' .
+                                                    $mins .
+                                                    '">' .
+                                                    $mins .
+                                                    ' Minutes' .
+                                                    '</option>';
+                                            }
+                                        @endphp
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="">isActive
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="" id="apply_late_count">Apply late count
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="" id="apply_early_checkout_count">Apply
+                                        early checkout count
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="" id="lock_attendance">Lock Attendence
+                                    </label>
+                                </div>
+                            </div>
+
                             <!--end::Input group-->
                         </div>
                         <!--end::Wrapper-->
@@ -366,8 +432,7 @@
             $('#early_checkout_count').val(shift.early_checkout_count);
             $('#half_day_login').val(shift.half_day_login);
             $('#office_timing_config_id').val(shift.office_timing_config_id);
-            
-            
+            $('#login_before_shift_time').val(shift.login_before_shift_time);
             if (shift.lock_attendance == 1) {
                 $('.lock_attendance').prop('checked', true).val(shift.lock_attendance);
             }
@@ -391,7 +456,7 @@
                     end_time: "required",
                     check_in_buffer: "required",
                     check_out_buffer: "required",
-                    office_timing_config_id:"required"
+                    office_timing_config_id: "required"
                 },
                 messages: {
                     name: "Please enter name",
@@ -434,21 +499,21 @@
 
         jQuery("#edit_shift_form").validate({
             rules: {
-                    name: "required",
-                    start_time: "required",
-                    end_time: "required",
-                    check_in_buffer: "required",
-                    check_out_buffer: "required",
-                    office_timing_config_id:"required"
-                },
-                messages: {
-                    name: "Please enter name",
-                    start_time: "Please enter start time",
-                    end_time: "Please enter end time",
-                    check_in_buffer: "Please enter check-in buffer",
-                    check_out_buffer: "Please enter check-out buffer",
-                    office_timing_config_id: "Please select office timing config",
-                },
+                name: "required",
+                start_time: "required",
+                end_time: "required",
+                check_in_buffer: "required",
+                check_out_buffer: "required",
+                office_timing_config_id: "required"
+            },
+            messages: {
+                name: "Please enter name",
+                start_time: "Please enter start time",
+                end_time: "Please enter end time",
+                check_in_buffer: "Please enter check-in buffer",
+                check_out_buffer: "Please enter check-out buffer",
+                office_timing_config_id: "Please select office timing config",
+            },
             submitHandler: function(form) {
                 var department_data = $(form).serialize();
                 $.ajax({
@@ -533,12 +598,29 @@
                 }
             });
         }
+        jQuery("#search").on('blur', function() {
+            search_filter_results();
+        });
+        jQuery("#status").on('change', function() {
+            search_filter_results();
+        });
+        jQuery("#default").on('change', function() {
+            search_filter_results();
+        });
+
+        function search_filter_results() {
+            $.ajax({
+                type: 'GET',
+                url: company_ajax_base_url + '/office-shifts/search/filter',
+                data: {
+                    'status': $('#status').val(),
+                    'search': $('#search').val(),
+                    'default': $('#default').val()
+                },
+                success: function(response) {
+                    $('#department_list').replaceWith(response.data);
+                }
+            });
+        }
     </script>
 @endsection
-
-
-<style>
-    .error {
-color: red;
-    }
-    </style>

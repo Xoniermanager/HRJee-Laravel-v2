@@ -103,9 +103,26 @@ class CountryController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->countryService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'Country Status Updated Successfully',
+                'data'   =>  view("company.country.country_list", [
+                    'allCountryDetails' => $this->countryService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+    public function serachFilterList(Request $request)
+    {
+        $allCountryDetails = $this->countryService->serachFilterList($request);
+        if ($allCountryDetails) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'    =>  view('company.country.country_list', compact('allCountryDetails'))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 }

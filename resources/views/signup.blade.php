@@ -267,7 +267,7 @@
               <div class="row">
                 <div class="col-lg-12 ">
                   <div class="main-form-wrapper mt-5">
-                    <form class="form" method="POST" action="{{ route('add.company') }}">
+                    <form class="form" method="POST" action="">
                       @csrf
                       <div class="form-content ms-4 me-3" data-form-tab>
                         <div class="row">
@@ -544,7 +544,7 @@
 function getOtp() {
     var emailId = $('#emailId').val();
     $.ajax({
-        url: "{{ route('get.otp') }}",
+        url: "",
         method: "POST",
         data: {
             email: emailId,
@@ -588,7 +588,7 @@ function getOtp() {
         otpLength = getOtp.length;
         if(otpLength == 6){
           $.ajax({
-               url: "{{ route('verify.otp') }}",
+               url: "",
                method: "POST",
                data: {
                   otp: getOtp,

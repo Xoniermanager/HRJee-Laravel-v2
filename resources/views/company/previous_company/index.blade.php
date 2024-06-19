@@ -26,11 +26,18 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
-                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
-                                value="">
+                            <input class="form-control form-control-solid ps-14 min-w-150px me-2" placeholder="Search "
+                                type="text" name="search" value="{{ request()->get('search') }}" id="search">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+
                         </div>
+                        <select name="status" class="form-control min-w-150px me-2" id="status">
+                            <option value="">Status</option>
+                            <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
+                                value="1">Active</option>
+                            <option {{ old('status') == '2' || request()->get('status') == '2' ? 'selected' : '' }}
+                                value="2">Inactive</option>
+                        </select>
 
                     </div>
                     <!--end::Card title-->
@@ -255,7 +262,7 @@
         });
 
         function handleStatus(id) {
-            var checked_value = $('#checked_value').prop('checked');
+            var checked_value = $('#checked_value_'+id).prop('checked');
             let status;
             let status_name;
             if (checked_value == true) {
@@ -308,6 +315,26 @@
                             Swal.fire("Error deleting!", "Please try again", "error");
                         }
                     });
+                }
+            });
+        }
+        jQuery("#search").on('blur', function() {
+            search_filter_results();
+        });
+        jQuery("#status").on('change', function() {
+            search_filter_results();
+        });
+
+        function search_filter_results() {
+            $.ajax({
+                type: 'GET',
+                url: company_ajax_base_url + '/previous-company/search',
+                data: {
+                    'status': $('#status').val(),
+                    'search': $('#search').val()
+                },
+                success: function(response) {
+                    $('#previous_company_list').replaceWith(response.data);
                 }
             });
         }

@@ -20,4 +20,10 @@ class UserAdvanceDetailServices
     ], $data);
     return $response;
   }
+
+
+  public function getDetailById($id)
+  {
+    return $this->userAdvanceDetailRepository->where('user_id',$id)->first();
+  }
 }

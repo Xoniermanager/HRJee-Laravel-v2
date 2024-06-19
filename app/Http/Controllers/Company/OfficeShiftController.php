@@ -36,6 +36,7 @@ class OfficeShiftController extends Controller
                 'end_time'  => ['required', 'string'],
                 'check_in_buffer'  => ['required', 'string'],
                 'check_out_buffer' => ['required', 'string'],
+                'login_before_shift_time' => ['required', 'string'],
             ]);
             if ($validateOfficeTimeConfig->fails()) {
                 return response()->json(['error' => $validateOfficeTimeConfig->messages()], 400);
@@ -78,6 +79,7 @@ class OfficeShiftController extends Controller
             'end_time'  => ['required', 'string'],
             'check_in_buffer'  => ['required', 'string'],
             'check_out_buffer' => ['required', 'string'],
+            'login_before_shift_time' => ['required', 'string'],
         ]);
 
         if ($validateShift->fails()) {
@@ -106,6 +108,19 @@ class OfficeShiftController extends Controller
             echo 1;
         } else {
             echo 0;
+        }
+    }
+
+    public function searchShiftFilter(Request $request)
+    {
+        $allshifts = $this->shift_service->serachDepartmentFilterList($request);
+        if ($allshifts) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view('company.shifts.shift_list',compact('allshifts'))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 

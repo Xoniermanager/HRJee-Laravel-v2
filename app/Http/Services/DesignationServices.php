@@ -33,4 +33,26 @@ class DesignationServices
   {
     return $this->designationRepository->where('department_id', $department_id)->where('status', '1')->get();
   }
+  public function serachDesignationFilterList($request)
+  {
+    $designationDetails = $this->designationRepository;
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $designationDetails = $designationDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status) && !empty($request->status)) {
+      if ($request->status == 2) {
+        $status = 0;
+      } else {
+        $status = $request->status;
+      }
+      $designationDetails = $designationDetails->where('status', $status);
+    }
+    /**List By Department ID or Filter */
+    if (isset($request->department_id) && !empty($request->department_id)) {
+      $designationDetails = $designationDetails->where('department_id', $request->department_id);
+    }
+    return $designationDetails->orderBy('id', 'DESC')->paginate(10);
+  }
 }
