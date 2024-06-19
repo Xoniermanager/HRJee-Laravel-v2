@@ -10,7 +10,7 @@ class OfficeShift extends Model
     use HasFactory;
 
     protected $table = 'shifts';
-    protected $fillable = [ 
+    protected $fillable = [
         'name',
         'start_time',
         'end_time',
@@ -24,6 +24,12 @@ class OfficeShift extends Model
         'office_timing_config_id',
         'apply_late_count',
         'apply_early_checkout_count',
-        'lock_attendance'
-];
+        'lock_attendance',
+        'login_before_shift_time'
+    ];
+
+    public function officeTimingConfigs()
+    {
+        return $this->belongsTo(OfficeTimingConfig::class, 'office_timing_config_id', 'id');
+    }
 }

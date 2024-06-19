@@ -4,21 +4,22 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\EmployeeAddRequest;
+use App\Http\Services\RolesServices;
+use App\Http\Services\ShiftServices;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
+use App\Http\Services\LanguagesServices;
+use App\Http\Requests\EmployeeAddRequest;
 use App\Http\Services\DepartmentServices;
 use App\Http\Services\DocumentTypeService;
-use App\Http\Services\EmployeeLanguageServices;
-use App\Http\Services\LanguagesServices;
 use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
-use App\Http\Services\RolesServices;
-use App\Http\Services\ShiftServices;
+use App\Http\Services\SkillsService;
 
 class EmployeeController extends Controller
 {
@@ -33,12 +34,12 @@ class EmployeeController extends Controller
     private $branchService;
     private $roleService;
     private $shiftService;
-    private $employeeLanguageServices;
     private $languagesServices;
+    private $skillServices;
 
 
     public function __construct(
-        
+
         CountryServices $countryService,
         PreviousCompanyService $previousCompanyService,
         QualificationService $qualificationService,
@@ -50,7 +51,8 @@ class EmployeeController extends Controller
         BranchServices $branchService,
         RolesServices $roleService,
         ShiftServices $shiftService,
-        LanguagesServices $languagesServices
+        LanguagesServices $languagesServices,
+        SkillsService $skillServices
 
     ) {
         $this->countryService = $countryService;
@@ -65,14 +67,24 @@ class EmployeeController extends Controller
         $this->roleService = $roleService;
         $this->shiftService = $shiftService;
         $this->languagesServices = $languagesServices;
-
+        $this->skillServices = $skillServices;
     }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('company.employee.index');
+        $allUserDetails = $this->employeeService->all($request == null);
+        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
+        $allCountries = $this->countryService->all()->where('status', '1');
+        $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');
+        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
+        $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
+        $allShifts = $this->shiftService->all()->where('status', '1');
+        $allBranches = $this->branchService->all();
+        $allQualification = $this->qualificationService->all()->where('status', '1');
+        $allSkills = $this->skillServices->all()->where('status', '1');
+        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills'));
     }
 
     public function add()
@@ -85,8 +97,8 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
         $languages =   $this->languagesServices->defaultLanguages();
-        $allBranches = $this->branchService->get_branches();
-        $allRoles = $this->roleService->get_roles();
+        $allBranches = $this->branchService->all();
+        $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->all()->where('status', '1');
 
         return view(
@@ -98,7 +110,8 @@ class EmployeeController extends Controller
                 'allEmployeeType',
                 'allEmployeeStatus',
                 'alldepartmentDetails',
-                'allDocumentTypeDetails','languages',
+                'allDocumentTypeDetails',
+                'languages',
                 'allBranches',
                 'allRoles',
                 'allShifts'
@@ -115,8 +128,8 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
         $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
         $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
-        $allBranches = $this->branchService->get_branches();
-        $allRoles = $this->roleService->get_roles();
+        $allBranches = $this->branchService->all();
+        $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->all()->where('status', '1');
         $languages =   $this->languagesServices->defaultLanguages();
 
@@ -149,7 +162,29 @@ class EmployeeController extends Controller
             if ($userDetails) {
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
-                    'data' => $userDetails
+                    'data' => $userDetails,
+                    'allUserDetails' => view('company.employee.list', [
+                        'allUserDetails' => $this->employeeService->all()
+                    ])->render()
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+    public function getPersonalDetails($id)
+    {
+        $data = $this->employeeService->getUserDetailById($id);
+        return response()->json(['data' => $data]);
+    }
+
+    public function getfilterlist(Request $request)
+    {
+        try {
+            $allUserDetails = $this->employeeService->all($request);
+            if ($allUserDetails) {
+                return response()->json([
+                    'data' => view('company.employee.list',compact('allUserDetails'))->render()
                 ]);
             }
         } catch (Exception $e) {

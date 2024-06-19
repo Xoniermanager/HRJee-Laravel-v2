@@ -107,4 +107,8 @@ class UserAddressDetailServices
   {
     return $this->userAddressDetailRepository->where('user_id', $user_id)->where('address_type', $address_name)->first();
   }
+  public function getDetailById($id)
+  {
+    return $this->userAddressDetailRepository->where('user_id',$id)->get();
+  }
 }

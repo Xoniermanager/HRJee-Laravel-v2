@@ -34,4 +34,25 @@ class PreviousCompanyService
   {
     return $this->previousCompanyRepository->find($id)->delete();
   }
+
+
+  public function searchPreviousCompanyFilter($request)
+  {
+    $previousCountryDetails = $this->previousCompanyRepository;
+
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $previousCountryDetails = $previousCountryDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status) && !empty($request->status)) {
+      if ($request->status == 2) {
+        $status = 0;
+      } else {
+        $status = $request->status;
+      }
+      $previousCountryDetails = $previousCountryDetails->where('status', $status);
+    }
+    return $previousCountryDetails->orderBy('id', 'DESC')->paginate(10);
+  }
 }

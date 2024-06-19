@@ -40,13 +40,9 @@ class AdminController extends Controller
                 }
                 $credentials = $request->only('email', 'password');
                 if (Auth::guard('admin')->attempt($credentials)) {
+                    
                     return redirect('/dashboard');
                 }
-                else{
-                    dd('something went wrong');
-                    //return redirect('/signin')->withErrors($validateUser)->withInput();
-                }
-
             } catch (\Throwable $th) {
                 return response()->json([
                     'status' => false,
@@ -75,6 +71,11 @@ public function signup()
 public function signin()
 {        
     return view('signin');
+}
+
+public function super_admin_login_form()
+{        
+    return view('super_admin.account.login');
 }
 
 }

@@ -104,9 +104,12 @@ class CompanyStatusController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->companyStatusService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
-        } else {
-            echo 0;
+            return response()->json([
+                'message' => 'Company Status Updated Successfully!',
+                'data'   =>  view('super_admin.company_status.company_status_list', [
+                    'allCompanyStatusDetails' => $this->companyStatusService->all()
+                ])->render()
+            ]);
         }
     }
 }

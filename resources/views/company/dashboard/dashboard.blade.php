@@ -1,6 +1,6 @@
 @extends('layouts.company.main')
 
-@section('title', 'main')
+@section('title', 'Dashboard')
 
 @section('content')
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">

@@ -1,240 +1,238 @@
-@extends('layouts.employee.main')
+@extends('layouts.super_admin.main')
+
+@section('title', 'company_size')
+
 @section('content')
-@section('title')
-    Company Size
-@endsection
-<div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
-    <!--begin::Container-->
-    <div class="container-xxl" id="kt_content_container">
-        <div class="row gy-5 g-xl-10">
-            <!--begin::Col-->
-            <div class="card card-body col-md-12">
-                <div class="card-header cursor-pointer p-0">
-                    <!--begin::Card title-->
-                    <div class="card-title m-0">
-                    </div>
-                    <!--end::Card title-->
-                    <!--begin::Action-->
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_company_size"
-                        class="btn btn-sm btn-primary align-self-center">
-                        Add Company Size</a>
-                    <!--end::Action-->
-                </div>
-                <div class="mb-5 mb-xl-10">
+
+    <div class="page-body">
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header file-content border-0 pb-0">
+                            <div class="d-md-flex d-sm-block">
+                                <form class="form-inline" action="#" method="get">
+                                    <div class="form-group d-flex align-items-center mb-0"> <i class="fa fa-search"></i>
+                                        <input class="form-control-plaintext" type="text" placeholder="Search..." id="search">
+                                    </div>
+                                </form>
+                                <div class="ml-10px" style="margin-left: 10px;"> 
+                                    <select class="form-select h-50px" name="filterByStatus" id="filterByStatus">
+                                        <option value="">Select Status</option>
+                                        <option value="0">Non Active</option>
+                                        <option value="1">Active</option>
+                                    </select> 
+                                </div>
+                                <div class="flex-grow-1 text-end">
+                                    <button class="btn btn-primary mx-auto mt-3" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#add_company_size">Add</button>
+                                </div>
+                            </div>
+                        </div>
                     @include('super_admin.company_size.company_size_list')
+                    {{ $allCompanySizesDetails->links() }}
+                    </div>
                 </div>
             </div>
-            <!--end::Col-->
         </div>
-        <!--end::Row-->
+        <!-- Container-fluid Ends-->
     </div>
-    <!--end::Container-->
-</div>
-</div>
-
-<!-- Modal for creation form-->
-<div class="modal" id="kt_modal_company_size" tabindex="-1" aria-modal="true" role="dialog">
-    <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-500px">
-        <!--begin::Modal content-->
-        <div class="modal-content">
-            <!--begin::Modal header-->
-            <div class="modal-header pb-0">
-                <h2>Add Company Size</h2>
-                <!--begin::Close-->
-                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-                    <span class="svg-icon svg-icon-1">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
-                                transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                            <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
-                        </svg>
-                    </span>
-                    <!--end::Svg Icon-->
+    <div class="modal fade" id="edit_company_size" tabindex="-1" aria-labelledby="edit_company_size" aria-hidden="true"
+    style="display: none;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content dark-sign-up overflow-hidden">
+            <div class="modal-body social-profile text-start">
+                <div class="modal-toggle-wrapper">
+                    <h4 class="text-dark">Edit company_size</h4>
+                    <p>
+                        Fill in your information below to continue.</p>
+                    <form class="row g-3" id="company_size_update_form">
+                        @csrf
+                        <input type="hidden" name="id" id="id">
+                        <div class="col-md-12">
+                            <label class="form-label" >Company Size</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Company Size" name="company_size" id="company_size">
+                                @error('company_size')
+                                    <span  class="text-denger">{{ $message}} </span>
+                                @enderror
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label" >Description</label>
+                            <textarea class="form-control" row="2" name="description" placeholder="Enter Your description" id="description"></textarea>
+                                @error('description')
+                                    <span  class="text-denger">{{ $message}} </span>
+                                @enderror
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Update</button>
+                        </div>
+                    </form>
                 </div>
-                <!--end::Close-->
             </div>
-            <!--begin::Modal header-->
-            <!--begin::Modal body-->
-            <div class="modal-body scroll-y pb-5 border-top">
-                <!--begin::Wrapper-->
-                <form id="company_size_form">
-                    @csrf
-                    <div class="col-md-12 form-group">
-                        <label for="">Company Size*</label>
-                        <input class="form-control" name="company_size" type="number">
-                    </div>
-                    @error('name')
-                        <span class="text-red-500">{{ $message }}</span>
-                    @enderror
-                    <div class="col-md-12 form-group">
-                        <label for="">Description*</label>
-                        <input class="form-control" name="description" type="text">
-                    </div>
-                    @error('description')
-                        <span class="text-red-500">{{ $message }}</span>
-                    @enderror
-                    <!--end::Wrapper-->
-                    <div class="d-flex flex-end flex-row-fluid pt-2 border-top">
-                        <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="kt_modal_upgrade_plan_btn">
-                            <!--begin::Indicator label-->
-                            <span class="indicator-label">Submit</span>
-                            <!--end::Indicator label-->
-                            <!--begin::Indicator progress-->
-                            <span class="indicator-progress">Please wait...
-                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                            <!--end::Indicator progress-->
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <!--end::Modal body-->
         </div>
-        <!--end::Modal content-->
     </div>
-    <!--end::Modal dialog-->
 </div>
-
-
-<!-- Modal for Edit  form-->
-<div class="modal" id="kt_modal_company_size_update" tabindex="-1" aria-modal="true" role="dialog">
-    <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-500px">
-        <!--begin::Modal content-->
-        <div class="modal-content">
-            <!--begin::Modal header-->
-            <div class="modal-header pb-0">
-                <h2>Edit Company Size</h2>
-                <!--begin::Close-->
-                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-                    <span class="svg-icon svg-icon-1">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
-                                transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                            <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
-                        </svg>
-                    </span>
-                    <!--end::Svg Icon-->
+    <div class="modal fade" id="add_company_size" tabindex="-1" aria-labelledby="add_company_size" aria-hidden="true"
+        style="display: none;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content dark-sign-up overflow-hidden">
+                <div class="modal-body social-profile text-start">
+                    <div class="modal-toggle-wrapper">
+                        <h4 class="text-dark">Add Company Size</h4>
+                        <p>
+                            Fill in your information below to continue.</p>
+                        <form class="row g-3" id="company_size_form">
+                            @csrf
+                            <input type="hidden" name="id" id="id">
+                            <div class="col-md-12">
+                                <label class="form-label" >Company Size</label>
+                                <input class="form-control" type="text" placeholder="Enter Your Company Size" name="company_size" id="company_size">
+                                    @error('company_size')
+                                        <span  class="text-denger">{{ $message}} </span>
+                                    @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label" >Description</label>
+                                <textarea class="form-control" id="text-area" row="2" name="description" placeholder="Enter Your description" id="description"></textarea>
+                                    @error('description')
+                                        <span  class="text-denger">{{ $message}} </span>
+                                    @enderror
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary" type="submit" >Save</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <!--end::Close-->
             </div>
-            <!--begin::Modal header-->
-            <!--begin::Modal body-->
-            <div class="modal-body scroll-y pb-5 border-top">
-                <!--begin::Wrapper-->
-                <form id="update-form">
-                    @csrf
-                    <input type="hidden" id="id" value="" name="id">
-                    <div class="col-md-12 form-group">
-                        <label for="">Company Size*</label>
-                        <input class="form-control" name="company_size" type="number" value=""
-                            id="company_size">
-                    </div>
-                    <div class="col-md-12 form-group">
-                        <label for="">Description*</label>
-                        <input class="form-control" name="description" type="text" value=""
-                            id="description">
-                    </div>
-                    <!--end::Wrapper-->
-                    <div class="d-flex flex-end flex-row-fluid pt-2 border-top">
-                        <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="kt_modal_upgrade_plan_btn">
-                            <!--begin::Indicator label-->
-                            <span class="indicator-label">Update</span>
-                            <!--end::Indicator label-->
-                            <!--begin::Indicator progress-->
-                            <span class="indicator-progress">Please
-                                wait...
-                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                            <!--end::Indicator progress-->
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <!--end::Modal body-->
         </div>
-        <!--end::Modal content-->
     </div>
-    <!--end::Modal dialog-->
-</div>
+    <script>
 
-@endsection
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<script>
-    function edit_company(id, company_size, description) {
-        $('#id').val(id);
-        $('#company_size').val(company_size);
-        $('#description').val(description);
-        jQuery('#kt_modal_company_size_update').modal('show');
-    }
-    jQuery.noConflict();
-    jQuery(document).ready(function($) {
-        jQuery("#company_size_form").validate({
-            rules: {
-                name: "required",
-                description: "required",
-            },
-            messages: {
-                name: "Please enter name",
-                description: "Please enter a description",
-            },
-            submitHandler: function(form) {
-                var company_size = $(form).serialize();
-                $.ajax({
-                    url: "{{ route('company.size.store') }}",
-                    type: 'POST',
-                    data: company_size,
-                    success: function(response) {
-                        jQuery('#kt_modal_company_size').modal('hide');
-                        swal.fire("Done!", response.message, "success");
-                        $('#company_size_list').replaceWith(response.data);
-                        $('#company_size_form')[0].reset();
-                    },
-                    error: function(error_messages) {
-                        let errors = error_messages.responseJSON.error;
-                        for (var error_key in errors) {
-                            $(document).find('[name=' + error_key + ']').after(
-                                '<span class="' + error_key +
-                                '_error text text-danger" >' + errors[
-                                    error_key] + '</span>');
-                            setTimeout(function() {
-                                jQuery("." + error_key + "_error").remove();
-                            }, 4000);
-                        }
-                    }
-                });
-            }
+    $(document).on("input", "#search", function(e) {
+        var key = $(this).val();
+        search_company_sizes(key,status= null)
         });
-        $("#update-form").validate({
+
+        $('#filterByStatus').change(function(){
+            var status= $(this).val();
+            search_company_sizes(key=null,status)
+        });
+
+        function search_company_sizes(key,status)
+        {
+            $.ajax({
+                    url: "{{ route('super_admin.company.size.search') }}",
+                    type: 'get',
+                    data: {
+                        'key': key,
+                        'status': status,
+                    },
+                    success: function(res) {
+                        if (res) {
+                            jQuery('#company_size_list').replaceWith(res.data);
+                        } 
+                    }
+                })
+        }
+
+
+        function edit_company_size_details(id, company_size, description) {
+
+            $('#id').val(id);
+            $('#company_size').val(company_size);
+            $('#description').val(description);
+            jQuery('#edit_company_size').modal('show');
+        }
+
+        jQuery.noConflict();
+        jQuery(document).ready(function($) {
+            jQuery("#company_size_form").validate({
+                rules: {
+                    name: "required",
+                },
+                messages: {
+                    name: "Please enter name",
+                },
+                submitHandler: function(form) {
+                    var company_size_data = $(form).serialize();
+                    $.ajax({
+                        url: "{{ route('super_admin.company.size.store') }}",
+                        type: 'POST',
+                        data: company_size_data,
+                        success: function(response) {
+                            jQuery('#add_company_size').modal('hide');
+                            swal.fire("Done!", response.message, "success");
+                            $('#company_size_list').replaceWith(response.data);
+                            jQuery("#company_size_form")[0].reset();
+
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.error;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span class="' + error_key +
+                                    '_error text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("." + error_key + "_error").remove();
+                                }, 5000);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        function deleteFunction(id) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "<?= route('super_admin.company.size.delete') ?>",
+                        type: "get",
+                        data: {
+                            id: id
+                        },
+                        success: function(res) {
+                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            $('#company_size_list').replaceWith(res.data);
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire("Error deleting!", "Please try again", "error");
+                        }
+                    });
+                }
+            });
+        }
+
+        jQuery("#company_size_update_form").validate({
             rules: {
-                name: "required",
-                description: "required",
+                name: "required"
             },
             messages: {
                 name: "Please enter name",
-                description: "Please enter a description",
+
             },
             submitHandler: function(form) {
-                var company_size = $(form).serialize();
+                var company_size_data = $(form).serialize();
                 $.ajax({
-                    url: "<?= route('company.size.update') ?>",
+                    url: "<?= route('super_admin.company.size.update') ?>",
                     type: 'post',
-                    data: company_size,
+                    data: company_size_data,
                     success: function(response) {
-                        jQuery('#kt_modal_company_size_update').modal('hide');
+                        jQuery('#edit_company_size').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        $('#company_size_list').replaceWith(response.data);
-                        $('#update-form')[0].reset();
+                        jQuery('#company_size_list').replaceWith(response.data);
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
@@ -245,74 +243,43 @@
                                     error_key] + '</span>');
                             setTimeout(function() {
                                 jQuery("#" + error_key + "_error").remove();
-                            }, 4000);
+                            }, 5000);
                         }
                     }
                 });
             }
         });
-    });
 
-    function handleStatus(id) {
-        var checked_value = $('#checked_value').prop('checked');
-        let status;
-        let status_name;
-        if (checked_value == true) {
-            status = 1;
-            status_name = 'Active';
-        } else {
-            status = 0;
-            status_name = 'Inactive';
-        }
-        $.ajax({
-            url: "{{ route('company.size.statusUpdate') }}",
-            type: 'get',
-            data: {
-                'id': id,
-                'status': status,
-            },
-            success: function(res) {
-                if (res) {
-                    swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
-                } else {
-                    swal.fire("Oops!", 'Something Went Wrong', "error");
-                }
+        function handleStatus(id) {
+            var checked_value = $('#checked_value_'+id).prop('checked');
+            let status;
+
+            let status_name;
+            if (checked_value == true) {
+                status = 1;
+                status_name = 'Active';
+            } else {
+                status = 0;
+                status_name = 'Inactive';
             }
-        })
-    }
-
-    function deleteFunction(id) {
-        event.preventDefault();
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?= route('company.size.delete') ?>",
-                    type: "get",
-                    data: {
-                        id: id
-                    },
-                    success: function(res) {
-                        Swal.fire("Done!", "It was succesfully deleted!", "success");
-                        $('#company_size_list').replaceWith(res.data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        Swal.fire("Error deleting!", "Please try again", "error");
+            console.log(status);
+            $.ajax({
+                url: "{{ route('super_admin.company.size.statusUpdate') }}",
+                type: 'get',
+                data: {
+                    'id': id,
+                    'status': status,
+                },
+                success: function(res) {
+                    if (res) {
+                        swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
+                        jQuery('#company_size_list').replaceWith(res.data);
+                    } else {
+                        swal.fire("Oops!", 'Something Went Wrong', "error");
                     }
-                });
-            }
-        });
-    }
-</script>
-<style>
-.error {
-    color: red;
-}
-</style>
+                }
+            })
+        }
+
+    </script>
+@endsection

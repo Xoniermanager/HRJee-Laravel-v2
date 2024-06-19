@@ -24,4 +24,30 @@ class UserDetail extends Model
         'shift_id',
         'start_time'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function officeShift()
+    {
+        return $this->belongsTo(OfficeShift::class, 'shift_id', 'id');
+    }
+    public function designation()
+    {
+        return $this->belongsTo(Designations::class, 'designation_id', 'id');
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id');
+    }
+    public function employeeTypes()
+    {
+        return $this->belongsTo(EmployeeType::class, 'employee_type_id', 'id');
+    }
+    public function companyBranches()
+    {
+        return $this->belongsTo(CompanyBranch::class, 'company_branch_id', 'id');
+    }
 }

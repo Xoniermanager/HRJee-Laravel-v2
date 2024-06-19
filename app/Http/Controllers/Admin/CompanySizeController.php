@@ -103,9 +103,30 @@ class CompanySizeController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->companySizeService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'message' => 'Company Size Updated Successfully!',
+                'data'   =>  view('super_admin.company_size.company_size_list', [
+                    'allCompanySizesDetails' => $this->companySizeService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
+        }
+    }
+
+    public function search(Request $request)
+    {   
+
+        $searchedItems = $this->companySizeService->searchInCompanySize($request->all());
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching...',
+                'data'   =>  view('super_admin.company_size.company_size_list', [
+                    'allCompanySizesDetails' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 }

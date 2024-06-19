@@ -108,9 +108,14 @@ class StateController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->stateService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'State Status Updated Successfully',
+                'data'   =>  view("company.state.state_list", [
+                    'allStateDetails' => $this->stateService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 
@@ -130,5 +135,20 @@ class StateController extends Controller
             ];
         }
         return json_encode($response);
+    }
+
+    public function searchStateFilter(Request $request)
+    {
+        $searchedItems = $this->stateService->searchStateFilter($request);
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching...',
+                'data'   =>  view("company.state.state_list", [
+                    'allStateDetails' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
     }
 }

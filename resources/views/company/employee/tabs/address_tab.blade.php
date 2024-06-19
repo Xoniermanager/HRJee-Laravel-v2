@@ -133,27 +133,6 @@
         if (p_state_id && p_country_id) {
             get_all_state_using_country_id(p_country_id, p_div_id, p_state_id);
         }
-
-        /** Address Details created Ajax*/
-        jQuery("#address_Details_form").validate({
-            rules: {
-                l_address: "required",
-                l_country_id: "required",
-                l_state_id: "required",
-                l_city: "required",
-                l_pincode: "required",
-            },
-            messages: {
-                l_address: "Please enter the Address",
-                l_country_id: "Please select the Country",
-                l_state_id: "Please select the State",
-                l_city: "Please enter the City",
-                l_pincode: "Please enter the Pincode",
-            },
-            submitHandler: function(form) {
-                createAddressDetails(form);
-            }
-        });
     });
 
     function createAddressDetails(form) {
@@ -193,91 +172,4 @@
             }
         });
     }
-
-    /** Start Function Get All State Using Country ID */
-    jQuery('#l_country_id').on('change', function() {
-        var country_id = $(this).val();
-        var div_id = 'l_state_id';
-        get_all_state_using_country_id(country_id, div_id);
-    });
-
-    jQuery('#p_country_id').on('change', function() {
-        var country_id = $(this).val();
-        var div_id = 'p_state_id';
-        get_all_state_using_country_id(country_id, div_id);
-    });
-
-    function get_all_state_using_country_id(country_id, div_id, state_id = '') {
-        if (country_id) {
-            $.ajax({
-                url: "{{ route('get.all.country.state') }}",
-                type: "GET",
-                dataType: "json",
-                data: {
-                    'country_id': country_id
-                },
-                success: function(response) {
-                    var select = $('#' + div_id);
-                    if (response.status == true) {
-                        $("#" + div_id).append(
-                            '<option>Select State</option>');
-                        $.each(response.data, function(key, value) {
-                            select.append('<option ' + ((state_id == value.id) ? "selected" : "") +
-                                ' value=' + value.id + ' >' + value.name + '</option>');
-                        });
-                    } else {
-                        select.append('<option value="">' + response.error +
-                            '</option>');
-                    }
-                },
-                error: function() {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Somethiong went Wrong!! Please try again"
-                    });
-                    return false;
-                }
-            });
-        } else {
-            $('#' + div_id).empty();
-        }
-    }
-    /** End Get All State Using Country ID */
-
-    function get_all_present_address_details() {
-        var checkbox = document.getElementById('checkbox');
-        if (checkbox.checked != false) {
-            $('#address_type').val('1');
-            let l_address = $('#l_address').val();
-            let l_country_id = $('#l_country_id').val();
-            let l_state_html = $('#l_state_id').html();
-            let l_state_id = $('#l_state_id').val();
-            let l_city = $('#l_city').val();
-            let l_pincode = $('#l_pincode').val();
-
-
-            //send to permament address
-            $('#p_state_id').empty();
-
-            $('#p_address').val(l_address).prop('disabled', true);
-            $('#p_country_id').val(l_country_id).prop('disabled', true);
-            $('#p_state_id').append(l_state_html);
-            $('#p_state_id').val(l_state_id).prop('disabled', true);
-            $('#p_city').val(l_city).prop('disabled', true);
-            $('#p_pincode').val(l_pincode).prop('disabled', true);
-        } else {
-            $('#address_type').val('0');
-            $('#p_address').val('').prop('disabled', false);
-            $('#p_country_id').val('').prop('disabled', false);
-            $('#p_state_id').empty().prop('disabled', false);
-            $('#p_state_id').val('').prop('disabled', false);
-            $('#p_city').val('').prop('disabled', false);
-            $('#p_pincode').val('').prop('disabled', false);
-        }
-    }
-
-    jQuery('.alldetails').on('blur', function() {
-        get_all_present_address_details();
-    });
 </script>

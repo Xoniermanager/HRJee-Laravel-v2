@@ -3,6 +3,16 @@
 @section('title', 'Hello Shibli Sone')
 
 @section('content')
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
@@ -139,8 +149,6 @@ border-bottom-right-radius: 30px;">
                         </div>
 
                         <div class="card card-body bg-light-info col-md-12 mb-3">
-
-
                             <div class="">
                                 <div class="card-body py-3">
                                     <!--begin::Table container-->
@@ -156,7 +164,9 @@ border-bottom-right-radius: 30px;">
                                                     </td>
 
                                                     <td>
-                                                        <div id="clock"></div>
+                                                        <div class="timer-display-id">
+                                                            <p id="timer" style="display: none">00:00:00</p>
+                                                        </div>
 
                                                         <span class="text-primary-400 fw-bold fs-7 d-block ">Working
                                                             Hours</span>
@@ -165,12 +175,23 @@ border-bottom-right-radius: 30px;">
                                                     <td class="text-end">
                                                         <!--begin::Icon-->
                                                         <div class="d-flex justify-content-end flex-shrink-0">
-
-
-                                                            <!--begin::Attach-->
-                                                            <button class="btn btn-sm fs-4 btn-primary align-self-center">
-                                                                Punch In
-                                                            </button>
+                                                            <form action="{{ route('employee.attendance') }}"
+                                                                method="post">
+                                                                @csrf
+                                                                <input type="hidden" name="time_date"
+                                                                    value="{{ date('Y/m/d H:i:s') }}">
+                                                                <!--begin::Attach-->
+                                                                <button
+                                                                    class="btn btn-sm fs-4 btn-primary align-self-center"
+                                                                    id="start-timer" onclick="start()" style="display:none">
+                                                                    Punch In
+                                                                </button>
+                                                                <button
+                                                                    class="btn btn-sm fs-4 btn-primary align-self-center"
+                                                                    id="stop-timer" onclick="stop()" style="display:none">
+                                                                    Punch Out
+                                                                </button>
+                                                            </form>
                                                             <!--end::Attach-->
                                                         </div>
                                                         <!--end::Icon-->
@@ -189,8 +210,6 @@ border-bottom-right-radius: 30px;">
                                 <!--begin::Body-->
                             </div>
                         </div>
-
-
                         <!--begin::Row-->
                         <div class="row gy-5 g-xl-10">
                             <!--begin::Col-->
@@ -277,42 +296,81 @@ border-bottom-right-radius: 30px;">
         <!--end::Container-->
     </div>
     <!--end::Content-->
-@endsection
-<script>
-    // CLOCK FUNCTION
+    {{-- {{ dd($existingDetails) }} --}}
+    <script>
+        function stop() {
+            let punch_in = "{{ $existingDetails->punch_in ?? '' }}";
+            let punch_out = "{{ $existingDetails->punch_out ?? '' }}";
+            $("#start-timer").hide();
+            $("#stop-timer").hide();
+            if (punch_out != 'NULL') {
+                var StartedTime = new Date(punch_in).getTime();
+                var EndedTime = new Date(punch_out).getTime();
 
-    setInterval(showTime, 1000);
-
-    function showTime() {
-
-        let clock_time = new Date();
-        let clock_hour = clock_time.getHours();
-        let clock_min = clock_time.getMinutes();
-        let clock_sec = clock_time.getSeconds();
-        am_pm = "AM";
-
-        if (clock_hour >= 12) {
-            if (clock_hour > 12) clock_hour -= 12;
-            am_pm = " pm";
-        } else if (clock_hour == 0) {
-            hr = 12;
-            am_pm = " am";
+                var diff = EndedTime - StartedTime;
+                var hours = Math.floor(diff / 3.6e6);
+                var minutes = Math.floor((diff % 3.6e6) / 6e4);
+                var seconds = Math.floor((diff % 6e4) / 1000);
+                let h = hours < 10 ? '0' + hours : hours;
+                let m = minutes < 10 ? '0' + minutes : minutes;
+                let s = seconds < 10 ? '0' + seconds : seconds;
+                var duration = h + ":" + m + ":" + s;
+                timeLaps = duration;
+                $("#timer").text(timeLaps);
+            }
         }
+        jQuery(document).ready(function() {
+            let punch_in = '{{ $existingDetails->punch_in ?? '' }}';
+            let punch_out = '{{ $existingDetails->punch_out ?? '' }}';
+            var refreshIntervalId = '';
+            console.log('punch_in', punch_in, punch_out);
+            if (punch_in != '' && punch_out == '') {
+                $("#start-timer").hide();
+                $("#stop-timer").show();
+                let timeLaps = '';
+                $("#timer").show();
+                var StartedTime = new Date(punch_in).getTime();
+                refreshIntervalId = setInterval(() => {
+                    var EndedTime = new Date().getTime();
+                    var diff = EndedTime - StartedTime;
+                    var hours = Math.floor(diff / 3.6e6);
+                    var minutes = Math.floor((diff % 3.6e6) / 6e4);
+                    var seconds = Math.floor((diff % 6e4) / 1000);
+                    let h = hours < 10 ? '0' + hours : hours;
+                    let m = minutes < 10 ? '0' + minutes : minutes;
+                    let s = seconds < 10 ? '0' + seconds : seconds;
+                    var duration = h + ":" + m + ":" + s;
+                    timeLaps = duration;
+                    $("#timer").text(timeLaps);
 
-        clock_hour =
-            clock_hour < 10 ? "0" + clock_hour : clock_hour;
-        clock_min = clock_min < 10 ? "0" + clock_min : clock_min;
-        clock_sec = clock_sec < 10 ? "0" + clock_sec : clock_sec;
+                }, 1);
+            } else if (punch_out != '') {
+                $("#start-timer").hide();
+                $("#stop-timer").hide();
+                clearInterval(refreshIntervalId);
+                $("#timer").show();
+                if (punch_out) {
+                    var StartedTime = new Date(punch_in).getTime();
+                    var EndedTime = new Date(punch_out).getTime();
 
-        let currentTime =
-            clock_hour +
-            ":" +
-            clock_min +
-            ":" +
-            clock_sec +
-            am_pm;
+                    var diff = EndedTime - StartedTime;
+                    var hours = Math.floor(diff / 3.6e6);
+                    var minutes = Math.floor((diff % 3.6e6) / 6e4);
+                    var seconds = Math.floor((diff % 6e4) / 1000);
+                    let h = hours < 10 ? '0' + hours : hours;
+                    let m = minutes < 10 ? '0' + minutes : minutes;
+                    let s = seconds < 10 ? '0' + seconds : seconds;
+                    var duration = h + ":" + m + ":" + s;
+                    timeLaps = duration;
+                    $("#timer").text(timeLaps);
+                }
+            } else {
+                $("#start-timer").show();
+                $("#stop-timer").hide();
+                $("#timer").hide();
+                console.log('not available');
+            }
+        });
+    </script>
 
-        document.getElementById("clock").innerHTML = currentTime;
-    }
-    showTime();
-</script>
+@endsection

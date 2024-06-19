@@ -25,17 +25,28 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input data-kt-patient-filter="search"
-                                class="min-w-200px form-control form-control-solid ps-14" placeholder="Search "
-                                type="text" id="SearchByPatientName" name="SearchByPatientName" value="">
+                            <input class="form-control form-control-solid ps-14 min-w-150px me-2" placeholder="Search "
+                                type="text" name="search" value="{{ request()->get('search') }}" id="search">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+
                         </div>
-                        {{-- <select class="form-control ml-2">
-                            <option value="">Select Department</option>
-                            <option value="">Development</option>
-                            <option value="">Marketing</option>
-                            <option value="">Management</option>
-                        </select> --}}
+                        <select class="form-control min-w-150px me-2" id="status">
+                            <option value="">Status</option>
+                            <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
+                                value="1">Active</option>
+                            <option {{ old('status') == '2' || request()->get('status') == '2' ? 'selected' : '' }}
+                                value="2">Inactive</option>
+                        </select>
+                        <select class="form-control min-w-150px me-2" id="filter_department">
+                            <option value="">Select Development</option>
+                            @forelse ($allDepartments as $departments)
+                                <option value="{{ $departments->id }}"
+                                    {{ request()->get('department') == $departments->id ? 'selected' : '' }}>
+                                    {{ $departments->name }}</option>
+                            @empty
+                                <option value="">No Departments Available</option>
+                            @endforelse
+                        </select>
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
@@ -172,7 +183,7 @@
                         <div class="mt-3 mb-3">
                             <label>Department</label>
                             <select class="form-control mb-3" name="department_id">
-                                <option value="">Select Development</option>
+                                <option value="">Select Departments</option>
                                 @forelse ($allDepartments as $departments)
                                     <option value="{{ $departments->id }}">{{ $departments->name }}</option>
                                 @empty
@@ -234,8 +245,8 @@
                     type: 'POST',
                     data: designation_data,
                     success: function(response) {
-                        console.log(response.data);
                         jQuery('#add_designation').modal('hide');
+                        jQuery("#designation_form")[0].reset();
                         swal.fire("Done!", response.message, "success");
                         $('#designation_list').replaceWith(response.data);
 
@@ -294,7 +305,7 @@
     });
 
     function handleStatus(id) {
-        var checked_value = $('#checked_value').prop('checked');
+        var checked_value = $('#checked_value_' + id).prop('checked');
         let status;
         let status_name;
         if (checked_value == true) {
@@ -347,6 +358,30 @@
                         Swal.fire("Error deleting!", "Please try again", "error");
                     }
                 });
+            }
+        });
+    }
+    jQuery("#search").on('blur', function() {
+        search_filter_results();
+    });
+    jQuery("#status").on('change', function() {
+        search_filter_results();
+    });
+    jQuery("#filter_department").on('change', function() {
+        search_filter_results();
+    });
+
+    function search_filter_results() {
+        $.ajax({
+            type: 'GET',
+            url: company_ajax_base_url + '/designation/search/filter',
+            data: {
+                'status': $('#status').val(),
+                'search': $('#search').val(),
+                'department_id': $('#filter_department').val()
+            },
+            success: function(response) {
+                $('#designation_list').replaceWith(response.data);
             }
         });
     }

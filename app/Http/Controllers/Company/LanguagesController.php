@@ -17,27 +17,29 @@ class LanguagesController extends Controller
     ) {
         $this->languageServices  = $languageServices;
     }
-
+    
+    public function index()
+    {
+        return view('super_admin.languages.index', [
+            'allLanguagesDetails' => $this->languageServices->all()
+        ]);
+    }
     public function store(Request $request)
     {
          try {
             $validateLanguage  = Validator::make($request->all(), [
                 'name'                => ['required', 'string'],
-                // 'languages'           => ['array']
             ]);
             if ($validateLanguage->fails()) {
-                return response()->json(['error' => ['name'=> ["The Language Already Selected"]]], 400);
+                return response()->json(['error' => ['name'=> ["The Language Already Exist"]]], 400);
             }
             $data = $request->only('name');
-
             $newAddedLanguage = $this->languageServices->createOrUpdate($data);
-            // $selectedLanguages = array_merge($request->languages,[$createData->id]);
-            // $selectedLanguageDetails = $this->languageServices->getSelectedLanguage($selectedLanguages);
             return response()->json(
                 [
                     'message' => 'Employee Language Created Successfully!',
-                    'language_id'   =>  $newAddedLanguage->id,
-                    'data'   =>  view('company.employee.tabs.language_listing', [
+                    // 'language_id'   =>  $newAddedLanguage->id,
+                    'data'   =>  view('company.employee.tabs.language_list', [
                         'language' => $newAddedLanguage
                     ])->render()
                 ]
@@ -47,4 +49,6 @@ class LanguagesController extends Controller
         }
 
     }
+
+
 }

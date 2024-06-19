@@ -20,7 +20,7 @@ class UserDocumentDetailsController extends Controller
         try {
             if ($this->userDocumentDetailsService->create($userDocumentDetailsRequest)) {
                 return response()->json([
-                    'message' => 'Document Uploaded Added Successfully! Please Continue',
+                    'message' => 'Document Uploaded Added Successfully!',
                 ]);
             }
         } catch (Exception $e) {

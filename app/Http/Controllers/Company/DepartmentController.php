@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Company;
 
+use Exception;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\DepartmentServices;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Exception;
 
 class DepartmentController extends Controller
 {
     private $departmentService;
+
     public function __construct(DepartmentServices $departmentService)
     {
         $this->departmentService = $departmentService;
@@ -21,10 +22,11 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        return view('company.department.index', [
+        return view("company.department.index", [
             'allDepartmentDetails' => $this->departmentService->all()
         ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -42,7 +44,7 @@ class DepartmentController extends Controller
             if ($this->departmentService->create($data)) {
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
-                    'data'   =>  view('company.department.department_list', [
+                    'data'   =>  view("company.department.department_list", [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]);
@@ -88,7 +90,7 @@ class DepartmentController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Departments Deleted Successfully',
-                'data'   =>  view('company.department.department_list',[
+                'data'   =>  view("company.department.department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -102,9 +104,28 @@ class DepartmentController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->departmentService->updateDetails($data, $id);
         if ($statusDetails) {
-            echo 1;
+            return response()->json([
+                'success' => 'Departments Status Updated Successfully',
+                'data'   =>  view("company.department.department_list", [
+                    'allDepartmentDetails' => $this->departmentService->all()
+                ])->render()
+            ]);
         } else {
-            echo 0;
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+    public function serachDepartmentFilterList(Request $request)
+    {
+        $searchedItems = $this->departmentService->serachDepartmentFilterList($request);
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view("company.department.department_list", [
+                    'allDepartmentDetails' =>  $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 }

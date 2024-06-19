@@ -50,12 +50,12 @@ class Company extends Authenticatable
     {
         return $this->password;
     }
-    protected function logo(): Attribute   
-    {
-        return Attribute::make(
-            get: fn(string $value) =>  url("storage/" . $value),
-        );
-    }
+    // protected function logo(): Attribute   
+    // {
+    //     return Attribute::make(
+    //         get: fn(string $value) =>  url("storage/" . $value),
+    //     );
+    // }
 
     public function branches()
     {
