@@ -265,7 +265,7 @@ Route::middleware(['dashboard.access'])->group(function () {
 
 Route::controller(AdminController::class)->group(function () {
     Route::post('/company_login', 'companyLogin')->name('company_login');
-    Route::post('/logout', 'logout')->name('logout');
+    Route::post('/logout', 'logout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');
     Route::get('/signup', 'signup')->name('signup');
 });
@@ -392,8 +392,6 @@ Route::prefix('employee')->group(function () {
 Route::prefix('/admin')->controller(SuperAdminController::class)->group(function () {
     Route::get('/login', 'login')->name('super_admin.login.form');
     Route::post('/super_admin_login', 'super_admin_login')->name('super.admin.login');
-    // Route::post('/login', 'login')->name('super_admin.login');
-    // Route::post('/logout', 'logout')->name('super_logout');
 });
 
 Route::prefix('/admin')->group(function () {
