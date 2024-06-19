@@ -249,6 +249,7 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('shift.update');
         Route::get('/delete', 'destroy')->name('shift.delete');
         Route::get('/status/update', 'statusUpdate')->name('shift.statusUpdate');
+        Route::get('/search/filter', 'searchShiftFilter');
     });
 
     //Attendance Status Module

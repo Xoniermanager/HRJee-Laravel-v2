@@ -27,11 +27,25 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
-                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
-                                value="">
+                            <input class="form-control form-control-solid ps-14 min-w-150px me-2" placeholder="Search "
+                                type="text" name="search" value="{{ request()->get('search') }}" id="search">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+
                         </div>
+                        <select class="form-control min-w-150px me-2" id="status">
+                            <option value="">Status</option>
+                            <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
+                                value="1">Active</option>
+                            <option {{ old('status') == '2' || request()->get('status') == '2' ? 'selected' : '' }}
+                                value="2">Inactive</option>
+                        </select>
+                        <select class="form-control min-w-150px me-2" id="default">
+                            <option value="">Is Default</option>
+                            <option {{ old('default') == '1' || request()->get('default') == '1' ? 'selected' : '' }}
+                                value="1">Yes</option>
+                            <option {{ old('default') == '2' || request()->get('default') == '2' ? 'selected' : '' }}
+                                value="2">No</option>
+                        </select>
 
                     </div>
                     <!--end::Card title-->
@@ -584,12 +598,29 @@
                 }
             });
         }
+        jQuery("#search").on('blur', function() {
+            search_filter_results();
+        });
+        jQuery("#status").on('change', function() {
+            search_filter_results();
+        });
+        jQuery("#default").on('change', function() {
+            search_filter_results();
+        });
+
+        function search_filter_results() {
+            $.ajax({
+                type: 'GET',
+                url: company_ajax_base_url + '/office-shifts/search/filter',
+                data: {
+                    'status': $('#status').val(),
+                    'search': $('#search').val(),
+                    'default': $('#default').val()
+                },
+                success: function(response) {
+                    $('#department_list').replaceWith(response.data);
+                }
+            });
+        }
     </script>
 @endsection
-
-
-<style>
-    .error {
-        color: red;
-    }
-</style>

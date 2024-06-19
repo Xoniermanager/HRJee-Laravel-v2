@@ -111,5 +111,18 @@ class OfficeShiftController extends Controller
         }
     }
 
+    public function searchShiftFilter(Request $request)
+    {
+        $allshifts = $this->shift_service->serachDepartmentFilterList($request);
+        if ($allshifts) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view('company.shifts.shift_list',compact('allshifts'))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+
 
 }

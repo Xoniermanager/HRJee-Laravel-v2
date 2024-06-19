@@ -39285,3 +39285,6 @@ input:checked + .slider:before {
     display: inline;
   }
 }
+.error {
+  color: red;
+}
