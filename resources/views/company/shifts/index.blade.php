@@ -133,7 +133,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label>End Time<span style="color: red">*</span></label>
-                                    <input class="form-control mb-5 mt-3" type="time" name="end_time" id="end_time">
+                                    <input class="form-control mb-5 mt-3" type="time" name="end_time"
+                                        id="end_time">
                                     @error('end_time')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -446,7 +447,6 @@
             jQuery('#edit_department').modal('show');
 
         }
-        jQuery.noConflict();
 
         jQuery(document).ready(function($) {
             jQuery("#add_shift_form").validate({
@@ -476,7 +476,7 @@
                         success: function(response) {
                             jQuery('#add_department').modal('hide');
                             swal.fire("Done!", response.message, "success");
-                            $('#department_list').replaceWith(response.data);
+                            $('#shift_time_list').replaceWith(response.data);
                             jQuery("#add_shift_form")[0].reset();
 
                         },
@@ -523,7 +523,7 @@
                     success: function(response) {
                         jQuery('#edit_department').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        jQuery('#department_list').replaceWith(response.data);
+                        jQuery('#shift_time_list').replaceWith(response.data);
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
@@ -542,7 +542,7 @@
         });
 
         function handleStatus(id) {
-            var checked_value = $('#checked_value').prop('checked');
+            var checked_value = $('#checked_value_status_' + id).prop('checked');
             let status;
             let status_name;
             if (checked_value == true) {
@@ -562,6 +562,34 @@
                 success: function(res) {
                     if (res) {
                         swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
+                    } else {
+                        swal.fire("Oops!", 'Something Went Wrong', "error");
+                    }
+                }
+            })
+        }
+
+        function handleDefault(id) {
+            var default_checked_value = $('#checked_value_default_' + id).prop('checked');
+            let default_value;
+            let default_name;
+            if (default_checked_value == true) {
+                default_value = 1;
+                default_name = 'Yes';
+            } else {
+                default_value = 0;
+                default_name = 'No';
+            }
+            $.ajax({
+                url: "{{ route('shift.statusUpdate') }}",
+                type: 'get',
+                data: {
+                    'id': id,
+                    'default': default_value
+                },
+                success: function(res) {
+                    if (res) {
+                        swal.fire("Done!", 'Default ' + default_name + ' Updated Successfully', "success");
                     } else {
                         swal.fire("Oops!", 'Something Went Wrong', "error");
                     }
@@ -589,7 +617,7 @@
                         },
                         success: function(res) {
                             Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            $('#department_list').replaceWith(res.data);
+                            $('#shift_time_list').replaceWith(res.data);
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             Swal.fire("Error deleting!", "Please try again", "error");
@@ -618,7 +646,7 @@
                     'default': $('#default').val()
                 },
                 success: function(response) {
-                    $('#department_list').replaceWith(response.data);
+                    $('#shift_time_list').replaceWith(response.data);
                 }
             });
         }

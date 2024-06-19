@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('office_timing_configs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('company_branch');
             $table->string('shift_hours');
             $table->string('half_day_hours');
             $table->string('min_shift_Hours');
             $table->string('min_half_day_hours');
-            $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('company_branch_id');
+            $table->foreign('company_branch_id')->references('id')->on('company_branches');
             $table->timestamps();
         });
     }

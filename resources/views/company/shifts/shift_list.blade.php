@@ -1,4 +1,4 @@
-<div id="department_list" class="card-body py-3">
+<div id="shift_time_list" class="card-body py-3">
     <!--begin::Table container-->
     <div class="table-responsive">
         <!--begin::Table-->
@@ -27,7 +27,7 @@
                         <td data-order="Invalid date">
                             <label class="switch">
                                 <input type="checkbox" <?= $allshift->status == '1' ? 'checked' : '' ?>
-                                    onchange="handleStatus({{ $allshift->id }})" id="checked_value">
+                                    onchange="handleStatus({{ $allshift->id }})" id="checked_value_status_{{$allshift->id}}">
                                 <span class="slider round"></span>
                             </label>
                         </td>
@@ -35,7 +35,7 @@
                         <td data-order="Invalid date">
                             <label class="switch">
                                 <input type="checkbox"
-                                    onchange="handleStatus({{ $allshift->id }})" id="checked_value">
+                                    onchange="handleDefault({{ $allshift->id }})" id="checked_value_default_{{$allshift->id}}">
                                 <span class="slider round"></span>
                             </label>
                         </td>

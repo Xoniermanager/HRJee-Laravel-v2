@@ -240,8 +240,9 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('office_time_config.update');
         Route::get('/delete', 'destroy')->name('office_time_config.delete');
         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
-    });
+        Route::get('/search/filter', 'searchOfficeTimeFilter');
 
+    });
     // Office Shifts
     Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
         Route::get('/', 'index')->name('shifts.index');
