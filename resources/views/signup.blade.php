@@ -176,13 +176,9 @@
       transform: translateX(-50%) scale(1);
     }
 
-
-
     .Dglow {
       display: none;
     }
-
-
   }
 </style>
 
@@ -195,7 +191,6 @@
           <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
         </div>
       </div>
-
     </div>
 
 

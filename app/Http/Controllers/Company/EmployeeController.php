@@ -100,10 +100,7 @@ class EmployeeController extends Controller
         $allBranches = $this->branchService->all();
         $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->all()->where('status', '1');
-
-        return view(
-            'company.employee.add_employee',
-            compact(
+        return view('company.employee.add_employee',    compact(
                 'allCountries',
                 'allPreviousCompany',
                 'allQualification',
