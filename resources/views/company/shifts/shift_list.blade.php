@@ -60,7 +60,7 @@
             @empty
                 <td colspan="3">
                     <span class="text-danger">
-                        <strong>No Department Found!</strong>
+                        <strong>No Shifts Found!</strong>
                     </span>
                 </td>
             @endforelse
@@ -71,4 +71,4 @@
     <!--end::Table container-->
 
 </div>
-{{-- {{ $allDepartmentDetails->links() }} --}}
+{{ $allshifts->links() }}
