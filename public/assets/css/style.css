@@ -16507,3 +16507,12 @@ label.required::after {
   font-size: 17px;
   vertical-align: middle;
 }
+
+ .employee_listing {
+  height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border: 2px solid #eee;
+  padding: 20px;
+  border-radius: 10px;
+                }

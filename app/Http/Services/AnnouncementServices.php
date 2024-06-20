@@ -19,6 +19,10 @@ class AnnouncementServices
   {
     return $this->announcementRepository->create($data);
   }
+  public function announcementDetails($id)
+  {
+    return $this->announcementRepository->find($id);
+  }
 
   public function updateDetails(array $data, $id)
   {

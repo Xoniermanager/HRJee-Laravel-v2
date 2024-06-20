@@ -25,9 +25,9 @@ class AddAnnouncementRequest extends FormRequest
             "company_branch_id" => "required|exists:company_branches,id",
             "title" => "required|string|min:10",
             "start_date_time" => "required|after_or_equal:now",
-            "expires_at" => "nullable|after_or_equal:now",
+            "expires_at" => "nullable|after_or_equal:start_date_time",
             "description" => "required|string",
-            "image" => "nullable|nullable",
+            "image" => "nullable",
             "status" => "required|in:active,inactive",
         ];
     }

@@ -240,7 +240,7 @@
                 <!--end::Card body-->
             </div>
             <!--end::details View-->
-
+  
             <div class="card tab-pane fade   mb-5 mb-xl-10" id="company_detail" role="tabpanel">
                 <!--begin::Card header-->
                 <div class="card-header cursor-pointer">
@@ -254,7 +254,7 @@
                 <!--begin::Card header-->
                 <!--begin::Card body-->
                 <div class="card-body p-9">
-                    <form method="post" action="{{route('update.branch',['id' => $companyBranch->id])}}">
+                    <form method="post" action="{{route('company.branch.update',['id' => $companyBranch->id])}}">
                         <div class="row">
                             @csrf
                             <div class="col-md-6 form-group">

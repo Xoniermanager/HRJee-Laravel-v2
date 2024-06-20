@@ -125,8 +125,11 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/',[AnnouncementController::class,'index'])->name('index');
         Route::get('create',[AnnouncementController::class,'create'])->name('create');
         Route::post('store',[AnnouncementController::class,'store'])->name('store');
-        Route::get('edit/{id}',[AnnouncementController::class,'edit'])->name('edit');
-        Route::post('update/{id}',[AnnouncementController::class,'update'])->name('update');
+        Route::get('edit/{id?}',[AnnouncementController::class,'edit'])->name('edit');
+        Route::post('update/{id?}',[AnnouncementController::class,'update'])->name('update');
+        Route::get('delete',[AnnouncementController::class,'destroy'])->name('delete');
+        Route::get('status/update',[AnnouncementController::class,'statusUpdate'])->name('statusUpdate');
+        Route::get('assign/{id}',[AnnouncementController::class,'getAnnouncement'])->name('assign');
     });
 
     //Country Module

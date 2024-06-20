@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Company;
+use App\Observers\CompanyObserver;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -29,5 +31,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('stateName', function ($id) {
             return "<?php echo App\Models\State::getStateNameById($id); ?>";
         });
+
+        // Company::observe(CompanyObserver::class);
     }
 }

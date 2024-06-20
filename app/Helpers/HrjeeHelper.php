@@ -7,6 +7,7 @@ function removingSpaceMakingName($name)
     return $finalName;
 }
 
+
 if (!function_exists('transLang')) {
     function transLang($template = null, $dataArr = [])
     {

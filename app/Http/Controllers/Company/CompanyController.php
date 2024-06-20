@@ -16,7 +16,7 @@ use App\Http\Requests\ValidateUpdateCompanyRequest;
 class CompanyController extends Controller
 {
 
-    
+
     private $company_services;
     private $fileUploadService;
     private $branch_services;
@@ -24,24 +24,28 @@ class CompanyController extends Controller
     public function __construct(
         CompanyServices $company_services,
         FileUploadService $fileUploadService,
-        BranchServices $branch_services)
-        
-    {
-            $this->company_services  = $company_services;
-            $this->fileUploadService = $fileUploadService;
-            $this->branch_services = $branch_services;
+        BranchServices $branch_services
+    ) {
+        $this->company_services  = $company_services;
+        $this->fileUploadService = $fileUploadService;
+        $this->branch_services = $branch_services;
     }
     /**
      * Display a listing of the resource.
      */
     public function company_profile()
     {
-        $companyID      =  Auth::guard('admin')->user()->id;
+        if (empty(Auth::guard('admin')->user()->branch_id))
+            $companyID = Auth::guard('admin')->user()->company_id;
+        else
+            $companyID = Auth::guard('admin')->user()->branch_id;
+   
+
         $companyDetails =  $this->company_services->get_company_with_branch_details($companyID);
-        $companyBranch  =  $companyDetails->branches->firstWhere('branch_type','primary');
+        $companyBranch  =  $companyDetails->branches->firstWhere('type', 'primary');
         $states = DB::table('states')->get();
         $countries = DB::table('countries')->get();
-        return view('company.company.company_profile',compact('companyDetails','companyBranch','countries','states'));
+        return view('company.company.company_profile', compact('companyDetails', 'companyBranch', 'countries', 'states'));
     }
 
     /**
@@ -49,7 +53,7 @@ class CompanyController extends Controller
      */
     public function update_company(ValidateUpdateCompanyRequest $request)
     {
-        try{
+        try {
             $data = request()->except(['_token']);
             if ($request->logo !== null) {
                 $upload_path = "/uploads";
@@ -58,18 +62,15 @@ class CompanyController extends Controller
                 if ($imagePath) {
                     $data['logo'] = $imagePath;
                 }
-            }        
-        $updatedCompany = $this->company_services->update_company($data);
-        if($updatedCompany)
-        {    
-        smilify('success','Profile Updated Successfully!');
-        return redirect()->route('company.profile');
+            }
+            $updatedCompany = $this->company_services->update_company($data);
+            if ($updatedCompany) {
+                smilify('success', 'Profile Updated Successfully!');
+                return redirect()->route('company.profile');
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
-    }
-    catch(\Exception $e)
-    {
-        return $e->getMessage();
-    }
     }
     public function company_change_password(Request $request)
     {
@@ -79,7 +80,7 @@ class CompanyController extends Controller
         ]);
         $companyUser = Auth::guard('admin')->user();
         if (!Hash::check($request->old_password, $companyUser->password)) {
-            smilify('success','The old password is incorrect.');
+            smilify('success', 'The old password is incorrect.');
             return false;
         }
 
@@ -98,7 +99,7 @@ class CompanyController extends Controller
     //            smilify('success','Branch Updated Successfully!');
     //            return redirect('/branch');
     //         }
-            
+
     //     } catch (\Exception $e) {
     //         return $e->getMessage();
     //     }

@@ -9,8 +9,9 @@ class Announcement extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $appends = ['admin_image'];
-    public function getAdminImageAttribute()
+
+    protected $appends = ['announcement_image'];
+    public function getAnnouncementImageAttribute()
     {
         return imageBasePath($this->image, 'originalAnnouncementImagePath');
     }

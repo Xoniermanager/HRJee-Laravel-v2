@@ -27,12 +27,29 @@ class AnnouncementController extends Controller
     {
         return view('company.announcements.index', [
             'announcements' => $this->announcementService->all(),
+            'branches' => $this->branch_services->allActiveBranches()
+        ]);
+    }
+    public function getAnnouncement(Request $request)
+    {
+        return view('company.announcements.assign_announcement', [
+            'announcement' => $this->announcementService->announcementDetails($request->id),
+
+            'branches' => $this->branch_services->allActiveBranches()
         ]);
     }
     public function create()
     {
-        $branches = $this->branch_services->get_branches();
+        $branches = $this->branch_services->allActiveBranches();
         return view('company.announcements.create', compact('branches'));
+    }
+    public function edit(Request $request)
+    {
+        $branches = $this->branch_services->allActiveBranches();
+        return view('company.announcements.edit', [
+            'announcement' => $this->announcementService->announcementDetails($request->id),
+            'branches' => $this->branch_services->allActiveBranches(),
+        ]);
     }
 
     /**
@@ -42,18 +59,16 @@ class AnnouncementController extends Controller
     {
         try {
             $data = $request->except(['_token']);
-
             if ($request->has('image')) {
                 $data['image'] = uploadFile('image', 'image', 'originalAnnouncementImagePath');
             }
-
             // $data['start_date_time'] =   date('Y-m-d h:i:s a ', strtotime($request->start_date_time));
             // $data['expire_at'] =   date('Y-m-d h:i:s a ', strtotime($request->expire_at));
             if ($this->announcementService->create($data)) {
                 return response()->json(
                     [
                         'message' => 'Announcement Created Successfully!',
-                        'data'   =>  view('company.announcements.index', [
+                        'data'   =>  view('company.announcements.announcement_list', [
                             'announcements' => $this->announcementService->all(),
                         ])->render()
                     ]
@@ -67,22 +82,19 @@ class AnnouncementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(AddAnnouncementRequest $request)
     {
-        $validateDesignation  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:designations,name,' . $request->id],
-        ]);
-
-        if ($validateDesignation->fails()) {
-            return response()->json(['error' => $validateDesignation->messages()], 400);
-        }
         $updateData = $request->except(['_token', 'id']);
+        if ($request->has('image')) {
+            $updateData['image'] = uploadFile('image', 'image', 'originalAnnouncementImagePath');
+        }
         $companyStatus = $this->announcementService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
             return response()->json([
-                'message' => 'Designation Updated Successfully!',
-                'data'   =>  view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->announcementService->all()
+                'message' => 'Announcement Updated Successfully!',
+                'data'   =>  view('company.announcements.announcement_list', [
+                    'announcements' => $this->announcementService->all(),
+                    'branches' => $this->branch_services->allActiveBranches(),
                 ])->render()
             ]);
         }
@@ -95,18 +107,22 @@ class AnnouncementController extends Controller
     {
         $id = $request->id;
         $data = $this->announcementService->deleteDetails($id);
+        $announcements = $this->announcementService->all();
+        $branches = $this->branch_services->allActiveBranches();
         if ($data) {
             return response()->json([
                 'success', 'Deleted Successfully!',
-                'data'   =>  view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->announcementService->all()
+                'data'   =>  view('company.announcements.announcement_list', [
+                    'announcements' => $announcements,
+                    'branches' => $branches
                 ])->render()
             ]);
         } else {
             return response()->json([
                 'error', 'Something Went Wrong! Pleaase try Again',
-                'data'   =>  view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->announcementService->all()
+                'data'   =>  view('company.announcements.announcement_list', [
+                    'announcements' => $announcements,
+                    'branches' => $branches
                 ])->render()
             ]);
         }
@@ -122,6 +138,4 @@ class AnnouncementController extends Controller
             echo 0;
         }
     }
-
-   
 }

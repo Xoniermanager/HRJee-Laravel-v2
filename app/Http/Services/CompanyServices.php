@@ -18,6 +18,10 @@ class CompanyServices
     { 
      return $this->company_repository->create($data);
     }
+    public function updateOrCreate($match,$data)
+    { 
+     return $this->company_repository->updateOrCreate($match,$data);
+    }
     public function updateDetails(array $data, $id)
     {
       return $this->company_repository->find($id)->update($data);

@@ -1,4 +1,4 @@
-<div class="card-body py-3" id="designation_list">
+<div class="card-body py-3" id="announcement_list">
     <!--begin::Table container-->
     <div class="table-responsive">
         <!--begin::Table-->
@@ -22,18 +22,32 @@
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $announcement->title }} </td>
-                        <td><img src='{{ $announcement->admin_image }}' height="50"></td>
+                        <td><img src='{{ $announcement->announcement_image }}' height="50"></td>
                         <td>{{ date('Y-m-d h:i A', strtotime($announcement->start_date_time)) }}</td>
                         <td>{{ Str::of($announcement->description)->limit(10)}}</td>
-                        <td>{{ transLang('action_status')[$announcement->status] }}</td>
+                        <td> <label class="switch">
+                            <input type="checkbox" <?= $announcement->status == 'active' ? 'checked' : '' ?>
+                                onchange="handleStatus({{ $announcement->id }})" id="checked_value">
+                            <span class="slider round"></span>
+                        </label></td>
                         <td>
                             <div class="d-flex justify-content-end flex-shrink-0">
-                                <a href="#"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                    <i class="fa fa-edit"></i>
-                                    <!--end::Svg Icon-->
-                                </a>
+                               
+
+                                <a href="#" data-bs-toggle="modal"
+                                onClick="edit_announcement_details('{{ $announcement }}')"
+                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                <i class="fa fa-edit"></i>
+                                <!--end::Svg Icon-->
+                            </a>
+                                <a href="{{route('announcement.assign',$announcement->id)}}" 
+                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                <i class="fa fa-bullhorn"></i>
+                                <!--end::Svg Icon-->
+                            </a>
+                         
                                 <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                                     onclick="deleteFunction('{{ $announcement->id }}')">
                                     <i class="fa fa-trash"></i>

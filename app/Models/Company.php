@@ -63,4 +63,7 @@ class Company extends Authenticatable
         
     }
 
+    
+   
 }
+
