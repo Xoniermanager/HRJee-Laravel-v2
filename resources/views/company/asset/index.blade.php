@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    Asset Status
+    Asset
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -26,11 +26,47 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
-                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
-                                value="">
+                            <input class="form-control form-control-solid ps-14 min-w-150px me-2" placeholder="Search "
+                                type="text" name="search" value="{{ request()->get('search') }}" id="search">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+
                         </div>
+                        <select class="form-control min-w-150px me-2" id="status">
+                            <option value="">Allocation Status</option>
+                            <option
+                                {{ old('status') == 'available' || request()->get('status') == 'available' ? 'selected' : '' }}
+                                value="available">Available</option>
+                            <option
+                                {{ old('status') == 'allocated' || request()->get('status') == 'allocated' ? 'selected' : '' }}
+                                value="allocated">Allocated</option>
+                        </select>
+                        <select class="form-control min-w-150px me-2" id="category_id">
+                            <option value="">Category</option>
+                            @foreach ($allAssetCategory as $assetCategory)
+                                <option
+                                    {{ old('category_id') == $assetCategory->id || request()->get('category_id') == $assetCategory->id ? 'selected' : '' }}
+                                    value="{{ $assetCategory->id }}">
+                                    {{ $assetCategory->name }}</option>
+                            @endforeach
+                        </select>
+                        <select class="form-control min-w-150px me-2" id="manufacturer_id">
+                            <option value="">Manufacturer</option>
+                            @foreach ($allAssetManufacturer as $assetManufacturer)
+                                <option
+                                    {{ old('manufacturer_id') == $assetManufacturer->id || request()->get('manufacturer_id') == $assetManufacturer->id ? 'selected' : '' }}
+                                    value="{{ $assetManufacturer->id }}">
+                                    {{ $assetManufacturer->name }}</option>
+                            @endforeach
+                        </select>
+                        <select class="form-control min-w-150px me-2" id="ownership">
+                            <option value="">OwnerShip</option>
+                            <option
+                                {{ old('ownership') == 'rented' || request()->get('ownership') == 'rented' ? 'selected' : '' }}
+                                value="rented">Rented</option>
+                            <option
+                                {{ old('ownership') == 'owned' || request()->get('ownership') == 'owned' ? 'selected' : '' }}
+                                value="owned">Owned</option>
+                        </select>
 
                     </div>
                     <!--end::Card title-->
@@ -49,61 +85,7 @@
                 @endif
                 <div class="mb-5 mb-xl-10">
                     <div class="card-body py-3">
-                        <!--begin::Table container-->
-                        <div class="table-responsive">
-                            <!--begin::Table-->
-                            <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                <!--begin::Table head-->
-                                <thead>
-                                    <tr class="fw-bold">
-                                        <th>Sr. No.</th>
-                                        <th>Name</th>
-                                        <th>Asset Category</th>
-                                        <th>Asset Manufacturer</th>
-                                        <th>Model</th>
-                                        <th>Serial No</th>
-                                        <th>Invoice No</th>
-                                        <th>Allocation Status</th>
-                                        <th class="float-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <!--end::Table head-->
-                                <!--begin::Table body-->
-                                <tbody class="">
-                                    @foreach ($allAssetDetails as $index => $singleAssetDetails)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $singleAssetDetails->name }}</td>
-                                            <td>{{ $singleAssetDetails->assetCategories->name }}</td>
-                                            <td>{{ $singleAssetDetails->assetManufacturers->name }}</td>
-                                            <td>{{ $singleAssetDetails->model }}</td>
-                                            <td>{{ $singleAssetDetails->serial_no }}</td>
-                                            <td>{{ $singleAssetDetails->invoice_no }}</td>
-                                            <td>{{ $singleAssetDetails->allocation_status }}</td>
-                                            <td>
-                                                <div class="d-flex justify-content-end flex-shrink-0">
-                                                    <a href="{{ route('asset.edit', $singleAssetDetails->id) }}"
-                                                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                                        <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                        <i class="fa fa-edit"></i>
-                                                        <!--end::Svg Icon-->
-                                                    </a>
-                                                    <a href="#"
-                                                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                                        onclick="deleteFunction('{{ $singleAssetDetails->id }}')">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <!--end::Table body-->
-                            </table>
-                            <!--end::Table-->
-                        </div>
-                        <!--end::Table container-->
-
+                        @include('company.asset.list')
                     </div>
                 </div>
             </div>
@@ -132,14 +114,44 @@
                         },
                         success: function(res) {
                             Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            setTimeout(function() {
-                               location.reload();
-                            },3000);
+                            $('#asset_list').replaceWith(res.data);
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             Swal.fire("Error deleting!", "Please try again", "error");
                         }
                     });
+                }
+            });
+        }
+        jQuery("#search").on('blur', function() {
+            search_filter_results();
+        });
+        jQuery("#status").on('change', function() {
+            search_filter_results();
+        });
+        jQuery("#category_id").on('change', function() {
+            search_filter_results();
+        });
+        jQuery("#manufacturer_id").on('change', function() {
+            search_filter_results();
+        });
+        jQuery("#ownership").on('change', function() {
+            search_filter_results();
+        });
+
+        function search_filter_results() {
+            $.ajax({
+                type: 'GET',
+                url: company_ajax_base_url + '/asset/search/filter',
+                data: {
+                    'status': $('#status').val(),
+                    'search': $('#search').val(),
+                    'category_id': $('#category_id').val(),
+                    'manufacturer_id': $('#manufacturer_id').val(),
+                    'ownership': $('#ownership').val()
+                },
+                success: function(response) {
+                    $('#asset_list').replaceWith(response.data);
                 }
             });
         }

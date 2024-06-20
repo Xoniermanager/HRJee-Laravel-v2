@@ -64,4 +64,39 @@ class AssetService
   {
     return $this->assetRepository->find($id);
   }
+
+  public function serachAssetFilterList($request)
+  {
+    $assetDetails = $this->assetRepository;
+
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $searchKey = $request->search;
+      $assetDetails = $assetDetails->where(function ($query) use ($searchKey) {
+        $query->where('name', 'LIKE', '%' . $searchKey . '%');
+        $query->orWhere('model', 'LIKE', '%' . $searchKey . '%');
+        $query->orWhere('purchase_value', 'LIKE', '%' . $searchKey . '%');
+        $query->orWhere('depreciation_per_year', 'LIKE', '%' . $searchKey . '%');
+        $query->orWhere('invoice_no', 'LIKE', '%' . $searchKey . '%');
+        $query->orWhere('serial_no', 'LIKE', '%' . $searchKey . '%');
+      });
+    }
+    /**List By Category or Filter */
+    if (isset($request->status) && !empty($request->status)) {
+      $assetDetails = $assetDetails->where('allocation_status', $request->status);
+    }
+    /**List By Category or Filter */
+    if (isset($request->category_id) && !empty($request->category_id)) {
+      $assetDetails = $assetDetails->where('asset_category_id', $request->category_id);
+    }
+    /**List By Manufacturer or Filter */
+    if (isset($request->manufacturer_id) && !empty($request->manufacturer_id)) {
+      $assetDetails = $assetDetails->where('asset_manufacturer_id', $request->manufacturer_id);
+    }
+     /**List By Manufacturer or Filter */
+     if (isset($request->ownership) && !empty($request->ownership)) {
+      $assetDetails = $assetDetails->where('ownership', $request->ownership);
+    }
+    return $assetDetails->orderBy('id', 'DESC')->paginate(10);
+  }
 }

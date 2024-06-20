@@ -18,25 +18,25 @@ class OfficeShiftController extends Controller
         $this->office_time_config_service = $office_time_config_service;
         $this->shift_service = $shift_service;
     }
-    
+
 
     public function index()
     {
         $allConfigTimes = $this->office_time_config_service->all();
         $allshifts = $this->shift_service->all();
-        return view('company.shifts.index',['allConfigTimes'=> $allConfigTimes,'allshifts' => $allshifts]);
+        return view('company.shifts.index', ['allConfigTimes' => $allConfigTimes, 'allshifts' => $allshifts]);
     }
 
     public function store(Request $request)
     {
         try {
             $validateOfficeTimeConfig  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:shifts,name'],
-                'start_time' => ['required', 'string'],
-                'end_time'  => ['required', 'string'],
-                'check_in_buffer'  => ['required', 'string'],
-                'check_out_buffer' => ['required', 'string'],
-                'login_before_shift_time' => ['required', 'string'],
+                'name'                      => ['required', 'string', 'unique:shifts,name'],
+                'start_time'                => ['required', 'string'],
+                'end_time'                  => ['required', 'string'],
+                'check_in_buffer'           => ['required', 'string'],
+                'check_out_buffer'          => ['required', 'string'],
+                'login_before_shift_time'   => ['required', 'string'],
             ]);
             if ($validateOfficeTimeConfig->fails()) {
                 return response()->json(['error' => $validateOfficeTimeConfig->messages()], 400);
@@ -62,7 +62,7 @@ class OfficeShiftController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Office Time Deleted Successfully',
-                'data'   =>  view('company.shifts.shift_list',[
+                'data'   =>  view('company.shifts.shift_list', [
                     'allshifts' => $this->shift_service->all()
                 ])->render()
             ]);
@@ -74,7 +74,7 @@ class OfficeShiftController extends Controller
     public function update(Request $request)
     {
         $validateShift  = Validator::make($request->all(), [
-            'name' => ['required', 'string' ,'unique:shifts,name,'. $request->id],
+            'name' => ['required', 'string', 'unique:shifts,name,' . $request->id],
             'start_time' => ['required', 'string'],
             'end_time'  => ['required', 'string'],
             'check_in_buffer'  => ['required', 'string'],
@@ -102,7 +102,12 @@ class OfficeShiftController extends Controller
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
-        $data['status'] = $request->status;
+        if (isset($request->status)) {
+            $data['status'] = $request->status;
+        }
+        if (isset($request->default)) {
+            $data['is_default'] =  $request->default;
+        }
         $statusDetails = $this->shift_service->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;
@@ -117,12 +122,10 @@ class OfficeShiftController extends Controller
         if ($allshifts) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view('company.shifts.shift_list',compact('allshifts'))->render()
+                'data'   =>  view('company.shifts.shift_list', compact('allshifts'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-
-
 }

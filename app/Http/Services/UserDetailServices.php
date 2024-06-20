@@ -9,24 +9,24 @@ use Illuminate\Support\Arr;
 class UserDetailServices
 {
   private $userDetailRepository;
-  private $userSkillService;
-  public function __construct(UserDetailRepository $userDetailRepository, UserSkillServices $userSkillService)
+  public function __construct(UserDetailRepository $userDetailRepository)
   {
     $this->userDetailRepository = $userDetailRepository;
-    $this->userSkillService = $userSkillService;
   }
 
   public function create($data)
   {
-    $finalPayload = Arr::except($data, ['_token', 'skill_id']);
+    $finalPayload = Arr::except($data, ['_token']);
     $user_id = $data['user_id'];
     $dataCreated = $this->userDetailRepository->updateOrCreate([
       'user_id'           =>  $user_id,
     ], $finalPayload);
     if ($dataCreated) {
-      $this->userSkillService->create($data);
       $user = User::find($user_id);
       $user->languages()->detach();
+      $user->skills()->detach();
+
+      //Language Creation
       foreach ($data['language'] as $languages) {
         $user->languages()->attach(
           $languages['language_id'],
@@ -36,6 +36,11 @@ class UserDetailServices
             'write' => $languages['write'],
           ]
         );
+      }
+
+      //User Skills Created
+      foreach ($data['skill_id'] as $skillId) {
+        $user->skills()->attach($skillId);
       }
     }
     return true;

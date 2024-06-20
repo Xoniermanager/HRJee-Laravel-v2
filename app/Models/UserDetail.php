@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
 
 class UserDetail extends Model
 {
@@ -49,5 +50,13 @@ class UserDetail extends Model
     public function companyBranches()
     {
         return $this->belongsTo(CompanyBranch::class, 'company_branch_id', 'id');
+    }
+    public function roles()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+    public function qualification()
+    {
+        return $this->belongsTo(Qualification::class, 'qualification_id');
     }
 }

@@ -107,4 +107,18 @@ class AssetStatusController extends Controller
             echo 0;
         }
     }
+
+    public function serachAssetStatusFilterList(Request $request)
+    {
+        $allAssetStatusDetails = $this->assetStatusService->serachAssetStatusFilterList($request);
+        if ($allAssetStatusDetails) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view("company.asset_status.asset_status_list", compact('allAssetStatusDetails'))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+
+    }
 }

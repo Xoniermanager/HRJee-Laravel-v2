@@ -18,9 +18,16 @@ class UserAddressDetail extends Model
         'country_id',
         'pin_code',
     ];
-
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

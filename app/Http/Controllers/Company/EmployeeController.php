@@ -184,11 +184,17 @@ class EmployeeController extends Controller
             $allUserDetails = $this->employeeService->all($request);
             if ($allUserDetails) {
                 return response()->json([
-                    'data' => view('company.employee.list',compact('allUserDetails'))->render()
+                    'data' => view('company.employee.list', compact('allUserDetails'))->render()
                 ]);
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
+    }
+
+    public function view(User $user)
+    {
+        $singleViewEmployeeDetails = $user->load('familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+        return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
 }

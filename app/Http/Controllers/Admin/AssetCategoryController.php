@@ -107,4 +107,17 @@ class AssetCategoryController extends Controller
             echo 0;
         }
     }
+
+    public function serachAssetCategoryFilterList(Request $request)
+    {
+        $allAssetCategoryDetails = $this->assetCategoryService->serachAssetCategoryFilterList($request);
+        if ($allAssetCategoryDetails) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view("company.asset_category.asset_category_list", compact('allAssetCategoryDetails'))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
 }

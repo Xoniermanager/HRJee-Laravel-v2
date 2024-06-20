@@ -38,10 +38,7 @@ class CompanyController extends Controller
     {
         $companyID      =  Auth::guard('admin')->user()->id;
         $companyDetails =  $this->company_services->get_company_with_branch_details($companyID);
-        $companyBranch  =  $companyDetails->branches->firstWhere('branch_type','primary');
-        $states = DB::table('states')->get();
-        $countries = DB::table('countries')->get();
-        return view('company.company.company_profile',compact('companyDetails','companyBranch','countries','states'));
+        return view('company.company.company_profile',compact('companyDetails'));
     }
 
     /**
