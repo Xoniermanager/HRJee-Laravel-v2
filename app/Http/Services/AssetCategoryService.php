@@ -33,4 +33,18 @@ class AssetCategoryService
   {
     return $this->assetCategoryRepository->where('status', '1')->get();
   }
+
+  public function serachAssetCategoryFilterList($request)
+  {
+    $assetCategoryDetails = $this->assetCategoryRepository;
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $assetManufacturerDetails = $assetCategoryDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status)) {
+      $assetCategoryDetails = $assetCategoryDetails->where('status', $request->status);
+    }
+    return $assetCategoryDetails->orderBy('id', 'DESC')->paginate(10);
+  }
 }

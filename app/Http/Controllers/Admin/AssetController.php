@@ -27,7 +27,9 @@ class AssetController extends Controller
     public function index()
     {
         $allAssetDetails = $this->assetService->all();
-        return view('company.asset.index', compact('allAssetDetails'));
+        $allAssetCategory = $this->assetCategoryService->getAllActiveAssetCategory();
+        $allAssetManufacturer = $this->assetManufacturerService->getAllActiveAssetManufacturer();
+        return view('company.asset.index', compact('allAssetDetails', 'allAssetCategory', 'allAssetManufacturer'));
     }
     public function add()
     {
@@ -72,9 +74,27 @@ class AssetController extends Controller
         $id = $request->id;
         $data = $this->assetService->deleteDetails($id);
         if ($data) {
-            return response()->json(['success' => 'Asset Deleted Successfully!']);
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view('company.asset.list', [
+                    'allAssetDetails' => $this->assetService->all()
+                ])->render()
+            ]);
         } else {
-            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+
+    public function serachAssetFilterList(Request $request)
+    {
+        $allAssetDetails = $this->assetService->serachAssetFilterList($request);
+        if ($allAssetDetails) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view("company.asset.list", compact('allAssetDetails'))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
 }

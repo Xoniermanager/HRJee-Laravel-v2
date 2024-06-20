@@ -107,4 +107,16 @@ class AssetManufacturerController extends Controller
             echo 0;
         }
     }
+    public function serachAssetManufacturerFilterList(Request $request)
+    {
+        $allAssetManufacturerDetails = $this->assetManufacturerService->serachAssetManufacturerFilterList($request);
+        if ($allAssetManufacturerDetails) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view("company.asset_manufacturer.asset_manufacturer_list", compact('allAssetManufacturerDetails'))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
 }

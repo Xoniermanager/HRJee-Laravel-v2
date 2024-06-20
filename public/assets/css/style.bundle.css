@@ -39288,3 +39288,71 @@ input:checked + .slider:before {
 .error {
   color: red;
 }
+.verticle_tab li {
+  margin-bottom: 20px;
+  cursor: pointer;
+  border-radius: 50px;
+  font-size: 16px;
+  line-height: 48px;
+  text-transform: capitalize;
+  transition: all 0.4s ease-in-out;
+  width: 100%;
+}
+.verticle_tab li a.active {
+  border-radius: 50px;
+}
+.verticle_tab li a i {
+  float: right;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 12px;
+  border-radius: 50%;
+  text-align: center;
+  background-color: var(--kt-primary);
+  color: #fff;
+  transition: all 0.3s ease-in;
+  margin: 5px 0;
+}
+.verticle_tab li a.active i {
+  background-color: #fff;
+  color: var(--kt-primary);
+}
+.verticle_tab {
+    display: block;
+}
+.verticle_tab .nav-link {
+  padding-left: 30px !important;
+  border: 1px solid var(--kt-primary);
+  border-radius: 50px;
+  padding: 0px 10px;
+}
+.verticle_tab_content .tab-pane {
+  border: 2px solid #4d80de; 
+  box-shadow: var(--kt-card-box-shadow);
+  background-color: #f6f7fa;
+  border-radius: 20px;
+}
+.verticle_tab_content .head {
+  background: #4d7fde;
+  color: #fff;
+  position: relative;
+  padding: 10px 20px;
+  display: inline-block;
+  border-radius: 20px;
+  margin-top: -25px;
+  z-index: 1;
+  left: 30px; 
+  max-width: 400px;
+  text-align: center;
+} 
+.verticle_tab_content .head h3 { 
+  color: #fff; 
+}  
+.tabcustome {
+  border: none !important;
+
+}
+.mt-3rem {
+  margin-top: 3rem !important;
+}

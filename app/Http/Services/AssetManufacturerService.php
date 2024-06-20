@@ -32,4 +32,17 @@ class AssetManufacturerService
   {
     return $this->assetManufacturerRepository->where('status', '1')->get();
   }
+  public function serachAssetManufacturerFilterList($request)
+  {
+    $assetManufacturerDetails = $this->assetManufacturerRepository;
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $assetManufacturerDetails = $assetManufacturerDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status)) {
+      $assetManufacturerDetails = $assetManufacturerDetails->where('status', $request->status);
+    }
+    return $assetManufacturerDetails->orderBy('id', 'DESC')->paginate(10);
+  }
 }
