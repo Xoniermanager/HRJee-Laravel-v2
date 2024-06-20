@@ -34,7 +34,7 @@ class UserDocumentDetailsRequest extends FormRequest
         {
             $required = ($document->is_mandatory) ? 'required' : '';
             $rule = array(
-                removingSpaceMakingName($document->name) =>  "{$required}|file|mimes:jpeg,png,jpg,gif,svg|max:2048",
+                removingSpaceMakingName($document->name) =>  "{$required}|file|mimes:jpeg,png,jpg,gif,svg,pdf|max:2048",
                 'document_' . removingSpaceMakingName($document->name) =>  "{$required} | exists:document_types,id"
             );
             $rules = array_merge($rules,$rule);

@@ -93,7 +93,7 @@ class User extends Authenticatable
 
     public function userDetails()
     {
-        return $this->hasOne(UserDetail::class, 'user_id','id');
+        return $this->hasOne(UserDetail::class, 'user_id', 'id');
     }
 
     protected function profileImage(): Attribute
@@ -103,9 +103,9 @@ class User extends Authenticatable
         );
     }
 
-    public function userSkills()
+    public function skills()
     {
-        return $this->hasMany(UserSkill::class, 'user_id', 'id');
+        return $this->belongsToMany(Skill::class, 'user_skill', 'user_id', 'skill_id');
     }
 
     public function languages()

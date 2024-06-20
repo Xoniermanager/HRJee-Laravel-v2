@@ -39351,8 +39351,15 @@ input:checked + .slider:before {
 }  
 .tabcustome {
   border: none !important;
+  background: transparent !important;
 
 }
 .mt-3rem {
   margin-top: 3rem !important;
+}
+object {
+  object-fit: fill;
+}
+object img {
+width: 100% !important;
 }
