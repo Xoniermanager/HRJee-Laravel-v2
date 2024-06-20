@@ -25,3 +25,7 @@
 <script src="https://kendo.cdn.telerik.com/2024.2.514/js/kendo.all.min.js"></script>
 <script src="{{ asset('assets/js/custom-script.js') }}"></script>
 <script src="{{ asset('assets/js/add-employee-validation.js') }}"></script>
+<script>setTimeout(function() {
+    $('.alert').fadeOut('fast');
+  }, 4000);
+  </script>

@@ -32,4 +32,18 @@ class AssetStatusService
   {
     return $this->assetStatusRepository->where('status','1')->get();
   }
+
+  public function serachAssetStatusFilterList($request)
+  {
+    $assetStatusDetails = $this->assetStatusRepository;
+    /**List By Search or Filter */
+    if (isset($request->search) && !empty($request->search)) {
+      $assetStatusDetails = $assetStatusDetails->where('name', 'Like', '%' . $request->search . '%');
+    }
+    /**List By Status or Filter */
+    if (isset($request->status)) {
+      $assetStatusDetails = $assetStatusDetails->where('status', $request->status);
+    }
+    return $assetStatusDetails->orderBy('id', 'DESC')->paginate(10);
+  }
 }

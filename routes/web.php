@@ -253,8 +253,9 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::post('/update', 'update')->name('office_time_config.update');
         Route::get('/delete', 'destroy')->name('office_time_config.delete');
         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
-    });
+        Route::get('/search/filter', 'searchOfficeTimeFilter');
 
+    });
     // Office Shifts
     Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
         Route::get('/', 'index')->name('shifts.index');
@@ -290,6 +291,7 @@ Route::prefix('/employee')->controller(EmployeeController::class)->group(functio
     Route::post('/store', 'store')->name('employee.store');
     Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
     Route::get('/get/personal/details/{users:id}', 'getPersonalDetails')->name('employee.personal.details');
+    Route::get('/view/{user:id}', 'view')->name('employee.view');
 });
 
 //Advance Details for employee
@@ -660,6 +662,7 @@ Route::prefix('/asset-manufacturer')->controller(AssetManufacturerController::cl
     Route::post('/update', 'update')->name('asset.manufacturer.update');
     Route::get('/delete', 'destroy')->name('asset.manufacturer.delete');
     Route::get('/status/update', 'statusUpdate')->name('asset.manufacturer.statusUpdate');
+    Route::get('/search/filter', 'serachAssetManufacturerFilterList');
 });
 
 //Asset Status Module
@@ -669,6 +672,7 @@ Route::prefix('/asset-status')->controller(AssetStatusController::class)->group(
     Route::post('/update', 'update')->name('asset.status.update');
     Route::get('/delete', 'destroy')->name('asset.status.delete');
     Route::get('/status/update', 'statusUpdate')->name('asset.status.statusUpdate');
+    Route::get('/search/filter', 'serachAssetStatusFilterList');
 });
 
 //Asset Category Module
@@ -678,6 +682,7 @@ Route::prefix('/asset-category')->controller(AssetCategoryController::class)->gr
     Route::post('/update', 'update')->name('asset.category.update');
     Route::get('/delete', 'destroy')->name('asset.category.delete');
     Route::get('/status/update', 'statusUpdate')->name('asset.category.statusUpdate');
+    Route::get('/search/filter', 'serachAssetCategoryFilterList');
 });
 
 //Asset Module
@@ -688,4 +693,5 @@ Route::prefix('/asset')->controller(AssetController::class)->group(function () {
     Route::get('/edit/{assets:id}', 'edit')->name('asset.edit');
     Route::post('/update/{id}', 'update')->name('asset.update');
     Route::get('/delete', 'destroy')->name('asset.delete');
+    Route::get('/search/filter', 'serachAssetFilterList');
 });

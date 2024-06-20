@@ -67,7 +67,7 @@
                     @endif
                     <td>
                         <div class="d-flex justify-content-end flex-shrink-0">
-                            <a href="employee_view.html"
+                            <a href="{{ route('employee.view',$singleUserDetails->id) }}"
                                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                 <i class="fa fa-eye"></i>

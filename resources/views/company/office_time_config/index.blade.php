@@ -26,16 +26,23 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
-                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
-                                value="">
+                            <input class="form-control form-control-solid ps-14 min-w-150px me-2" placeholder="Search "
+                                type="text" name="search" value="{{ request()->get('search') }}" id="search">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
-                        </div>
 
+                        </div>
+                        <select class="form-control min-w-150px me-2" id="branch">
+                            <option value="">Select Branch</option>
+                            @forelse ($allBranch as $branch)
+                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                            @empty
+                                <p>No branches Available</p>
+                            @endforelse
+                        </select>
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#add_department"
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#add_office_time"
                         class="btn btn-sm btn-primary align-self-center">
                         Add Office TIme</a>
 
@@ -51,7 +58,7 @@
         </div>
         <!--end::Container-->
     </div>
-    <div class="modal" id="edit_department">
+    <div class="modal" id="edit_office_time">
         <!--begin::Modal dialog-->
         <div class="modal-dialog modal-dialog-centered mw-500px">
             <!--begin::Modal content-->
@@ -83,62 +90,66 @@
                         <!--begin::Wrapper-->
                         <div class="mw-lg-600px mx-auto p-4">
                             <input type="hidden" name="id" id="id">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Name<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
-                                @error('name')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Name<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Company Branches</label>
+                                    <select name="company_branch_id" class="form-control mb-5 mt-3" id="company_branch">
+                                        <option value="">Select Branch</option>
+                                        @forelse ($allBranch as $branch)
+                                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                        @empty
+                                            <p>No branches Available</p>
+                                        @endforelse
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>Company Branches</label>
-                                <select name="company_branch"  class="form-control mb-5 mt-3"  id="company_branch">
-                                <option value="">Select Branch</option>    
-                                @forelse ($allBranch as $branch)
-                                    <option value="{{ $branch->id }}">{{ $branch->name}}</option>      
-                                @empty
-                                    <p>No branches Available</p>
-                                @endforelse
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Shift_Hours<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="shift_hours"  id="shift_hours">
-                                @error('shift_hours')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Shift_Hours<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="shift_hours"
+                                        id="shift_hours">
+                                    @error('shift_hours')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Half_day_hours<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="half_day_hours"
+                                        id="half_day_hours">
+                                    @error('half_day_hours')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>Half_day_hours<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="half_day_hours" id="half_day_hours">
-                                @error('half_day_hours')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Min_shift_Hours<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="min_shift_Hours" id="min_shift_Hours">
-                                @error('min_shift_Hours')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Min_shift_Hours<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="min_shift_Hours"
+                                        id="min_shift_Hours">
+                                    @error('min_shift_Hours')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Min_half_day_hours<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="min_half_day_hours"
+                                        id="min_half_day_hours">
+                                    @error('min_half_day_hours')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>Min_half_day_hours<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="min_half_day_hours" id="min_half_day_hours">
-                                @error('min_half_day_hours')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
 
-                            
+
                             <!--end::Input group-->
                         </div>
                         <!--end::Wrapper-->
@@ -163,7 +174,7 @@
         <!--end::Modal dialog-->
     </div>
     <!----------modal------------>
-    <div class="modal" id="add_department">
+    <div class="modal" id="add_office_time">
         <!--begin::Modal dialog-->
         <div class="modal-dialog modal-dialog-centered mw-500px">
             <!--begin::Modal content-->
@@ -194,63 +205,64 @@
                         @csrf
                         <!--begin::Wrapper-->
                         <div class="mw-lg-600px mx-auto p-4">
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Name<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="text" name="name">
-                                @error('name')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label>Branches</label>
-                                <select name="company_branch" id="company_branch" class="form-control mb-5 mt-3" >
-                                 <option value="">Select Branch</option>    
-                                @forelse ($allBranch as $branch)
-                                    <option value="{{ $branch->id }}">{{ $branch->name}}</option>      
-                                @empty
-                                    <p>No branches Available</p>
-                                @endforelse
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Shift_Hours<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="shift_hours">
-                                @error('shift_hours')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Name<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="text" name="name">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Branches</label>
+                                    <select name="company_branch_id" id="company_branch"
+                                        class="form-control mb-5 mt-3">
+                                        <option value="">Select Branch</option>
+                                        @forelse ($allBranch as $branch)
+                                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                        @empty
+                                            <p>No branches Available</p>
+                                        @endforelse
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>Half_day_hours<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="half_day_hours">
-                                @error('half_day_hours')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Min_shift_Hours<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="min_shift_Hours">
-                                @error('min_shift_Hours')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Shift_Hours<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="shift_hours">
+                                    @error('shift_hours')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Half_day_hours<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="half_day_hours">
+                                    @error('half_day_hours')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label>Min_half_day_hours<span style="color: red">*</span></label>
-                                <input class="form-control mb-5 mt-3" type="number" name="min_half_day_hours">
-                                @error('min_half_day_hours')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
 
-                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Min_shift_Hours<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="min_shift_Hours">
+                                    @error('min_shift_Hours')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Min_half_day_hours<span style="color: red">*</span></label>
+                                    <input class="form-control mb-5 mt-3" type="number" name="min_half_day_hours">
+                                    @error('min_half_day_hours')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+
                             <!--end::Input group-->
                         </div>
                         <!--end::Wrapper-->
@@ -275,33 +287,36 @@
         <!--end::Modal dialog-->
     </div>
     <script>
-        function edit_department_details(id,name,company_branch,shift_hours, half_day_hours, min_shift_Hours, min_half_day_hours) {
+        function edit_office_time_details(id, name, company_branch_id, shift_hours, half_day_hours, min_shift_Hours,
+            min_half_day_hours) {
             $('#id').val(id);
             $('#name').val(name);
-            $('#company_branch').val(company_branch);
+            $('#company_branch').val(company_branch_id);
             $('#shift_hours').val(shift_hours);
             $('#half_day_hours').val(half_day_hours);
             $('#min_shift_Hours').val(min_shift_Hours);
             $('#min_half_day_hours').val(min_half_day_hours);
-            jQuery('#edit_department').modal('show');
+            jQuery('#edit_office_time').modal('show');
         }
         jQuery.noConflict();
         jQuery(document).ready(function($) {
             jQuery("#office_time_config_form").validate({
                 rules: {
-                name: "required",
-                shift_hours: "required",
-                half_day_hours: "required",
-                min_shift_Hours: "required",
-                min_half_day_hours : "required"
-            },
-            messages: {
-                name: "Please enter name",
-                shift_hours: "Please enter shift_hours",
-                half_day_hours: "Please enter half day hours",
-                min_shift_Hours: "Please enter min shift hours",
-                min_half_day_hours: "Please enter min half day hours",
-            },
+                    name: "required",
+                    company_branch_id: "required",
+                    shift_hours: "required",
+                    half_day_hours: "required",
+                    min_shift_Hours: "required",
+                    min_half_day_hours: "required"
+                },
+                messages: {
+                    name: "Please enter name",
+                    company_branch_id: "Please Select the Branch",
+                    shift_hours: "Please enter shift_hours",
+                    half_day_hours: "Please enter half day hours",
+                    min_shift_Hours: "Please enter min shift hours",
+                    min_half_day_hours: "Please enter min half day hours",
+                },
                 submitHandler: function(form) {
                     var office_time_data = $(form).serialize();
                     $.ajax({
@@ -309,7 +324,7 @@
                         type: 'POST',
                         data: office_time_data,
                         success: function(response) {
-                            jQuery('#add_department').modal('hide');
+                            jQuery('#add_office_time').modal('hide');
                             swal.fire("Done!", response.message, "success");
                             $('#office_time_list').replaceWith(response.data);
                             jQuery("#office_time_config_form")[0].reset();
@@ -338,7 +353,7 @@
                 shift_hours: "required",
                 half_day_hours: "required",
                 min_shift_Hours: "required",
-                min_half_day_hours : "required"
+                min_half_day_hours: "required"
             },
             messages: {
                 name: "Please enter name",
@@ -355,7 +370,7 @@
                     type: 'post',
                     data: department_data,
                     success: function(response) {
-                        jQuery('#edit_department').modal('hide');
+                        jQuery('#edit_office_time').modal('hide');
                         swal.fire("Done!", response.message, "success");
                         jQuery('#office_time_list').replaceWith(response.data);
                     },
@@ -432,11 +447,26 @@
                 }
             });
         }
+
+        jQuery("#search").on('blur', function() {
+            search_filter_results();
+        });
+        jQuery("#branch").on('change', function() {
+            search_filter_results();
+        });
+
+        function search_filter_results() {
+            $.ajax({
+                type: 'GET',
+                url: company_ajax_base_url + '/office-time/search/filter',
+                data: {
+                    'branch': $('#branch').val(),
+                    'search': $('#search').val(),
+                },
+                success: function(response) {
+                    $('#office_time_list').replaceWith(response.data);
+                }
+            });
+        }
     </script>
 @endsection
-
-<style>
-.error {
-    color: red;
-}
-</style>

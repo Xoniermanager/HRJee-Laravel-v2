@@ -8,6 +8,7 @@
                 <tr class="fw-bold">
                     <th>Sr. No.</th>
                     <th>Name</th>
+                    <th>Company Branch</th>
                     <th>Shift_Hours</th>
                     <th>Half_day_hours</th>
                     <th>Min_shift_Hours</th>
@@ -20,25 +21,18 @@
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <td><a href="#" data-bs-toggle="modal"
-                                onClick="edit_department_details('{{ $officeTimeDetail->id }}', '{{ $officeTimeDetail->name }}')">{{ $officeTimeDetail->name }}</a>
+                                onClick="edit_office_time_details('{{ $officeTimeDetail->id }}', '{{ $officeTimeDetail->name }}','{{ $officeTimeDetail->company_branch_id }}','{{$officeTimeDetail->shift_hours}}','{{$officeTimeDetail->half_day_hours}}','{{$officeTimeDetail->min_shift_Hours}}','{{$officeTimeDetail->min_half_day_hours}}')">{{ $officeTimeDetail->name }}</a>
                         </td>
+                        <td>{{$officeTimeDetail->companyBranch->name}}</td>
                         <td>{{ isset($officeTimeDetail->shift_hours)? $officeTimeDetail->shift_hours:''}}</td>
                         <td>{{ isset($officeTimeDetail->half_day_hours)? $officeTimeDetail->half_day_hours:''}}</td>
                         <td>{{ isset($officeTimeDetail->min_shift_Hours)?$officeTimeDetail->min_shift_Hours :''}}</td>
                         <td>{{ isset($officeTimeDetail->min_half_day_hours)?$officeTimeDetail->min_half_day_hours:''}}
                         </td>
-                        {{-- <td data-order="Invalid date">
-                            <label class="switch">
-                                <input type="checkbox" <?= $officeTimeDetail->status == '1' ? 'checked' : '' ?>
-                                    onchange="handleStatus({{ $departmentDetails->id }})" id="checked_value">
-                                <span class="slider round"></span>
-                            </label>
-                        </td> --}}
-
                         <td>
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <a href="#" data-bs-toggle="modal"
-                                    onClick="edit_department_details('{{ $officeTimeDetail->id }}', '{{ $officeTimeDetail->name }}','{{ $officeTimeDetail->company_branch }}','{{$officeTimeDetail->shift_hours}}','{{$officeTimeDetail->half_day_hours}}','{{$officeTimeDetail->min_shift_Hours}}','{{$officeTimeDetail->min_half_day_hours}}')"
+                                    onClick="edit_office_time_details('{{ $officeTimeDetail->id }}', '{{ $officeTimeDetail->name }}','{{ $officeTimeDetail->company_branch_id }}','{{$officeTimeDetail->shift_hours}}','{{$officeTimeDetail->half_day_hours}}','{{$officeTimeDetail->min_shift_Hours}}','{{$officeTimeDetail->min_half_day_hours}}')"
                                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                     <i class="fa fa-edit"></i>
@@ -66,4 +60,4 @@
     <!--end::Table container-->
 
 </div>
-{{-- {{ $allDepartmentDetails->links() }} --}}
+{{ $allOfficeTimeDetails->links() }}
