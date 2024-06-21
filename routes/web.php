@@ -241,7 +241,6 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/delete', 'destroy')->name('office_time_config.delete');
         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
         Route::get('/search/filter', 'searchOfficeTimeFilter');
-
     });
     // Office Shifts
     Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
@@ -301,6 +300,7 @@ Route::controller(UserBankDetailsController::class)->group(function () {
 
 //Qualification Details for employee
 Route::post('/employee/qualification/details', [UserQualificationDetailsController::class, 'store'])->name('employee.qualification.details');
+Route::get('/employee/qualification/delete/{id}', [UserQualificationDetailsController::class, 'delete']);
 
 //Past Work Details for employee
 Route::post('/employee/past/work/details', [UserPastWorkDetailsController::class, 'store'])->name('employee.past.work.details');
