@@ -42,7 +42,8 @@ class AdminController extends Controller
                 if (Auth::guard('admin')->attempt($credentials)) {
                     return redirect('/dashboard');
                 }
-            } catch (\Throwable $th) {
+            } 
+            catch (\Throwable $th) {
                 return response()->json([
                     'status' => false,
                     'message' => $th->getMessage()

@@ -44,6 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'company_users',
         ],
+        'employee' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
         'super_admin' => [
             'driver' => 'session',
             'provider' => 'super_admin',
