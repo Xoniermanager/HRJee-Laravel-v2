@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="col-md-1 form-group text-center mt-5">
                                     <button class="btn btn-danger btn-sm mt-3"
-                                        onclick="remove_previous_company_html(this)"> <i
+                                        onclick="remove_previous_company_html(this,{{$pastWorkDetail->previous_company_id}})"> <i
                                             class="fa fa-minus"></i></button>
                                 </div>
                             </div>
@@ -143,8 +143,35 @@
 
     }
 
-    function remove_previous_company_html(ele) {
-        jQuery(ele).parent().parent().parent().parent().remove();
+    function remove_previous_company_html(ele,id = null) {
+        if (id != null) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: company_ajax_base_url + '/employee/past/work/delete/' + id,
+                        type: "get",
+                        success: function(res) {
+                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            jQuery(ele).parent().parent().parent().parent().remove();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire("Error deleting!", "Please try again", "error");
+                        }
+                    });
+                }
+            });
+        } else {
+            jQuery(ele).parent().parent().parent().parent().remove();
+        }
     }
 
     /** end Previous Company HTML*/

@@ -121,15 +121,15 @@ Route::middleware(['dashboard.access'])->group(function () {
     });
 
     //Announcement Module
-    Route::group(['prefix' => 'announcement','as'=>'announcement.'], function () {
-        Route::get('/',[AnnouncementController::class,'index'])->name('index');
-        Route::get('create',[AnnouncementController::class,'create'])->name('create');
-        Route::post('store',[AnnouncementController::class,'store'])->name('store');
-        Route::get('edit/{id?}',[AnnouncementController::class,'edit'])->name('edit');
-        Route::post('update/{id?}',[AnnouncementController::class,'update'])->name('update');
-        Route::get('delete',[AnnouncementController::class,'destroy'])->name('delete');
-        Route::get('status/update',[AnnouncementController::class,'statusUpdate'])->name('statusUpdate');
-        Route::get('assign/{id}',[AnnouncementController::class,'getAnnouncement'])->name('assign');
+    Route::group(['prefix' => 'announcement', 'as' => 'announcement.'], function () {
+        Route::get('/', [AnnouncementController::class, 'index'])->name('index');
+        Route::get('create', [AnnouncementController::class, 'create'])->name('create');
+        Route::post('store', [AnnouncementController::class, 'store'])->name('store');
+        Route::get('edit/{id?}', [AnnouncementController::class, 'edit'])->name('edit');
+        Route::post('update/{id?}', [AnnouncementController::class, 'update'])->name('update');
+        Route::get('delete', [AnnouncementController::class, 'destroy'])->name('delete');
+        Route::get('status/update', [AnnouncementController::class, 'statusUpdate'])->name('statusUpdate');
+        Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
     });
 
     //Country Module
@@ -312,14 +312,23 @@ Route::controller(UserBankDetailsController::class)->group(function () {
 });
 
 //Qualification Details for employee
-Route::post('/employee/qualification/details', [UserQualificationDetailsController::class, 'store'])->name('employee.qualification.details');
-Route::get('/employee/qualification/delete/{id}', [UserQualificationDetailsController::class, 'delete']);
+Route::prefix('/employee/qualification')->controller(UserQualificationDetailsController::class)->group(function () {
+    Route::post('/details', 'store')->name('employee.qualification.details');
+    Route::get('/delete/{id}', 'delete');
+});
+
 
 //Past Work Details for employee
-Route::post('/employee/past/work/details', [UserPastWorkDetailsController::class, 'store'])->name('employee.past.work.details');
+Route::prefix('/employee/past/work/')->controller(UserPastWorkDetailsController::class)->group(function () {
+    Route::post('/details', 'store')->name('employee.past.work.details');
+    Route::get('/delete/{id}', 'delete');
+});
 
 //Family Details for employee
-Route::post('/employee/family/details', [UserRelativeDetailsController::class, 'store'])->name('employee.family.details');
+Route::prefix('/employee/family/')->controller(UserRelativeDetailsController::class)->group(function () {
+    Route::post('/details', 'store')->name('employee.family.details');
+    Route::get('/delete/{id}', 'delete');
+});
 
 //Document Details for employee
 Route::post('/employee/document/details', [UserDocumentDetailsController::class, 'store'])->name('employee.document.details');
