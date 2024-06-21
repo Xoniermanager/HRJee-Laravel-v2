@@ -31,7 +31,7 @@ class CompanyBranchesController extends Controller
     public function index()
     {
         $branches  = $this->branch_services->all();
-        $countries = $this->countryService->all()->where('status', '1');
+        $countries = $this->countryService->getAllActiveCountry();
         return view('company.branch.index', [
             'branches' => $branches,
             'countries' => $countries,

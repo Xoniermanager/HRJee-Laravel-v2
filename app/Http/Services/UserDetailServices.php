@@ -25,7 +25,7 @@ class UserDetailServices
       $user = User::find($user_id);
       $user->languages()->detach();
       $user->skills()->detach();
-
+      
       //Language Creation
       foreach ($data['language'] as $languages) {
         $user->languages()->attach(

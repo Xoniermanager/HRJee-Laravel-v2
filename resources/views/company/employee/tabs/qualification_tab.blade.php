@@ -56,8 +56,8 @@
                                     </div>
                                     <div class="col-md-1 form-group text-center mt-5"><button
                                             class="btn btn-danger btn-sm mt-3"
-                                            onclick="remove_qualification_html(this)"> <i
-                                                class="fa fa-minus"></i></button></div>
+                                            onclick="remove_qualification_html(this,'{{ $userQualificationDetail->qualification_id }}')">
+                                            <i class="fa fa-minus"></i></button></div>
                                 </div>
                             </div>
                         </div>
@@ -116,8 +116,39 @@
 
     }
 
-    function remove_qualification_html(ele) {
-        jQuery(ele).parent().parent().parent().parent().remove();
+    function remove_qualification_html(ele, id = null) {
+        if (id != null) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: company_ajax_base_url + '/employee/qualification/delete/' + id,
+                        type: "get",
+                        success: function(res) {
+                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            jQuery(ele).parent().parent().parent().parent().remove();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire("Error deleting!", "Please try again", "error");
+                        }
+                    });
+                }
+            });
+        } else {
+            jQuery(ele).parent().parent().parent().parent().remove();
+        }
+    }
+
+    function deleteFunction(id) {
+
     }
 
     /** end Qualification HTMl*/
@@ -166,11 +197,13 @@
             error: function(error_messages) {
                 for (let [key, value] of Object.entries(error_messages.responseJSON.errors)) {
                     let split_arr = key.split('.');
-                    let error_key = 'input[name="' + split_arr[0] +'['+split_arr[1]+']'+'['+split_arr[2]+']"]';
+                    let error_key = 'input[name="' + split_arr[0] + '[' + split_arr[1] + ']' + '[' +
+                        split_arr[2] + ']"]';
                     $(document).find(error_key).after(
-                        '<span class="_error'+split_arr[1]+' text text-danger">' + value[0].replace(split_arr[0]+'.'+split_arr[1]+'.',' ') + '</span>');
+                        '<span class="_error' + split_arr[1] + ' text text-danger">' + value[0].replace(
+                            split_arr[0] + '.' + split_arr[1] + '.', ' ') + '</span>');
                     setTimeout(function() {
-                        jQuery('._error'+split_arr[1]).remove();
+                        jQuery('._error' + split_arr[1]).remove();
                     }, 3000);
                 }
                 // This variable is used on save all records button

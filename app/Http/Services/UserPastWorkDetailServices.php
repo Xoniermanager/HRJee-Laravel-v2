@@ -15,7 +15,7 @@ class UserPastWorkDetailServices
   public function create(array $allPastWorks)
   {
     $user_id = $allPastWorks['user_id'];
-    
+
     foreach ($allPastWorks['previous_company'] as $pastWork) {
       $pastWork[] = $this->userPastWorkDetailRepository->updateOrCreate([
         'user_id'           =>  $user_id,
@@ -23,5 +23,9 @@ class UserPastWorkDetailServices
       ], $pastWork);
     }
     return true;
+  }
+  public function delete($id)
+  {
+    return $this->userPastWorkDetailRepository->where('previous_company_id', $id)->delete();
   }
 }

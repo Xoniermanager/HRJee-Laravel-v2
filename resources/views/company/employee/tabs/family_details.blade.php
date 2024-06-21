@@ -63,7 +63,7 @@
                 <div class="col-md-2 form-group mt-5">
                     <input type="checkbox" name="family_details[{{ $i }}]['nominee']" value="1">
                     <label for="">Nominee</label>
-                    <a onclick="remove_family_details_html(this)" class="btn btn-danger btn-sm float-right"> <i
+                    <a onclick="remove_family_details_html(this,{{$userfamilyDetail->id}})" class="btn btn-danger btn-sm float-right"> <i
                             class="fa fa-minus"></i></a>
                 </div>
             </div>
@@ -106,8 +106,35 @@
         get_family_details_counter += 1;
     }
 
-    function remove_family_details_html(this_ele) {
-        jQuery(this_ele).parent().parent().remove();
+    function remove_family_details_html(this_ele,id) {
+        if (id != null) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: company_ajax_base_url + '/employee/family/delete/' + id,
+                        type: "get",
+                        success: function(res) {
+                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            jQuery(this_ele).parent().parent().remove();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire("Error deleting!", "Please try again", "error");
+                        }
+                    });
+                }
+            });
+        } else {
+            jQuery(this_ele).parent().parent().remove();
+        }
     }
     /** End Family details create html*/
 
