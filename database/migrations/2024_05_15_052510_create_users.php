@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('emp_id')->unique();
+            $table->string('emp_id')->unique()->nullable();
             $table->string('name');
             $table->string('email', 191)->unique();
             $table->string('official_email_id', 191)->unique();
@@ -30,8 +30,8 @@ return new class extends Migration
             $table->string('profile_image')->nullable();
             $table->unsignedBigInteger('company_id');
             $table->string('last_login_ip');
-            $table->foreign('employee_status_id')->references('id')->on('employee_statuses');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('employee_status_id')->references('id')->on('employee_statuses')->nullable();
+            $table->foreign('company_id')->references('id')->on('companies')->nullable();
             $table->timestamps();
         });
     }

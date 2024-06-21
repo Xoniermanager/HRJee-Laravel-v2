@@ -32,7 +32,7 @@ class AdminController extends Controller
 
             try {
                 $validateUser = Validator::make($request->all(),[
-                    'email' => 'required|exists:companies,email',
+                    'email' => 'required|exists:company_users,email',
                     'password' => 'required'
                 ]);
                 if ($validateUser->fails()) {
@@ -40,7 +40,6 @@ class AdminController extends Controller
                 }
                 $credentials = $request->only('email', 'password');
                 if (Auth::guard('admin')->attempt($credentials)) {
-                    
                     return redirect('/dashboard');
                 }
             } catch (\Throwable $th) {

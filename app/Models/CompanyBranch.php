@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class CompanyBranch extends Model
 {
+    use SoftDeletes;
     use HasFactory;
     protected $table = 'company_branches';
     protected $fillable = [
@@ -35,4 +38,5 @@ class CompanyBranch extends Model
     {
         return $this->belongsTo(state::class);
     }
+    
 }

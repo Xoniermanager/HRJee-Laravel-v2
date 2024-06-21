@@ -274,7 +274,7 @@
 
                             </div>
 
-                            <button class="btn btn-primary">Update</button>
+                            <button class="btn btn-primary" type='submit'>Update</button>
 
                         </form>
                     </div>
@@ -295,7 +295,7 @@
                     <!--begin::Card header-->
                     <!--begin::Card body-->
                     <div class="card-body p-9">
-                        <form method="post" action="">
+                        <form method="post" action="{{route('company.branch.update',['id'=>$companyBranch->id])}}">
                             <div class="row">
                                 @csrf
                                 <div class="col-md-6 form-group">
@@ -307,16 +307,16 @@
 
                                 <div class="col-md-6 form-group">
                                     <label for="">Branch Type </label>
-                                    <select class="form-control" name="branch_type">
+                                    <select class="form-control" name="type">
                                         <option value="">Select Branch Type</option>
                                         <option value="Primary"
-                                            {{ collect(isset($companyBranch->branch_type) ? $companyBranch->branch_type : '')->contains('primary') ? 'selected' : '' }}>
+                                            {{ collect(isset($companyBranch->type) ? $companyBranch->type : '')->contains('primary') ? 'selected' : '' }}>
                                             Primary</option>
                                         <option value="Secondary"
-                                            {{ collect(isset($companyBranch->branch_type) ? $companyBranch->branch_type : '')->contains('secondary') ? 'selected' : '' }}>
+                                            {{ collect(isset($companyBranch->type) ? $companyBranch->type : '')->contains('secondary') ? 'selected' : '' }}>
                                             Secondary</option>
                                     </select>
-                                    @error('branch_type')
+                                    @error('type')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>

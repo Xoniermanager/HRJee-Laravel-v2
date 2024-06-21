@@ -30,4 +30,14 @@ class UserQualificationDetailsController extends Controller
             return response()->json(['error' =>  $e->getMessage()], 400);
         }
     }
+
+    public function delete($id)
+    {
+        $deleteData = $this->userQualificationDetailsService->delete($id);
+        if ($deleteData) {
+            return response()->json(['success' => 'Deleted Successfully']);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
 }

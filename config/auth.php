@@ -42,7 +42,7 @@ return [
         ],
         'admin' => [
             'driver' => 'session',
-            'provider' => 'companies',
+            'provider' => 'company_users',
         ],
         'super_admin' => [
             'driver' => 'session',
@@ -55,9 +55,9 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'companies' => [
+        'company_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Company::class,
+            'model' => App\Models\CompanyUser::class,
         ],
         'super_admin' => [
             'driver' => 'eloquent',
@@ -93,7 +93,7 @@ return [
             'throttle' => 60,
         ],
         'admin' => [
-            'provider' => 'companies',
+            'provider' => 'company_users',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,

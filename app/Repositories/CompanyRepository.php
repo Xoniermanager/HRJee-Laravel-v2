@@ -33,10 +33,13 @@ class CompanyRepository extends BaseRepository
     {
        return $this->where('id',$id);
     }
+    
+
+
     public function updateCompany($data)
     {
-       $companyID = Auth::guard('admin')->user()->id;
-       return $this->where('id',$companyID)->update($data);
+       $companyID = Auth::guard('admin')->user()->company_id;
+       return $this->find($companyID)->update($data);
     }
 
     public function getPrimaryBranchForCompany($id)
