@@ -89,7 +89,7 @@ class EmployeeController extends Controller
 
     public function add()
     {
-        $allCountries = $this->countryService->all()->where('status', '1');
+        $allCountries = $this->countryService->getAllActiveCountry();
         $allPreviousCompany = $this->previousCompanyService->all()->where('status', '1');
         $allQualification = $this->qualificationService->all()->where('status', '1');
         $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');
@@ -118,7 +118,7 @@ class EmployeeController extends Controller
 
     public function edit(User $user)
     {
-        $allCountries = $this->countryService->all()->where('status', '1');
+        $allCountries = $this->countryService->getAllActiveCountry();
         $allPreviousCompany = $this->previousCompanyService->all()->where('status', '1');
         $allQualification = $this->qualificationService->all()->where('status', '1');
         $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');

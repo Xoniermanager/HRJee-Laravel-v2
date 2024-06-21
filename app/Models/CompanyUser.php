@@ -12,8 +12,8 @@ class CompanyUser extends Authenticatable
     use HasFactory;
     protected $table = 'company_users';
     protected $guarded = ['id'];
-    public function getAuthPassword()
-    {
-        return $this->password;
-    }
+    // public function getAuthPassword()
+    // {
+    //     return $this->password;
+    // }
 }

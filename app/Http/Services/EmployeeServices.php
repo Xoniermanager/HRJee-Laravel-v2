@@ -19,7 +19,7 @@ class EmployeeServices
     $this->employeeRepository = $employeeRepository;
     $this->imageUploadService = $imageUploadService;
   }
-  public function all($request)
+  public function all($request = null)
   {
     $allEmployeeDetails = $this->employeeRepository->load('userDetails');
 

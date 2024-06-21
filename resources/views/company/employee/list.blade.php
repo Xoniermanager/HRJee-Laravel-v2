@@ -8,6 +8,7 @@
                 <th class="min-w-150px">Name</th>
                 <th>Department</th>
                 <th>Designation</th>
+                <th>Email</th>
                 <th>Official Email</th>
                 <th>Gender</th>
                 <th class="min-w-150px">Marital Status</th>
@@ -36,6 +37,7 @@
                     @else
                         <td></td>
                     @endif
+                    <td>{{ $singleUserDetails->email}}</td>
                     <td>{{ $singleUserDetails->official_email_id }}</td>
                     @if ($singleUserDetails->gender == 'M')
                         <td>Male</td>

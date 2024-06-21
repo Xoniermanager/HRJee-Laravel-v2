@@ -41,7 +41,7 @@ class AuthController extends Controller
                 return redirect(route('employee'))->withErrors($validateUser)->withInput();
             }
             $credentials = $request->only('email', 'password');
-            if (Auth::attempt($credentials)) {
+            if (Auth::guard('employee')->attempt($credentials)) {
                 return redirect(route('employee.dashboard'));
             } else {
                 return redirect(route('employee'))->withErrors($validateUser)->withInput();
