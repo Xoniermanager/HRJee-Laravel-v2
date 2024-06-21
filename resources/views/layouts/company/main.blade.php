@@ -30,6 +30,8 @@
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <!--end::Global Stylesheets Bundle-->
     <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -40,6 +42,19 @@
         window.admin_ajax_base_url = '{{ env('ADMIN_BASE_URL') }}';
         window.employee_ajax_base_url = '{{ env('EMPLOYEE_BASE_URL') }}';
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    {{-- start datetimepicker css & js links  --}}
+    <link rel="stylesheet"  href=
+    "https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+
+    <!-- datetimepicker jQuery CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
+    </script>
+    {{-- start datetimepicker css & js links  --}}
+
+
+
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -79,4 +94,3 @@
 @include('layouts.company.footer')
 
 </html>
-

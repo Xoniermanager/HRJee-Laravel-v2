@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('username');
             $table->string('contact_no');
             $table->string('email');
-            $table->string('password');
             $table->string('role_id')->nullable();
             $table->string('joining_date');
             $table->string('logo');

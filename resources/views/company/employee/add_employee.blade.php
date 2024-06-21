@@ -171,7 +171,6 @@
                     <!--end::Header-->
                     <!--begin::Body-->
                     <div class="card-body pt-7 px-0">
-
                         <!--begin::Tab Content-->
                         <div class="tab-content mb-2 px-9">
                             <!--begin::Tap pane Basic Details-->
@@ -228,6 +227,7 @@
         <!--end::Container-->
     </div>
     <script>
+
         /**
          * close current tab and open next tab
          */

@@ -16500,3 +16500,19 @@ width: 500px;
 .error {
   color: red;
 }
+label.required::after {
+  content: "*";
+  color: rgb(219, 22, 22);
+  padding: 5px;
+  font-size: 17px;
+  vertical-align: middle;
+}
+
+ .employee_listing {
+  height: 300px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border: 2px solid #eee;
+  padding: 20px;
+  border-radius: 10px;
+                }

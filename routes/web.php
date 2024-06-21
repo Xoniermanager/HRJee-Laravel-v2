@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Admin\AssetStatusController;
@@ -85,7 +86,7 @@ Route::middleware(['dashboard.access'])->group(function () {
 
     Route::controller(CompanyController::class)->group(function () {
         Route::get('company/profile', 'company_profile')->name('company.profile');
-        Route::patch('company/update/{id}/', 'update_company')->name('update.company');
+        Route::post('company/update/{id}', 'update_company')->name('update.company');
         Route::post('company/change/password', 'company_change_password')->name('company.change.password');
     });
 
@@ -117,6 +118,18 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
         Route::get('/get/all/designation', 'getAllDesignation')->name('get.all.designation');
         Route::get('/search/filter', 'serachDesignationFilterList');
+    });
+
+    //Announcement Module
+    Route::group(['prefix' => 'announcement','as'=>'announcement.'], function () {
+        Route::get('/',[AnnouncementController::class,'index'])->name('index');
+        Route::get('create',[AnnouncementController::class,'create'])->name('create');
+        Route::post('store',[AnnouncementController::class,'store'])->name('store');
+        Route::get('edit/{id?}',[AnnouncementController::class,'edit'])->name('edit');
+        Route::post('update/{id?}',[AnnouncementController::class,'update'])->name('update');
+        Route::get('delete',[AnnouncementController::class,'destroy'])->name('delete');
+        Route::get('status/update',[AnnouncementController::class,'statusUpdate'])->name('statusUpdate');
+        Route::get('assign/{id}',[AnnouncementController::class,'getAnnouncement'])->name('assign');
     });
 
     //Country Module

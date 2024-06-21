@@ -14,7 +14,11 @@ class BranchServices
   }
   public function all()
   {
-    return $this->branchRepository->with('country','state')->orderBy('id', 'DESC')->paginate(10);
+    return $this->branchRepository->with('country', 'state')->orderBy('id', 'DESC')->paginate(10);
+  }
+  public function allActiveBranches()
+  {
+    return $this->branchRepository->with('country', 'state')->where('status', 1)->orderBy('id', 'DESC')->get();
   }
   public function create($data)
   {

@@ -798,6 +798,20 @@
                                 <!--end:Menu link-->
                             </div>
 
+                        <div class="menu-item " data-url="{{ route('announcement.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('announcement.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-file"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title"> Announcements</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+
                         </div>
                         <!--end:Menu item-->
                         <div class="aside-footer flex-column-auto" id="kt_aside_footer">
