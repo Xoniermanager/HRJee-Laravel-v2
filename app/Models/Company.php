@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use App\Observers\CompanyObserver;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 class Company extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'companies';
     protected $fillable = [
         'name',
         'username',
@@ -62,8 +62,6 @@ class Company extends Authenticatable
         return $this->hasMany(CompanyBranch::class);
         
     }
-
-    
-   
+  
 }
 

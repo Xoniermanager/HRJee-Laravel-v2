@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Company;
+use App\Models\CompanyBranch;
 use App\Observers\CompanyObserver;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Country;
+use App\Observers\CompanyBranchObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
         Schema::defaultStringLength(191);
         Blade::directive('countryName', function ($id) {
             return "<?php echo App\Models\Country::getCountryNameById($id); ?>";
@@ -31,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('stateName', function ($id) {
             return "<?php echo App\Models\State::getStateNameById($id); ?>";
         });
-
-        // Company::observe(CompanyObserver::class);
+        Company::observe(CompanyObserver::class);
+        CompanyBranch::observe(CompanyBranchObserver::class);
     }
 }

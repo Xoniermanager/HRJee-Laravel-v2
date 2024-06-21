@@ -12,7 +12,6 @@ return new class extends Migration
             $table->morphs('indexable');
             $table->string('name');
             $table->string('value');
-
             $table->index(['name', 'value']);
             $table->unique(['indexable_type', 'indexable_id', 'name']);
         });

@@ -74,11 +74,41 @@ class CompanyBranchesController extends Controller
         try {
             $validator  = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
+                'address' => ['required', 'string'],
+                'pincode' => ['required', 'integer'],
             ]);
 
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->messages()], 400);
             }
+            
+            $updateData = $request->except(['_token', 'id']);
+            $companyBranches = $this->branch_services->updateDetails($updateData, $request->id);
+            if ($companyBranches) {
+                return response()->json(
+                    [
+                        'message' => 'Updated Successfully!',
+                        'data'    =>  view('company.branch.branches-list', ['branches' => $this->branch_services->all()])->render()
+                    ]
+                );
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function updateBranch(Request $request)
+    {
+        try {
+            $validator  = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
+                'address' => ['required', 'string'],
+                'pincode' => ['required', 'integer'],
+            ]);
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator->errors())->withInput();
+            }
+
             $updateData = $request->except(['_token', 'id']);
             $companyBranches = $this->branch_services->updateDetails($updateData, $request->id);
             if ($companyBranches) {

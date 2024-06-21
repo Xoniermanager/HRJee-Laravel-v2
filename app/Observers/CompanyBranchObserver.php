@@ -2,16 +2,30 @@
 
 namespace App\Observers;
 
+use App\Http\Services\CompanyUserService;
 use App\Models\CompanyBranch;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class CompanyBranchObserver
 {
+    private $companyUserServices;
+
+    public function __construct(
+        CompanyUserService $companyUserServices
+    ) {
+        $this->companyUserServices  = $companyUserServices;
+    }
     /**
      * Handle the CompanyBranch "created" event.
      */
     public function created(CompanyBranch $companyBranch): void
     {
-        //
+        $data['branch_id'] = $companyBranch->id;
+        $data['name'] = $companyBranch->name;
+        $data['email'] = $companyBranch->email;
+        $data['password'] = Hash::make('password');
+        $this->companyUserServices->create($data);
     }
 
     /**
@@ -19,7 +33,13 @@ class CompanyBranchObserver
      */
     public function updated(CompanyBranch $companyBranch): void
     {
-        //
+
+        $match['branch_id'] = $companyBranch->id;
+        $data['branch_id'] = $companyBranch->id;
+        $data['name'] = $companyBranch->name;
+        $data['email'] = $companyBranch->email;
+        $data['password'] = Hash::make('password');
+        $this->companyUserServices->updateOrCreate($match, $data);
     }
 
     /**
@@ -27,7 +47,7 @@ class CompanyBranchObserver
      */
     public function deleted(CompanyBranch $companyBranch): void
     {
-        //
+        $this->companyUserServices->softDelete($companyBranch->id);
     }
 
     /**
@@ -43,6 +63,5 @@ class CompanyBranchObserver
      */
     public function forceDeleted(CompanyBranch $companyBranch): void
     {
-        //
     }
 }

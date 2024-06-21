@@ -86,7 +86,7 @@ Route::middleware(['dashboard.access'])->group(function () {
 
     Route::controller(CompanyController::class)->group(function () {
         Route::get('company/profile', 'company_profile')->name('company.profile');
-        Route::patch('company/update/{id}/', 'update_company')->name('update.company');
+        Route::post('company/update/{id}', 'update_company')->name('update.company');
         Route::post('company/change/password', 'company_change_password')->name('company.change.password');
     });
 

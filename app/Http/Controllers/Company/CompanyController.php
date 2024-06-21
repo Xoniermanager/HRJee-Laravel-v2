@@ -12,6 +12,7 @@ use App\Http\Services\CompanyServices;
 use App\Http\Services\FileUploadService;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Http\Requests\ValidateUpdateCompanyRequest;
+use App\Models\Company;
 
 class CompanyController extends Controller
 {
@@ -39,10 +40,11 @@ class CompanyController extends Controller
             $companyID = Auth::guard('admin')->user()->company_id;
         else
             $companyID = Auth::guard('admin')->user()->branch_id;
-   
+
 
         $companyDetails =  $this->company_services->get_company_with_branch_details($companyID);
-        return view('company.company.company_profile',compact('companyDetails'));
+        $companyBranch = $companyDetails->branches->where('type', 'primary')->first();
+        return view('company.company.company_profile', compact('companyDetails', 'companyBranch'));
     }
 
     /**
@@ -60,6 +62,8 @@ class CompanyController extends Controller
                     $data['logo'] = $imagePath;
                 }
             }
+           
+             
             $updatedCompany = $this->company_services->update_company($data);
             if ($updatedCompany) {
                 smilify('success', 'Profile Updated Successfully!');

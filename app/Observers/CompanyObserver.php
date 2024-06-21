@@ -2,46 +2,46 @@
 
 namespace App\Observers;
 
-use App\Http\Services\CompanyServices;
+use App\Http\Services\CompanyUserService;
 use App\Models\Company;
+use App\Models\Country;
+use Illuminate\Support\Facades\Log;
 
 class CompanyObserver
 {
+    private $companyUserServices;
 
-    private $company_services;
-    // private $branch_services;
-
-    public function __construct(CompanyServices $company_services)
-    // BranchServices $branch_services)
-
-    {
-        $this->company_services  = $company_services;
-        // $this->branch_services = $branch_services;
+    public function __construct(
+        CompanyUserService $companyUserServices
+    ) {
+        $this->companyUserServices  = $companyUserServices;
     }
     /**
      * Handle the Company "created" event.
      */
     public function created(Company $company): void
     {
-        // $data['company_id'] = $company->id;
-        // $data['email'] = $company->email;
-        // $data['name'] = $company->name;
-        // $this->company_services->create($data);
+        Log::error('Created');
+    }
+    public function creating(Company $company): void
+    {
+        Log::error('Creating');
     }
 
     /**
      * Handle the Company "updated" event.
      */
+
     public function updated(Company $company): void
     {
-        // $match['company_id'] = $company->id ?? 1;
-        // $data['company_id'] = $company->id ?? 1;
-        // $data['email'] = $company->email ?? 'ashish"gmail.com';
-        // $data['name'] = $company->name ?? 'ashish';
 
-        // $this->company_services->updateOrCreate($match, $data);
+        $match['company_id'] = $company->id;
+        $data['company_id'] = $company->id;
+        $data['name'] = $company->name;
+        $data['email'] = $company->email;
+
+        $this->companyUserServices->updateOrCreate($match, $data);
     }
-
     /**
      * Handle the Company "deleted" event.
      */
