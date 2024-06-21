@@ -23,4 +23,9 @@ class UserRelativeDetailServices
     }
     return $response;
   }
+
+  public function delete($id)
+  {
+    return $this->userRelativeDetailRepository->find($id)->delete();
+  }
 }
