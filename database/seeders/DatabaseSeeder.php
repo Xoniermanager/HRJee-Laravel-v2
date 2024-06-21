@@ -63,5 +63,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserRelativeDetailsTableSeeder::class);
         $this->call(UserSkillTableSeeder::class);
         $this->call(LangaugeUserTableSeeder::class);
+        $this->call(RolesTableSeeder::class);
     }
 }
