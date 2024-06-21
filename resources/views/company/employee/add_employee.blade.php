@@ -25,7 +25,7 @@
             $userfamilyDetails = $singleUserDetails['familyDetails'];
             $userdocumentDetails = $singleUserDetails['documentDetails'];
             $userDetails = $singleUserDetails['userDetails'];
-            $userSkills = $singleUserDetails['userSkills']->pluck('skill_id');
+            $userSkills = $singleUserDetails['skills']->pluck('id');
             $userLanguages = $singleUserDetails['languages'];
         }
     @endphp
