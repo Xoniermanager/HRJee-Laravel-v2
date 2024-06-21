@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SendOtpRequest;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserPasswordChangeRequest;
+use App\Http\Requests\UserRequest;
+use App\Http\Requests\UserUpdateProfileRequest;
 use App\Http\Services\Api\AuthService;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,11 +22,11 @@ class AuthController extends Controller
     {
         $this->userAuthService = $userAuthService;
     }
-    public function login(Request $request)
+    public function login(UserLoginRequest $request)
     {
         return $this->userAuthService->login($request);
     }
-    public function profile(Request $request)
+    public function profile(UserUpdateProfileRequest $request)
     {
         return $this->userAuthService->profile($request);
     }
@@ -29,7 +34,15 @@ class AuthController extends Controller
     {
         return $this->userAuthService->logout($request);
     }
-    public function changePassword(Request $request)
+    public function sendOtp(SendOtpRequest $request)
+    {
+        return $this->userAuthService->sendOtp($request);
+    }
+    public function verifyOtp(UserRequest $request)
+    {
+        return $this->userAuthService->verifyOtp($request);
+    }
+    public function changePassword(UserPasswordChangeRequest $request)
     {
         return $this->userAuthService->changePassword($request);
     }
@@ -37,5 +50,4 @@ class AuthController extends Controller
     {
         return $this->userAuthService->updateProfile($request);
     }
- 
 }

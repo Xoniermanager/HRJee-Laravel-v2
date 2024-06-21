@@ -63,3 +63,48 @@ if (!function_exists('imageBasePath')) {
         return asset(config("cms.{$path}") . '/' . $filename);
     }
 }
+
+
+if (!function_exists('generateOtp')) {
+    function generateOtp()
+    {
+        return rand(1000, 9999);
+    }
+}
+
+
+if (!function_exists('exceptionErrorMessage')) {
+    function exceptionErrorMessage($e, $throw_exception = false)
+    {
+
+        Log::error($e);
+        if (env('APP_DEBUG')) {
+            return errorMessage($e->getMessage(), true, $throw_exception);
+        }
+        return errorMessage('session_expire', false, $throw_exception);
+    }
+}
+
+if (!function_exists('errorMessage')) {
+    function errorMessage($data = '', $errors = '', $string = false, $throw_exception = false)
+    {
+
+        return response()->json([
+            'message' => transLang('given_data_invalid'),
+            'status' => false,
+            'errors' =>  empty($errors) ? null : $errors,
+            'data' =>   $data === 'null' ? null : $data
+        ], 401);
+    }
+}
+
+if (!function_exists('apiResponse')) {
+    function apiResponse($template = 'success', $dataArr = null, $httpCode = 200)
+    {
+        $output = new \stdClass;
+        $output->message = transLang($template);
+        $output->status = true;
+        !$dataArr || $output->data = $dataArr;
+        return response()->json($output, $httpCode);
+    }
+}
