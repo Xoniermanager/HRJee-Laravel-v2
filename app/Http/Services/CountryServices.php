@@ -11,7 +11,7 @@ class CountryServices
   {
     $this->countryRepository = $countryRepository;
   }
-  public function all($request = null)
+  public function all()
   {
     return $this->countryRepository->orderBy('id', 'DESC')->paginate(10);
   }
@@ -47,5 +47,9 @@ class CountryServices
       $countryDetails = $countryDetails->where('status', $status);
     }
     return $countryDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+  public function getAllActiveCountry()
+  {
+    return $this->countryRepository->where('status','1')->get();
   }
 }

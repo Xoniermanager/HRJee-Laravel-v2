@@ -28,7 +28,7 @@ class StateController extends Controller
     {
         return view('company.state.index', [
             'allStateDetails' => $this->stateService->all(),
-            'allcountryDetails' => $this->countryService->all()->where('status', '1')
+            'allcountryDetails' => $this->countryService->getAllActiveCountry()
         ]);
     }
 

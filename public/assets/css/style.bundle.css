@@ -39363,3 +39363,15 @@ object {
 object img {
 width: 100% !important;
 }
+.hidden.sm\:flex-1.sm\:flex.sm\:items-center.sm\:justify-between svg {
+  height: 20px;
+}
+span.relative.z-0.inline-flex.rtl\:flex-row-reverse.shadow-sm.rounded-md {
+  display: none;
+}
+.hidden.sm\:flex-1.sm\:flex.sm\:items-center.sm\:justify-between p {
+  margin-top: 20px;
+}
+.relative.inline-flex.items-center.px-4.py-2.text-sm.font-medium {
+  margin-right: 10px;
+}
