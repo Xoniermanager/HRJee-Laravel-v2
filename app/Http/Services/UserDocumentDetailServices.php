@@ -51,8 +51,8 @@ class UserDocumentDetailServices
 
 
  
-  public function documents($userId='', $userDocumentTypeId='', $type='')
+  public function documents()
   {
-    return $this->userDocumentDetailRepository->getUserDocuments($userId, $userDocumentTypeId, $type);
+    return $this->userDocumentDetailRepository->getUserDocuments();
   }
 }

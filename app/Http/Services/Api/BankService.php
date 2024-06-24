@@ -15,8 +15,6 @@ class BankService
     }
     public function bankDetails()
     {
-
-
         return  $this->bankRepository->bankDetails(auth()->user()->id);
     }
 }

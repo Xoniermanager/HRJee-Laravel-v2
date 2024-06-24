@@ -111,8 +111,8 @@ class UserAddressDetailServices
   {
     return $this->userAddressDetailRepository->where('user_id', $id)->get();
   }
-  public function update($id, $type, $data)
+  public function update($id, $addressId, $address_type, $data)
   {
-    return $this->userAddressDetailRepository->where(['user_id' => $id, 'address_type' => $type])->update($data);
+    return $this->userAddressDetailRepository->where(['user_id' => $id, 'id' => $addressId,'address_type'=>$address_type])->update($data);
   }
 }

@@ -14,5 +14,6 @@ return [
     'detail' => 'Bank Details!',
     'address_not_found' => 'Address Not Found',
     'address' => 'Address details',
+    'address_updated' => 'Address  updated successfully!',
     'profile_updated' => 'Profile Updated successfully!',
 ];

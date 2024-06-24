@@ -45,13 +45,13 @@ class AddressController extends Controller
             return exceptionErrorMessage($th);
         }
     }
-    public function updateAddress(UserAddressDetailRequest $request)
+    public function updateAddress(UserAddressUpdateRequest $request)
     {
         try {
-            $data = $request->all();
-            $address = $this->userAddressServices->update(Auth::user()->id, $request->address_type, $data);
-            if (count($address) > 0)
-                return apiResponse('address', $address);
+            $data = $request->except(['addressId','address_type']);
+            $address = $this->userAddressServices->update(Auth::user()->id, $request->addressId,$request->address_type, $data);
+            if ($address)
+                return apiResponse('address_updated');
             else
                 return errorMessage('null', 'Address not found!');
         } catch (Throwable $th) {

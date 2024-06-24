@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\Api\DocumentController;
+use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\LeaveManagementController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,9 +20,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('sendOtp', [AuthController::class, 'sendOtp']);
+Route::post('sendOtp', [AuthController::class, 'sendOtp']);
 Route::post('verify/otp', [AuthController::class, 'verifyOtp']);
-
+Route::post('password/forgot', [ForgotPasswordController::class, 'forgotPassword']);
+Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']);
 
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -30,8 +32,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('user/bank/details', [BankController::class, 'bankDetails']);
-    
-    // get single,all with paginate , all without paginate use this route
     Route::get('user/document', [DocumentController::class, 'documents']);
     Route::get('user/address', [AddressController::class, 'addressDetails']);
     Route::get('user/addresses', [AddressController::class, 'getAllAddresses']);
@@ -39,4 +39,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('/leave/type', [LeaveManagementController::class, 'leaveType']);
     Route::post('/apply/leave', [LeaveManagementController::class, 'storeApplyLeave']);
+
+   
 });

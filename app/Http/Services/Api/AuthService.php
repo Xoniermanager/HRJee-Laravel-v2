@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Api;
 
- 
+
 use App\Mail\LoginVerification;
 use App\Models\User;
 use App\Models\UserCode;
@@ -22,7 +22,7 @@ class AuthService
             if (!Auth::attempt($request->only(['email', 'password'])))
                 return errorMessage('null', 'invalid_credentials');
 
-            return apiResponse('login_success', ['email' => $request->email]);
+            return apiResponse('login_success', ['email' => $request->email, 'password' => $request->password]);
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
@@ -53,6 +53,7 @@ class AuthService
             ]);
             $mailData = [
                 'email' => $request->email,
+
                 'otp_code' => $code,
                 'expire_at' => Carbon::now()->addMinutes(2)->format("H:i A")
             ];
@@ -69,13 +70,16 @@ class AuthService
             $find = UserCode::where(['email' => $request['email'], 'code' => $request['otp'], 'type' => 'user'])
                 ->where('updated_at', '>=', now()->subMinutes(2))
                 ->first();
-
             if ($find) {
                 if (Auth::attempt($request->only(['email', 'password'])))
                     $user = User::where('email', $request['email'])->first();
+                else
+                    return errorMessage('null', 'invalid_credentials');
+
 
                 $user->tokens()->delete();
-                $user->access_token = $user->createToken("API TOKEN")->plainTextToken;
+
+                $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
                 Session::put('user_2fa', auth()->user()->id);
                 return apiResponse('otp_verify', $user);
             } else {
