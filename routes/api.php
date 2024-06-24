@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BankController;
+use App\Http\Controllers\Api\DocumentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,4 +28,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('user/bank/details', [BankController::class, 'bankDetails']);
+    
+    // get single,all with paginate , all without paginate use this route
+    Route::get('user/document', [DocumentController::class, 'documents']);
+    Route::get('user/address', [AddressController::class, 'addressDetails']);
+    Route::get('user/addresses', [AddressController::class, 'getAllAddresses']);
+    Route::put('update/address', [AddressController::class, 'updateAddress']);
 });

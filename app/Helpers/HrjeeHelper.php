@@ -101,10 +101,11 @@ if (!function_exists('errorMessage')) {
 if (!function_exists('apiResponse')) {
     function apiResponse($template = 'success', $dataArr = null, $httpCode = 200)
     {
+        Log::error($template);
         $output = new \stdClass;
         $output->message = transLang($template);
         $output->status = true;
-        !$dataArr || $output->data = $dataArr;
+         $output->data = $dataArr;
         return response()->json($output, $httpCode);
     }
 }

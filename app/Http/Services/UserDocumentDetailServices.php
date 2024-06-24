@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Repositories\UserDocumentsDetailRepository;
+
 class UserDocumentDetailServices
 {
   private $userDocumentDetailRepository;
@@ -20,33 +21,38 @@ class UserDocumentDetailServices
   {
     $allDocumentTypes = $this->documentTypeService->getAllActiveDocuments();
     $user_id = $allDocumentFile['user_id'];
-    foreach ($allDocumentTypes as $documentType)
-    {
+    foreach ($allDocumentTypes as $documentType) {
       $fileName = removingSpaceMakingName($documentType->name);
 
-      if ($allDocumentFile->hasFile($fileName))
-      {
+      if ($allDocumentFile->hasFile($fileName)) {
         $nameForFile = $fileName . '_' . $user_id;
         $upload_path = "/user_documents";
         $imagePath = $this->fileUploadService->imageUpload($allDocumentFile->$fileName, $upload_path, $nameForFile);
 
-        $userDocumentExists = $this->userDocumentDetailRepository->getUserDocumentByUserIdAndDoumentId($user_id,$documentType->id);
-        if($userDocumentExists != null)
-        {
-          if(file_exists(storage_path('app/public'). $userDocumentExists->document))
-          {
-            unlink(storage_path('app/public'). $userDocumentExists->document);
+        $userDocumentExists = $this->userDocumentDetailRepository->getUserDocumentByUserIdAndDoumentId($user_id, $documentType->id);
+        if ($userDocumentExists != null) {
+          if (file_exists(storage_path('app/public') . $userDocumentExists->document)) {
+            unlink(storage_path('app/public') . $userDocumentExists->document);
           }
         }
-       
-        $this->userDocumentDetailRepository->updateOrCreate([
-          'user_id'     =>  $user_id,
-          'document_type_id'    =>  $documentType->id
-        ],
-        [
-          'document'    =>  $imagePath
-        ]);
+
+        $this->userDocumentDetailRepository->updateOrCreate(
+          [
+            'user_id'     =>  $user_id,
+            'document_type_id'    =>  $documentType->id
+          ],
+          [
+            'document'    =>  $imagePath
+          ]
+        );
       }
     }
+  }
+
+
+ 
+  public function documents($userId='', $userDocumentTypeId='', $type='')
+  {
+    return $this->userDocumentDetailRepository->getUserDocuments($userId, $userDocumentTypeId, $type);
   }
 }

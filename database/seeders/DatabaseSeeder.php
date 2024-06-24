@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Xonier',
             'password' => Hash::make('password') // <---- check this
         ]);
+        
         $this->call(StatesTableSeeder::class);
         $this->call(DepartmentsTableSeeder::class);
         $this->call(DesignationsTableSeeder::class);

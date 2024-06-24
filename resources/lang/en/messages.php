@@ -11,5 +11,8 @@ return [
     'invalid_credentials' => 'Email & Password does not match with our record!',
     'old_password_not_matched' => `Old Password Doesn't match!`,
     'password_changed' => `Password changed successfully!`,
-    'profile_updated' => `Profile Updated successfully!`
+    'detail' => 'Bank Details!',
+    'address_not_found' => 'Address Not Found',
+    'address' => 'Address details',
+    'profile_updated' => 'Profile Updated successfully!',
 ];

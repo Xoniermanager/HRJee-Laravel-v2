@@ -15,7 +15,7 @@ class UserAddressDetailServices
   public function create(array $data)
   {
     $address_type = $data['address_type'];
-    $user_id = $data['user_id'] ;
+    $user_id = $data['user_id'];
     $payload = array();
 
     if ($address_type == '0') {
@@ -109,6 +109,10 @@ class UserAddressDetailServices
   }
   public function getDetailById($id)
   {
-    return $this->userAddressDetailRepository->where('user_id',$id)->get();
+    return $this->userAddressDetailRepository->where('user_id', $id)->get();
+  }
+  public function update($id, $type, $data)
+  {
+    return $this->userAddressDetailRepository->where(['user_id' => $id, 'address_type' => $type])->update($data);
   }
 }

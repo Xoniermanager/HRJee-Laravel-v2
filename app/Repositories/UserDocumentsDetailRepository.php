@@ -22,9 +22,26 @@ class UserDocumentsDetailRepository extends BaseRepository
         return UserDocumentDetail::class;
     }
 
-    public function getUserDocumentByUserIdAndDoumentId($userId,$documentId)
+    public function getUserDocumentByUserIdAndDoumentId($userId, $documentId)
     {
-        return $this->where('user_id',$userId)->where('document_type_id',$documentId)->first();
+        return $this->where('user_id', $userId)->where('document_type_id', $documentId)->first();
     }
-    
+
+    public function getUserDocuments($userId = '', $documentId = '', $type = '')
+    {
+
+
+        $query = $this->where('user_id', $userId);
+        if (!empty($documentId))
+            $query =  $query->where('document_type_id', $documentId);
+
+        if (!empty($type) && $type == 'paginate')
+            $query = $query->paginate(10);
+        elseif (!empty($type) && $type == 'single')
+            $query = $query->first();
+        elseif (!empty($type) && $type == 'allWithoutPaginate')
+            $query =  $query->get();
+
+        return $query;
+    }
 }

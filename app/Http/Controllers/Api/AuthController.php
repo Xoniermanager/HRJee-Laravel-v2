@@ -26,7 +26,7 @@ class AuthController extends Controller
     {
         return $this->userAuthService->login($request);
     }
-    public function profile(UserUpdateProfileRequest $request)
+    public function profile(Request $request)
     {
         return $this->userAuthService->profile($request);
     }
@@ -46,7 +46,7 @@ class AuthController extends Controller
     {
         return $this->userAuthService->changePassword($request);
     }
-    public function updateProfile(Request $request)
+    public function updateProfile(UserUpdateProfileRequest $request)
     {
         return $this->userAuthService->updateProfile($request);
     }

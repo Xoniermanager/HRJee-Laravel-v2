@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Services\Api;
- 
-use App\Repositories\UserBankDetailRepository; 
+
+use App\Repositories\UserBankDetailRepository;
 use Throwable;
 
 class BankService
@@ -15,11 +15,8 @@ class BankService
     }
     public function bankDetails()
     {
-        try {
-            $details = $this->bankRepository->bankDetails();
-            return apiResponse('bank_details', $details);
-        } catch (Throwable $th) {
-            return exceptionErrorMessage($th);
-        }
+
+
+        return  $this->bankRepository->bankDetails(auth()->user()->id);
     }
 }
