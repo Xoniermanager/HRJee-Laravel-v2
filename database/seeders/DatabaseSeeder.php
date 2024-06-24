@@ -65,5 +65,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSkillTableSeeder::class);
         $this->call(LangaugeUserTableSeeder::class);
         $this->call(RolesTableSeeder::class);
+        $this->call(LeaveStatusesTableSeeder::class);
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\Api\DocumentController;
+use App\Http\Controllers\Api\LeaveManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,7 @@ Route::get('sendOtp', [AuthController::class, 'sendOtp']);
 Route::post('verify/otp', [AuthController::class, 'verifyOtp']);
 
 
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('profile', [AuthController::class, 'profile']);
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
@@ -34,4 +36,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('user/address', [AddressController::class, 'addressDetails']);
     Route::get('user/addresses', [AddressController::class, 'getAllAddresses']);
     Route::put('update/address', [AddressController::class, 'updateAddress']);
+
+    Route::get('/leave/type', [LeaveManagementController::class, 'leaveType']);
+    Route::post('/apply/leave', [LeaveManagementController::class, 'storeApplyLeave']);
 });
