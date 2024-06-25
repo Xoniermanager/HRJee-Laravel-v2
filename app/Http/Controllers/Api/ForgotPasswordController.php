@@ -33,7 +33,6 @@ class ForgotPasswordController extends Controller
                 return errorMessage('null', 'email is invalid');
 
             $mailData = $this->userServices->forgetPassword($request);
-
             if ($mailData)
                 return apiResponse('otp_sent_on_mail', $user);
         } catch (Throwable $th) {

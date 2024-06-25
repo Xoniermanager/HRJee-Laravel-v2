@@ -18,8 +18,10 @@ class UserBankDetailServices
     $response = $this->userBankDetailRepository->updateOrCreate(['user_id' =>  $user_id],$data);
     return $response;
   }
+  
   public function getDetailById($id)
   {
     return $this->userBankDetailRepository->where('user_id',$id)->first();
   }
+
 }

@@ -20,8 +20,6 @@ class DocumentController extends Controller
 
     public function documents(Request $request)
     {
-
-
         try {
             $documentDetails =   $this->userDocumentDetailServices->documents();
             if ($documentDetails)

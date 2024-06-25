@@ -23,7 +23,6 @@ class UserServices
     try {
       $code = generateOtp();
       UserCode::updateOrCreate(['email' => $request->email], [
-        'email'  => $request->email,
         'type'  => 'user',
         'code'  => $code,
       ]);
