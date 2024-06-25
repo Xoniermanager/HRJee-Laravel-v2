@@ -67,4 +67,9 @@ class ShiftServices
     }
     return $shiftsDetails->orderBy('id', 'DESC')->paginate(10);
   }
+
+  public function getAllActiveShifts()
+  {
+    return $this->shiftRepository->where('status','1')->get();
+  }
 }

@@ -51,4 +51,9 @@ class QualificationService
     })->get();
 
   }
+
+  public function getAllActiveQualification()
+  {
+    return $this->qualificationRepository->where('status','1')->get();
+  }
 }

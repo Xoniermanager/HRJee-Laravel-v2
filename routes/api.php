@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\LeaveManagementController;
+use App\Http\Controllers\Api\HolidayApiController;
+use App\Http\Controllers\Api\LeaveManagementApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,11 +19,16 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    
     Route::get('profile', [AuthController::class, 'profile']);
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
 
-    Route::get('/leave/type', [LeaveManagementController::class, 'leaveType']);
-    Route::post('/apply/leave', [LeaveManagementController::class, 'storeApplyLeave']);
+    /**For Leave Management API */
+    Route::get('/leave/type', [LeaveManagementApiController::class, 'leaveType']);
+    Route::post('/apply/leave', [LeaveManagementApiController::class, 'storeApplyLeave']);
+
+    /** For Holiday Management API */
+    Route::get('/holiday/list', [HolidayApiController::class, 'list']);
 });

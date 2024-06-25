@@ -47,4 +47,9 @@ class DepartmentServices
     }
     return $departmentDetails->orderBy('id', 'DESC')->paginate(10);
   }
+
+  public function getAllActiveDepartments()
+  {
+    return $this->departmentRepository->where('status','1')->get();
+  }
 }

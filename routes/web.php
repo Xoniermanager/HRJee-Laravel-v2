@@ -66,6 +66,7 @@ use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Admin\AssetController;
+use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 /*
@@ -335,6 +336,14 @@ Route::post('/employee/document/details', [UserDocumentDetailsController::class,
 
 //User / Permission Details for employee
 Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
+
+//Asset Details for user
+
+Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class)->group(function () {
+        Route::post('/details/store','store')->name('employee.asset.details');
+        Route::post('/details/update','updateDetails')->name('employee.asset.details.update');
+});
+
 
 
 /** ---------------Employee Panel Started--------------  */
@@ -703,4 +712,5 @@ Route::prefix('/asset')->controller(AssetController::class)->group(function () {
     Route::post('/update/{id}', 'update')->name('asset.update');
     Route::get('/delete', 'destroy')->name('asset.delete');
     Route::get('/search/filter', 'serachAssetFilterList');
+    Route::get('/get/all/asset/{id}', 'getAllAssetByCategory');
 });

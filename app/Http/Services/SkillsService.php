@@ -49,4 +49,9 @@ class SkillsService
       }
     })->get();
   }
+  
+  public function getAllActiveSkills()
+  {
+    return $this->companySkillsRepository->where('status','1')->get();
+  }
 }

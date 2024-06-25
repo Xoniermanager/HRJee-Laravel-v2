@@ -44,5 +44,9 @@ class EmployeeTypeService
       }
     })->get();
   }
+  public function getAllActiveEmployeeType()
+  {
+    return $this->employeeTypeRepository->where('status','1')->get();
+  }
   
 }

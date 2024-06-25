@@ -97,4 +97,20 @@ class AssetController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
+    public function getAllAssetByCategory($id)
+    {
+        $allAssetDetails = $this->assetService->getAllAssetByCategoryId($id);
+        if (count($allAssetDetails) > 0 && isset($allAssetDetails)) {
+            $response = [
+                'status'    =>  true,
+                'data'      =>  $allAssetDetails
+            ];
+        } else {
+            $response = [
+                'status'    =>  false,
+                'error'     => 'No Asset Found For this Category'
+            ];
+        }
+        return json_encode($response);
+    }
 }
