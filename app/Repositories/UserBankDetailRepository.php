@@ -20,5 +20,11 @@ class UserBankDetailRepository extends BaseRepository
     public function model()
     {
         return UserBankDetail::class;
-    }    
+    } 
+    
+    
+    public function bankDetails($id)
+    {
+       return $this->where('user_id',$id)->first();
+    }
 }

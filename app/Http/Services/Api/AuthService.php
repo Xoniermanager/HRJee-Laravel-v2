@@ -2,156 +2,118 @@
 
 namespace App\Http\Services\Api;
 
+ 
+use App\Mail\LoginVerification;
 use App\Models\User;
+use App\Models\UserCode;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Throwable;
 
 class AuthService
 {
     public function login($request)
     {
         try {
-            $validateUser = Validator::make(
-                $request->all(),
-                [
-                    'email' => 'required|email',
-                    'password' => 'required'
-                ]
-            );
 
-            if ($validateUser->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'validation error',
-                    'errors' => $validateUser->errors()
-                ], 401);
-            }
+            if (!Auth::attempt($request->only(['email', 'password'])))
+                return errorMessage('null', 'invalid_credentials');
 
-            if (!Auth::attempt($request->only(['email', 'password']))) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Email & Password does not match with our record.',
-                ], 401);
-            }
-
-            $user = User::where('email', $request->email)->first();
-
-            $user->tokens()->delete();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'User Logged In Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+            return apiResponse('login_success', ['email' => $request->email]);
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
         }
     }
     public function profile($request)
     {
         try {
             $user = Auth::user();
-            return response()->json([
-                'status' => true,
-                'message' => 'User Logged In Successfully',
-                'data' => $user,
-            ], 200);
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+            return apiResponse('user_profile', $user);
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
         }
     }
     public function logout($request)
     {
         auth()->user()->tokens()->delete();
-
-        return response()->json([
-            "message" => "logged out"
-        ]);
+        return apiResponse('logut');
     }
+    public function sendOtp($request)
+    {
+        try {
+
+            $code = generateOtp();
+            UserCode::updateOrCreate(['email' => $request->email], [
+                'user_id'  => $request->email,
+                'type'  => 'user',
+                'code'  => $code,
+            ]);
+            $mailData = [
+                'email' => $request->email,
+                'otp_code' => $code,
+                'expire_at' => Carbon::now()->addMinutes(2)->format("H:i A")
+            ];
+
+            Mail::to($request->email)->send(new LoginVerification($mailData));
+            return apiResponse('otp_sent_on_mail', $mailData);
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
+    }
+    public function verifyOtp($request)
+    {
+        try {
+            $find = UserCode::where(['email' => $request['email'], 'code' => $request['otp'], 'type' => 'user'])
+                ->where('updated_at', '>=', now()->subMinutes(2))
+                ->first();
+
+            if ($find) {
+                if (Auth::attempt($request->only(['email', 'password'])))
+                    $user = User::where('email', $request['email'])->first();
+
+                $user->tokens()->delete();
+                $user->access_token = $user->createToken("API TOKEN")->plainTextToken;
+                Session::put('user_2fa', auth()->user()->id);
+                return apiResponse('otp_verify', $user);
+            } else {
+                return errorMessage('null', 'invalid otp or expired');
+            }
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
+    }
+
+
     public function changePassword($request)
     {
+        try {
+            #Match The Old Password
+            if (!Hash::check($request->old_password, auth()->user()->password))
+                return errorMessage('null', 'old_password-not_matched');
 
-        # Validation
-        $validateUser = Validator::make(
-            $request->all(),
-            [
-                'old_password' => 'required',
-                'new_password' => 'required|confirmed',
-            ]
-        );
-
-
-        if ($validateUser->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'validation error',
-                'errors' => $validateUser->errors()
-            ], 401);
+            #Update the new Password
+            User::whereId(auth()->user()->id)->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+            return apiResponse('password_changed');
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
         }
-        #Match The Old Password
-        if (!Hash::check($request->old_password, auth()->user()->password)) {
-            return response()->json([
-                'status' => false,
-                "error" => "Old Password Doesn't match!"
-            ], 500);
-        }
-
-
-        #Update the new Password
-        User::whereId(auth()->user()->id)->update([
-            'password' => Hash::make($request->new_password)
-        ]);
-        return response()->json([
-            'status' => true,
-            "message" => "Password changed successfully!"
-        ], 200);
     }
     public function updateProfile($request)
     {
-
-        # Validation
-        $validateUser = Validator::make(
-            $request->all(),
-            [
-                'name' => 'required|string|max:100',
-                'father_name' => 'required|string|max:100',
-                'mother_name' => 'required|string|max:100',
-                'blood_group' => 'required|in:A+, A-, B+, B-, O-, O+',
-                'gender' => 'required|in:M,F,O',
-                'marital_status' => 'required|in:M,S',
-                'phone' => 'required|min:5|max:20',
-                'profile_image' => 'nullable',
-                'date_of_birth' => 'required|date|before:' . now()->subYears(18)->toDateString(),
-            ]
-        );
-
-
-        if ($validateUser->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'validation error',
-                'errors' => $validateUser->errors()
-            ], 401);
+        try {
+            $data = $request->all();
+            $date = date_create($request->date_of_birth);
+            $data['date_of_birth'] = date_format($date, "Y/m/d");
+            #Update the new Password
+            User::whereId(auth()->user()->id)->update($data);
+            return apiResponse('profile_updATED');
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
         }
-
-
-        $data = $request->all();
-        $date = date_create($request->date_of_birth);
-        $data['date_of_birth'] = date_format($date, "Y/m/d");
-        #Update the new Password
-        User::whereId(auth()->user()->id)->update($data);
-        return response()->json([
-            'status' => true,
-            "message" => "Profile Updated successfully!"
-        ], 200);
     }
 }

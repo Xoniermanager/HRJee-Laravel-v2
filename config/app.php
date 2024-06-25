@@ -17,7 +17,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-
+    'ALLOW_SEND_EMAIL' => env('ALLOW_SEND_EMAIL', true),
     /*
     |--------------------------------------------------------------------------
     | Application Environment
