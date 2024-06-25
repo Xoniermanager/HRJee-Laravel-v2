@@ -80,7 +80,7 @@ class User extends Authenticatable
 
     public function documentDetails()
     {
-        return $this->hasMany(UserDocumentDetail::class, 'user_id');
+        return $this->hasMany(UserDocumentDetail::class, 'user_id','id');
     }
     public function qualificationDetails()
     {
@@ -115,5 +115,9 @@ class User extends Authenticatable
     public function employeeStatus()
     {
         return $this->belongsTo(EmployeeStatus::class, 'employee_status_id', 'id');
+    }
+    public function assetDetails()
+    {
+        return $this->hasMany(UserAsset::class, 'user_id', 'id')->where('returned_date','=',null);
     }
 }

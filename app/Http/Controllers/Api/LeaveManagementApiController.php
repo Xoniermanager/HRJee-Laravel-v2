@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\LeaveTypeService;
 use Illuminate\Support\Facades\Validator;
 
-class LeaveManagementController extends Controller
+class LeaveManagementApiController extends Controller
 {
     private $leaveTypeService;
     private $leaveService;

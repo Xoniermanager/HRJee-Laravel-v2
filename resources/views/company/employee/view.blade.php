@@ -1389,25 +1389,108 @@
                             </div>
                             <!--end::Tap pane-->
                             <!--begin::Tap pane-->
-                            <div class="tab-pane fade" id="tab_8" role="tabpanel">
-                                <div class=" mb-3">
-                                    <!--begin::Card header-->
-                                    <div class="head cursor-pointer">
-                                        <!--begin::Card title-->
-                                        <div class="card-title m-0">
-                                            <h3 class="fw-bold m-0">Asset Details</h3>
+                            <div class="tab-pane fade tabcustome" id="tab_8" role="tabpanel">
+                                <div class="row">
+                                    @foreach ($singleViewEmployeeDetails['assetDetails'] as $assetDetails)
+                                        <div class="col-md-6 mb-5">
+                                            <div class="tab-pane mb-3">
+                                                <!--begin::Card header-->
+                                                <div class="head cursor-pointer">
+                                                    <!--begin::Card title-->
+                                                    <div class="card-title m-0">
+                                                        <h3 class="fw-bold m-0">
+                                                            {{ $assetDetails->asset->name ?? '' }}
+                                                        </h3>
+                                                    </div>
+                                                    <!--end::Card title-->
+
+                                                </div>
+                                                <div class="card-body p-9">
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-3">
+                                                        <!--begin::Label-->
+                                                        <label class="col-md-6 fw-bold">Asset Manufacturer
+                                                        </label>
+                                                        <!--end::Label-->
+
+                                                        <!--begin::Col-->
+                                                        <div class="col-md-6 fv-row">
+                                                            <span class="">{{ $assetDetails->asset->assetManufacturers->name ?? '' }}</span>
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-3">
+                                                        <!--begin::Label-->
+                                                        <label class="col-md-6 fw-bold">Asset Category
+                                                        </label>
+                                                        <!--end::Label-->
+
+                                                        <!--begin::Col-->
+                                                        <div class="col-md-6">
+                                                            <span class=" me-2">{{ $assetDetails->asset->assetCategories->name ?? '' }}</span>
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-3">
+                                                        <!--begin::Label-->
+                                                        <label class="col-md-6 fw-bold">Model
+                                                        </label>
+                                                        <!--end::Label-->
+
+                                                        <!--begin::Col-->
+                                                        <div class="col-md-6">
+                                                            <span class=" me-2">{{  $assetDetails->asset->model ?? '' }}</span>
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <!--begin::Input group-->
+                                                    <div class="row mb-3">
+                                                        <!--begin::Label-->
+                                                        <label class="col-md-6 fw-bold">Serial No.</label>
+                                                        <!--end::Label-->
+
+                                                        <!--begin::Col-->
+                                                        <div class="col-md-6">
+                                                            <span class=" me-2">{{$assetDetails->asset->serial_no ?? ''}}</span>
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <!--end::Input group-->
+                                                    <div class="row mb-3">
+                                                        <!--begin::Label-->
+                                                        <label class="col-md-6 fw-bold">Invoice No.</label>
+                                                        <!--end::Label-->
+
+                                                        <!--begin::Col-->
+                                                        <div class="col-md-6">
+                                                            <span class=" me-2">{{$assetDetails->asset->invoice_no ?? ''}}</span>
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <!--begin::Label-->
+                                                        <label class="col-md-6 fw-bold">Assigned Date</label>
+                                                        <!--end::Label-->
+
+                                                        <!--begin::Col-->
+                                                        <div class="col-md-6">
+                                                            <span class=" me-2">{{$assetDetails->assigned_date ?? ''}}</span>
+                                                        </div>
+                                                        <!--end::Col-->
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                         </div>
-                                        <!--end::Card title-->
-
-                                    </div>
-                                    <!--begin::Card header-->
-
-                                    <!--begin::Card body-->
-                                    <div class="card-body p-9">
-
-
-                                    </div>
-                                    <!--end::Card body-->
+                                        <!--end::Card body-->
+                                    @endforeach
+                                    <!--end::Col-->
                                 </div>
                             </div>
                             <!--end::Tap pane-->

@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Xonier',
             'password' => Hash::make('password') // <---- check this
         ]);
-        
+        $this->call(CountryTableSeeder::class);
         $this->call(StatesTableSeeder::class);
         $this->call(DepartmentsTableSeeder::class);
         $this->call(DesignationsTableSeeder::class);
@@ -53,6 +53,12 @@ class DatabaseSeeder extends Seeder
         $this->call(CompanyBranchesTableSeeder::class);
         $this->call(OfficeTimingConfigsTableSeeder::class);
         $this->call(ShiftsTableSeeder::class);
+        $this->call(RolesTableSeeder::class);
+        $this->call(LeaveStatusesTableSeeder::class);
+        $this->call(AssetManufacturersTableSeeder::class);
+        $this->call(AssetStatusesTableSeeder::class);
+        $this->call(AssetCategoriesTableSeeder::class);
+        $this->call(AssetsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(UserAddressesDetailsTableSeeder::class);
         $this->call(UserAdvanceDetailsTableSeeder::class);
@@ -62,9 +68,9 @@ class DatabaseSeeder extends Seeder
         $this->call(UserPastWorkDetailsTableSeeder::class);
         $this->call(UserQualificationDetailsTableSeeder::class);
         $this->call(UserRelativeDetailsTableSeeder::class);
+        $this->call(UserAssetsTableSeeder::class);
         $this->call(UserSkillTableSeeder::class);
         $this->call(LangaugeUserTableSeeder::class);
-        $this->call(RolesTableSeeder::class);
-        $this->call(LeaveStatusesTableSeeder::class);
+        $this->call(HolidaysTableSeeder::class);
     }
 }

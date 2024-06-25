@@ -50,4 +50,9 @@ class DocumentTypeService
       }
     })->get();
   }
+
+  public function getAllActiveDocumentType()
+  {
+    return $this->documentTypeRepository->where('status','1')->get();
+  }
 }
