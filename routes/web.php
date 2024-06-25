@@ -342,6 +342,7 @@ Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('employee');
     Route::post('/login', 'login')->name('login');
+    
     Route::get('/logout', 'logout')->name('logout');
 });
 Route::controller(ForgetPasswordController::class)->group(function () {

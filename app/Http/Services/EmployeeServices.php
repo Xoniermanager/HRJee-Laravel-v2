@@ -4,11 +4,15 @@ namespace App\Http\Services;
 
 use Illuminate\Support\Facades\Auth;
 
-
+use App\Mail\ResetPassword;
+use App\Models\User;
+use App\Models\UserCode;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\FileUploadService;
-use App\Models\User;
 use App\Repositories\EmployeeRepository;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class EmployeeServices
 {
@@ -160,4 +164,31 @@ class EmployeeServices
   {
     return $this->employeeRepository->find($id);
   }
+
+
+
+  public function forgetPassword($request, $code)
+  {
+    try {
+
+      UserCode::updateOrCreate(['email' => $request->email], [
+        'type'  => 'user',
+        'code'  => $code,
+      ]);
+      $mailData = [
+        'email' => $request->email,
+        'otp_code' => $code,
+        'expire_at' => Carbon::now()->addMinutes(2)->format("H:i A")
+      ];
+
+      $checkValid = Mail::to($request->email)->send(new ResetPassword($mailData));
+      if (!$checkValid)
+        return false;
+      else
+        return true;
+    } catch (Throwable $th) {
+      return false;
+    }
+  }
+
 }

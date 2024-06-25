@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use App\Models\UserDetail;
+use App\Models\Skill;
+use App\Models\UserCode;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -11,7 +11,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
  *
  * @package namespace App\Repositories;
  */
-class UserRepository extends BaseRepository
+class UserOtpRepository extends BaseRepository
 {
     /**
      * Specify Model class name
@@ -20,6 +20,6 @@ class UserRepository extends BaseRepository
      */
     public function model()
     {
-        return User::class;
+        return UserCode::class;
     }
 }

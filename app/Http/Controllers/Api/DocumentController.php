@@ -22,10 +22,8 @@ class DocumentController extends Controller
     {
         try {
             $documentDetails =   $this->userDocumentDetailServices->documents();
-            if ($documentDetails)
-                return apiResponse('document', $documentDetails);
-            else
-                return errorMessage('null', 'Document not found!');
+            return apiResponse('document', $documentDetails);
+            
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
