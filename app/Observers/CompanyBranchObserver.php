@@ -21,6 +21,7 @@ class CompanyBranchObserver
      */
     public function created(CompanyBranch $companyBranch): void
     {
+        
         $data['branch_id'] = $companyBranch->id;
         $data['name'] = $companyBranch->name;
         $data['email'] = $companyBranch->email;

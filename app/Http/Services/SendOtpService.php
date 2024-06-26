@@ -2,22 +2,56 @@
 
 namespace App\Http\Services;
 
+use App\Mail\ResetPassword;
+use App\Models\User;
+use App\Models\UserCode;
 use App\Repositories\SkillRepository;
+use App\Repositories\UserOtpRepository;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 
 class SendOtpService
 {
-  private $companySkillsRepository;
-  public function __construct(SkillRepository $companySkillsRepository)
+  private $userOtpRepository;
+  public function __construct(UserOtpRepository $userOtpRepository)
   {
-    $this->companySkillsRepository = $companySkillsRepository;
+    $this->userOtpRepository = $userOtpRepository;
   }
-  public function all()
+  public function generateOTP($email, $type)
   {
-    return $this->companySkillsRepository->orderBy('id','DESC')->paginate(10);
+    $checkOTPExists = ['email' => $email, 'type' => $type];
+    // Create OTP
+    $code = generateOtp();
+    $userOtpDetails = ['code'  => $code];
+    $update = $this->userOtpRepository->updateOrCreate($checkOTPExists, $userOtpDetails);
+    if ($update) {
+      $mailData = [
+        'email' => $email,
+        'otp_code' => $code,
+        'expire_at' => Carbon::now()->addMinutes(2)->format("H:i A")
+      ];
+
+      $checkValid = Mail::to($email)->send(new ResetPassword($mailData));
+      if ($checkValid)
+        return ['status' => true, 'message' => 'otp_sent_on_mail'];
+      else
+        return ['status' => false, 'message' => 'error_while_sending_mail'];
+    }
   }
-  public function get_skill_ajax_call()
+
+  public function verifyOTP($data)
   {
-    return $this->companySkillsRepository->orderBy('id','DESC')->get();
+    $find = UserCode::where(['email' => $data['email'], 'code' => $data['otp'], 'type' => $data['type']])
+      ->where('updated_at', '>=', now()->subMinutes(2))
+      ->first();
+    if ($find) {
+      Session::put('user_2fa', auth()->guard($data['type'])->user()->id);
+      return true;
+    } else {
+      return false;
+    }
   }
- 
 }

@@ -20,7 +20,7 @@
 
         <div style="width:100%;text-align: center;">
 
-            <img src="assets/media/logos/logo.png" style="height: 80px">
+            <img src="{{asset('assets/media/logos/logo.png')}}" style="height: 80px">
 
 
 

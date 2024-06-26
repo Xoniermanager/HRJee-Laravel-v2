@@ -38,7 +38,6 @@
     </div>
     <button onclick="show_next_tab('family_details_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
         Previous</button>
-
     <button class="btn btn-primary float-right" id="submit_all">Save All</button>
 </div>
 <script>
@@ -92,4 +91,3 @@
         });
     }
 </script>
-

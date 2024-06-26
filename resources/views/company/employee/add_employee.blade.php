@@ -11,6 +11,7 @@
         $userbankDetails = [];
         $userpastWorkDetails = [];
         $userfamilyDetails = [];
+        $userAssetsDetails = [];
         $userdocumentDetails = [];
         $userDetails = [];
         $userSkills = '';
@@ -23,6 +24,7 @@
             $userbankDetails = $singleUserDetails['bankDetails'];
             $userpastWorkDetails = $singleUserDetails['pastWorkDetails'];
             $userfamilyDetails = $singleUserDetails['familyDetails'];
+            $userAssetsDetails = $singleUserDetails['assetDetails'];
             $userdocumentDetails = $singleUserDetails['documentDetails'];
             $userDetails = $singleUserDetails['userDetails'];
             $userSkills = $singleUserDetails['skills']->pluck('id');
@@ -60,11 +62,9 @@
                                 <!--end::Date-->
                             </li>
                             @php
-                                if($editDetails == false)
-                                {
+                                if ($editDetails == false) {
                                     $buttonDisabled = 'disabled';
-                                }
-                                else {
+                                } else {
                                     $buttonDisabled = '';
                                 }
                             @endphp
@@ -72,7 +72,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#advance_details_tab">
                                     <span class="fs-7 fw-semibold">Advance Details</span>
 
@@ -83,7 +83,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#address_tab">
                                     <span class="fs-7 fw-semibold">Address</span>
 
@@ -94,7 +94,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#bank_details_tab">
                                     <span class="fs-7 fw-semibold">Bank Details</span>
 
@@ -105,7 +105,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#qualification_tab">
                                     <span class="fs-7 fw-semibold">Qualification</span>
 
@@ -116,7 +116,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#past_work_tab">
                                     <span class="fs-7 fw-semibold">Past work</span>
 
@@ -127,7 +127,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#permission_tab">
                                     <span class="fs-7 fw-semibold">Permissions</span>
                                 </a>
@@ -137,7 +137,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#family_details_tab">
                                     <span class="fs-7 fw-semibold">Family Details</span>
                                 </a>
@@ -147,7 +147,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#asset_tab">
                                     <span class="fs-7 fw-semibold">Asset </span>
                                 </a>
@@ -157,7 +157,7 @@
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
                                 <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{$buttonDisabled}}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
                                     data-bs-toggle="tab" href="#document_tab">
                                     <span class="fs-7 fw-semibold">Documents</span>
                                 </a>
@@ -206,13 +206,12 @@
                             <!--end::Tap pane-->
 
                             <!--begin::Tap pane Asset Tab-->
-                            @include('company.employee.tabs.asset_tab')
+                            @include('company.employee.tabs.asset_details')
                             <!--end::Tap pane-->
 
                             <!--begin::Tap pane Document Tab-->
                             @include('company.employee.tabs.document_tab')
                             <!--end::Tap pane-->
-
                         </div>
                         <!--end::Tab Content-->
                         <!--begin::Action-->
@@ -227,7 +226,6 @@
         <!--end::Container-->
     </div>
     <script>
-
         /**
          * close current tab and open next tab
          */
@@ -328,7 +326,6 @@
                     }
                 }
             }, 16000);
-
             //Documents Details
             setTimeout(function() {
                 if (all_data_saved) {

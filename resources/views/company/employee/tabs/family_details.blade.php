@@ -163,7 +163,7 @@
                     showConfirmButton: false,
                     timer: 1500
                 });
-                jQuery('.nav-pills a[href="#document_tab"]').tab('show');
+                jQuery('.nav-pills a[href="#asset_tab"]').tab('show');
                 // This variable is used on save all records button
                 all_data_saved = true;
             },

@@ -17,4 +17,6 @@ return [
     'address_updated' => 'Address  updated successfully!',
     'profile_updated' => 'Profile Updated successfully!',
     'invalid_mail' => 'please enter valild mail to send otp!',
+    'invalid_or_expired_otp' => 'invalid or expired otp!',
+    'verify_otp' => 'please verify otp!',
 ];

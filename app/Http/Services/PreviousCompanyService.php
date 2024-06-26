@@ -55,4 +55,9 @@ class PreviousCompanyService
     }
     return $previousCountryDetails->orderBy('id', 'DESC')->paginate(10);
   }
+
+  public function getAllActivePreviousCompany()
+  {
+    return $this->previousCompanyRepository->where('status','1')->get();
+  }
 }

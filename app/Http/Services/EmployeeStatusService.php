@@ -45,4 +45,9 @@ class EmployeeStatusService
       }
     })->get();
   }
+
+  public function getAllActiveEmployeeStatus()
+  {
+    return $this->employeeStatusRepository->where('status','1')->get();
+  }
 }

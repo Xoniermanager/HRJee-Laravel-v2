@@ -30,4 +30,9 @@ class HolidayServices
   {
     return $this->holidayRepository->find($id)->delete();
   }
+
+  public function getListByCompanyId($companyID)
+  {
+    return $this->holidayRepository->where('company_id',$companyID)->where('year',date('Y'))->where('status','1')->get();
+  }
 }

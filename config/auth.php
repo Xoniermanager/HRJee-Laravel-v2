@@ -59,6 +59,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        'employee' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
         'company_users' => [
             'driver' => 'eloquent',
             'model' => App\Models\CompanyUser::class,

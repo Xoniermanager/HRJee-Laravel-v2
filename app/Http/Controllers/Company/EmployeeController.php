@@ -13,6 +13,7 @@ use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
 use App\Http\Services\LanguagesServices;
 use App\Http\Requests\EmployeeAddRequest;
+use App\Http\Services\AssetCategoryService;
 use App\Http\Services\DepartmentServices;
 use App\Http\Services\DocumentTypeService;
 use App\Http\Services\EmployeeTypeService;
@@ -36,6 +37,7 @@ class EmployeeController extends Controller
     private $shiftService;
     private $languagesServices;
     private $skillServices;
+    private $assetCategoryServices;
 
 
     public function __construct(
@@ -52,7 +54,8 @@ class EmployeeController extends Controller
         RolesServices $roleService,
         ShiftServices $shiftService,
         LanguagesServices $languagesServices,
-        SkillsService $skillServices
+        SkillsService $skillServices,
+        AssetCategoryService $assetCategoryServices
 
     ) {
         $this->countryService = $countryService;
@@ -68,6 +71,7 @@ class EmployeeController extends Controller
         $this->shiftService = $shiftService;
         $this->languagesServices = $languagesServices;
         $this->skillServices = $skillServices;
+        $this->assetCategoryServices = $assetCategoryServices;
     }
     /**
      * Display a listing of the resource.
@@ -75,32 +79,35 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $allUserDetails = $this->employeeService->all($request == null);
-        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
-        $allCountries = $this->countryService->all()->where('status', '1');
-        $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');
-        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
-        $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
-        $allShifts = $this->shiftService->all()->where('status', '1');
+        $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
+        $allCountries = $this->countryService->getAllActiveCountry();
+        $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
+        $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
+        $allShifts = $this->shiftService->getAllActiveShifts();
         $allBranches = $this->branchService->all();
-        $allQualification = $this->qualificationService->all()->where('status', '1');
-        $allSkills = $this->skillServices->all()->where('status', '1');
+        $allQualification = $this->qualificationService->getAllActiveQualification();
+        $allSkills = $this->skillServices->getAllActiveSkills();
         return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills'));
     }
 
     public function add()
     {
         $allCountries = $this->countryService->getAllActiveCountry();
-        $allPreviousCompany = $this->previousCompanyService->all()->where('status', '1');
-        $allQualification = $this->qualificationService->all()->where('status', '1');
-        $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');
-        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
-        $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
-        $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
+        $allPreviousCompany = $this->previousCompanyService->getAllActivePreviousCompany();
+        $allQualification = $this->qualificationService->getAllActiveQualification();
+        $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
+        $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
+        $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
+        $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages =   $this->languagesServices->defaultLanguages();
         $allBranches = $this->branchService->all();
         $allRoles = $this->roleService->all();
-        $allShifts = $this->shiftService->all()->where('status', '1');
-        return view('company.employee.add_employee',    compact(
+        $allShifts = $this->shiftService->getAllActiveShifts();
+        $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
+
+        return view(
+            'company.employee.add_employee',
+            compact(
                 'allCountries',
                 'allPreviousCompany',
                 'allQualification',
@@ -111,7 +118,8 @@ class EmployeeController extends Controller
                 'languages',
                 'allBranches',
                 'allRoles',
-                'allShifts'
+                'allShifts',
+                'allAssetCategory'
             )
         );
     }
@@ -119,20 +127,20 @@ class EmployeeController extends Controller
     public function edit(User $user)
     {
         $allCountries = $this->countryService->getAllActiveCountry();
-        $allPreviousCompany = $this->previousCompanyService->all()->where('status', '1');
-        $allQualification = $this->qualificationService->all()->where('status', '1');
-        $allEmployeeType = $this->employeeTypeService->all()->where('status', '1');
-        $allEmployeeStatus = $this->employeeStatusService->all()->where('status', '1');
-        $alldepartmentDetails = $this->departmentService->all()->where('status', '1');
-        $allDocumentTypeDetails = $this->documentTypeService->all()->where('status', '1');
+        $allPreviousCompany = $this->previousCompanyService->getAllActivePreviousCompany();
+        $allQualification = $this->qualificationService->getAllActiveQualification();
+        $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
+        $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
+        $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
+        $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $allBranches = $this->branchService->all();
         $allRoles = $this->roleService->all();
-        $allShifts = $this->shiftService->all()->where('status', '1');
+        $allShifts = $this->shiftService->getAllActiveShifts();
         $languages =   $this->languagesServices->defaultLanguages();
-
+        $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
 
         // Get employee details to update
-        $singleUserDetails = $user->load('familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+        $singleUserDetails = $user->load('assetDetails','familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
         return view(
             'company.employee.add_employee',
             compact(
@@ -147,7 +155,8 @@ class EmployeeController extends Controller
                 'allBranches',
                 'allRoles',
                 'allShifts',
-                'languages'
+                'languages',
+                'allAssetCategory'
             )
         );
     }
@@ -191,7 +200,7 @@ class EmployeeController extends Controller
 
     public function view(User $user)
     {
-        $singleViewEmployeeDetails = $user->load('familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+        $singleViewEmployeeDetails = $user->load('assetDetails','familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
 }

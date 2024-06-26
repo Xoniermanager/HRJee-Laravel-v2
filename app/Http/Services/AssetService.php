@@ -93,10 +93,15 @@ class AssetService
     if (isset($request->manufacturer_id) && !empty($request->manufacturer_id)) {
       $assetDetails = $assetDetails->where('asset_manufacturer_id', $request->manufacturer_id);
     }
-     /**List By Manufacturer or Filter */
-     if (isset($request->ownership) && !empty($request->ownership)) {
+    /**List By Manufacturer or Filter */
+    if (isset($request->ownership) && !empty($request->ownership)) {
       $assetDetails = $assetDetails->where('ownership', $request->ownership);
     }
     return $assetDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+
+  public function getAllAssetByCategoryId($id)
+  {
+    return $this->assetRepository->where('asset_category_id', $id)->where('allocation_status','available')->get();
   }
 }

@@ -66,6 +66,7 @@ use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Admin\AssetController;
+use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 /*
@@ -81,7 +82,17 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
 
-Route::middleware(['dashboard.access'])->group(function () {
+Route::prefix('company')->controller(AdminController::class)->group(function () {
+    Route::post('/company_login', 'companyLogin')->name('company_login');
+    Route::post('/logout', 'logout')->name('company.logout');
+    Route::get('/signin', 'signin')->name('signin');
+    Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
+    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
+    Route::get('/signup', 'signup')->name('signup');
+});
+
+
+Route::prefix('company')->middleware(['dashboard.access','Check2FA'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
 
     Route::controller(CompanyController::class)->group(function () {
@@ -276,12 +287,7 @@ Route::middleware(['dashboard.access'])->group(function () {
     });
 });
 
-Route::controller(AdminController::class)->group(function () {
-    Route::post('/company_login', 'companyLogin')->name('company_login');
-    Route::post('/logout', 'logout')->name('company.logout');
-    Route::get('/signin', 'signin')->name('signin');
-    Route::get('/signup', 'signup')->name('signup');
-});
+
 
 //Employee Module
 Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
@@ -336,13 +342,23 @@ Route::post('/employee/document/details', [UserDocumentDetailsController::class,
 //User / Permission Details for employee
 Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
 
+//Asset Details for user
+
+Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class)->group(function () {
+        Route::post('/details/store','store')->name('employee.asset.details');
+        Route::post('/details/update','updateDetails')->name('employee.asset.details.update');
+});
+
+
 
 /** ---------------Employee Panel Started--------------  */
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('employee');
     Route::post('/login', 'login')->name('login');
-    
+    Route::get('/employee/verify/otp', 'verifyOtp')->name('employee.verifyOtp');
+    Route::get('/employee/resend/otp/{email}', 'resendOtp')->name('employee.resendOtp');
+    Route::post('employee/verify/otp', 'verifyOtpCheck')->name('employee.verifyOtpCheck');
     Route::get('/logout', 'logout')->name('logout');
 });
 Route::controller(ForgetPasswordController::class)->group(function () {
@@ -353,7 +369,7 @@ Route::controller(ForgetPasswordController::class)->group(function () {
 });
 
 // Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
-Route::prefix('employee')->group(function () {
+Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
@@ -416,10 +432,14 @@ Route::prefix('employee')->group(function () {
 /** ----------------- Super Admin Started -------------------- **/
 Route::prefix('/admin')->controller(SuperAdminController::class)->group(function () {
     Route::get('/login', 'login')->name('super_admin.login.form');
+    
+    Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
+    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('super_admin.verifyOtpCheck');
     Route::post('/super_admin_login', 'super_admin_login')->name('super.admin.login');
 });
 
-Route::prefix('/admin')->group(function () {
+
+Route::prefix('/admin')->middleware('Check2FA')->group(function () {
     Route::view('/dashboard', 'super_admin.dashboard')->name('super_admin.dashboard');
 
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
@@ -704,4 +724,5 @@ Route::prefix('/asset')->controller(AssetController::class)->group(function () {
     Route::post('/update/{id}', 'update')->name('asset.update');
     Route::get('/delete', 'destroy')->name('asset.delete');
     Route::get('/search/filter', 'serachAssetFilterList');
+    Route::get('/get/all/asset/{id}', 'getAllAssetByCategory');
 });
