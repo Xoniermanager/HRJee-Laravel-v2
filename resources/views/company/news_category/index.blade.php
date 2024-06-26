@@ -38,13 +38,6 @@
                             <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
                                 value="0">Inactive</option>
                         </select>
-                        <select class="form-select ml-2 h-50px" data-control="select2" data-placeholder="Select an option">
-                            <optgroup label="Select Department">
-                                <option value="1">Development</option>
-                                <option value="2">Marketing </option>
-                                    <option value="3">Management </option>
-                            </optgroup>
-                        </select>
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
