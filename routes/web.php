@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\Company\AnnouncementController;
-use App\Http\Controllers\Admin\AssetCategoryController;
-use App\Http\Controllers\Admin\AssetManufacturerController;
-use App\Http\Controllers\Admin\AssetStatusController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AssetController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Company\LeaveController;
@@ -22,6 +19,7 @@ use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Employee\AccountController;
 use App\Http\Controllers\Employee\SupportController;
+use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
 use App\Http\Controllers\Company\LanguagesController;
@@ -33,6 +31,7 @@ use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Employee\ContactUsController;
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\HRServiceController;
+use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
@@ -40,12 +39,15 @@ use App\Http\Controllers\Company\PermissionsController;
 use App\Http\Controllers\Company\UserDetailsController;
 use App\Http\Controllers\Admin\AdminLanguagesController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
+use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
+use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Admin\AdminDepartmentController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\company\LeaveStatusLogController;
 use App\Http\Controllers\Admin\AdminDesignationsController;
+use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserBankDetailsController;
@@ -53,7 +55,9 @@ use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Employee\LeaveMangementController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
+use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
+use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
 use App\Http\Controllers\Company\UserAdvanceDetailsController;
@@ -64,9 +68,6 @@ use App\Http\Controllers\Company\UserDocumentDetailsController;
 use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
-use App\Http\Controllers\Admin\AdminCompanyBranchesController;
-use App\Http\Controllers\Admin\AssetController;
-use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 /*
@@ -233,13 +234,6 @@ Route::middleware(['dashboard.access'])->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('assign_permissions.statusUpdate');
     });
 
-    // Route::get('roles', [RolesController::class, 'index'])->name('roles');
-    // Route::get('roles/create', [RolesController::class, 'role_form'])->name('create.role.form');
-    // Route::post('add-roles', [RolesController::class, 'add_roles'])->name('add.roles');
-    // Route::get('roles/{id}/edit', [RolesController::class, 'edit_roles'])->name('edit.role');
-    // Route::patch('roles/{id}/', [RolesController::class, 'update_roles'])->name('update.roles');
-    // Route::get('delete-roles/{id}', [RolesController::class, 'delete_roles'])->name('delete.roles');
-
     Route::get('permissions', [PermissionsController::class, 'index'])->name('permissions');
     Route::get('permissions/create', [PermissionsController::class, 'permissions_form'])->name('create.permissions.form');
     Route::post('add-permissions', [PermissionsController::class, 'add_permissions'])->name('add.permissions');
@@ -278,8 +272,8 @@ Route::middleware(['dashboard.access'])->group(function () {
 });
 
 Route::controller(AdminController::class)->group(function () {
-    Route::post('/company_login', 'companyLogin')->name('company_login');
-    Route::post('/logout', 'logout')->name('company.logout');
+    Route::post('/company/login', 'companyLogin')->name('company.login');
+    Route::get('/company/logout', 'companyLogout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');
     Route::get('/signup', 'signup')->name('signup');
 });
@@ -338,10 +332,9 @@ Route::post('/employee/document/details', [UserDocumentDetailsController::class,
 Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
 
 //Asset Details for user
-
 Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class)->group(function () {
-        Route::post('/details/store','store')->name('employee.asset.details');
-        Route::post('/details/update','updateDetails')->name('employee.asset.details.update');
+    Route::post('/details/store', 'store')->name('employee.asset.details');
+    Route::post('/details/update', 'updateDetails')->name('employee.asset.details.update');
 });
 
 
@@ -350,8 +343,8 @@ Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('employee');
-    Route::post('/login', 'login')->name('login');
-    Route::get('/logout', 'logout')->name('logout');
+    Route::post('/employee/login', 'employeeLogin')->name('employee.login');
+    Route::get('/employee/logout', 'emoloyeeLogout')->name('employee.logout');
 });
 Route::controller(ForgetPasswordController::class)->group(function () {
     Route::get('/forget/password', 'index')->name('forget.password');
@@ -360,9 +353,7 @@ Route::controller(ForgetPasswordController::class)->group(function () {
     Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
 });
 
-// Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
 Route::prefix('employee')->group(function () {
-
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
 
@@ -429,7 +420,7 @@ Route::prefix('/admin')->controller(SuperAdminController::class)->group(function
 
 Route::prefix('/admin')->group(function () {
     Route::view('/dashboard', 'super_admin.dashboard')->name('super_admin.dashboard');
-
+    
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
         Route::get('/', 'index')->name('super_admin.departments');
         Route::post('/create', 'store')->name('super_admin.department.store');
@@ -713,4 +704,14 @@ Route::prefix('/asset')->controller(AssetController::class)->group(function () {
     Route::get('/delete', 'destroy')->name('asset.delete');
     Route::get('/search/filter', 'serachAssetFilterList');
     Route::get('/get/all/asset/{id}', 'getAllAssetByCategory');
+});
+
+//News Category Module
+Route::prefix('/news-category')->controller(NewsCategoryController::class)->group(function () {
+    Route::get('/', 'index')->name('news.category.index');
+    Route::post('/create', 'store')->name('news.category.store');
+    Route::post('/update', 'update')->name('news.category.update');
+    Route::get('/delete', 'destroy')->name('news.category.delete');
+    Route::get('/status/update', 'statusUpdate')->name('news.category.statusUpdate');
+    Route::get('/search/filter', 'serachNewsCategoryFilterList');
 });
