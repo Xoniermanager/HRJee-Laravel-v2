@@ -200,10 +200,8 @@
                             <div class="row">
                                 <div class="col-lg-12 ">
                                     <div class="main-form-wrapper mt-5">
-                                        <form class="form" action="{{ route('company_login') }}" method="POST">
-
+                                        <form class="form" action="{{ route('company.login') }}" method="POST">
                                             @csrf
-
                                             <div class="form-content ms-4 me-3" data-form-tab>
                                                 <div class="row">
                                                     <div class="col-lg-5">
