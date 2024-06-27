@@ -69,8 +69,7 @@
                             <!--begin::Form-->
                             <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden"
                                 id="kt_sign_in_form" data-kt-redirect-url="/metronic8/demo3/../demo3/index.html"
-                                action="{{ route('login') }}" method="POST">
-
+                                action="{{ route('employee.login') }}" method="POST">
                                 @csrf
                                 <!--begin::Input group=-->
                                 <div class="fv-row mb-8 fv-plugins-icon-container">
@@ -87,7 +86,7 @@
                                 <!--end::Input group=-->
                                 <div class="fv-row mb-3 fv-plugins-icon-container">
                                     <!--begin::Password-->
-                                    <label class="w-100">Password <a href="{{route('forget.password')}}"
+                                    <label class="w-100">Password <a href="{{ route('forget.password') }}"
                                             class="float-right text-primary">Forgot
                                             Password ?</a></label>
                                     <input type="password" name="password" autocomplete="off"
@@ -95,7 +94,6 @@
                                     @error('password')
                                         <span class="text-red-500">{{ $message }}</span>
                                     @enderror
-
                                     <div class="fv-plugins-message-container invalid-feedback"></div>
                                 </div>
                                 <!--end::Input group=-->

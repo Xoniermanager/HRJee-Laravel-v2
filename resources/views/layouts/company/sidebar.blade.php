@@ -98,19 +98,6 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            {{-- <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{route('office.time')}}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-building"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> Office Timing</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div> --}}
                             <div class="menu-item" data-url="{{ route('designation.index') }}">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('designation.index') }}">
@@ -124,7 +111,6 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                                 <!--begin:Menu link-->
                                 <span class="menu-link">
@@ -283,7 +269,7 @@
                                     <!--begin:Menu item-->
                                     <div class="menu-item" data-url="{{ route('asset.category.index') }}">
                                         <!--begin:Menu link-->
-                                        <a class="menu-link" href="{{route('asset.category.index')}}">
+                                        <a class="menu-link" href="{{ route('asset.category.index') }}">
                                             <span class="menu-bullet">
                                                 <span class="bullet bullet-dot"></span>
                                             </span>
@@ -294,7 +280,7 @@
                                     </div>
                                     <div class="menu-item" data-url="{{ route('asset.index') }}">
                                         <!--begin:Menu link-->
-                                        <a class="menu-link" href="{{route('asset.index')}}">
+                                        <a class="menu-link" href="{{ route('asset.index') }}">
                                             <span class="menu-bullet">
                                                 <span class="bullet bullet-dot"></span>
                                             </span>
@@ -307,199 +293,6 @@
                                 <!--end:Menu sub-->
                             </div>
                             <!--begin:Menu item-->
-                            <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
-                                <!--begin:Menu link-->
-                                <span class="menu-link">
-                                    <span class="menu-icon">
-                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr001.svg-->
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-list-check"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Employee Request</span>
-                                    <span class="menu-arrow"></span>
-                                </span>
-                                <!--end:Menu link-->
-                                <!--begin:Menu sub-->
-                                <div class="menu-sub menu-sub-accordion">
-
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="business_card.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Business Cards </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="custody.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Custody Receiving </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="clearance.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Clearance Letter </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="disposal.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Disposal Report </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="expense.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Employee Expenses </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="effective_date.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Effective Date Notice </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="entitlement.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                End of Service Payments </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="equipment_request.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                IT Services or Equipment Request </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="moving_assests.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Moving assets approval </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="purchase_request.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Purchase Request </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="visa_renewal.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Renewal of visa </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="travel_allowance.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Travel Allowance </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-
-
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="maintenance_request.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Maintenance Request </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="vacation_request.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Vacation request </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-
-                                </div>
-                                <!--end:Menu sub-->
-                            </div>
                             <!--end:Menu item-->
                             <!--begin:Menu item-->
                             <div class="menu-item" data-url="{{ route('attendance.status.index') }}">
@@ -533,50 +326,6 @@
                             </div>
 
 
-                            <!--begin:Menu item-->
-                            <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
-                                <!--begin:Menu link-->
-                                <span class="menu-link">
-                                    <span class="menu-icon">
-                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr001.svg-->
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-money-check"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Salary</span>
-                                    <span class="menu-arrow"></span>
-                                </span>
-                                <!--end:Menu link-->
-                                <!--begin:Menu sub-->
-                                <div class="menu-sub menu-sub-accordion">
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="salary_structures.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Salary Structure </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="salary.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Employee Salary</span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                </div>
-                                <!--end:Menu sub-->
-                            </div>
                             <!--end:Menu item-->
                             <!--begin:Menu item-->
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
@@ -650,155 +399,7 @@
                                 <!--end:Menu link-->
                             </div>
                             <!--begin:Menu item-->
-                            <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
-                                <!--begin:Menu link-->
-                                <span class="menu-link">
-                                    <span class="menu-icon">
-                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr001.svg-->
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-newspaper"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">News</span>
-                                    <span class="menu-arrow"></span>
-                                </span>
-                                <!--end:Menu link-->
-                                <!--begin:Menu sub-->
-                                <div class="menu-sub menu-sub-accordion">
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="announcements.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Announcement</span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="news.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                News</span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                </div>
-                                <!--end:Menu sub-->
-                            </div>
-                            <!--end:Menu item-->
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="hr_complain.html">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-bullhorn"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> HR Complaint</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-
-                            <!--begin:Menu item-->
-                            <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
-                                <!--begin:Menu link-->
-                                <span class="menu-link">
-                                    <span class="menu-icon">
-                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr001.svg-->
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-newspaper"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Policies</span>
-                                    <span class="menu-arrow"></span>
-                                </span>
-                                <!--end:Menu link-->
-                                <!--begin:Menu sub-->
-                                <div class="menu-sub menu-sub-accordion">
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="policy_category.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Policy Category </span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                    <!--begin:Menu item-->
-                                    <div class="menu-item">
-                                        <!--begin:Menu link-->
-                                        <a class="menu-link" href="policy.html">
-                                            <span class="menu-bullet">
-                                                <span class="bullet bullet-dot"></span>
-                                            </span>
-                                            <span class="menu-title">
-                                                Policies</span>
-                                        </a>
-                                        <!--end:Menu link-->
-                                    </div>
-                                </div>
-                                <!--end:Menu sub-->
-                            </div>
-                            <!--end:Menu item-->
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="training.html">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-trailer"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> Training </span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="asset.html">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-laptop"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> Company Assets</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <!--begin:Menu item-->
-                            <div class="menu-item ">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="resignation_management.html">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-file"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> Resignation Management</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-
-                        <div class="menu-item " data-url="{{ route('announcement.index') }}">
+                            <div class="menu-item " data-url="{{ route('announcement.index') }}">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('announcement.index') }}">
                                     <span class="menu-icon">
@@ -810,6 +411,38 @@
                                     <span class="menu-title"> Announcements</span>
                                 </a>
                                 <!--end:Menu link-->
+                            </div>
+                            <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+                                <!--begin:Menu link-->
+                                <span class="menu-link">
+                                    <span class="menu-icon">
+                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr001.svg-->
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-calendar-times"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">News</span>
+                                    <span class="menu-arrow"></span>
+                                </span>
+                                <!--end:Menu link-->
+                                <!--begin:Menu sub-->
+                                <div class="menu-sub menu-sub-accordion"
+                                    data-url="{{ route('news.category.index') }}">
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{ route('news.category.index') }}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                News Category </span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                </div>
+                                <!--end:Menu sub-->
                             </div>
 
                         </div>
@@ -872,13 +505,6 @@
                                                 <!--end::Username-->
                                             </div>
                                         </div>
-                                        <!--end::Menu item-->
-
-                                        <!--begin::Menu separator-->
-                                        <div class="separator my-2"></div>
-                                        <!--end::Menu separator-->
-
-                                        <!--begin::Menu item-->
                                         <div class="menu-item px-5">
                                             <a href="{{ route('company.profile') }}" class="menu-link px-5">
                                                 My Profile
@@ -886,22 +512,11 @@
                                         </div>
                                         <!--end::Menu item-->
 
-
-                                        <!--begin::Menu item-->
                                         <div class="menu-item px-5">
-                                            <!-- <a href="signin.html" class="menu-link px-5">
-               Sign Out
-              </a> -->
-                                            <form action="{{ route('logout') }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="menu-link px-5"
-                                                    style="background: none; border: none; cursor: pointer;">
-                                                    Sign Out
-                                                </button>
-                                            </form>
-
+                                            <a href="{{ route('company.logout') }}" class="menu-link px-5">
+                                                Sign Out
+                                            </a>
                                         </div>
-                                        <!--end::Menu item-->
                                     </div>
 
                                     <!--begin::User account menu-->
@@ -912,20 +527,12 @@
                             </div>
                             <!--end::User panel-->
                         </div>
-
-
                     </div>
-
-
-
-
                 </div>
                 <!--end::Menu-->
             </div>
             <!--end::Aside Menu-->
         </div>
-        <!--end::Aside menu-->
-
     </div>
     <!--end::Aside-->
 </div>

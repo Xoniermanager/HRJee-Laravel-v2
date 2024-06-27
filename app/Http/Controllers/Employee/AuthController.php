@@ -28,7 +28,7 @@ class AuthController extends Controller
 
     public function index()
     {
-        return view('login');
+        return view('employee.login');
     }
 
     /**
@@ -38,7 +38,7 @@ class AuthController extends Controller
      * and attempts to authenticate the user using Laravel's built-in authentication system.
      *
      */
-    public function login(Request $request)
+    public function employeeLogin(Request $request)
     {
         try {
             $validateUser = Validator::make($request->all(), [
@@ -90,11 +90,10 @@ class AuthController extends Controller
      * This method logs out the authenticated user, clears the session data,
      * and redirects the user to the login page.
      */
-    public function logout(Request $request)
+    public function emoloyeeLogout(Request $request)
     {
         Auth::logout();
         $request->session()->flash('success', 'You have been logged out.');
-
         return redirect(route('employee'));
     }
 
