@@ -76,16 +76,16 @@ class AdminController extends Controller
         Auth::logout();
         $request->session()->flash('success', 'You have been logged out.');
 
-        return redirect('signin');
+        return redirect('/company/signin');
     }
 
     public function signup()
     {
-        return view('signup');
+        return view('company.signup');
     }
     public function signin()
     {
-        return view('signin');
+        return view('company.signin');
     }
     public function verifyOtp()
     {

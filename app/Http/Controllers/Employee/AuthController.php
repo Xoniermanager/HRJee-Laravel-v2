@@ -57,7 +57,7 @@ class AuthController extends Controller
                 if ($genrateOtpresponse['status'] == true)
                     return redirect('/employee/verify/otp');
                 else
-                    return redirect('/login')->with('error', $genrateOtpresponse['message']);
+                    return redirect('/employee/signin')->with('error', $genrateOtpresponse['message']);
             }
 
 

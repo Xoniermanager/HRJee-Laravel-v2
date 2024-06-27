@@ -53,7 +53,7 @@ class AuthService
     {
         try {
             $user = auth()->guard('employee_api')->user();
-            $singleUserDetails = $user->load('assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+            $singleUserDetails = $user->load('bankDetails', 'addressDetails', 'assetDetails', 'documentDetails', 'userDetails');
             return apiResponse('user_details', $singleUserDetails);
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
