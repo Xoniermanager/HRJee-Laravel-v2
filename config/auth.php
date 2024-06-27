@@ -48,6 +48,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'employee_api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
         'super_admin' => [
             'driver' => 'session',
             'provider' => 'super_admin',
@@ -59,6 +63,14 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        // 'employee' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\User::class,
+        // ],
+        // 'employee_api' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\User::class,
+        // ],
         'company_users' => [
             'driver' => 'eloquent',
             'model' => App\Models\CompanyUser::class,
@@ -91,6 +103,18 @@ return [
 
     'passwords' => [
         'users' => [
+            'provider' => 'users',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'employee' => [
+            'provider' => 'users',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'employee_api' => [
             'provider' => 'users',
             'table' => 'password_reset_tokens',
             'expire' => 60,

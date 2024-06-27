@@ -46,6 +46,19 @@ services:
     networks:
       - hrjee_network
   
+  phpmyadmin:
+    depends_on:
+      - database
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8050:80
+    environment:
+      PMA_HOST: database
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - hrjee_network
+  
 networks:
   hrjee_network:
     driver: bridge

@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\Api\BankService;
+use App\Http\Services\UserBankDetailServices;
 use Illuminate\Http\Request;
 use Throwable;
 
 class BankController extends Controller
 {
     private $bankService;
-    public function __construct(BankService $bankService)
+    public function __construct(UserBankDetailServices $bankService)
     {
         $this->bankService = $bankService;
     }
@@ -20,7 +21,7 @@ class BankController extends Controller
     {
 
         try {
-            $bankDetails= $this->bankService->bankDetails();
+            $bankDetails= $this->bankService->getDetailById(auth()->user()->id);
             if ($bankDetails)
                 return apiResponse('address', $bankDetails);
             else

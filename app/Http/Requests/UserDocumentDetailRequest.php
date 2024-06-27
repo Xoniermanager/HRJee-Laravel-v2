@@ -22,8 +22,7 @@ class UserDocumentDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'documentTypeId' => ['nullable', 'exists:document_types,id'],
-            'dataType' => ['required', 'in:allWithoutPaginate,paginate,single'],
+           
         ];
     }
 }

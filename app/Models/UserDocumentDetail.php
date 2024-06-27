@@ -27,4 +27,9 @@ class UserDocumentDetail extends Model
             get: fn ($value) => url("storage/" .  $value)
         );
     }
+    // protected $appends = ['document'];
+    // public function getDocumentAttribute()
+    // {
+    //     return imageBasePath($this->document, 'originalAnnouncementImagePath');
+    // }
 }

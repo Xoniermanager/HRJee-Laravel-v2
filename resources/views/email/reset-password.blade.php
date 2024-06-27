@@ -20,7 +20,7 @@
 
         <div style="width:100%;text-align: center;">
 
-            <img src="assets/media/logos/logo.png" style="height: 80px">
+            <img src="{{asset('assets/media/logos/logo.png')}}" style="height: 80px">
 
 
 
@@ -30,7 +30,7 @@
 
             <img src="temp.png">
         </div>
-<?php $otp=str_split($sentOtpDetails['otp_code']); ?>
+<?php $otp=str_split($resetPassword['otp_code']); ?>
         <div style="width:100%;text-align: center;">
             <div style="margin-top: 40px;">
                 <span style="font-weight: 600; border: 1px solid #b7acac;

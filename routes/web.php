@@ -83,9 +83,19 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
 
-Route::middleware(['dashboard.access'])->group(function () {
-    Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
+Route::prefix('company')->controller(AdminController::class)->group(function () {
+    Route::post('/login', 'companyLogin')->name('company.login');
+    Route::get('/logout', 'companyLogout')->name('company.logout');
+    Route::get('/signin', 'signin')->name('signin');
+    Route::get('/signup', 'signup')->name('signup');
+    Route::get('/resend/otp', 'resendOtp')->name('employee.resendOtp');
+    Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
+    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
+});
 
+
+Route::prefix('company')->middleware(['dashboard.access','Check2FA'])->group(function () {
+    Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
     Route::controller(CompanyController::class)->group(function () {
         Route::get('company/profile', 'company_profile')->name('company.profile');
         Route::post('company/update/{id}', 'update_company')->name('update.company');
@@ -271,6 +281,7 @@ Route::middleware(['dashboard.access'])->group(function () {
     });
 });
 
+
 Route::controller(AdminController::class)->group(function () {
     Route::post('/company/login', 'companyLogin')->name('company.login');
     Route::get('/company/logout', 'companyLogout')->name('company.logout');
@@ -353,7 +364,10 @@ Route::controller(ForgetPasswordController::class)->group(function () {
     Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
 });
 
-Route::prefix('employee')->group(function () {
+// Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
+Route::prefix('employee')->middleware('Check2FA')->group(function () 
+{
+
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
 
@@ -415,10 +429,14 @@ Route::prefix('employee')->group(function () {
 /** ----------------- Super Admin Started -------------------- **/
 Route::prefix('/admin')->controller(SuperAdminController::class)->group(function () {
     Route::get('/login', 'login')->name('super_admin.login.form');
+    Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
+    Route::get('/resend/otp', 'resendOtp')->name('super_admin.resendOtp');
+    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('super_admin.verifyOtpCheck');
     Route::post('/super_admin_login', 'super_admin_login')->name('super.admin.login');
 });
 
-Route::prefix('/admin')->group(function () {
+
+Route::prefix('/admin')->middleware('Check2FA')->group(function () {
     Route::view('/dashboard', 'super_admin.dashboard')->name('super_admin.dashboard');
     
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {

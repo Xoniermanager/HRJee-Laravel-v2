@@ -65,6 +65,7 @@
                                 <img alt="Logo" src="assets/media/logos/logo.png" class="h-75px" />
 
                             </a>
+                            
                             <!--begin::Form-->
                             <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden"
                                 id="kt_sign_in_form" data-kt-redirect-url="/metronic8/demo3/../demo3/index.html"

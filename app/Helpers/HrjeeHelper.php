@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+
 function removingSpaceMakingName($name)
 {
     $lowerCaseName = strtolower($name);
@@ -23,7 +26,7 @@ if (!function_exists('uploadFile')) {
 
         $path = empty($path) ? 'originalImagePath' : $path;
         if ($cdn == true) {
-            $s3 = \Storage::disk('s3');
+            $s3 = Storage::disk('s3');
         }
 
         if (request()->$filename) {
@@ -107,5 +110,15 @@ if (!function_exists('apiResponse')) {
         $output->status = true;
          $output->data = $dataArr;
         return response()->json($output, $httpCode);
+    }
+}
+if (!function_exists('JsonResponse')) {
+    function JsonResponse($status = true, $data = [], $msg = '', $rescode = 200)
+    {
+        $response = [];
+        $response['status'] = $status;
+        $response['data'] = empty($data) ? null : $data;
+        $response['message'] = $msg;
+        return response()->json($response, $rescode);
     }
 }
