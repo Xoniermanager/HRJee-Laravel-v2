@@ -100,6 +100,9 @@ class AuthController extends Controller
 
     public function verifyOtp()
     {
+        if (!auth()->guard('employee')->check()) {
+           return  redirect('/employee/signin');
+        }
         return view('employee-verify-otp');
     }
 
@@ -122,12 +125,15 @@ class AuthController extends Controller
     public function resendOtp(Request $request)
     {
         try {
-
-            $otpResponse = $this->sendOtpService->generateOTP('ashish120897maurya@gmail.com', 'employee');
-            if ($otpResponse['status'] == false)
-                return redirect('employee/verify/otp')->with('success',  'invalid or expired otp! ');
+            if (!auth()->guard('employee')->check()) {
+              return   redirect('/employee/signin');
+            }
+            $email = auth()->guard('employee')->user()->email;
+            $otpResponse = $this->sendOtpService->generateOTP($email, 'employee');
+            if ($otpResponse['status'] == true)
+                return redirect('employee/verify/otp')->with('success',  $otpResponse['message']);
             else
-                return redirect('employee/verify/otp')->with('error',  'found error while send otp on mail');
+                return redirect('employee/verify/otp')->with('error',  $otpResponse['message']);
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }

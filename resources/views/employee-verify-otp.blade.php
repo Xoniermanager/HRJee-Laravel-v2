@@ -373,7 +373,7 @@
                     <!--end::Submit button-->
 
                 </form>
- <a href="{{ route('employee.resendOtp',auth()->guard('employee')->user()->email) }}">resendOtp</a> 
+ <a href="{{ route('employee.resendOtp') }}">resendOtp</a> 
 
 
                     <!--end::Indicator progress-->

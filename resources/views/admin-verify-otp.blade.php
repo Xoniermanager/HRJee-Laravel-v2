@@ -371,7 +371,7 @@
 
                 </form>
 
-
+                <a href="{{ route('super_admin.resendOtp') }}">resendOtp</a>
 
 
             </div><!-- endof col -->

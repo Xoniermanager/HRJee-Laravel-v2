@@ -126,6 +126,7 @@ class EmployeeController extends Controller
 
     public function edit(User $user)
     {
+        
         $allCountries = $this->countryService->getAllActiveCountry();
         $allPreviousCompany = $this->previousCompanyService->getAllActivePreviousCompany();
         $allQualification = $this->qualificationService->getAllActiveQualification();

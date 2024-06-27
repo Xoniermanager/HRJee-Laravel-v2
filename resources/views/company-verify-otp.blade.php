@@ -374,7 +374,7 @@
 
                 </form>
 
-
+                <a href="{{ route('employee.resendOtp') }}">resendOtp</a>
 
 
             </div><!-- endof col -->

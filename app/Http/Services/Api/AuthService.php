@@ -29,32 +29,44 @@ class AuthService
                 return errorMessage('null', 'invalid_credentials');
 
             $otpResponse = $this->sendOtpService->generateOTP($request->email, 'employee');
-            if ($otpResponse['status'] == false)
+            if ($otpResponse['status'] == false) {
                 return errorMessage('null', $otpResponse['message'],);
-            else
-                return apiResponse($otpResponse['message']);
+            } else {
+                $user = Auth::guard('employee_api')->user();
+                $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
+                return apiResponse($otpResponse['message'], $user);
+            }
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
     }
-    public function profile($request)
+    public function profile()
     {
         try {
-            $user = Auth::user();
+            $user = Auth::guard('employee_api')->user();
             return apiResponse('user_profile', $user);
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
+    }
+    public function userAllDetails()
+    {
+        try {
+            $user = auth()->guard('employee_api')->user();
+            $singleUserDetails = $user->load('assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+            return apiResponse('user_details', $singleUserDetails);
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
     }
     public function logout($request)
     {
-        auth()->user()->tokens()->delete();
+        auth()->guard('employee_api')->user()->tokens()->delete();
         return apiResponse('logut');
     }
-    public function sendOtp($request,$type)
+    public function sendOtp($request, $type)
     {
         try {
-
             $otpResponse = $this->sendOtpService->generateOTP($request->email, $type);
             if ($otpResponse['status'] == false)
                 return errorMessage('null', $otpResponse['message']);
@@ -69,10 +81,10 @@ class AuthService
         try {
             $data = $request;
             $data['type'] = 'employee';
-            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data);
+            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'employee_api');
             if ($verifyOtpResponse) {
-                $user = auth()->guard('employee')->user();
-                $user->tokens()->delete();
+                $user = auth()->guard('employee_api')->user();
+                // $user->tokens()->delete();
                 $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
                 return apiResponse('otp_verified', $user);
             } else {

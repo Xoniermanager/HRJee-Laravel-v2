@@ -23,30 +23,34 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('sendOtp', [AuthController::class, 'sendOtp']);
-Route::post('verify/otp', [AuthController::class, 'verifyOtp']);
+
 Route::post('password/forgot', [ForgotPasswordController::class, 'forgotPassword']);
 Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']);
 
-Route::group(['middleware' => 'Check2FA','auth:sanctum',], function () {
-    
-    Route::get('profile', [AuthController::class, 'profile']);
-    Route::post('update/profile', [AuthController::class, 'updateProfile']);
-    Route::post('change/password', [AuthController::class, 'changePassword']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('user/bank/details', [BankController::class, 'bankDetails']);
-    Route::get('user/document', [DocumentController::class, 'documents']);
-    Route::get('user/address', [AddressController::class, 'addressDetails']);
-    Route::get('user/addresses', [AddressController::class, 'getAllAddresses']);
-    Route::put('update/address', [AddressController::class, 'updateAddress']);
+Route::group(['middleware' =>  'auth:sanctum'], function () {
 
-    Route::get('/leave/type', [LeaveManagementController::class, 'leaveType']);
-    Route::post('/apply/leave', [LeaveManagementController::class, 'storeApplyLeave']);
+    Route::post('verify/otp', [AuthController::class, 'verifyOtp']);
 
-   
-    /**For Leave Management API */
-    Route::get('/leave/type', [LeaveManagementApiController::class, 'leaveType']);
-    Route::post('/apply/leave', [LeaveManagementApiController::class, 'storeApplyLeave']);
+    // Route::group(['middleware' => 'Check2FA'], function () {
+        Route::get('profile', [AuthController::class, 'profile']);
+        Route::get('user/details', [AuthController::class, 'userAllDetails']);
+        Route::post('update/profile', [AuthController::class, 'updateProfile']);
+        Route::post('change/password', [AuthController::class, 'changePassword']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('user/bank/details', [BankController::class, 'bankDetails']);
+        Route::get('user/document', [DocumentController::class, 'documents']);
+        Route::get('user/address', [AddressController::class, 'addressDetails']);
+        Route::get('user/addresses', [AddressController::class, 'getAllAddresses']);
+        Route::put('update/address', [AddressController::class, 'updateAddress']);
+        Route::get('/leave/type', [LeaveManagementController::class, 'leaveType']);
+        Route::post('/apply/leave', [LeaveManagementController::class, 'storeApplyLeave']);
 
-    /** For Holiday Management API */
-    Route::get('/holiday/list', [HolidayApiController::class, 'list']);
+
+        /**For Leave Management API */
+        Route::get('/leave/type', [LeaveManagementApiController::class, 'leaveType']);
+        Route::post('/apply/leave', [LeaveManagementApiController::class, 'storeApplyLeave']);
+
+        /** For Holiday Management API */
+        Route::get('/holiday/list', [HolidayApiController::class, 'list']);
+    // });
 });

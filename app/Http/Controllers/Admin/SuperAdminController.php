@@ -51,7 +51,6 @@ class SuperAdminController extends Controller
                     return redirect('/admin/verify/otp');
                 else
                     return redirect('/signin')->with('error', $genrateOtpresponse['message']);
-                
             }
         } catch (Throwable $th) {
             return response()->json([
@@ -84,6 +83,9 @@ class SuperAdminController extends Controller
 
     public function verifyOtp()
     {
+        if (!auth()->guard('super_admin')->check()) {
+            return  redirect('/admin/login');
+        }
         return view('admin-verify-otp');
     }
     public function verifyOtpCheck(VerifyOtpRequest $request)
@@ -96,9 +98,26 @@ class SuperAdminController extends Controller
             if ($verifyOtpResponse)
                 return redirect('/admin/dashboard');
             else
-                return redirect('/verify/otp')->with('error', transLang($verifyOtpResponse['message']));
+                return redirect('/verify/otp')->with('error',  'invalid or expired otp! ');
         } catch (Throwable $th) {
             return Redirect::back()->withErrors($th->getMessage());
+        }
+    }
+
+    public function resendOtp(Request $request)
+    {
+        try {
+            if (!auth()->guard('super_admin')->check()) {
+                return   redirect('/admin/login');
+            }
+            $email = auth()->guard('super_admin')->user()->email;
+            $otpResponse = $this->sendOtpService->generateOTP($email, 'super_admin');
+            if ($otpResponse['status'] == true)
+                return redirect('admin/verify/otp')->with('success',  transLang($otpResponse['message']));
+            else
+                return redirect('admin/verify/otp')->with('error',  transLang($otpResponse['message']));
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
         }
     }
 }

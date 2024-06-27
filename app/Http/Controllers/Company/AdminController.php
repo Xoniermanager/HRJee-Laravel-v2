@@ -89,6 +89,9 @@ class AdminController extends Controller
     }
     public function verifyOtp()
     {
+        if (!auth()->guard('admin')->check()) {
+            return  redirect('/company/signin');
+        }
         return view('company-verify-otp');
     }
 
@@ -111,5 +114,23 @@ class AdminController extends Controller
     public function super_admin_login_form()
     {
         return view('super_admin.account.login');
+    }
+
+
+    public function resendOtp(Request $request)
+    {
+        try {
+            if (!auth()->guard('admin')->check()) {
+                return   redirect('/company/signin');
+            }
+            $email = auth()->guard('admin')->user()->email;
+            $otpResponse = $this->sendOtpService->generateOTP($email, 'admin');
+            if ($otpResponse['status'] == true)
+                return redirect('company/verify/otp')->with('success',  transLang($otpResponse['message']));
+            else
+                return redirect('company/verify/otp')->with('error',  transLang($otpResponse['message']));
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
     }
 }

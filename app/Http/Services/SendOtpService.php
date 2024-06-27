@@ -42,13 +42,18 @@ class SendOtpService
     }
   }
 
-  public function verifyOTP($data)
+  public function verifyOTP($data, $guardType = '')
   {
     $find = UserCode::where(['email' => $data['email'], 'code' => $data['otp'], 'type' => $data['type']])
-      ->where('updated_at', '>=', now()->subMinutes(2))
+      ->where('updated_at', '>=', now()->subMinutes(20))
       ->first();
     if ($find) {
-      Session::put('user_2fa', auth()->guard($data['type'])->user()->id);
+      if (!empty($guardType))
+        $type = $guardType;
+      else
+        $type = $data['type'];
+
+      Session::put('user_2fa', Auth::guard($type)->user()->id);
       return true;
     } else {
       return false;

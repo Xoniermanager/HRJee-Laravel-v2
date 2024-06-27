@@ -85,6 +85,7 @@ Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_da
 Route::prefix('company')->controller(AdminController::class)->group(function () {
     Route::post('/company_login', 'companyLogin')->name('company_login');
     Route::post('/logout', 'logout')->name('company.logout');
+    Route::get('/resend/otp', 'resendOtp')->name('employee.resendOtp');
     Route::get('/signin', 'signin')->name('signin');
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
@@ -353,12 +354,12 @@ Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class
 
 /** ---------------Employee Panel Started--------------  */
 
-Route::controller(AuthController::class)->group(function () {
-    Route::get('/', 'index')->name('employee');
+Route::prefix('employee')->controller(AuthController::class)->group(function () {
+    Route::get('/signin', 'index')->name('employee');
     Route::post('/login', 'login')->name('login');
-    Route::get('/employee/verify/otp', 'verifyOtp')->name('employee.verifyOtp');
-    Route::get('/employee/resend/otp/{email}', 'resendOtp')->name('employee.resendOtp');
-    Route::post('employee/verify/otp', 'verifyOtpCheck')->name('employee.verifyOtpCheck');
+    Route::get('/verify/otp', 'verifyOtp')->name('employee.verifyOtp');
+    Route::get('/resend/otp', 'resendOtp')->name('employee.resendOtp');
+    Route::post('/verify/otp', 'verifyOtpCheck')->name('employee.verifyOtpCheck');
     Route::get('/logout', 'logout')->name('logout');
 });
 Route::controller(ForgetPasswordController::class)->group(function () {
@@ -432,8 +433,8 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
 /** ----------------- Super Admin Started -------------------- **/
 Route::prefix('/admin')->controller(SuperAdminController::class)->group(function () {
     Route::get('/login', 'login')->name('super_admin.login.form');
-    
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
+    Route::get('/resend/otp', 'resendOtp')->name('super_admin.resendOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('super_admin.verifyOtpCheck');
     Route::post('/super_admin_login', 'super_admin_login')->name('super.admin.login');
 });
