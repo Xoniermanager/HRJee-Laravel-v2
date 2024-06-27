@@ -368,7 +368,6 @@ Route::controller(ForgetPasswordController::class)->group(function () {
 // Route::prefix('employee')->middleware(["auth", "employee"])->group(function () {
 Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
-Route::prefix('employee')->group(function () {
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
 
