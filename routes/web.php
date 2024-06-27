@@ -352,10 +352,10 @@ Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class
 
 /** ---------------Employee Panel Started--------------  */
 
-Route::controller(AuthController::class)->group(function () {
-    Route::get('/', 'index')->name('employee');
-    Route::post('/employee/login', 'employeeLogin')->name('employee.login');
-    Route::get('/employee/logout', 'emoloyeeLogout')->name('employee.logout');
+Route::prefix('employee')->controller(AuthController::class)->group(function () {
+    Route::get('/signin', 'index')->name('employee');
+    Route::post('/login', 'employeeLogin')->name('employee.login');
+    Route::get('/logout', 'emoloyeeLogout')->name('employee.logout');
 });
 Route::controller(ForgetPasswordController::class)->group(function () {
     Route::get('/forget/password', 'index')->name('forget.password');
