@@ -11,7 +11,9 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "mckenziearts/laravel-notify": "^2.4",
+        "orangehill/iseed": "^3.0",
         "prettus/l5-repository": "^2.9",
+        "spatie/laravel-ciphersweet": "^1.6",
         "spatie/laravel-permission": "^6.7"
     },
     "require-dev": {
@@ -28,7 +30,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/HrjeeHelper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -66,4 +71,5 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true
+    
 }

@@ -17,7 +17,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-
+    'ALLOW_SEND_EMAIL' => env('ALLOW_SEND_EMAIL', true),
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://localhost:8090/HRJee-Laravel-v2'),
 
     'asset_url' => env('ASSET_URL'),
 
@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Kolkata',
 
     /*
     |--------------------------------------------------------------------------
@@ -170,6 +170,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Orangehill\Iseed\IseedServiceProvider::class,
     ])->toArray(),
 
     /*

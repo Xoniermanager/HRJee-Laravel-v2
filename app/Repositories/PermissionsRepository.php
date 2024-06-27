@@ -3,10 +3,7 @@
 namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Models\permissions;
-use App\Validators\permissionsValidator;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 
 /**
  * Class permissionsRepositoryEloquent.
@@ -27,14 +24,6 @@ class PermissionsRepository extends BaseRepository
     public function getPermissionsById($id)
     {
        return $this->where('id',$id);
-    }
-
-    /**
-     * Boot up the repository, pushing criteria
-     */
-    public function boot()
-    {
-        $this->pushCriteria(app(RequestCriteria::class));
     }
     
 }

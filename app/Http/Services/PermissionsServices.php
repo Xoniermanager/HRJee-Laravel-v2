@@ -2,31 +2,34 @@
 
 namespace App\Http\Services;
 
-use App\Models\permissions;
-use App\Models\User;
-use App\Repositories\permissionsRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\PermissionsRepository;
 
-class permissionsServices 
+class PermissionsServices 
 {
-  private $permissions_repository ;
-  public function __construct(permissionsRepository $permissions_repository)
+  private $permissionRepository ;
+  public function __construct(PermissionsRepository $permissionRepository)
   {
-    $this->permissions_repository = $permissions_repository;
+    $this->permissionRepository = $permissionRepository;
   }
-    public function get_permissions()
+    public function all()
     { 
-     return $this->permissions_repository->all();
+     return $this->permissionRepository->orderBy('id','DESC')->all();
     }
-    public function delete_permissions_by_id($id)
+    public function create(array $data)
+    {
+      return $this->permissionRepository->create($data);
+    }
+    public function deleteDetails($id)
     {    
-    return $this->permissions_repository->getPermissionsById($id)->delete();
+    return $this->permissionRepository->getPermissionsById($id)->delete();
     }
-    public function get_permissions_by_id($id)
-    {    
-    return $this->permissions_repository->getPermissionsById($id)->get();
+    public function updateDetails(array $data, $id)
+    {
+      return $this->permissionRepository->find($id)->update($data);
     }
+    
     
 
 }

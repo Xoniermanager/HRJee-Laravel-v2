@@ -2,30 +2,30 @@
 
 namespace App\Http\Services;
 
-use App\Models\Roles;
-use App\Models\User;
-use App\Repositories\rolesRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\RolesRepository;
 
 class RolesServices 
 {
-  private $roles_repository ;
-  public function __construct(rolesRepository $roles_repository)
+  private $rolesRepository ;
+  public function __construct(RolesRepository $rolesRepository)
   {
-    $this->roles_repository = $roles_repository;
+    $this->rolesRepository = $rolesRepository;
   }
-    public function get_roles()
+    public function all()
     { 
-     return $this->roles_repository->all();
+     return $this->rolesRepository->orderBy('id','DESC')->all();
     }
-    public function delete_roles_by_id($id)
-    {    
-    return $this->roles_repository->getRolesById($id)->delete();
+    public function create(array $data)
+    {
+      return $this->rolesRepository->create($data);
     }
-    public function get_roles_by_id($id)
+    public function deleteDetails($id)
     {    
-    return $this->roles_repository->getRolesById($id)->get();
+    return $this->rolesRepository->getRolesById($id)->delete();
+    }
+    public function updateDetails(array $data, $id)
+    {
+      return $this->rolesRepository->find($id)->update($data);
     }
     
 
