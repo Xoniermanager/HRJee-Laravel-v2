@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\UserDocumentDetail;
+use Illuminate\Support\Facades\Auth;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -27,21 +28,8 @@ class UserDocumentsDetailRepository extends BaseRepository
         return $this->where('user_id', $userId)->where('document_type_id', $documentId)->first();
     }
 
-    public function getUserDocuments($userId = '', $documentId = '', $type = '')
+    public function getUserDocuments()
     {
-
-
-        $query = $this->where('user_id', $userId);
-        if (!empty($documentId))
-            $query =  $query->where('document_type_id', $documentId);
-
-        if (!empty($type) && $type == 'paginate')
-            $query = $query->paginate(10);
-        elseif (!empty($type) && $type == 'single')
-            $query = $query->first();
-        elseif (!empty($type) && $type == 'allWithoutPaginate')
-            $query =  $query->get();
-
-        return $query;
+        return  $this->where('user_id', Auth::user()->id)->get();
     }
 }

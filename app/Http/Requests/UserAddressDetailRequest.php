@@ -22,7 +22,7 @@ class UserAddressDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'addressType' => ['required', 'in:local,permanent'],
+            'address_type' => ['required', 'in:local,permanent'],
         ];
     }
 }

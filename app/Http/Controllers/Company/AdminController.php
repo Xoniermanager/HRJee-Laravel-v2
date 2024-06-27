@@ -2,22 +2,32 @@
 
 namespace App\Http\Controllers\Company;
 
+use App\Http\Requests\VerifyOtpRequest;
 use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Services\AuthService;
+use App\Http\Services\SendOtpService;
+use App\Models\CompanyUser;
+use App\Models\UserCode;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class AdminController extends Controller
 {
-    private  $authService;
+    private  $authService, $sendOtpService;
 
-    public function __construct(AuthService $authService)
+    public function __construct(AuthService $authService, SendOtpService $sendOtpService)
     {
         $this->authService = $authService;
+        $this->sendOtpService = $sendOtpService;
     }
+
+
 
     /**
      * Process user login attempt.
@@ -35,13 +45,20 @@ class AdminController extends Controller
                 'password' => 'required'
             ]);
             if ($validateUser->fails()) {
-                return redirect('/signin')->withErrors($validateUser)->withInput();
+                return  Redirect::back()->withErrors($validateUser)->withInput();
             }
-            $credentials = $request->only('email', 'password');
-            if (Auth::guard('admin')->attempt($credentials)) {
-                return redirect('/dashboard');
+
+            $data = $request->only('email', 'password');
+            if (!Auth::guard('admin')->attempt($data)) {
+                return Redirect::back()->with('error', 'invalid_credentials');
+            } else {
+                $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, 'admin');
+                if ($genrateOtpresponse['status'] == true)
+                    return redirect('company/verify/otp');
+                else
+                    return redirect('company/signin')->with('error', $genrateOtpresponse['message']);
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -54,10 +71,12 @@ class AdminController extends Controller
      * This method logs out the authenticated user, clears the session data,
      * and redirects the user to the login page.
      */
-    public function companyLogout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect('signin');
+        $request->session()->flash('success', 'You have been logged out.');
+
+        return redirect('/company/signin');
     }
 
     public function signup()
@@ -68,9 +87,50 @@ class AdminController extends Controller
     {
         return view('company.signin');
     }
+    public function verifyOtp()
+    {
+        if (!auth()->guard('admin')->check()) {
+            return  redirect('/company/signin');
+        }
+        return view('company-verify-otp');
+    }
+
+    public function verifyOtpCheck(VerifyOtpRequest $request)
+    {
+        try {
+            $data = $request->all();
+            $data['email'] = auth()->guard('admin')->user()->email;
+            $data['type'] = 'admin';
+            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data);
+            if ($verifyOtpResponse)
+                return redirect('company/dashboard');
+            else
+                return redirect('company/verify/otp')->with('error',  'invalid_or_expired_otp');
+        } catch (Throwable $th) {
+            return Redirect::back()->withErrors($th->getMessage());
+        }
+    }
 
     public function super_admin_login_form()
     {
         return view('super_admin.account.login');
+    }
+
+
+    public function resendOtp(Request $request)
+    {
+        try {
+            if (!auth()->guard('admin')->check()) {
+                return   redirect('/company/signin');
+            }
+            $email = auth()->guard('admin')->user()->email;
+            $otpResponse = $this->sendOtpService->generateOTP($email, 'admin');
+            if ($otpResponse['status'] == true)
+                return redirect('company/verify/otp')->with('success',  transLang($otpResponse['message']));
+            else
+                return redirect('company/verify/otp')->with('error',  transLang($otpResponse['message']));
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
     }
 }

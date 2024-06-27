@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Api;
 
- 
+use App\Http\Services\SendOtpService;
 use App\Mail\LoginVerification;
 use App\Models\User;
 use App\Models\UserCode;
@@ -15,6 +15,12 @@ use Throwable;
 
 class AuthService
 {
+    private  $authService, $sendOtpService;
+
+    public function __construct(SendOtpService $sendOtpService)
+    {
+        $this->sendOtpService = $sendOtpService;
+    }
     public function login($request)
     {
         try {
@@ -22,43 +28,50 @@ class AuthService
             if (!Auth::attempt($request->only(['email', 'password'])))
                 return errorMessage('null', 'invalid_credentials');
 
-            return apiResponse('login_success', ['email' => $request->email]);
+            $otpResponse = $this->sendOtpService->generateOTP($request->email, 'employee');
+            if ($otpResponse['status'] == false) {
+                return errorMessage('null', $otpResponse['message'],);
+            } else {
+                $user = Auth::guard('employee_api')->user();
+                $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
+                return apiResponse($otpResponse['message'], $user);
+            }
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
     }
-    public function profile($request)
+    public function profile()
     {
         try {
-            $user = Auth::user();
+            $user = Auth::guard('employee_api')->user();
             return apiResponse('user_profile', $user);
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
+    }
+    public function userAllDetails()
+    {
+        try {
+            $user = auth()->guard('employee_api')->user();
+            $singleUserDetails = $user->load('bankDetails', 'addressDetails', 'assetDetails', 'documentDetails', 'userDetails');
+            return apiResponse('user_details', $singleUserDetails);
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
     }
     public function logout($request)
     {
-        auth()->user()->tokens()->delete();
+        auth()->guard('employee_api')->user()->tokens()->delete();
         return apiResponse('logut');
     }
-    public function sendOtp($request)
+    public function sendOtp($request, $type)
     {
         try {
-
-            $code = generateOtp();
-            UserCode::updateOrCreate(['email' => $request->email], [
-                'user_id'  => $request->email,
-                'type'  => 'user',
-                'code'  => $code,
-            ]);
-            $mailData = [
-                'email' => $request->email,
-                'otp_code' => $code,
-                'expire_at' => Carbon::now()->addMinutes(2)->format("H:i A")
-            ];
-
-            Mail::to($request->email)->send(new LoginVerification($mailData));
-            return apiResponse('otp_sent_on_mail', $mailData);
+            $otpResponse = $this->sendOtpService->generateOTP($request->email, $type);
+            if ($otpResponse['status'] == false)
+                return errorMessage('null', $otpResponse['message']);
+            else
+                return apiResponse($otpResponse['message']);
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
@@ -66,20 +79,16 @@ class AuthService
     public function verifyOtp($request)
     {
         try {
-            $find = UserCode::where(['email' => $request['email'], 'code' => $request['otp'], 'type' => 'user'])
-                ->where('updated_at', '>=', now()->subMinutes(2))
-                ->first();
-
-            if ($find) {
-                if (Auth::attempt($request->only(['email', 'password'])))
-                    $user = User::where('email', $request['email'])->first();
-
-                $user->tokens()->delete();
-                $user->access_token = $user->createToken("API TOKEN")->plainTextToken;
-                Session::put('user_2fa', auth()->user()->id);
-                return apiResponse('otp_verify', $user);
+            $data = $request;
+            $data['type'] = 'employee';
+            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'employee_api');
+            if ($verifyOtpResponse) {
+                $user = auth()->guard('employee_api')->user();
+                // $user->tokens()->delete();
+                $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
+                return apiResponse('otp_verified', $user);
             } else {
-                return errorMessage('null', 'invalid otp or expired');
+                return errorMessage('null', 'invalid_or_expired_otp');
             }
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
@@ -106,12 +115,13 @@ class AuthService
     public function updateProfile($request)
     {
         try {
-            $data = $request->all();
+
+            $data = $request->validated();
             $date = date_create($request->date_of_birth);
             $data['date_of_birth'] = date_format($date, "Y/m/d");
             #Update the new Password
             User::whereId(auth()->user()->id)->update($data);
-            return apiResponse('profile_updATED');
+            return apiResponse('profile_updated');
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }

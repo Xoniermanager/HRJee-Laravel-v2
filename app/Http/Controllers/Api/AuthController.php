@@ -28,7 +28,12 @@ class AuthController extends Controller
     }
     public function profile(Request $request)
     {
-        return $this->userAuthService->profile($request);
+        return $this->userAuthService->profile();
+    }
+    public function userAllDetails()
+    {
+
+      return $this->userAuthService->userAllDetails();
     }
     public function logout(Request $request)
     {
@@ -36,7 +41,7 @@ class AuthController extends Controller
     }
     public function sendOtp(SendOtpRequest $request)
     {
-        return $this->userAuthService->sendOtp($request);
+        return $this->userAuthService->sendOtp($request, 'employee');
     }
     public function verifyOtp(UserRequest $request)
     {
