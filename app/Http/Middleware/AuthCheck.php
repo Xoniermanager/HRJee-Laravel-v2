@@ -19,7 +19,6 @@ class AuthCheck
             if (Auth::guard()->check()) {
                 return redirect('/dashboard'); // Redirect to home if user is already authenticated
             }
-    
             return $next($request);
         }
     }

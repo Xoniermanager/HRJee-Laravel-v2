@@ -58,6 +58,7 @@ use App\Http\Controllers\Company\AttendanceStatusController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
+use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
 use App\Http\Controllers\Company\UserAdvanceDetailsController;
@@ -420,7 +421,7 @@ Route::prefix('/admin')->controller(SuperAdminController::class)->group(function
 
 Route::prefix('/admin')->group(function () {
     Route::view('/dashboard', 'super_admin.dashboard')->name('super_admin.dashboard');
-    
+
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
         Route::get('/', 'index')->name('super_admin.departments');
         Route::post('/create', 'store')->name('super_admin.department.store');
@@ -714,4 +715,14 @@ Route::prefix('/news-category')->controller(NewsCategoryController::class)->grou
     Route::get('/delete', 'destroy')->name('news.category.delete');
     Route::get('/status/update', 'statusUpdate')->name('news.category.statusUpdate');
     Route::get('/search/filter', 'serachNewsCategoryFilterList');
+});
+
+//leave Credit Module
+Route::prefix('/leave-credit-management')->controller(LeaveCreditManagementController::class)->group(function () {
+    Route::get('/', 'index')->name('leave.credit.index');
+    Route::post('/create', 'store')->name('leave.credit.store');
+    Route::post('/update', 'update')->name('leave.credit.update');
+    Route::get('/delete', 'destroy')->name('leave.credit.delete');
+    Route::get('/status/update', 'statusUpdate')->name('leave.credit.statusUpdate');
+    Route::get('/search/filter', 'serachLeaveCreditFilterList');
 });

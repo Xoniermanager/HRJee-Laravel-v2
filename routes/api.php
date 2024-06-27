@@ -26,13 +26,13 @@ Route::post('verify/otp', [AuthController::class, 'verifyOtp']);
 
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    
+
     Route::get('profile', [AuthController::class, 'profile']);
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('user/bank/details', [BankController::class, 'bankDetails']);
-    
+
     // get single,all with paginate , all without paginate use this route
     Route::get('user/document', [DocumentController::class, 'documents']);
     Route::get('user/address', [AddressController::class, 'addressDetails']);
