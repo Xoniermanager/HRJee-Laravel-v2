@@ -383,6 +383,20 @@
                                 <!--end:Menu sub-->
                             </div>
                             <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item" data-url="{{ route('leave.credit.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('leave.credit.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-money-bill-wave-alt"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Leaves Credit Management</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
 
                             <!--begin:Menu item-->
                             <div class="menu-item" data-url="{{ route('leave.status.log.index') }}">
