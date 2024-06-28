@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Explore HRJee for innovative HR solutions. Efficiently manage your payroll with automated HR processes using our advanced payroll management software and system.">
   <!-- Favicon -->
-  <link rel="icon" href="assets/images/favicon.webp">
+  <link rel="icon" href="{{ asset('assets/images/favicon.webp') }}">
 
   <!-- CSS
       ============================================ -->

@@ -224,41 +224,40 @@
                     });
                 }
             });
-        });
+            jQuery("#asset_Status_update_form").validate({
+                rules: {
+                    name: "required"
+                },
+                messages: {
+                    name: "Please enter name",
 
-        jQuery("#asset_Status_update_form").validate({
-            rules: {
-                name: "required"
-            },
-            messages: {
-                name: "Please enter name",
-
-            },
-            submitHandler: function(form) {
-                var asset_status_data = $(form).serialize();
-                $.ajax({
-                    url: "<?= route('asset.status.update') ?>",
-                    type: 'post',
-                    data: asset_status_data,
-                    success: function(response) {
-                        jQuery('#edit_asset_status').modal('hide');
-                        swal.fire("Done!", response.message, "success");
-                        jQuery('#asset_status_list').replaceWith(response.data);
-                    },
-                    error: function(error_messages) {
-                        let errors = error_messages.responseJSON.error;
-                        for (var error_key in errors) {
-                            $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
-                                    error_key] + '</span>');
-                            setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                },
+                submitHandler: function(form) {
+                    var asset_status_data = $(form).serialize();
+                    $.ajax({
+                        url: "<?= route('asset.status.update') ?>",
+                        type: 'post',
+                        data: asset_status_data,
+                        success: function(response) {
+                            jQuery('#edit_asset_status').modal('hide');
+                            swal.fire("Done!", response.message, "success");
+                            jQuery('#asset_status_list').replaceWith(response.data);
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.error;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span id="' + error_key +
+                                    '_error" class="text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("#" + error_key + "_error").remove();
+                                }, 5000);
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
 
         function handleStatus(id) {

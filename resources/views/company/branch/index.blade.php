@@ -404,7 +404,8 @@
         /**-------------End----------*/
 
         /** Validation and Ajax Creation and Updated*/
-        jQuery(document).ready(function($) {
+        jQuery(document).ready(function($) 
+        {
             jQuery("#edit_company_branch_form").validate({
                 rules: {
                     name: "required",

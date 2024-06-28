@@ -227,7 +227,8 @@
         jQuery('#edit_designation').modal('show');
     }
     jQuery.noConflict();
-    jQuery(document).ready(function($) {
+    jQuery(document).ready(function($) 
+    {
         jQuery("#designation_form").validate({
             rules: {
                 name: "required",

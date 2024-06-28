@@ -19,7 +19,7 @@ class EmployeeAttendanceService
   }
   public function create($data)
   {
-    $userId = Auth()->user()->id;
+    $userId = Auth()->guard('employee')->user()->id;
     $userDetails =  $this->userDetailRepository->getDetailsByUserId($userId);
     $startingTime = Carbon::parse($userDetails->officeShift->start_time);
     $loginBeforeShiftTime = $startingTime->subMinutes($userDetails->officeShift->login_before_shift_time);
