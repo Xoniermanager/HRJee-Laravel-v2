@@ -11,9 +11,13 @@ class AnnouncementServices
   {
     $this->announcementRepository = $announcementRepository;
   }
-  public function all()
+  public function all($type = '')
   {
-    return $this->announcementRepository->orderBy('id', 'DESC')->paginate(10);
+    $query = $this->announcementRepository->orderBy('id', 'DESC');
+    if ($type == 'paginate')
+      return $query->paginate(10);
+    else
+      return $query->get();
   }
   public function create(array $data)
   {
@@ -32,6 +36,4 @@ class AnnouncementServices
   {
     return $this->announcementRepository->find($id)->delete();
   }
-
-  
 }

@@ -26,7 +26,7 @@ class AnnouncementController extends Controller
     public function index()
     {
         return view('company.announcements.index', [
-            'announcements' => $this->announcementService->all(),
+            'announcements' => $this->announcementService->all('paginate'),
             'branches' => $this->branch_services->allActiveBranches()
         ]);
     }
@@ -34,8 +34,9 @@ class AnnouncementController extends Controller
     {
         return view('company.announcements.assign_announcement', [
             'announcement' => $this->announcementService->announcementDetails($request->id),
-
-            'branches' => $this->branch_services->allActiveBranches()
+            'announcements' => $this->announcementService->all(),
+            'branches' => $this->branch_services->allActiveBranches(),
+            'branch_id' => $request->id
         ]);
     }
     public function create()

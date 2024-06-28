@@ -89,7 +89,7 @@ Route::prefix('company')->controller(AdminController::class)->group(function () 
     Route::get('/logout', 'companyLogout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');
     Route::get('/signup', 'signup')->name('signup');
-    Route::get('/resend/otp', 'resendOtp')->name('employee.resendOtp');
+    Route::get('/resend/otp', 'resendOtp')->name('company.resendOtp');
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
 });
@@ -286,7 +286,7 @@ Route::prefix('company')->middleware(['dashboard.access','Check2FA'])->group(fun
 Route::controller(AdminController::class)->group(function () {
     Route::post('/company/login', 'companyLogin')->name('company.login');
     Route::get('/company/logout', 'companyLogout')->name('company.logout');
-    Route::get('/signin', 'signin')->name('signin');
+    Route::get('/company/signin', 'signin')->name('signin');
     Route::get('/signup', 'signup')->name('signup');
 });
 
@@ -357,6 +357,9 @@ Route::prefix('employee')->controller(AuthController::class)->group(function () 
     Route::get('/signin', 'index')->name('employee');
     Route::post('/login', 'employeeLogin')->name('employee.login');
     Route::get('/logout', 'emoloyeeLogout')->name('employee.logout');
+    Route::get('/verify/otp', 'verifyOtp')->name('employee.verifyOtp');
+    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('employee.verifyOtpCheck');
+    Route::get('/resend/otp', 'resendOtp')->name('employee.resendOtp');
 });
 Route::controller(ForgetPasswordController::class)->group(function () {
     Route::get('/forget/password', 'index')->name('forget.password');

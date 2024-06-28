@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\DepartmentServices;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DepartmentController extends Controller
@@ -41,6 +42,7 @@ class DepartmentController extends Controller
                 return response()->json(['error' => $validateDepartments->messages()], 400);
             }
             $data = $request->all();
+            $data['company_id'] = Auth::guard('admin')->user()->id;
             if ($this->departmentService->create($data)) {
                 return response()->json([
                     'message' => 'Departments Created Successfully!',

@@ -42,16 +42,16 @@ COPY composer.json composer.lock ./
 RUN composer install --no-scripts --no-autoloader
 
 # RUN mv .env.example .env
-RUN php artisan route:clear
-RUN php artisan config:clear
-RUN php artisan cache:clear
-RUN php artisan storage:link
-RUN php artisan key:generate
+# RUN php artisan route:clear
+# RUN php artisan config:clear
+# RUN php artisan cache:clear
+# RUN php artisan storage:link
+# RUN php artisan key:generate
 # RUN php artisan migrate
 # RUN php artisan db:seed
 
 # RUN php artisan route:cache
-RUN php artisan config:cache
+# RUN php artisan config:cache
 
 USER $user
 
