@@ -30,6 +30,7 @@ class AnnouncementController extends Controller
             'branches' => $this->branch_services->allActiveBranches()
         ]);
     }
+    
     public function getAnnouncement(Request $request)
     {
         return view('company.announcements.assign_announcement', [
