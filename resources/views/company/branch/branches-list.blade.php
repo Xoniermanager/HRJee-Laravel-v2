@@ -40,7 +40,6 @@
                                 <span class="slider round"></span>
                             </label>
                         </td>
-
                         <td>
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <a href="#" data-bs-toggle="modal"
@@ -51,7 +50,7 @@
                                     <!--end::Svg Icon-->
                                 </a>
                                 <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                    onclick="deleteFunction('{{ $branch->id }}')">
+                                    onclick='deleteFunction({{ $branch->id }},`company_branch_list`,`{{route("company.branch.delete")}}`)'>
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

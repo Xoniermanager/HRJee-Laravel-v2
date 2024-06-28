@@ -16,8 +16,13 @@ class DepartmentServices
     return $this->departmentRepository->orderBy('id', 'DESC')->paginate(10);
   }
   public function create(array $data)
+  
   {
     return $this->departmentRepository->create($data);
+  }
+  public function getDepartmentsAdminOrCompany(array $data)
+  {
+    return $this->departmentRepository->whereNull('company_id')->orWhere('company_id',auth()->guard('admin')->user()->id)->get();
   }
 
   public function updateDetails(array $data, $id)

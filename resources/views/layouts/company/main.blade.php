@@ -36,7 +36,9 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         window.company_ajax_base_url = '{{ env('COMPANY_BASE_URL') }}';
         window.admin_ajax_base_url = '{{ env('ADMIN_BASE_URL') }}';
@@ -45,15 +47,14 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     {{-- start datetimepicker css & js links  --}}
-    <link rel="stylesheet"  href=
+    <link rel="stylesheet"
+        href=
     "https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
 
     <!-- datetimepicker jQuery CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
     </script>
     {{-- start datetimepicker css & js links  --}}
-
-
 
 </head>
 <!--end::Head-->
@@ -90,6 +91,38 @@
                     <!--end::Svg Icon-->
                 </div>
 </body>
+<script>
+    function deleteFunction(id, replaceWithDataId, url) {
+        console.log(id, replaceWithDataId, url);
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    data: {
+                        id: id
+                    },
+                    success: function(res) {
+                        Swal.fire("Done!", "It was succesfully deleted!", "success");
+                        $(`#${replaceWithDataId}`).replaceWith(res.data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire("Error deleting!", "Please try again", "error");
+                    }
+                });
+            }
+        });
+    }
+</script>
 <!--end::Body-->
 @include('layouts.company.footer')
 

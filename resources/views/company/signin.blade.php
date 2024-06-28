@@ -136,8 +136,8 @@
                 <div class="row ">
                     <div class="col-md-6 ">
                         <div class="text-center">
-                            <a href="index.html">
-                                <img class="logo-default" src="assets/images/logo/logo.png" alt="logo"
+                            <a href="">
+                                <img class="logo-default" src="{{ asset('assets/images/logo/logo.png') }}" alt="logo"
                                     width="150px">
                             </a>
                         </div>
@@ -149,7 +149,7 @@
                                         <div class="swiper-wrapper testimonial-slider__wrapper">
                                             <div class="swiper-slide">
                                                 <div class="sign_img">
-                                                    <img class="logo-default" src="assets/images/features/screen.png"
+                                                    <img class="logo-default" src="{{ asset('assets/images/features/screen.png') }}"
                                                         alt="logo">
                                                 </div>
                                                 <div class="author-info mt-3">
@@ -161,7 +161,7 @@
                                             </div>
                                             <div class="swiper-slide">
                                                 <div class="sign_img">
-                                                    <img class="logo-default" src="assets/images/features/dashboard.png"
+                                                    <img class="logo-default" src="{{ asset('assets/images/features/dashboard.png') }}"
                                                         alt="logo">
                                                 </div>
                                                 <div class="author-infom mt-3">
@@ -172,7 +172,7 @@
                                             </div>
                                             <div class="swiper-slide">
                                                 <div class="sign_img">
-                                                    <img class="logo-default" src="assets/images/features/4.png"
+                                                    <img class="logo-default" src="{{ asset('assets/images/features/4.png') }}"
                                                         alt="logo">
                                                 </div>
                                                 <div class="author-info mt-3">

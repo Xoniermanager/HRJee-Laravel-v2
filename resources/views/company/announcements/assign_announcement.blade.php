@@ -26,7 +26,7 @@
                                     <option value=""></option>
                                     @foreach ($branches as $key => $row)
                                         <option value="{{ $row->id }}"
-                                            {{ old('company_branch_id') == $row->id ? 'selected' : '' }}>
+                                            {{ old('company_branch_id',$branch_id) == $row->id ? 'selected' : '' }}>
                                             {{ $row->name }}
                                         </option>
                                     @endforeach
@@ -38,10 +38,15 @@
 
                             <div class="form-group">
                                 <label class="required">Announcement *</label>
-                                <select class="form-control">
-                                    <option value="">Option 1</option>
-                                    <option value="">Option 2</option>
-                                    <option value="">Option 3</option>
+                                <select class="form-control select2  " name="announcement_id" id="announcement_id"
+                                    style="width:100%">
+                                    <option value=""></option>
+                                    @foreach ($announcements as $key => $announcement)
+                                        <option value="{{ $announcement->id }}"
+                                            {{ old('announcement_id',$announcement) == $announcement->id ? 'selected' : '' }}>
+                                            {{ $announcement->title }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 

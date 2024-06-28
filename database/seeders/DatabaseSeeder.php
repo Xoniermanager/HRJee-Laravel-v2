@@ -73,5 +73,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LangaugeUserTableSeeder::class);
         $this->call(HolidaysTableSeeder::class);
         $this->call(NewsCategoriesTableSeeder::class);
+        $this->call(LeaveTypesTableSeeder::class);
     }
 }
