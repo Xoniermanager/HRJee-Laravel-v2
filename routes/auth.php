@@ -33,7 +33,7 @@ Route::prefix('company')->controller(AdminController::class)->group(function () 
     Route::get('/logout', 'companyLogout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');
     Route::get('/signup', 'signup')->name('signup');
-    Route::get('/resend/otp', 'resendOtp')->name('employee.resendOtp');
+    Route::get('/resend/otp', 'resendOtp')->name('comapny.resendOtp');
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
 });
