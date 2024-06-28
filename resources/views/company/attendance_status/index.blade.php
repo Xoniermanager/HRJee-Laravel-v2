@@ -91,7 +91,8 @@
                             </div>
                             <div class="mt-3">
                                 <label>Required Hours</label>
-                                <input class="form-control mb-5 mt-3" type="number" name="required_hours" id="required_hours">
+                                <input class="form-control mb-5 mt-3" type="number" name="required_hours"
+                                    id="required_hours">
                             </div>
                             <!--end::Input group-->
                         </div>
@@ -183,7 +184,7 @@
         <!--end::Modal dialog-->
     </div>
     <script>
-        function edit_attendance_status_details(id, name,required_hours) {
+        function edit_attendance_status_details(id, name, required_hours) {
             $('#id').val(id);
             $('#name').val(name);
             $('#required_hours').val(required_hours);
@@ -228,45 +229,43 @@
                     });
                 }
             });
-        });
-
-        jQuery("#attendance_status_update_form").validate({
-            rules: {
-                name: "required",
+            jQuery("#attendance_status_update_form").validate({
+                rules: {
+                    name: "required",
                     required_hours: "required",
-            },
-            messages: {
-                name: "Please enter name",
+                },
+                messages: {
+                    name: "Please enter name",
                     required_hours: "Please Enter the Hours",
 
-            },
-            submitHandler: function(form) {
-                var country_data = $(form).serialize();
-                $.ajax({
-                    url: "<?= route('attendance.status.update') ?>",
-                    type: 'post',
-                    data: country_data,
-                    success: function(response) {
-                        jQuery('#edit_attendance').modal('hide');
-                        swal.fire("Done!", response.message, "success");
-                        jQuery('#attendance_status_list').replaceWith(response.data);
-                    },
-                    error: function(error_messages) {
-                        let errors = error_messages.responseJSON.error;
-                        for (var error_key in errors) {
-                            $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
-                                    error_key] + '</span>');
-                            setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+                },
+                submitHandler: function(form) {
+                    var country_data = $(form).serialize();
+                    $.ajax({
+                        url: "<?= route('attendance.status.update') ?>",
+                        type: 'post',
+                        data: country_data,
+                        success: function(response) {
+                            jQuery('#edit_attendance').modal('hide');
+                            swal.fire("Done!", response.message, "success");
+                            jQuery('#attendance_status_list').replaceWith(response.data);
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.error;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span id="' + error_key +
+                                    '_error" class="text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("#" + error_key + "_error").remove();
+                                }, 5000);
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
-
         function handleStatus(id) {
             var checked_value = $('#checked_value').prop('checked');
             let status;

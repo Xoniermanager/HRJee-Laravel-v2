@@ -345,49 +345,48 @@
                     });
                 }
             });
-        });
-
-        jQuery("#office_time_config_update_form").validate({
-            rules: {
-                name: "required",
-                shift_hours: "required",
-                half_day_hours: "required",
-                min_shift_Hours: "required",
-                min_half_day_hours: "required"
-            },
-            messages: {
-                name: "Please enter name",
-                shift_hours: "Please enter shift_hours",
-                half_day_hours: "Please enter half day hours",
-                min_shift_Hours: "Please enter min shift hours",
-                min_half_day_hours: "Please enter min half day hours",
-            },
-            submitHandler: function(form) {
-                var department_data = $(form).serialize();
-                console.log(department_data);
-                $.ajax({
-                    url: "<?= route('office_time_config.update') ?>",
-                    type: 'post',
-                    data: department_data,
-                    success: function(response) {
-                        jQuery('#edit_office_time').modal('hide');
-                        swal.fire("Done!", response.message, "success");
-                        jQuery('#office_time_list').replaceWith(response.data);
-                    },
-                    error: function(error_messages) {
-                        let errors = error_messages.responseJSON.error;
-                        for (var error_key in errors) {
-                            $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
-                                    error_key] + '</span>');
-                            setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
-                            }, 5000);
+            jQuery("#office_time_config_update_form").validate({
+                rules: {
+                    name: "required",
+                    shift_hours: "required",
+                    half_day_hours: "required",
+                    min_shift_Hours: "required",
+                    min_half_day_hours: "required"
+                },
+                messages: {
+                    name: "Please enter name",
+                    shift_hours: "Please enter shift_hours",
+                    half_day_hours: "Please enter half day hours",
+                    min_shift_Hours: "Please enter min shift hours",
+                    min_half_day_hours: "Please enter min half day hours",
+                },
+                submitHandler: function(form) {
+                    var department_data = $(form).serialize();
+                    console.log(department_data);
+                    $.ajax({
+                        url: "<?= route('office_time_config.update') ?>",
+                        type: 'post',
+                        data: department_data,
+                        success: function(response) {
+                            jQuery('#edit_office_time').modal('hide');
+                            swal.fire("Done!", response.message, "success");
+                            jQuery('#office_time_list').replaceWith(response.data);
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.error;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span id="' + error_key +
+                                    '_error" class="text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("#" + error_key + "_error").remove();
+                                }, 5000);
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
 
         function handleStatus(id) {

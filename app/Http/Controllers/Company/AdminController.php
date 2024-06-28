@@ -71,12 +71,10 @@ class AdminController extends Controller
      * This method logs out the authenticated user, clears the session data,
      * and redirects the user to the login page.
      */
-    public function logout(Request $request)
+    public function companyLogout()
     {
         Auth::logout();
-        $request->session()->flash('success', 'You have been logged out.');
-
-        return redirect('/company/signin');
+        return redirect(route('signin'));
     }
 
     public function signup()
