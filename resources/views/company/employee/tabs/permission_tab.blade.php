@@ -213,24 +213,26 @@
 <script>
     jQuery(document).ready(function() {
         var departmentId = '{{ $userDetails->department_id ?? '' }}';
-        var designationId = '{{ $userDetails->designation_id ?? '' }}';
-        get_all_designation_using_department_id(departmentId, designationId);
-    });
+        const all_department_id = [departmentId];
+        var designation_id = '{{ $userDetails->designation_id ?? '' }}';
+        get_all_designation_using_department_id(all_department_id, designation_id);
+    });     
 
     /** get all Designation Using Department Id*/
     jQuery('#department_id').on('change', function() {
         var department_id = $(this).val();
-        get_all_designation_using_department_id(department_id);
+        const all_department_id = [department_id];
+        get_all_designation_using_department_id(all_department_id);
     });
 
-    function get_all_designation_using_department_id(department_id, designationId = '') {
+    function get_all_designation_using_department_id(all_department_id, designationId = '') {
         if (department_id) {
             $.ajax({
                 url: "{{ route('get.all.designation') }}",
                 type: "GET",
                 dataType: "json",
                 data: {
-                    'department_id': department_id
+                    'department_id': all_department_id
                 },
                 success: function(response) {
                     var select = $('#designation_id');
@@ -248,12 +250,12 @@
                     }
                 },
                 error: function() {
-                    // Swal.fire({
-                    //     icon: "error",
-                    //     title: "Oops...",
-                    //     text: "Something Went Wrong!! Please try Again"
-                    // });
-                    // return false;
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something Went Wrong!! Please try Again"
+                    });
+                    return false;
                 }
             });
         } else {

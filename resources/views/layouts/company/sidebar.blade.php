@@ -426,6 +426,19 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item " data-url="{{ route('getAllEmployeeLeaveAvailableList') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('getAllEmployeeLeaveAvailableList') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-file"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Employee Leave Available</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                                 <!--begin:Menu link-->
                                 <span class="menu-link">
@@ -452,6 +465,21 @@
                                             </span>
                                             <span class="menu-title">
                                                 News Category </span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                </div>
+                                <!--end:Menu sub-->
+                                <div class="menu-sub menu-sub-accordion" data-url="{{ route('news.index') }}">
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{ route('news.index') }}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Add News</span>
                                         </a>
                                         <!--end:Menu link-->
                                     </div>

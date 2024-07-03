@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('designations', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+        Schema::table('department_new', function (Blueprint $table) {
+            $table->unsignedBigInteger('new_id');
+            $table->foreign('new_id')->references('id')->on('news');
             $table->unsignedBigInteger('department_id');
-            $table->boolean('status')->default(true);
-            $table->timestamps();
             $table->foreign('department_id')->references('id')->on('departments');
+            $table->timestamps();
         });
-
     }
 
     /**
@@ -27,6 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('designations');
+        Schema::table('department_new', function (Blueprint $table) {
+            //
+        });
     }
 };

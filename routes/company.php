@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AssetController;
-use App\Http\Controllers\Company\AdminController;
+use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Company\NewsController;
 use App\Http\Controllers\Company\LeaveController;
 use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\StateController;
@@ -37,10 +38,10 @@ use App\Http\Controllers\Company\UserDocumentDetailsController;
 use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
+use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
-Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () 
-{
+Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
     Route::controller(CompanyController::class)->group(function () {
         Route::get('company/profile', 'company_profile')->name('company.profile');
@@ -354,5 +355,20 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/status/update', 'statusUpdate')->name('leave.credit.statusUpdate');
         Route::get('/search/filter', 'serachLeaveCreditFilterList');
     });
+
+    //Employee Leave Available
+    Route::get('get/allemployee/leave/available', [EmployeeLeaveAvailableController::class, 'getAllEmployeeLeaveAvailableList'])->name('getAllEmployeeLeaveAvailableList');
+
+    //News Module
+    Route::prefix('/news')->controller(NewsController::class)->group(function () {
+        Route::get('/', 'index')->name('news.index');
+        Route::get('/add', 'add')->name('news.add');
+        Route::post('/create', 'store')->name('news.store');
+        Route::post('/update', 'update')->name('news.update');
+        Route::get('/delete', 'destroy')->name('news.delete');
+        Route::get('/status/update', 'statusUpdate')->name('news.statusUpdate');
+        Route::get('/search/filter', 'serachLeaveCreditFilterList');
+    });
+    Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
 });
 /**---------------End Company Panel Route----------------*/

@@ -156,16 +156,15 @@ function addNewQualification(widgetId, value) {
 }
 
 jQuery(document).ready(function () {
-    var qualificationCrudServiceBaseUrl = company_ajax_base_url;
     var qualificationDataSource = new kendo.data.DataSource({
         batch: true,
         transport: {
             read: {
-                url: qualificationCrudServiceBaseUrl + "/qualifications/qualification_data",
+                url: admin_ajax_base_url + "/qualifications/qualification_data",
                 dataType: "json"
             },
             create: {
-                url: qualificationCrudServiceBaseUrl + "/qualifications/ajax_store_qualification",
+                url: admin_ajax_base_url + "/qualifications/ajax_store_qualification",
                 dataType: "json"
             },
             parameterMap: function (options, operation) {

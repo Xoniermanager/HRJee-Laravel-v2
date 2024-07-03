@@ -18,6 +18,7 @@ use App\Http\Controllers\Employee\AttendanceServiceController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
+use App\Http\Controllers\Employee\LeaveAvailableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,12 +30,7 @@ use App\Http\Controllers\Employee\EmployeeAttendanceController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
-
 /** ---------------Employee Panel Started--------------  */
-Route::get('/', [AuthController::class, 'index'])->name('employee');
-
 Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
     //Employee Dashboard
@@ -93,5 +89,8 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
     //Employee Attendance Management]
     Route::post('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
+
+    //Employee Leave Available
+    Route::get('get/leave/available', [LeaveAvailableController::class, 'getAllLeaveAvailableByUserId'])->name('employee.leave.available');
 });
 /**----------------- End Employee Pannel Route ----------------------*/

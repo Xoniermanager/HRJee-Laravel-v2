@@ -49,4 +49,8 @@ class NewsCategoryService
     }
     return $assetCategoryDetails->orderBy('id', 'DESC')->paginate(10);
   }
+  public function getAllActiveNewsCategoryUsingByCompanyID($companyId)
+  {
+    return $this->newsCategoryRepository->where('company_id', $companyId)->orwhere('company_id','')->where('status', '1')->get();
+  }
 }

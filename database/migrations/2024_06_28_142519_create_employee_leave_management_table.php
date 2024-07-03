@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('employee_leave_management', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('employee_leave_available_id');
+            $table->foreign('employee_leave_available_id')->references('id')->on('employee_leave_availables');
             $table->integer('credit')->default(0);
             $table->integer('debit')->default(0);
-            $table->integer('available')->default(0);
-            $table->unsignedBigInteger('leave_credit_management_id')->nullable();
-            $table->foreign('leave_credit_management_id')->references('id')->on('leave_credit_management');
-            $table->unsignedBigInteger('leave_id')->nullable();
-            $table->foreign('leave_id')->references('id')->on('leaves');
+            $table->integer('available');
+            $table->string('mode');
             $table->timestamps();
         });
     }

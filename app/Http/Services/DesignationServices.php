@@ -31,7 +31,7 @@ class DesignationServices
 
   public function getAllDesignationUsingDepartmentID($department_id)
   {
-    return $this->designationRepository->where('department_id', $department_id)->where('status', '1')->get();
+    return $this->designationRepository->whereIn('department_id', $department_id)->where('status', '1')->get();
   }
   public function serachDesignationFilterList($request)
   {

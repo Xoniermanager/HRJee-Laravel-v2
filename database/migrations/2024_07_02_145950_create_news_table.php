@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('designations', function (Blueprint $table) {
+        Schema::create('news', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('department_id');
+            $table->string('title');
+            $table->string('image');
+            $table->unsignedBigInteger('news_category_id');
+            $table->foreign('news_category_id')->references('id')->on('news_categories');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->text('description');
+            $table->string('file');
             $table->boolean('status')->default(true);
             $table->timestamps();
-            $table->foreign('department_id')->references('id')->on('departments');
         });
-
     }
 
     /**
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('designations');
+        Schema::dropIfExists('news');
     }
 };

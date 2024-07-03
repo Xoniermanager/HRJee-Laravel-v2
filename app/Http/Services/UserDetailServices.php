@@ -25,7 +25,7 @@ class UserDetailServices
       $user = User::find($user_id);
       $user->languages()->detach();
       $user->skills()->detach();
-      
+
       //Language Creation
       foreach ($data['language'] as $languages) {
         $user->languages()->attach(
@@ -48,5 +48,9 @@ class UserDetailServices
   public function getDetailsByUserId($userId)
   {
     return $this->userDetailRepository->with('officeShift')->where('user_id', $userId)->first();
+  }
+  public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
+  {
+    return $this->userDetailRepository->with('user')->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('user_id')->get();
   }
 }
