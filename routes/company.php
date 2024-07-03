@@ -79,7 +79,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     });
 
     //Announcement Module
-    Route::group(['prefix' => 'announcement', 'as' => 'announcement.'], function () {
+    Route::group(['prefix' => 'announcement/', 'as' => 'announcement.'], function () {
         Route::get('/', [AnnouncementController::class, 'index'])->name('index');
         Route::get('create', [AnnouncementController::class, 'create'])->name('create');
         Route::post('store', [AnnouncementController::class, 'store'])->name('store');
@@ -88,6 +88,11 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('delete', [AnnouncementController::class, 'destroy'])->name('delete');
         Route::get('status/update', [AnnouncementController::class, 'statusUpdate'])->name('statusUpdate');
         Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
+        Route::post('assign/save', [AnnouncementController::class, 'announcementAssign'])->name('assign.save');
+        Route::get('details/{id?}', [AnnouncementController::class, 'getAnnouncementDetails'])->name('details');
+        Route::get('branch/users', [AnnouncementController::class, 'getAllUsersByBranchId'])->name('branch.users');
+        Route::get('branch/department/users', [AnnouncementController::class, 'getAllUsersByBranchAndDepartmentId'])->name('branch.department.users');
+        Route::get('branch/department/designation/users', [AnnouncementController::class, 'getAllUsersByBranchDepartmentAndDesignationId'])->name('branch.department.designation.users');
     });
 
     //Country Module

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->dateTime('start_date_time');
             $table->dateTime('expires_at')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('inactive');
-            $table->unsignedBigInteger('company_branch_id');
+            $table->unsignedBigInteger('company_branch_id')->nullable();
             $table->foreign('company_branch_id')->references('id')->on('company_branches')->onDelete('cascade');
             $table->timestamps();
         });

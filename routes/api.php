@@ -37,8 +37,6 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('user/bank/details', [BankController::class, 'bankDetails']);
-    Route::get('user/document', [DocumentController::class, 'documents']);
     Route::get('user/address', [AddressController::class, 'addressDetails']);
     Route::get('user/addresses', [AddressController::class, 'getAllAddresses']);
     Route::put('update/address', [AddressController::class, 'updateAddress']);

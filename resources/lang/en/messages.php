@@ -19,4 +19,5 @@ return [
     'invalid_mail' => 'please enter valild mail to send otp!',
     'invalid_or_expired_otp' => 'invalid or expired otp!',
     'verify_otp' => 'please verify otp!',
+    'loader_message' => 'loading message!',
 ];

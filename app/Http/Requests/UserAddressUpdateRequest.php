@@ -23,7 +23,7 @@ class UserAddressUpdateRequest extends FormRequest
     {
         return [
             'addressId' => ['required', 'exists:user_addresses_details,id'],
-            'address_type' => ['required', 'in:local'],
+            'address_type' => ['required', 'in:local,both_same,permanent'],
             'address' => ['required', 'string'],
             'city' => ['required', 'string'],
             'pin_code' => ['required', 'string'],

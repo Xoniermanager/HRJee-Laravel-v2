@@ -97,19 +97,7 @@
                 <form id="create_announcement" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-sm-6 mb-3">
-                            <label class="col-form-label required">Branches</label>
-                            <select class="form-control select2  " style="width:100%" name="company_branch_id">
-                                <option value=""></option>
-                                @foreach ($branches as $key => $row)
-                                    <option value="{{ $row->id }}">{{ $row->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('company_branch_id')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
+                   
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Title</label>
                             <input type="text" class="form-control" name="title" placeholder="announcement title">
@@ -154,7 +142,7 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
                             <label class="col-form-label required">Description</label>
                             <textarea rows="2" class="form-control  " name='description' placeholder="description">
                             </textarea>
@@ -162,7 +150,19 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-
+                        <div class="col-sm-6 mb-3">
+                            <label class="col-form-label">Branches</label>
+                            <select class="form-control select2  " style="width:100%" name="company_branch_id">
+                                <option value=""></option>
+                                @foreach ($branches as $key => $row)
+                                    <option value="{{ $row->id }}">{{ $row->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('company_branch_id')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div><br>
                     <button class="btn btn-primary" type="submit">save</button>
                 </form>
@@ -296,7 +296,7 @@
         $("#create_announcement").validate({
             rules: {
                 company_branch_id: {
-                    required: true,
+                    required: false,
                 },
                 title: {
                     required: true,

@@ -74,5 +74,6 @@ class DatabaseSeeder extends Seeder
         $this->call(HolidaysTableSeeder::class);
         $this->call(NewsCategoriesTableSeeder::class);
         $this->call(LeaveTypesTableSeeder::class);
+        $this->call(AnnouncementsTableSeeder::class);
     }
 }

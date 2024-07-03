@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('announcement_assignes', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('announcement_id')->nullable();
+            $table->unsignedBigInteger('company_branch_id');
+            $table->foreign('company_branch_id')->references('id')->on('company_branches');
+
+            $table->unsignedBigInteger('announcement_id');
             $table->foreign('announcement_id')->references('id')->on('announcements');
 
             $table->unsignedBigInteger('department_id')->nullable();

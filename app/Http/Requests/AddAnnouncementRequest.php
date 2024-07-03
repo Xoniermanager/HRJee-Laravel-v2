@@ -22,7 +22,7 @@ class AddAnnouncementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "company_branch_id" => "required|exists:company_branches,id",
+            "company_branch_id" => "nullable|exists:company_branches,id",
             "title" => "required|string|min:10",
             "start_date_time" => "required|after_or_equal:now",
             "expires_at" => "nullable|after_or_equal:start_date_time",

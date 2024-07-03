@@ -20,11 +20,12 @@ class DepartmentServices
   {
     return $this->departmentRepository->create($data);
   }
-  public function getDepartmentsAdminOrCompany(array $data)
+  
+  public function getDepartmentsByAdminAndCompany()
   {
     return $this->departmentRepository->whereNull('company_id')->orWhere('company_id',auth()->guard('admin')->user()->id)->get();
   }
-
+ 
   public function updateDetails(array $data, $id)
   {
     return $this->departmentRepository->find($id)->update($data);

@@ -4,19 +4,33 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Http\Requests\AnnouncementAssignRequest;
 use App\Http\Services\AnnouncementServices;
 use App\Http\Services\BranchServices;
+use App\Http\Services\CompanyUserService;
+use App\Http\Services\DepartmentServices;
+use App\Http\Services\DesignationServices;
+use App\Http\Services\UserDetailServices;
+use App\Jobs\AssignAnnouncement;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class AnnouncementController extends Controller
 {
     private $branch_services;
+    private $departmentServices;
     private $announcementService;
-    public function __construct(AnnouncementServices $announcementService, BranchServices $branch_services)
+    private $userDetailServices;
+    private $designationServices;
+    private $companyUserService;
+    public function __construct(AnnouncementServices $announcementService, BranchServices $branch_services, DepartmentServices $departmentServices, DesignationServices $designationServices, UserDetailServices $userDetailServices)
     {
         $this->announcementService = $announcementService;
+        $this->departmentServices = $departmentServices;
+        $this->designationServices = $designationServices;
+        $this->userDetailServices = $userDetailServices;
         $this->branch_services = $branch_services;
     }
 
@@ -30,16 +44,67 @@ class AnnouncementController extends Controller
             'branches' => $this->branch_services->allActiveBranches()
         ]);
     }
-    
+
     public function getAnnouncement(Request $request)
     {
+        $announcement = $this->announcementService->announcementDetails($request->id);
+        $activeBranches = $this->branch_services->allActiveBranches();
+        $ids = $activeBranches->pluck('id')->toArray();
+        if (!empty($announcement->company_branch_id))
+            $branchIds[] = $announcement->company_branch_id;
+        else
+            $branchIds = $ids;
+
+        $branchUsers = $this->userDetailServices->getAllUsersByBranchId($branchIds);
         return view('company.announcements.assign_announcement', [
-            'announcement' => $this->announcementService->announcementDetails($request->id),
+            'announcement' => $announcement,
             'announcements' => $this->announcementService->all(),
-            'branches' => $this->branch_services->allActiveBranches(),
-            'branch_id' => $request->id
+            'designations' =>  $this->designationServices->getDesignationsAdminOrCompany(),
+            'departments' =>  $this->departmentServices->getDepartmentsByAdminAndCompany(),
+            'branches' => $activeBranches,
+            'branchUsers' => $branchUsers,
+            'branch_id' => $branchIds
         ]);
     }
+    public function getAnnouncementDetails(Request $request)
+    {
+        $announcement = $this->announcementService->announcementDetails($request->id);
+        return response()->json(['status' => true, 'data' => $announcement]);
+    }
+
+
+    public function getAllUsersByBranchId(Request $request)
+    {
+        if (empty($request->ids))
+            $ids =  [];
+        else
+            $ids =  $request->ids;
+        $branchUsers = $this->userDetailServices->getAllUsersByBranchId($ids);
+        $data['branchUsers'] = $branchUsers;
+        $data['branchDepartments'] = $this->departmentServices->getDepartmentsByAdminAndCompany();
+        return response()->json(['status' => true, 'data' => $data]);
+    }
+    public function getAllUsersByBranchAndDepartmentId(Request $request)
+    {
+        $branchIds = $request->branchIds;
+        if (empty($request->departmentIds))
+            $departmentIds = [];
+        else
+            $departmentIds = $request->departmentIds;
+
+        $branchUsers = $this->userDetailServices->getAllUsersByBranchAndDepartmentId($branchIds, $departmentIds);
+        $data['branchDepartmentUsers'] = $branchUsers;
+        $data['branchDepartmentDesignations'] = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds);
+        return response()->json(['status' => true, 'data' => $data]);
+    }
+    public function getAllUsersByBranchDepartmentAndDesignationId(Request $request)
+    {
+
+        $branchUsers = $this->userDetailServices->getAllUsersByBranchDepartmentAndDesignationId($request->branchIds, $request->departmentIds, $request->designationIds);
+        return response()->json(['status' => true, 'data' => $branchUsers]);
+    }
+
+
     public function create()
     {
         $branches = $this->branch_services->allActiveBranches();
@@ -60,6 +125,7 @@ class AnnouncementController extends Controller
     public function store(AddAnnouncementRequest $request)
     {
         try {
+
             $data = $request->except(['_token']);
             if ($request->has('image')) {
                 $data['image'] = uploadFile('image', 'image', 'originalAnnouncementImagePath');
@@ -71,7 +137,7 @@ class AnnouncementController extends Controller
                     [
                         'message' => 'Announcement Created Successfully!',
                         'data'   =>  view('company.announcements.announcement_list', [
-                            'announcements' => $this->announcementService->all(),
+                            'announcements' => $this->announcementService->all('paginate'),
                         ])->render()
                     ]
                 );
@@ -138,6 +204,27 @@ class AnnouncementController extends Controller
             echo 1;
         } else {
             echo 0;
+        }
+    }
+
+    public function announcementAssign(AnnouncementAssignRequest $request)
+    {
+        try {
+            dd($request->all());
+            // $datas['company_branch_id']=$request['company_branch_id'];
+            // $datas['announcement_id']=$request['announcement_id'];
+            // $datas['department_id']=$request['department_id'];
+            // $datas['designation_id']=$request['designation_id'];
+            $data =  $this->announcementService->announcementAssignStore($request);
+            if ($data) {
+                // if ($request->assign_announcement == 1)
+                //     AssignAnnouncement::dispatch(['name'=>'ejhsdjfg']);
+
+                return apiResponse('announcement_assigned');
+            } else
+                return errorMessage('announcement_not_assigned');
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
         }
     }
 }

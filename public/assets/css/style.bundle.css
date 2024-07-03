@@ -39375,3 +39375,6 @@ span.relative.z-0.inline-flex.rtl\:flex-row-reverse.shadow-sm.rounded-md {
 .relative.inline-flex.items-center.px-4.py-2.text-sm.font-medium {
   margin-right: 10px;
 }
+.field_error{
+  color:red
+}
