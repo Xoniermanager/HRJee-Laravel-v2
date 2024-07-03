@@ -210,7 +210,6 @@ class AnnouncementController extends Controller
     public function announcementAssign(AnnouncementAssignRequest $request)
     {
         try {
-            dd($request->all());
             // $datas['company_branch_id']=$request['company_branch_id'];
             // $datas['announcement_id']=$request['announcement_id'];
             // $datas['department_id']=$request['department_id'];
