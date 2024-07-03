@@ -62,4 +62,8 @@ class UserDetailServices
   {
     return $this->userDetailRepository->with('user')->whereIn('company_branch_id', $branch_id)->whereIn('department_id' ,$departmentId)->whereIn('designation_id', $designationId)->get();
   }
+  public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
+  {
+    return $this->userDetailRepository->with('user')->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('user_id')->get();
+  }
 }

@@ -41,7 +41,7 @@ class LeaveManagementApiController extends Controller
     public function storeApplyLeave(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(),[
+            $validator = Validator::make($request->all(), [
                 'leave_type_id'      => ['required', 'exists:leave_types,id'],
                 'from'               => ['required', 'date'],
                 'to'                 => ['required', 'date'],
@@ -50,7 +50,7 @@ class LeaveManagementApiController extends Controller
                 'to_half_day'        => ['required_if:from,>,to', 'in:first_half,second_half'],
                 'reason'             => ['required'],
             ]);
-            if($validator->fails()){
+            if ($validator->fails()) {
                 return response()->json([
                     "error" => 'validation_error',
                     "message" => $validator->errors(),
@@ -61,10 +61,9 @@ class LeaveManagementApiController extends Controller
                 return response()->json([
                     'status' => true,
                     'message' => "Applied Successfully"
-                ],200);
+                ], 200);
             }
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 "status" => false,
                 "error" =>  $e->getMessage(),

@@ -18,4 +18,7 @@ class Department extends Model
         return $this->hasOne(Department::class);
         
     }
+    public function news() {
+        return $this->belongsToMany(News::class);
+    }
 }

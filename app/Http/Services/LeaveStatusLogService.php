@@ -9,10 +9,12 @@ class LeaveStatusLogService
 {
   private $leaveStatusLogRepository;
   private $leaveService;
-  public function __construct(LeaveStatusLogRepository $leaveStatusLogRepository, LeaveService $leaveService)
+  private $employeeLeaveAvailableService;
+  public function __construct(LeaveStatusLogRepository $leaveStatusLogRepository, LeaveService $leaveService, EmployeeLeaveAvailableService $employeeLeaveAvailableService)
   {
     $this->leaveStatusLogRepository = $leaveStatusLogRepository;
     $this->leaveService = $leaveService;
+    $this->employeeLeaveAvailableService = $employeeLeaveAvailableService;
   }
   public function all()
   {
@@ -20,7 +22,7 @@ class LeaveStatusLogService
   }
   public function create(array $data)
   {
-    $data['action_taken_by'] = '2'; //Auth::guard('admin')->user()->id;
+    $data['action_taken_by'] = '1'; //Auth::guard('admin')->user()->id;
     if ($this->leaveStatusLogRepository->create($data)) {
       $payload = [
         'leave_status_id' => $data['leave_status_id']

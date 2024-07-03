@@ -26,7 +26,7 @@ class LeaveStatusLogController extends Controller
     public function index()
     {
         $leaveStatusLogDetails = $this->leaveStatusLogService->all();
-        return view('company.leave_status_log.index',compact('leaveStatusLogDetails'));
+        return view('company.leave_status_log.index', compact('leaveStatusLogDetails'));
     }
     public function add()
     {
@@ -37,45 +37,52 @@ class LeaveStatusLogController extends Controller
     public function getLeaveAppliedDetailsbyId(Request $request)
     {
         $appliedLeaveDetail = $this->leaveService->getAppliedLeaveDetailsUsingId($request->leaveID);
+        if (isset($appliedLeaveDetail) && !empty($appliedLeaveDetail)) {
+            $halfDayValue = '';
+            $fromHalfDay = '';
+            $toHalfDay = '';
 
-        $halfDayValue = '';
-        $fromHalfDay = '';
-        $toHalfDay = '';
+            if ($appliedLeaveDetail->is_half_day == 1)
+                $halfDayValue = 'Yes';
+            elseif ($appliedLeaveDetail->is_half_day == 0)
+                $halfDayValue = 'No';
+            else
+                $halfDayValue;
 
-        if ($appliedLeaveDetail->is_half_day == 1)
-            $halfDayValue = 'Yes';
-        elseif ($appliedLeaveDetail->is_half_day == 0)
-            $halfDayValue = 'No';
+            if ($appliedLeaveDetail->from_half_day == 'first_half')
+                $fromHalfDay = 'First Half';
+            elseif ($appliedLeaveDetail->from_half_day == 'second_half')
+                $fromHalfDay = 'Second Half';
+            else
+                $fromHalfDay;
+
+
+            if ($appliedLeaveDetail->to_half_day == 'first_half')
+                $toHalfDay = 'First Half';
+            elseif ($appliedLeaveDetail->to_half_day == 'second_half')
+                $toHalfDay = 'Second Half';
+            else
+                $toHalfDay;
+
+            $leaveDetailsHtml = '';
+            $leaveDetailsHtml = '<div class="panel panel-body table-responsive text-center border-radiusxl">';
+            $leaveDetailsHtml .= '<table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-2"><tbody>';
+            $leaveDetailsHtml .= '<tr><th>Applied Date</th><td>' . date('F jS, Y  h:i:s a', strtotime($appliedLeaveDetail->created_at)) . '</td></tr>';
+            $leaveDetailsHtml .= '<tr><th>Leave Type</th><td>' . $appliedLeaveDetail->LeaveTypeName . '</td></tr>';
+            $leaveDetailsHtml .= '<tr><th>From</th><td>' . $appliedLeaveDetail->from . '</td></tr>';
+            $leaveDetailsHtml .= '<tr><th>To</th><td>' . $appliedLeaveDetail->to . '</td></tr>';
+            $leaveDetailsHtml .= '<tr><th>Half Day</th><td>' . $halfDayValue . '</td></tr>';
+            $leaveDetailsHtml .= '<tr><th>From Half Day</th><td>' . $fromHalfDay . '</td></tr>';
+            $leaveDetailsHtml .= '<tr><th>To Half Day</th><td>' . $toHalfDay . '</td></tr>';
+            $leaveDetailsHtml .= '</tbody></table></div>';
+        }
         else
-            $halfDayValue;
-
-        if ($appliedLeaveDetail->from_half_day == 'first_half')
-            $fromHalfDay = 'First Half';
-        elseif ($appliedLeaveDetail->from_half_day == 'second_half')
-            $fromHalfDay = 'Second Half';
-        else
-            $fromHalfDay;
-
-
-        if ($appliedLeaveDetail->to_half_day == 'first_half')
-            $toHalfDay = 'First Half';
-        elseif ($appliedLeaveDetail->to_half_day == 'second_half')
-            $toHalfDay = 'Second Half';
-        else
-            $toHalfDay;
-
-        $leaveDetailsHtml = '';
-        $leaveDetailsHtml = '<div class="panel panel-body table-responsive text-center border-radiusxl">';
-        $leaveDetailsHtml .= '<table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-2"><tbody>';
-        $leaveDetailsHtml .= '<tr><th>Applied Date</th><td>' . date('F jS, Y  h:i:s a', strtotime($appliedLeaveDetail->created_at)) . '</td></tr>';
-        $leaveDetailsHtml .= '<tr><th>Leave Type</th><td>' . $appliedLeaveDetail->LeaveTypeName . '</td></tr>';
-        $leaveDetailsHtml .= '<tr><th>From</th><td>' . $appliedLeaveDetail->from . '</td></tr>';
-        $leaveDetailsHtml .= '<tr><th>To</th><td>' . $appliedLeaveDetail->to . '</td></tr>';
-        $leaveDetailsHtml .= '<tr><th>Half Day</th><td>' . $halfDayValue . '</td></tr>';
-        $leaveDetailsHtml .= '<tr><th>From Half Day</th><td>' . $fromHalfDay . '</td></tr>';
-        $leaveDetailsHtml .= '<tr><th>To Half Day</th><td>' . $toHalfDay . '</td></tr>';
-        $leaveDetailsHtml .= '</tbody></table></div>';
-
+        {
+            $leaveDetailsHtml = '<div class="panel panel-body table-responsive text-center border-radiusxl">';
+            $leaveDetailsHtml .= '<table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-2"><tbody>';
+            $leaveDetailsHtml .='<p>No Leave Available for Approved or Reject</p>';
+            $leaveDetailsHtml .= '</tbody></table></div>';
+        }
         return  $leaveDetailsHtml;
     }
 

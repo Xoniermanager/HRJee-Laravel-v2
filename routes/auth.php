@@ -17,8 +17,9 @@ Route::controller(ForgetPasswordController::class)->group(function () {
 
 
 /**---------------Employee Auth Route----------------*/
+Route::get('/', [AuthController::class, 'index'])->name('employee');
+
 Route::prefix('employee')->controller(AuthController::class)->group(function () {
-    Route::get('/signin', 'index')->name('employee');
     Route::post('/login', 'employeeLogin')->name('employee.login');
     Route::get('/logout', 'emoloyeeLogout')->name('employee.logout');
     Route::get('/verify/otp', 'verifyOtp')->name('employee.verifyOtp');

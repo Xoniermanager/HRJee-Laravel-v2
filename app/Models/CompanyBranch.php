@@ -38,5 +38,8 @@ class CompanyBranch extends Model
     {
         return $this->belongsTo(state::class);
     }
+    public function news() {
+        return $this->belongsToMany(News::class);
+    }
     
 }

@@ -11,8 +11,10 @@ class LeaveStatus extends Model
 
     const PENDING = '1';
     const APPROVED = '2';
-    
+
+    const CANCELLED = '3';
+
     protected $fillable = [
-        'name', 'status','company_id'
+        'name', 'status', 'company_id'
     ];
 }
