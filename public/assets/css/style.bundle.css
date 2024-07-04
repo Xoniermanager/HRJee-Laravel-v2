@@ -39379,3 +39379,13 @@ span.relative.z-0.inline-flex.rtl\:flex-row-reverse.shadow-sm.rounded-md {
   padding: 0 !important;
   border: none !important;
 } 
+.tox .tox-statusbar {
+  display: none !important;
+}
+.news-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 0.65rem;
+  border: 3px solid var(--kt-body-bg);
+  box-shadow: var(--kt-box-shadow);
+}

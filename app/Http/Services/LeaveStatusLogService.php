@@ -2,19 +2,16 @@
 
 namespace App\Http\Services;
 
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\LeaveStatusLogRepository;
 
 class LeaveStatusLogService
 {
   private $leaveStatusLogRepository;
   private $leaveService;
-  private $employeeLeaveAvailableService;
-  public function __construct(LeaveStatusLogRepository $leaveStatusLogRepository, LeaveService $leaveService, EmployeeLeaveAvailableService $employeeLeaveAvailableService)
+  public function __construct(LeaveStatusLogRepository $leaveStatusLogRepository, LeaveService $leaveService)
   {
     $this->leaveStatusLogRepository = $leaveStatusLogRepository;
     $this->leaveService = $leaveService;
-    $this->employeeLeaveAvailableService = $employeeLeaveAvailableService;
   }
   public function all()
   {

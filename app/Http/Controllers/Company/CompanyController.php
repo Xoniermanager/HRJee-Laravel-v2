@@ -19,16 +19,13 @@ class CompanyController extends Controller
 
 
     private $company_services;
-    private $fileUploadService;
     private $branch_services;
 
     public function __construct(
         CompanyServices $company_services,
-        FileUploadService $fileUploadService,
         BranchServices $branch_services
     ) {
         $this->company_services  = $company_services;
-        $this->fileUploadService = $fileUploadService;
         $this->branch_services = $branch_services;
     }
     /**
@@ -57,13 +54,13 @@ class CompanyController extends Controller
             if ($request->logo !== null) {
                 $upload_path = "/uploads";
                 $image =  $data['logo'];
-                $imagePath = $this->fileUploadService->imageUpload($image, $upload_path);
-                if ($imagePath) {
-                    $data['logo'] = $imagePath;
+                $filePath = uploadingImageorFile($image, $upload_path, 'company_profile');
+                if ($filePath) {
+                    $data['logo'] = $filePath;
                 }
             }
-           
-             
+
+
             $updatedCompany = $this->company_services->update_company($data);
             if ($updatedCompany) {
                 smilify('success', 'Profile Updated Successfully!');

@@ -3,11 +3,7 @@
 @section('title')
     Add News
 @endsection
-@if ($errors->any())
-     @foreach ($errors->all() as $error)
-         <div>{{$error}}</div>
-     @endforeach
- @endif
+
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
@@ -18,14 +14,14 @@
                 <!--begin::Header-->
                 <div class="card-header p-0 align-items-center">
                     <div class="card-body">
-                        <form action="{{ route('news.store') }}" method="post"
-                            enctype="multipart/form-data">
+                        <form action="{{ route('news.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6 form-group">
                                         <label for="">Title *</label>
-                                        <input class="form-control" name="title" type="text" value="{{old('title')}}">
+                                        <input class="form-control" name="title" type="text"
+                                            value="{{ old('title') }}">
                                         @if ($errors->has('title'))
                                             <div class="text-danger">{{ $errors->first('title') }}</div>
                                         @endif
@@ -63,7 +59,8 @@
                                         <label for="">Designation *</label>
                                         <select class="bg-white form-select form-select-solid" data-control="select2"
                                             data-close-on-select="false" data-placeholder="Select an option"
-                                            data-allow-clear="true" multiple="multiple" id="designation_id" name="designation_id[]">
+                                            data-allow-clear="true" multiple="multiple" id="designation_id"
+                                            name="designation_id[]">
 
                                         </select>
                                         @if ($errors->has('designation_id'))
@@ -129,13 +126,13 @@
                                     </div>
                                     <div class="col-md-12 form-group">
                                         <label for="">Description </label>
-                                        <textarea id="editor" name="description">Hello, World!</textarea>
+                                        <textarea id="editor" name="description"></textarea>
                                         @if ($errors->has('description'))
                                             <div class="text-danger">{{ $errors->first('description') }}</div>
                                         @endif
                                     </div>
                                 </div>
-                               <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
                 </div>

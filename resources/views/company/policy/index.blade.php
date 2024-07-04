@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    News
+    Policy
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -37,11 +37,11 @@
                             <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
                                 value="2">Inactive</option>
                         </select>
-                        <select class="form-control ml-2 min-w-200px" id="news_category">
-                            <option value="">News Category</option>
-                            @foreach ($allNewsCategoryDetails as $newsCategoryDetails)
-                                <option value="{{ $newsCategoryDetails->id }}">
-                                    {{ $newsCategoryDetails->name }}</option>
+                        <select class="form-control ml-2 min-w-200px" id="policy_category">
+                            <option value="">Policy Category</option>
+                            @foreach ($allPolicyCategoryDetails as $policyCategoryDetails)
+                                <option value="{{ $policyCategoryDetails->id }}">
+                                    {{ $policyCategoryDetails->name }}</option>
                             @endforeach
                         </select>
                         <select class="form-control ml-2 min-w-200px" id="company_branch">
@@ -61,8 +61,8 @@
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
-                    <a href="{{ route('news.add') }}" class="btn btn-sm btn-primary align-self-center">
-                        Add News</a>
+                    <a href="{{ route('policy.add') }}" class="btn btn-sm btn-primary align-self-center">
+                        Add Policy</a>
                     <!--end::Action-->
                 </div>
                 @if (session('error'))
@@ -78,7 +78,7 @@
                 <div class="mb-5 mb-xl-10">
                     <div class="card-body py-3">
                         <!--begin::Table container-->
-                        @include('company.news.list')
+                        @include('company.policy.list')
                         <!--end::Table container-->
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                 status_name = 'Inactive';
             }
             $.ajax({
-                url: "{{ route('news.statusUpdate') }}",
+                url: "{{ route('policy.statusUpdate') }}",
                 type: 'get',
                 data: {
                     'id': id,
@@ -132,11 +132,11 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: company_ajax_base_url + '/news/delete/' + id,
+                        url: company_ajax_base_url + '/policy/delete/' + id,
                         type: "get",
                         success: function(res) {
                             Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            $('#news_list').replaceWith(res.data);
+                            $('#policy_list').replaceWith(res.data);
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             Swal.fire("Error deleting!", "Please try again", "error");
@@ -151,7 +151,7 @@
         jQuery("#status").on('change', function() {
             search_filter_results();
         });
-        jQuery("#news_category").on('change', function() {
+        jQuery("#policy_category").on('change', function() {
             search_filter_results();
         });
         jQuery("#company_branch").on('change', function() {
@@ -164,16 +164,16 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/news/search/filter',
+                url: company_ajax_base_url + '/policy/search/filter',
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val(),
-                    'news_category_id': $('#news_category').val(),
+                    'policy_category_id': $('#policy_category').val(),
                     'company_branch_id': $('#company_branch').val(),
                     'department_id': $('#department').val()
                 },
                 success: function(response) {
-                    $('#news_list').replaceWith(response.data);
+                    $('#policy_list').replaceWith(response.data);
                 }
             });
         }

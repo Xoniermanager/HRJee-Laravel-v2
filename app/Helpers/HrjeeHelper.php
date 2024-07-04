@@ -18,6 +18,14 @@ function unlinkFileOrImage($file)
     return true;
 }
 
+function uploadingImageorFile($file, String $path, $namePrefix = '')
+{
+    $image  = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
+    $path = $path . '/' . $image;
+    Storage::disk('public')->put($path, file_get_contents($file));
+    return  $path;
+}
+
 
 if (!function_exists('transLang')) {
     function transLang($template = null, $dataArr = [])

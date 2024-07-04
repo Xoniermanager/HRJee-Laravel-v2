@@ -8,13 +8,10 @@ class UserDocumentDetailServices
 {
   private $userDocumentDetailRepository;
   private $documentTypeService;
-  private $fileUploadService;
-
-  public function __construct(UserDocumentsDetailRepository $userDocumentDetailRepository, DocumentTypeService $documentTypeService, FileUploadService $fileUploadService)
+  public function __construct(UserDocumentsDetailRepository $userDocumentDetailRepository, DocumentTypeService $documentTypeService)
   {
     $this->userDocumentDetailRepository = $userDocumentDetailRepository;
     $this->documentTypeService = $documentTypeService;
-    $this->fileUploadService = $fileUploadService;
   }
 
   public function create($allDocumentFile)
@@ -27,8 +24,7 @@ class UserDocumentDetailServices
       if ($allDocumentFile->hasFile($fileName)) {
         $nameForFile = $fileName . '_' . $user_id;
         $upload_path = "/user_documents";
-        $imagePath = $this->fileUploadService->imageUpload($allDocumentFile->$fileName, $upload_path, $nameForFile);
-
+        $filePath = uploadingImageorFile($allDocumentFile->$fileName, $upload_path, $nameForFile);
         $userDocumentExists = $this->userDocumentDetailRepository->getUserDocumentByUserIdAndDoumentId($user_id, $documentType->id);
         if ($userDocumentExists != null) {
           unlinkFileOrImage($userDocumentExists->document);
@@ -39,7 +35,7 @@ class UserDocumentDetailServices
             'document_type_id'    =>  $documentType->id
           ],
           [
-            'document'    =>  $imagePath
+            'document'    =>  $filePath
           ]
         );
       }
@@ -47,7 +43,7 @@ class UserDocumentDetailServices
   }
 
 
- 
+
   public function documents()
   {
     return $this->userDocumentDetailRepository->getUserDocuments();

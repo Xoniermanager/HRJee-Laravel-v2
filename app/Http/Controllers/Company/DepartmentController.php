@@ -42,7 +42,7 @@ class DepartmentController extends Controller
                 return response()->json(['error' => $validateDepartments->messages()], 400);
             }
             $data = $request->all();
-            $data['company_id'] = Auth::guard('admin')->user()->id;
+            $data['company_id'] = Auth::guard('admin')->user()->company_id;
             if ($this->departmentService->create($data)) {
                 return response()->json([
                     'message' => 'Departments Created Successfully!',

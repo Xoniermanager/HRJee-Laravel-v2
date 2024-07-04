@@ -2,27 +2,27 @@
 
 namespace App\Http\Services;
 
-use App\Models\News;
+use App\Models\Policy;
 use Illuminate\Support\Arr;
-use App\Repositories\NewsRepository;
+use App\Repositories\PolicyRepository;
 
-class NewsService
+class PolicyService
 {
-  private $newsRepository;
-  public function __construct(NewsRepository $newsRepository)
+  private $policyRepository;
+  public function __construct(PolicyRepository $policyRepository)
   {
-    $this->newsRepository = $newsRepository;
+    $this->policyRepository = $policyRepository;
   }
   public function all()
   {
-    return $this->newsRepository->orderBy('id', 'DESC')->paginate(10);
+    return $this->policyRepository->orderBy('id', 'DESC')->paginate(10);
   }
   public function create(array $data)
   {
     /** for file or file Upload */
     $nameForImage = removingSpaceMakingName($data['title']);
     if ((isset($data['file']) && !empty($data['file'])) || (isset($data['image']) && !empty($data['image']))) {
-      $upload_path = "/news";
+      $upload_path = "/policy";
       if ($data['image']) {
         $filePath = uploadingImageorFile($data['image'], $upload_path, $nameForImage);
         $data['image'] = $filePath;
@@ -33,29 +33,29 @@ class NewsService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
+    $newsCreatedDetails =  $this->policyRepository->create($finalPayload);
 
     if ($newsCreatedDetails) {
-      $newsDetails = News::find($newsCreatedDetails->id);
-      $newsDetails->companyBranches()->sync($data['company_branch_id']);
-      $newsDetails->departments()->sync($data['department_id']);
-      $newsDetails->designations()->sync($data['designation_id']);
+      $policyDetails = Policy::find($newsCreatedDetails->id);
+      $policyDetails->companyBranches()->sync($data['company_branch_id']);
+      $policyDetails->departments()->sync($data['department_id']);
+      $policyDetails->designations()->sync($data['designation_id']);
     }
     return true;
   }
 
-  public function findByNewsId($id)
+  public function findByPolicyId($id)
   {
-    return $this->newsRepository->find($id);
+    return $this->policyRepository->find($id);
   }
 
   public function updateDetails(array $data, $id)
   {
-    $editDetails = $this->newsRepository->find($id);
+    $editDetails = $this->policyRepository->find($id);
     /** for file or file Upload */
     $nameForImage = removingSpaceMakingName($data['title']);
     if ((isset($data['file']) && !empty($data['file'])) || (isset($data['image']) && !empty($data['image']))) {
-      $upload_path = "/news";
+      $upload_path = "/policy";
       if ($data['image']) {
         if ($editDetails->image != null) {
           unlinkFileOrImage($editDetails->image);
@@ -74,16 +74,16 @@ class NewsService
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
     $newsUodatesDetails = $editDetails->update($finalPayload);
     if ($newsUodatesDetails) {
-      $newsDetails = News::find($id);
-      $newsDetails->companyBranches()->sync($data['company_branch_id']);
-      $newsDetails->departments()->sync($data['department_id']);
-      $newsDetails->designations()->sync($data['designation_id']);
+      $policyDetails = Policy::find($id);
+      $policyDetails->companyBranches()->sync($data['company_branch_id']);
+      $policyDetails->departments()->sync($data['department_id']);
+      $policyDetails->designations()->sync($data['designation_id']);
     }
     return true;
   }
   public function deleteDetails($id)
   {
-    $deletedData = News::find($id);
+    $deletedData = Policy::find($id);
     if ($deletedData->image != null || $deletedData->file != null) {
       if (isset($deletedData->file)) {
         unlinkFileOrImage($deletedData->file);
@@ -100,27 +100,27 @@ class NewsService
   }
   public function updateStatus($id, $statusValue)
   {
-    return $this->newsRepository->find($id)->update(['status' => $statusValue]);
+    return $this->policyRepository->find($id)->update(['status' => $statusValue]);
   }
-  public function serachNewsFilterList($request)
+  public function serachPolicyFilterList($request)
   {
-    $newsDetails = $this->newsRepository;
+    $policyDetails = $this->policyRepository;
     /**List By Search or Filter */
     if (isset($request->search) && !empty($request->search)) {
-      $newsDetails = $newsDetails->where('title', 'Like', '%' . $request->search . '%');
+      $policyDetails = $policyDetails->where('title', 'Like', '%' . $request->search . '%');
     }
     /**List By Status or Filter */
     if (isset($request->status)) {
-      $newsDetails = $newsDetails->where('status', $request->status);
+      $policyDetails = $policyDetails->where('status', $request->status);
     }
-    /**List By News Category or Filter */
-    if (isset($request->news_category_id)) {
-      $newsDetails = $newsDetails->where('news_category_id', $request->news_category_id);
+    /**List By Status or Filter */
+    if (isset($request->policy_category_id)) {
+      $policyDetails = $policyDetails->where('policy_category_id', $request->policy_category_id);
     }
     /**List By Company Branch or Filter */
     if (isset($request->company_branch_id)) {
       $companyID = $request->company_branch_id;
-      $newsDetails = News::wherehas(
+      $policyDetails = Policy::wherehas(
         'companyBranches',
         function ($query) use ($companyID) {
           $query->where('company_branch_id', $companyID);
@@ -130,13 +130,13 @@ class NewsService
     /**List By Department or Filter */
     if (isset($request->department_id)) {
       $departmentId = $request->department_id;
-      $newsDetails = News::wherehas(
+      $policyDetails = Policy::wherehas(
         'departments',
         function ($query) use ($departmentId) {
           $query->where('department_id', $departmentId);
         }
       );
     }
-    return $newsDetails->orderBy('id', 'DESC')->paginate(10);
+    return $policyDetails->orderBy('id', 'DESC')->paginate(10);
   }
 }

@@ -6,14 +6,15 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Services\NewsCategoryService;
+use App\Http\Services\PolicyCategoryService;
 
-class NewsCategoryController extends Controller
+class PolicyCategoryController extends Controller
 {
-    private $newsCategoryService;
-    public function __construct(NewsCategoryService $newsCategoryService)
+
+    private $policyCategoryService;
+    public function __construct(PolicyCategoryService $policyCategoryService)
     {
-        $this->newsCategoryService = $newsCategoryService;
+        $this->policyCategoryService = $policyCategoryService;
     }
 
     /**
@@ -21,8 +22,8 @@ class NewsCategoryController extends Controller
      */
     public function index()
     {
-        return view('company.news_category.index', [
-            'allNewsCategoryDetails' => $this->newsCategoryService->all()
+        return view('company.policy_category.index', [
+            'allPolicyCategoryDetails' => $this->policyCategoryService->all()
         ]);
     }
 
@@ -33,18 +34,18 @@ class NewsCategoryController extends Controller
     {
         try {
             $validateData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:news_categories,name'],
+                'name' => ['required', 'string', 'unique:policy_categories,name'],
             ]);
 
             if ($validateData->fails()) {
                 return response()->json(['error' => $validateData->messages()], 400);
             }
             $data = $request->all();
-            if ($this->newsCategoryService->create($data)) {
+            if ($this->policyCategoryService->create($data)) {
                 return response()->json([
-                    'message' => 'News Category Created Successfully!',
-                    'data'   =>  view('company.news_category.news_category_list', [
-                        'allNewsCategoryDetails' => $this->newsCategoryService->all()
+                    'message' => 'Policy Category Created Successfully!',
+                    'data'   =>  view('company.policy_category.policy_category_list', [
+                        'allPolicyCategoryDetails' => $this->policyCategoryService->all()
                     ])->render()
                 ]);
             }
@@ -59,19 +60,19 @@ class NewsCategoryController extends Controller
     public function update(Request $request)
     {
         $validateData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:news_categories,name,' . $request->id]
+            'name' => ['required', 'string', 'unique:policy_categories,name,' . $request->id]
         ]);
 
         if ($validateData->fails()) {
             return response()->json(['error' => $validateData->messages()], 400);
         }
         $updateData = $request->except(['_token', 'id']);
-        $companyStatus = $this->newsCategoryService->updateDetails($updateData, $request->id);
+        $companyStatus = $this->policyCategoryService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
             return response()->json([
-                'message' => 'News Category Updated Successfully!',
-                'data'   =>  view('company.news_category.news_category_list', [
-                    'allNewsCategoryDetails' => $this->newsCategoryService->all()
+                'message' => 'Policy Category Updated Successfully!',
+                'data'   =>  view('company.policy_category.policy_category_list', [
+                    'allPolicyCategoryDetails' => $this->policyCategoryService->all()
                 ])->render()
             ]);
         }
@@ -83,12 +84,12 @@ class NewsCategoryController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
-        $data = $this->newsCategoryService->deleteDetails($id);
+        $data = $this->policyCategoryService->deleteDetails($id);
         if ($data) {
             return response()->json([
-                'success' => 'News Category Deleted Successfully!',
-                'data'   =>  view('company.news_category.news_category_list', [
-                    'allNewsCategoryDetails' => $this->newsCategoryService->all()
+                'success' => 'Policy Category Deleted Successfully!',
+                'data'   =>  view('company.policy_category.policy_category_list', [
+                    'allPolicyCategoryDetails' => $this->policyCategoryService->all()
                 ])->render()
             ]);
         } else {
@@ -100,7 +101,7 @@ class NewsCategoryController extends Controller
     {
         $id = $request->id;
         $data['status'] = $request->status;
-        $statusDetails = $this->newsCategoryService->updateDetails($data, $id);
+        $statusDetails = $this->policyCategoryService->updateDetails($data, $id);
         if ($statusDetails) {
             echo 1;
         } else {
@@ -108,13 +109,13 @@ class NewsCategoryController extends Controller
         }
     }
 
-    public function serachNewsCategoryFilterList(Request $request)
+    public function serachPolicyCategoryFilterList(Request $request)
     {
-        $allNewsCategoryDetails = $this->newsCategoryService->serachNewsCategoryFilterList($request);
-        if ($allNewsCategoryDetails) {
+        $allPolicyCategoryDetails = $this->policyCategoryService->serachPolicyCategoryFilterList($request);
+        if ($allPolicyCategoryDetails) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view("company.news_category.news_category_list", compact('allNewsCategoryDetails'))->render()
+                'data'   =>  view("company.policy_category.policy_category_list", compact('allPolicyCategoryDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

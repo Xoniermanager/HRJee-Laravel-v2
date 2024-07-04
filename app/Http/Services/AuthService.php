@@ -2,7 +2,6 @@
 
 namespace App\Http\Services;
 
-use Exception;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Mail\RegistrationOtp;
