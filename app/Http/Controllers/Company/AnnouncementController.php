@@ -12,6 +12,8 @@ use App\Http\Services\DepartmentServices;
 use App\Http\Services\DesignationServices;
 use App\Http\Services\UserDetailServices;
 use App\Jobs\AssignAnnouncement;
+use App\Models\Announcement;
+use App\Models\CompanyBranch;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -41,15 +43,17 @@ class AnnouncementController extends Controller
     {
         return view('company.announcements.index', [
             'announcements' => $this->announcementService->all('paginate'),
-            'branches' => $this->branch_services->allActiveBranches()
+            'branches' => $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id)
         ]);
     }
+
 
     public function getAnnouncement(Request $request)
     {
         $announcement = $this->announcementService->announcementDetails($request->id);
-        $activeBranches = $this->branch_services->allActiveBranches();
+        $activeBranches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
         $ids = $activeBranches->pluck('id')->toArray();
+
         if (!empty($announcement->company_branch_id))
             $branchIds[] = $announcement->company_branch_id;
         else
@@ -59,7 +63,6 @@ class AnnouncementController extends Controller
         return view('company.announcements.assign_announcement', [
             'announcement' => $announcement,
             'announcements' => $this->announcementService->all(),
-            'designations' =>  $this->designationServices->getDesignationsAdminOrCompany(),
             'departments' =>  $this->departmentServices->getDepartmentsByAdminAndCompany(),
             'branches' => $activeBranches,
             'branchUsers' => $branchUsers,
@@ -107,15 +110,15 @@ class AnnouncementController extends Controller
 
     public function create()
     {
-        $branches = $this->branch_services->allActiveBranches();
+        $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
         return view('company.announcements.create', compact('branches'));
     }
     public function edit(Request $request)
     {
-        $branches = $this->branch_services->allActiveBranches();
+
         return view('company.announcements.edit', [
             'announcement' => $this->announcementService->announcementDetails($request->id),
-            'branches' => $this->branch_services->allActiveBranches(),
+            'branches' => $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id),
         ]);
     }
 
@@ -132,6 +135,8 @@ class AnnouncementController extends Controller
             }
             // $data['start_date_time'] =   date('Y-m-d h:i:s a ', strtotime($request->start_date_time));
             // $data['expire_at'] =   date('Y-m-d h:i:s a ', strtotime($request->expire_at));
+
+            dd($data);
             if ($this->announcementService->create($data)) {
                 return response()->json(
                     [
@@ -156,14 +161,17 @@ class AnnouncementController extends Controller
         if ($request->has('image')) {
             $updateData['image'] = uploadFile('image', 'image', 'originalAnnouncementImagePath');
         }
+
         $companyStatus = $this->announcementService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
+            $html =   view('company.announcements.announcement_list', [
+                'announcements' => $this->announcementService->all('paginate'),
+                'branches' => $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id),
+            ])->render();
             return response()->json([
                 'message' => 'Announcement Updated Successfully!',
-                'data'   =>  view('company.announcements.announcement_list', [
-                    'announcements' => $this->announcementService->all(),
-                    'branches' => $this->branch_services->allActiveBranches(),
-                ])->render()
+                'status' => true,
+                'data'   => $html
             ]);
         }
     }
@@ -173,10 +181,11 @@ class AnnouncementController extends Controller
      */
     public function destroy(Request $request)
     {
+
         $id = $request->id;
         $data = $this->announcementService->deleteDetails($id);
-        $announcements = $this->announcementService->all();
-        $branches = $this->branch_services->allActiveBranches();
+        $announcements = $this->announcementService->all('paginate');
+        $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
         if ($data) {
             return response()->json([
                 'success', 'Deleted Successfully!',
@@ -210,12 +219,13 @@ class AnnouncementController extends Controller
     public function announcementAssign(AnnouncementAssignRequest $request)
     {
         try {
-            // $datas['company_branch_id']=$request['company_branch_id'];
-            // $datas['announcement_id']=$request['announcement_id'];
-            // $datas['department_id']=$request['department_id'];
-            // $datas['designation_id']=$request['designation_id'];
+
             $data =  $this->announcementService->announcementAssignStore($request);
             if ($data) {
+                $announcement = Announcement::find($request->announcement_id);
+                $announcement->branches()->sync($request->company_branch_id);
+                $announcement->departments()->sync($request->department_id);
+                $announcement->designations()->sync($request->designation_id);
                 // if ($request->assign_announcement == 1)
                 //     AssignAnnouncement::dispatch(['name'=>'ejhsdjfg']);
 

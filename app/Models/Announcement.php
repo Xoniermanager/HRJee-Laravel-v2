@@ -15,4 +15,17 @@ class Announcement extends Model
     {
         return imageBasePath($this->image, 'originalAnnouncementImagePath');
     }
+
+    public function branches()
+    {
+        return $this->belongsToMany(CompanyBranch::class, 'announcement_branch', 'announcement_id', 'branch_id');
+    }
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'announcement_department', 'announcement_id', 'department_id');
+    }
+    public function designations()
+    {
+        return $this->belongsToMany(Designations::class, 'announcement_designation', 'announcement_id', 'designation_id');
+    }
 }

@@ -49,7 +49,7 @@
                             </a>
                          
                                 <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                    onclick="deleteFunction('{{ $announcement->id }}')">
+                                    onclick="deleteFunction('announcement_list',`{{route('announcement.delete',$announcement->id)}}`)">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

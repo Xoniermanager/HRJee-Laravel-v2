@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->text('description');
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

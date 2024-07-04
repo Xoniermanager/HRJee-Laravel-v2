@@ -37,6 +37,7 @@ class UserDetailServices
           ]
         );
       }
+      
 
       //User Skills Created
       foreach ($data['skill_id'] as $skillId) {

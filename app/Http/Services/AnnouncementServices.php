@@ -44,9 +44,9 @@ class AnnouncementServices
   {
 
     $data['announcement_id'] = $request['announcement_id'];
-    $data['department_id'] = $request['department_id'];
-    $data['company_branch_id'] = $request['company_branch_id'];
-    $data['designation_id'] = $request['designation_id'];
+    // $data['department_id'] = json_encode($request['department_id']);
+    // $data['company_branch_id'] = json_encode($request['company_branch_id']);
+    // $data['designation_id'] = json_encode($request['designation_id']);
     $data['notification_schedule_time'] = $request['notification_schedule_time'];
     $created = $this->announcementAssignRepository->updateOrCreate(['announcement_id'=>$request['announcement_id'],'company_branch_id'=>$request['company_branch_id']],$data);
     if ($created)

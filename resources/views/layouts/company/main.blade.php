@@ -92,8 +92,7 @@
                 </div>
 </body>
 <script>
-    function deleteFunction(id, replaceWithDataId, url) {
-        console.log(id, replaceWithDataId, url);
+    function deleteFunction(replaceWithDataId, url) {
         event.preventDefault();
         Swal.fire({
             title: "Are you sure?",
@@ -108,9 +107,6 @@
                 $.ajax({
                     url: url,
                     type: "get",
-                    data: {
-                        id: id
-                    },
                     success: function(res) {
                         Swal.fire("Done!", "It was succesfully deleted!", "success");
                         $(`#${replaceWithDataId}`).replaceWith(res.data);

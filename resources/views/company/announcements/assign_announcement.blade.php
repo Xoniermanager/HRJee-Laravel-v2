@@ -26,10 +26,10 @@
                                 <select class="form-control select2  " name="announcement_id" id="announcement_id"
                                     style="width:100%">
                                     <option value=""></option>
-                                    @foreach ($announcements as $key => $announcement)
-                                        <option value="{{ $announcement->id }}"
-                                            {{ old('announcement_id', $announcement->id) == $announcement->id ? 'selected' : '' }}>
-                                            {{ $announcement->title }}
+                                    @foreach ($announcements as $key => $row)
+                                        <option value="{{ $row->id }}"
+                                            {{ old('announcement_id', $row->id) == $announcement->id ? 'selected' : '' }}>
+                                            {{ $row->title }}
                                         </option>
                                     @endforeach
                                 </select>

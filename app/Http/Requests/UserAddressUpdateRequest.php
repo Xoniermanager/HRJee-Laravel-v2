@@ -22,13 +22,15 @@ class UserAddressUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'addressId' => ['required', 'exists:user_addresses_details,id'],
-            'address_type' => ['required', 'in:local,both_same,permanent'],
-            'address' => ['required', 'string'],
-            'city' => ['required', 'string'],
-            'pin_code' => ['required', 'string'],
-            'country_id' => ['required', 'exists:countries,id'],
-            'state_id' => ['required', 'exists:states,id'],
+            'address'                   =>  'required|array',
+            'address.*'                 =>  'required|array',
+            'address.*.addressId'       => ['sometimes'],
+            'address.*.address_type'    => ['required', 'in:local,both_same,permanent'],
+            'address.*.address'         => ['required', 'string'],
+            'address.*.city'            => ['required', 'string'],
+            'address.*.pin_code'        => ['required', 'string'],
+            'address.*.country_id'      => ['required', 'exists:countries,id'],
+            'address.*.state_id'        => ['required', 'exists:states,id'],
         ];
     }
 }

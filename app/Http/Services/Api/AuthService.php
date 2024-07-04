@@ -2,7 +2,9 @@
 
 namespace App\Http\Services\Api;
 
+use App\Http\Services\CountryServices;
 use App\Http\Services\SendOtpService;
+use App\Http\Services\StateServices;
 use App\Mail\LoginVerification;
 use App\Models\User;
 use App\Models\UserCode;
@@ -15,11 +17,13 @@ use Throwable;
 
 class AuthService
 {
-    private  $authService, $sendOtpService;
+    private  $authService, $sendOtpService, $countryServices,$stateServices;
 
-    public function __construct(SendOtpService $sendOtpService)
+    public function __construct(SendOtpService $sendOtpService, CountryServices $countryServices,StateServices $stateServices)
     {
         $this->sendOtpService = $sendOtpService;
+        $this->countryServices = $countryServices;
+        $this->stateServices = $stateServices;
     }
     public function login($request)
     {
@@ -53,7 +57,12 @@ class AuthService
     {
         try {
             $user = auth()->guard('employee_api')->user();
+
+            $countries = $this->countryServices->getAllActiveCountry();
+            $states = $this->stateServices->getAllStates();
             $singleUserDetails = $user->load('bankDetails', 'addressDetails', 'assetDetails', 'documentDetails', 'userDetails');
+            $singleUserDetails->countries = $countries;
+            $singleUserDetails->states = $states;
             return apiResponse('user_details', $singleUserDetails);
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);

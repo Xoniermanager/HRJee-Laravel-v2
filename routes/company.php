@@ -86,7 +86,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('store', [AnnouncementController::class, 'store'])->name('store');
         Route::get('edit/{id?}', [AnnouncementController::class, 'edit'])->name('edit');
         Route::post('update/{id?}', [AnnouncementController::class, 'update'])->name('update');
-        Route::get('delete', [AnnouncementController::class, 'destroy'])->name('delete');
+        Route::get('delete/{id?}', [AnnouncementController::class, 'destroy'])->name('delete');
         Route::get('status/update', [AnnouncementController::class, 'statusUpdate'])->name('statusUpdate');
         Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
         Route::post('assign/save', [AnnouncementController::class, 'announcementAssign'])->name('assign.save');
@@ -262,6 +262,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
         Route::get('/search/filter', 'searchOfficeTimeFilter');
     });
+    
     // Office Shifts
     Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
         Route::get('/', 'index')->name('shifts.index');
