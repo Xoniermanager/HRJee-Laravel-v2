@@ -185,5 +185,4 @@
 </script>
 <!--end::Body-->
 @include('layouts.company.footer')
-
 </html>

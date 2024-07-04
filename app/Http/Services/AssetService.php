@@ -42,9 +42,7 @@ class AssetService
       $imagePath = $this->fileUploadService->imageUpload($data['invoice_file'], $upload_path, $nameForImage);
       $data['invoice_file'] = $imagePath;
       if ($existingDetails->invoice_file != null) {
-        if (file_exists(storage_path('app/public') . $existingDetails->invoice_file)) {
-          unlink(storage_path('app/public') . $existingDetails->invoice_file);
-        }
+        unlinkFileOrImage($existingDetails->invoice_file);
       }
     }
     $data['asset_status_id'] = AssetStatus::UPDATED;
@@ -54,9 +52,7 @@ class AssetService
   {
     $existingDetails =  $this->assetRepository->find($id);
     if ($existingDetails->invoice_file != null) {
-      if (file_exists(storage_path('app/public') . $existingDetails->invoice_file)) {
-        unlink(storage_path('app/public') . $existingDetails->invoice_file);
-      }
+      unlinkFileOrImage($existingDetails->invoice_file);
     }
     return $existingDetails->delete();
   }
@@ -102,6 +98,6 @@ class AssetService
 
   public function getAllAssetByCategoryId($id)
   {
-    return $this->assetRepository->where('asset_category_id', $id)->where('allocation_status','available')->get();
+    return $this->assetRepository->where('asset_category_id', $id)->where('allocation_status', 'available')->get();
   }
 }

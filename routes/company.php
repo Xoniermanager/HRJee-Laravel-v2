@@ -370,11 +370,13 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/', 'index')->name('news.index');
         Route::get('/add', 'add')->name('news.add');
         Route::post('/create', 'store')->name('news.store');
-        Route::post('/update', 'update')->name('news.update');
-        Route::get('/delete', 'destroy')->name('news.delete');
+        Route::get('/edit/{news:id}', 'edit')->name('news.edit');
+        Route::post('/update/{id}', 'update')->name('news.update');
+        Route::get('/delete/{id}', 'destroy')->name('news.delete');
         Route::get('/status/update', 'statusUpdate')->name('news.statusUpdate');
-        Route::get('/search/filter', 'serachLeaveCreditFilterList');
+        // Route::get('/search/filter', 'serachLeaveCreditFilterList');
     });
+
     Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
 });
 /**---------------End Company Panel Route----------------*/

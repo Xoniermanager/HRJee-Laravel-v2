@@ -140,9 +140,7 @@ class EmployeeServices
     if ($data['id'] != null) {
       $existingDetails = $this->employeeRepository->find($data['id']);
       if ($existingDetails->profile_image != null) {
-        if (file_exists(storage_path('app/public') . $existingDetails->profile_image)) {
-          unlink(storage_path('app/public') . $existingDetails->profile_image);
-        }
+        unlinkFileOrImage($existingDetails->profile_image);
       }
       $existingDetails->update($data);
     } else {
@@ -190,5 +188,4 @@ class EmployeeServices
       return false;
     }
   }
-
 }

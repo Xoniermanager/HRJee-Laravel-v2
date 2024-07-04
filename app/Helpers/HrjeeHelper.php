@@ -10,6 +10,14 @@ function removingSpaceMakingName($name)
     return $finalName;
 }
 
+function unlinkFileOrImage($file)
+{
+    if (file_exists(storage_path('app/public') . $file)) {
+        unlink(storage_path('app/public') . $file);
+    }
+    return true;
+}
+
 
 if (!function_exists('transLang')) {
     function transLang($template = null, $dataArr = [])
@@ -108,7 +116,7 @@ if (!function_exists('apiResponse')) {
         $output = new \stdClass;
         $output->message = transLang($template);
         $output->status = true;
-         $output->data = $dataArr;
+        $output->data = $dataArr;
         return response()->json($output, $httpCode);
     }
 }
