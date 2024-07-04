@@ -1,0 +1,52 @@
+<div class="table-responsive" id="news_list">
+    <!--begin::Table-->
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+        <!--begin::Table head-->
+        <thead>
+            <tr class="fw-bold">
+                <th>Sr. No.</th>
+                <th>Title</th>
+                <th>News Catgeory</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+                <th class="float-right">Action</th>
+            </tr>
+        </thead>
+        <tbody class="">
+            @foreach ($allNewsDetails as $index => $newsDetails)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $newsDetails->title }}</td>
+                    <td>{{ $newsDetails->newsCategories->name }}</td>
+                    <td>{{ $newsDetails->start_date }}</td>
+                    <td>{{ $newsDetails->end_date }}</td>
+                    <td data-order="Invalid date">
+                        <label class="switch">
+                            <input type="checkbox" <?= $newsDetails->status == '1' ? 'checked' : '' ?>
+                                onchange="handleStatus({{ $newsDetails->id }})"
+                                id="checked_value_{{ $newsDetails->id }}">
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-end flex-shrink-0">
+                            <a href="{{ route('news.edit', $newsDetails->id) }}"
+                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                <i class="fa fa-edit"></i>
+                                <!--end::Svg Icon-->
+                            </a>
+                            <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                onclick="deleteFunction('{{ $newsDetails->id }}')">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+        <!--end::Table body-->
+    </table>
+    <!--end::Table-->
+</div>

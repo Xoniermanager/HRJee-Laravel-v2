@@ -31,11 +31,8 @@ class UserDocumentDetailServices
 
         $userDocumentExists = $this->userDocumentDetailRepository->getUserDocumentByUserIdAndDoumentId($user_id, $documentType->id);
         if ($userDocumentExists != null) {
-          if (file_exists(storage_path('app/public') . $userDocumentExists->document)) {
-            unlink(storage_path('app/public') . $userDocumentExists->document);
-          }
+          unlinkFileOrImage($userDocumentExists->document);
         }
-
         $this->userDocumentDetailRepository->updateOrCreate(
           [
             'user_id'     =>  $user_id,

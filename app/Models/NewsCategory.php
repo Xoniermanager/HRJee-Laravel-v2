@@ -10,8 +10,4 @@ class NewsCategory extends Model
     use HasFactory;
 
     protected $fillable =['name','status','company_id'];
-
-    public function news() {
-        return $this->hasOne(News::class);
-    }
 }

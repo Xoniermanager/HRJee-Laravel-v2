@@ -52,70 +52,8 @@
                 <div class="mb-5 mb-xl-10">
                     <div class="card-body py-3">
                         <!--begin::Table container-->
-                        <div class="table-responsive">
-                            <!--begin::Table-->
-                            <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                <!--begin::Table head-->
-                                <thead>
-                                    <tr class="fw-bold">
-                                        <th>Sr. No.</th>
-                                        <th>Employee Name</th>
-                                        <th>Leave Type</th>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th>Half Day</th>
-                                        <th>From Half Day</th>
-                                        <th>To Half Day</th>
-                                        <th>Leave Status</th>
-                                    </tr>
-                                </thead>
-                                <!--end::Table head-->
-                                <!--begin::Table body-->
-                                <tbody class="">
-                                    {{-- @foreach ($allLeavesDetails as $index => $leavesDetails)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $leavesDetails->user->name }}</td>
-                                            <td>{{ $leavesDetails->leaveTypeName }}</td>
-                                            <td>{{ $leavesDetails->from }}</td>
-                                            <td>{{ $leavesDetails->to }}</td>
-                                            @if ($leavesDetails->is_half_day == '1')
-                                                <td>Yes</td>
-                                            @else
-                                                <td>No</td>
-                                            @endif
-                                            @php
-                                                $leaveFromDay = '';
-                                                if ($leavesDetails->from_half_day == 'first_half') {
-                                                    $leaveFromDay = 'First Half';
-                                                } elseif ($leavesDetails->from_half_day == 'second_half') {
-                                                    $leaveFromDay = 'Second Half';
-                                                } else {
-                                                    $leaveFromDay;
-                                                }
-                                            @endphp
-                                            <td>{{ $leaveFromDay }}</td>
-                                            @php
-                                                $leaveToDay = '';
-                                                if ($leavesDetails->from_half_day == 'first_half') {
-                                                    $leaveToDay = 'First Half';
-                                                } elseif ($leavesDetails->from_half_day == 'second_half') {
-                                                    $leaveToDay = 'Second Half';
-                                                } else {
-                                                    $leaveToDay;
-                                                }
-                                            @endphp
-                                                <td>{{$leaveToDay}}</td>
-                                            <td>{{ $leavesDetails->leaveStatus->name }}</td>
-                                        </tr>
-                                    @endforeach --}}
-                                </tbody>
-                                <!--end::Table body-->
-                            </table>
-                            <!--end::Table-->
-                        </div>
+                        @include('company.news.list')
                         <!--end::Table container-->
-
                     </div>
                 </div>
                 <!--begin::Body-->
@@ -126,4 +64,60 @@
         </div>
         <!--end::Container-->
     </div>
+    <script>
+        function handleStatus(id) {
+            var checked_value = $('#checked_value_' + id).prop('checked');
+            let status;
+            let status_name;
+            if (checked_value == true) {
+                status = 1;
+                status_name = 'Active';
+            } else {
+                status = 0;
+                status_name = 'Inactive';
+            }
+            $.ajax({
+                url: "{{ route('news.statusUpdate') }}",
+                type: 'get',
+                data: {
+                    'id': id,
+                    'status': status,
+                },
+                success: function(res) {
+                    if (res) {
+                        swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
+                    } else {
+                        swal.fire("Oops!", 'Something Went Wrong', "error");
+                    }
+                }
+            })
+        }
+
+        function deleteFunction(id) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: company_ajax_base_url + '/news/delete/' + id,
+                        type: "get",
+                        success: function(res) {
+                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            $('#news_list').replaceWith(res.data);
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire("Error deleting!", "Please try again", "error");
+                        }
+                    });
+                }
+            });
+        }
+    </script>
 @endsection

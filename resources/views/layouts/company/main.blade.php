@@ -91,39 +91,6 @@
                     <!--end::Svg Icon-->
                 </div>
 </body>
-<script>
-    function deleteFunction(id, replaceWithDataId, url) {
-        console.log(id, replaceWithDataId, url);
-        event.preventDefault();
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: url,
-                    type: "get",
-                    data: {
-                        id: id
-                    },
-                    success: function(res) {
-                        Swal.fire("Done!", "It was succesfully deleted!", "success");
-                        $(`#${replaceWithDataId}`).replaceWith(res.data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        Swal.fire("Error deleting!", "Please try again", "error");
-                    }
-                });
-            }
-        });
-    }
-</script>
 <!--end::Body-->
 @include('layouts.company.footer')
-
 </html>
