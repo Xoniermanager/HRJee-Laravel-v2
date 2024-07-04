@@ -90,92 +90,93 @@
         </div>
         <!--end::Container-->
     </div>
-    <script>
-        function handleStatus(id) {
-            var checked_value = $('#checked_value_' + id).prop('checked');
-            let status;
-            let status_name;
-            if (checked_value == true) {
-                status = 1;
-                status_name = 'Active';
-            } else {
-                status = 0;
-                status_name = 'Inactive';
+</div>
+<script>
+    function handleStatus(id) {
+        var checked_value = $('#checked_value_' + id).prop('checked');
+        let status;
+        let status_name;
+        if (checked_value == true) {
+            status = 1;
+            status_name = 'Active';
+        } else {
+            status = 0;
+            status_name = 'Inactive';
+        }
+        $.ajax({
+            url: "{{ route('news.statusUpdate') }}",
+            type: 'get',
+            data: {
+                'id': id,
+                'status': status,
+            },
+            success: function(res) {
+                if (res) {
+                    swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
+                } else {
+                    swal.fire("Oops!", 'Something Went Wrong', "error");
+                }
             }
-            $.ajax({
-                url: "{{ route('news.statusUpdate') }}",
-                type: 'get',
-                data: {
-                    'id': id,
-                    'status': status,
-                },
-                success: function(res) {
-                    if (res) {
-                        swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
-                    } else {
-                        swal.fire("Oops!", 'Something Went Wrong', "error");
+        })
+    }
+
+    function deleteFunction(id) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: company_ajax_base_url + '/news/delete/' + id,
+                    type: "get",
+                    success: function(res) {
+                        Swal.fire("Done!", "It was succesfully deleted!", "success");
+                        $('#news_list').replaceWith(res.data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire("Error deleting!", "Please try again", "error");
                     }
-                }
-            })
-        }
+                });
+            }
+        });
+    }
+    jQuery("#search").on('blur', function() {
+        search_filter_results();
+    });
+    jQuery("#status").on('change', function() {
+        search_filter_results();
+    });
+    jQuery("#news_category").on('change', function() {
+        search_filter_results();
+    });
+    jQuery("#company_branch").on('change', function() {
+        search_filter_results();
+    });
+    jQuery("#department").on('change', function() {
+        search_filter_results();
+    });
 
-        function deleteFunction(id) {
-            event.preventDefault();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: company_ajax_base_url + '/news/delete/' + id,
-                        type: "get",
-                        success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            $('#news_list').replaceWith(res.data);
-                        },
-                        error: function(xhr, ajaxOptions, thrownError) {
-                            Swal.fire("Error deleting!", "Please try again", "error");
-                        }
-                    });
-                }
-            });
-        }
-        jQuery("#search").on('blur', function() {
-            search_filter_results();
+    function search_filter_results() {
+        $.ajax({
+            type: 'GET',
+            url: company_ajax_base_url + '/news/search/filter',
+            data: {
+                'status': $('#status').val(),
+                'search': $('#search').val(),
+                'news_category_id': $('#news_category').val(),
+                'company_branch_id': $('#company_branch').val(),
+                'department_id': $('#department').val()
+            },
+            success: function(response) {
+                $('#news_list').replaceWith(response.data);
+            }
         });
-        jQuery("#status").on('change', function() {
-            search_filter_results();
-        });
-        jQuery("#news_category").on('change', function() {
-            search_filter_results();
-        });
-        jQuery("#company_branch").on('change', function() {
-            search_filter_results();
-        });
-        jQuery("#department").on('change', function() {
-            search_filter_results();
-        });
-
-        function search_filter_results() {
-            $.ajax({
-                type: 'GET',
-                url: company_ajax_base_url + '/news/search/filter',
-                data: {
-                    'status': $('#status').val(),
-                    'search': $('#search').val(),
-                    'news_category_id': $('#news_category').val(),
-                    'company_branch_id': $('#company_branch').val(),
-                    'department_id': $('#department').val()
-                },
-                success: function(response) {
-                    $('#news_list').replaceWith(response.data);
-                }
-            });
-        }
-    </script>
+    }
+</script>
 @endsection
