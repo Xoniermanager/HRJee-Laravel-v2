@@ -26,7 +26,7 @@ class BranchServices
   }
   public function create($data)
   {
-    $data['company_id'] = Auth::guard('admin')->user()->id;
+    $data['company_id'] = Auth::guard('admin')->user()->company_id;
     return $this->branchRepository->create($data);
   }
   public function deleteDetails($id)

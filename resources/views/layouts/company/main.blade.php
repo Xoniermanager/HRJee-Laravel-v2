@@ -34,6 +34,7 @@
 
     <!--end::Global Stylesheets Bundle-->
     <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
+
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
@@ -45,21 +46,27 @@
         window.employee_ajax_base_url = '{{ env('EMPLOYEE_BASE_URL') }}';
     </script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    {{-- start datetimepicker css & js links  --}}
-    <link rel="stylesheet"
-        href=
-    "https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
-
-    <!-- datetimepicker jQuery CDN -->
+    <link
+        rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
     </script>
-    {{-- start datetimepicker css & js links  --}}
+    <script src="https://cdn.tiny.cloud/1/z1qoq3vmki5r4bldcrbrijy8rm3txecup4qyxt3wpfj7qhwl/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
+    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+      tinymce.init({
+        selector: '#editor',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+        height:300,
+        ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+      });
+    </script>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
-
 <body id="kt_body" class="sidebar-enabled">
     <!--begin::Theme mode setup on page load-->
     <!--begin::Root-->
@@ -185,4 +192,5 @@
 </script>
 <!--end::Body-->
 @include('layouts.company.footer')
+
 </html>

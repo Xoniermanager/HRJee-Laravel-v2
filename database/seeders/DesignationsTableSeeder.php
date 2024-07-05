@@ -22,7 +22,7 @@ class DesignationsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'Manager', 
+                'name' => 'Manager',
                 'department_id' => 1,
                 'status' => 1,
                 'created_at' => '2024-06-21 14:49:43',

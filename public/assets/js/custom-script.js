@@ -215,7 +215,8 @@ function addNewPreviousCompany(widgetId, value) {
     // }
 };
 
-jQuery(document).ready(function () {
+jQuery(document).ready(function () 
+{
     var previousCompanyCrudServiceBaseUrl = company_ajax_base_url;
     var previousCompanyDataSource = new kendo.data.DataSource({
         batch: true,
@@ -253,7 +254,72 @@ jQuery(document).ready(function () {
         noDataTemplate: jQuery("#noPreviousCompanyTemplate").html()
     });
 });
-
+function get_designation_by_department_id(selectedDesignationId = null) {
+    var selectedValues = $('#department_id').val();
+    $.ajax({
+        type: 'GET',
+        url: company_ajax_base_url + '/designation/get/all/designation',
+        dataType: "json",
+        data: {
+            'department_id': selectedValues,
+        },
+        success: function(response) {
+            var select = $('#designation_id');
+            select.empty()
+            if (response.status == true) {
+                $.each(response.data, function(key, value) {
+                    select.append('<option value=' +
+                        value.id + '>' + value.name + '</option>');
+                });
+                $('#designation_id').val(selectedDesignationId);
+            } else {
+                return false;
+            }
+        },
+        error: function() {
+            // Swal.fire({
+            //     icon: "error",
+            //     title: "Oops...",
+            //     text: "Something Went Wrong!! Please try Again"
+            // });
+        }
+    });
+};
+function get_checkedValue(type = null) {
+    if (type == 'company_branch') {
+        var company_branches_checkbox = document.getElementById('company_branches_checkbox');
+        if (company_branches_checkbox.checked != false) {
+            $("#company_branch").val('').trigger('change');
+            $('#company_branches_checkbox').val(1);
+            $('#company_branch').prop('disabled', true);
+        } else {
+            $('#company_branches_checkbox').val(0);
+            $('#company_branch').prop('disabled', false);
+        }
+    }
+    if (type == 'department') {
+        var department_checkbox = document.getElementById('department_checkbox');
+        if (department_checkbox.checked != false) {
+            $("#department_id").val('').trigger('change');
+            $('#department_checkbox').val(1);
+            $('#department_id').prop('disabled', true);
+        } else {
+            $('#department_checkbox').val(0);
+            $('#department_id').prop('disabled', false);
+        }
+    }
+    if (type == 'designation') {
+        var designation_checkbox = document.getElementById('designation_checkbox');
+        if (designation_checkbox.checked != false) {
+            $("#designation_id").val('').trigger('change');
+            $('#designation_checkbox').val(1);
+            $('#designation_id').prop('disabled', true);
+        } else {
+            $('#designation_checkbox').val(0);
+            $('#designation_id').prop('disabled', false);
+        }
+    }
+}
 
 
 

@@ -7,14 +7,14 @@
                 <th>Sr. No.</th>
                 <th>Title</th>
                 <th>News Catgeory</th>
-                <th>Start</th>
-                <th>End</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th>Status</th>
                 <th class="float-right">Action</th>
             </tr>
         </thead>
         <tbody class="">
-            @foreach ($allNewsDetails as $index => $newsDetails)
+            @forelse ($allNewsDetails as $index => $newsDetails)
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $newsDetails->title }}</td>
@@ -31,6 +31,12 @@
                     </td>
                     <td>
                         <div class="d-flex justify-content-end flex-shrink-0">
+                            <a href="{{ route('news.view', $newsDetails->id) }}"
+                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                <i class="fa fa-eye"></i>
+                                <!--end::Svg Icon-->
+                            </a>
                             <a href="{{ route('news.edit', $newsDetails->id) }}"
                                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
@@ -44,9 +50,16 @@
                         </div>
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                <td colspan="3">
+                    <span class="text-danger">
+                        <strong>No News Found!</strong>
+                    </span>
+                </td>
+            @endforelse
         </tbody>
         <!--end::Table body-->
     </table>
     <!--end::Table-->
 </div>
+{{ $allNewsDetails->links() }}

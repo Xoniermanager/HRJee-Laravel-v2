@@ -10,11 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class NewsService
 {
   private $newsRepository;
-  private $imageUploadService;
-  public function __construct(NewsRepository $newsRepository, FileUploadService $imageUploadService)
+  public function __construct(NewsRepository $newsRepository)
   {
     $this->newsRepository = $newsRepository;
-    $this->imageUploadService = $imageUploadService;
   }
   public function all()
   {
@@ -27,22 +25,30 @@ class NewsService
     if ((isset($data['file']) && !empty($data['file'])) || (isset($data['image']) && !empty($data['image']))) {
       $upload_path = "/news";
       if ($data['image']) {
-        $imagePath = $this->imageUploadService->imageUpload($data['image'], $upload_path, $nameForImage);
-        $data['image'] = $imagePath;
+        $filePath = uploadingImageorFile($data['image'], $upload_path, $nameForImage);
+        $data['image'] = $filePath;
       }
       if (isset($data['file'])) {
-        $imagePath = $this->imageUploadService->imageUpload($data['file'], $upload_path, $nameForImage);
-        $data['file'] = $imagePath;
+        $filePath = uploadingImageorFile($data['file'], $upload_path, $nameForImage);
+        $data['file'] = $filePath;
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
+    $finalPayload['company_id'] = Auth::guard('admin')->user()->company_id;
+    $finalPayload['company_branch_id'] = Auth::guard('admin')->user()->branch_id ?? '';
     $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
-
-    if ($newsCreatedDetails) {
+    if ($newsCreatedDetails) 
+    {
       $newsDetails = News::find($newsCreatedDetails->id);
-      $newsDetails->companyBranches()->sync($data['company_branch_id']);
-      $newsDetails->departments()->sync($data['department_id']);
-      $newsDetails->designations()->sync($data['designation_id']);
+      if ($newsCreatedDetails->all_company_branch == 0) {
+        $newsDetails->companyBranches()->sync($data['company_branch_id']);
+      }
+      if ($newsCreatedDetails->all_department == 0) {
+        $newsDetails->departments()->sync($data['department_id']);
+      }
+      if ($newsCreatedDetails->all_designation == 0) {
+        $newsDetails->designations()->sync($data['designation_id']);
+      }
     }
     return true;
   }
@@ -63,24 +69,39 @@ class NewsService
         if ($editDetails->image != null) {
           unlinkFileOrImage($editDetails->image);
         }
-        $imagePath = $this->imageUploadService->imageUpload($data['image'], $upload_path, $nameForImage);
-        $data['image'] = $imagePath;
+        $filePath = uploadingImageorFile($data['image'], $upload_path, $nameForImage);
+        $data['image'] = $filePath;
       }
       if (isset($data['file'])) {
         if ($editDetails->file != null) {
           unlinkFileOrImage($editDetails->file);
         }
-        $imagePath = $this->imageUploadService->imageUpload($data['file'], $upload_path, $nameForImage);
-        $data['file'] = $imagePath;
+        $filePath = uploadingImageorFile($data['file'], $upload_path, $nameForImage);
+        $data['file'] = $filePath;
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
     $newsUodatesDetails = $editDetails->update($finalPayload);
     if ($newsUodatesDetails) {
       $newsDetails = News::find($id);
-      $newsDetails->companyBranches()->sync($data['company_branch_id']);
-      $newsDetails->departments()->sync($data['department_id']);
-      $newsDetails->designations()->sync($data['designation_id']);
+      if ($editDetails->all_company_branch == 0) {
+        $newsDetails->companyBranches()->sync($data['company_branch_id']);
+      }
+      if ($editDetails->all_department == 0) {
+        $newsDetails->departments()->sync($data['department_id']);
+      }
+      if ($editDetails->all_designation == 0) {
+        $newsDetails->designations()->sync($data['designation_id']);
+      }
+      if ($editDetails->all_company_branch == 1) {
+        $newsDetails->companyBranches()->detach();
+      }
+      if ($editDetails->all_department == 1) {
+        $newsDetails->departments()->detach();
+      }
+      if ($editDetails->all_designation == 1) {
+        $newsDetails->designations()->detach();
+      }
     }
     return true;
   }
@@ -105,23 +126,41 @@ class NewsService
   {
     return $this->newsRepository->find($id)->update(['status' => $statusValue]);
   }
-
-  public function getAllActiveNewsCategory()
+  public function serachNewsFilterList($request)
   {
-    return $this->newsRepository->where('status', '1')->get();
-  }
-
-  public function serachNewsCategoryFilterList($request)
-  {
-    $assetCategoryDetails = $this->newsRepository;
+    $newsDetails = $this->newsRepository;
     /**List By Search or Filter */
     if (isset($request->search) && !empty($request->search)) {
-      $assetCategoryDetails = $assetCategoryDetails->where('name', 'Like', '%' . $request->search . '%');
+      $newsDetails = $newsDetails->where('title', 'Like', '%' . $request->search . '%');
     }
     /**List By Status or Filter */
     if (isset($request->status)) {
-      $assetCategoryDetails = $assetCategoryDetails->where('status', $request->status);
+      $newsDetails = $newsDetails->where('status', $request->status);
     }
-    return $assetCategoryDetails->orderBy('id', 'DESC')->paginate(10);
+    /**List By News Category or Filter */
+    if (isset($request->news_category_id)) {
+      $newsDetails = $newsDetails->where('news_category_id', $request->news_category_id);
+    }
+    /**List By Company Branch or Filter */
+    if (isset($request->company_branch_id)) {
+      $companyID = $request->company_branch_id;
+      $newsDetails = News::wherehas(
+        'companyBranches',
+        function ($query) use ($companyID) {
+          $query->where('company_branch_id', $companyID);
+        }
+      );
+    }
+    /**List By Department or Filter */
+    if (isset($request->department_id)) {
+      $departmentId = $request->department_id;
+      $newsDetails = News::wherehas(
+        'departments',
+        function ($query) use ($departmentId) {
+          $query->where('department_id', $departmentId);
+        }
+      );
+    }
+    return $newsDetails->orderBy('id', 'DESC')->paginate(10);
   }
 }

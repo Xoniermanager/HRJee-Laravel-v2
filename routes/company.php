@@ -40,6 +40,8 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
+use App\Http\Controllers\Company\PolicyCategoryController;
+use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () {
@@ -383,12 +385,36 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/add', 'add')->name('news.add');
         Route::post('/create', 'store')->name('news.store');
         Route::get('/edit/{news:id}', 'edit')->name('news.edit');
+        Route::get('/view/{news:id}', 'view')->name('news.view');
         Route::post('/update/{id}', 'update')->name('news.update');
         Route::get('/delete/{id}', 'destroy')->name('news.delete');
         Route::get('/status/update', 'statusUpdate')->name('news.statusUpdate');
-        // Route::get('/search/filter', 'serachLeaveCreditFilterList');
+        Route::get('/search/filter', 'serachNewsFilterList');
     });
 
     Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
+
+    //Policy Category Module
+    Route::prefix('/policy-category')->controller(PolicyCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('policy.category.index');
+        Route::post('/create', 'store')->name('policy.category.store');
+        Route::post('/update', 'update')->name('policy.category.update');
+        Route::get('/delete', 'destroy')->name('policy.category.delete');
+        Route::get('/status/update', 'statusUpdate')->name('policy.category.statusUpdate');
+        Route::get('/search/filter', 'serachPolicyCategoryFilterList');
+    });
+
+    //Policy Module
+    Route::prefix('/policy')->controller(PolicyController::class)->group(function () {
+        Route::get('/', 'index')->name('policy.index');
+        Route::get('/add', 'add')->name('policy.add');
+        Route::post('/create', 'store')->name('policy.store');
+        Route::get('/edit/{policies:id}', 'edit')->name('policy.edit');
+        Route::get('/view/{policies:id}', 'view')->name('policy.view');
+        Route::post('/update/{id}', 'update')->name('policy.update');
+        Route::get('/delete/{id}', 'destroy')->name('policy.delete');
+        Route::get('/status/update', 'statusUpdate')->name('policy.statusUpdate');
+        Route::get('/search/filter', 'serachPolicyFilterList');
+    });
 });
 /**---------------End Company Panel Route----------------*/

@@ -9,12 +9,9 @@ use App\Repositories\AssetRepository;
 class AssetService
 {
   private $assetRepository;
-  private $fileUploadService;
-
-  public function __construct(AssetRepository $assetRepository, FileUploadService $fileUploadService)
+  public function __construct(AssetRepository $assetRepository)
   {
     $this->assetRepository = $assetRepository;
-    $this->fileUploadService = $fileUploadService;
   }
   public function all()
   {
@@ -25,11 +22,11 @@ class AssetService
     if (isset($data['invoice_file']) && !empty($data['invoice_file'])) {
       $nameForImage = removingSpaceMakingName($data['name']);
       $upload_path = "/asset_file";
-      $imagePath = $this->fileUploadService->imageUpload($data['invoice_file'], $upload_path, $nameForImage);
-      $data['invoice_file'] = $imagePath;
+      $filePath = uploadingImageorFile($data['invoice_file'], $upload_path, $nameForImage);
+      $data['invoice_file'] = $filePath;
     }
     $data['asset_status_id'] = AssetStatus::CREATED;
-    $data['company_id'] = Auth::guard('admin')->user()->id;
+    $data['company_id'] = Auth::guard('admin')->user()->company_id;
     return $this->assetRepository->create($data);
   }
 
@@ -39,8 +36,8 @@ class AssetService
     if (isset($data['invoice_file']) && !empty($data['invoice_file'])) {
       $nameForImage = removingSpaceMakingName($data['name']);
       $upload_path = "/asset_file";
-      $imagePath = $this->fileUploadService->imageUpload($data['invoice_file'], $upload_path, $nameForImage);
-      $data['invoice_file'] = $imagePath;
+      $filePath = uploadingImageorFile($data['invoice_file'], $upload_path, $nameForImage);
+      $data['invoice_file'] = $filePath;
       if ($existingDetails->invoice_file != null) {
         unlinkFileOrImage($existingDetails->invoice_file);
       }

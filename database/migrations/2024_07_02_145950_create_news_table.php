@@ -19,13 +19,19 @@ return new class extends Migration
             $table->foreign('news_category_id')->references('id')->on('news_categories');
             $table->date('start_date');
             $table->date('end_date');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->string('file')->nullable();
+            $table->boolean('all_company_branch')->default(false);
+            $table->boolean('all_department')->default(false);
+            $table->boolean('all_designation')->default(false);
+            $table->unsignedBigInteger('company_id');
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->unsignedBigInteger('company_branch_id')->nullable();
+            $table->foreign('company_branch_id')->references('id')->on('company_branches');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */

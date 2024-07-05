@@ -30,7 +30,10 @@ class NewsController extends Controller
     public function index()
     {
         $allNewsDetails = $this->newsService->all();
-        return view('company.news.index', compact('allNewsDetails'));
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->allActiveCompanyBranchesByUsingCompanyId(Auth()->guard('admin')->user()->company_id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
+        return view('company.news.index', compact('allNewsDetails', 'allNewsCategoryDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
 
     public function add()
@@ -43,18 +46,6 @@ class NewsController extends Controller
     public function store(NewsStoreRequest $request)
     {
         try {
-            $request->validate([
-                'title'                => ['required'],
-                'news_category_id'      => ['required', 'exists:news_categories,id'],
-                'start_date'           => ['required', 'date'],
-                'end_date'             => ['required', 'date'],
-                'image'                => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-                'company_branch_id'    => 'required|array', 'exists:company_branches,id',
-                'department_id'        => 'required|array', 'exists:departments,id',
-                'designation_id'       => 'required|array', 'exists:designations,id',
-                'file'                 => 'nullable|mimes:pdf',
-                'description'          => 'nullable',
-            ]);
             $data = $request->all();
             if ($this->newsService->create($data)) {
                 return redirect(route('news.index'))->with('success', 'Added successfully');
@@ -70,6 +61,11 @@ class NewsController extends Controller
         $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
         $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
         return view('company.news.edit', compact('editNewsDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails', 'allNewsCategoryDetails'));
+    }
+    public function view($id)
+    {
+        $viewNewsDetails = $this->newsService->findByNewsId($id);
+        return view('company.news.view', compact('viewNewsDetails'));
     }
     public function update(NewsStoreRequest $request, $id)
     {
@@ -106,6 +102,20 @@ class NewsController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'News Updated Successfully',
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+    public function serachNewsFilterList(Request $request)
+    {
+        $allPolicyDetails = $this->newsService->serachNewsFilterList($request);
+        if ($allPolicyDetails) {
+            return response()->json([
+                'success' => 'Searching',
+                'data'   =>  view('company.news.list', [
+                    'allNewsDetails' => $allPolicyDetails
+                ])->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
