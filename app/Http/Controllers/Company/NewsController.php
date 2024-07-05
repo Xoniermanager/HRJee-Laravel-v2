@@ -43,7 +43,7 @@ class NewsController extends Controller
         $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
         return view('company.news.add', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'allNewsCategoryDetails'));
     }
-    public function store(NewsStoreRequest $request)
+    public function store(Request $request)
     {
         try {
             $data = $request->all();

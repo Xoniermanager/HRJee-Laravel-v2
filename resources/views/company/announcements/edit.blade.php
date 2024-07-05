@@ -20,21 +20,22 @@
                 <div class="row">
                     <div class="col-sm-6 mb-3">
                         <label class="col-form-label required">Title</label>
-                        <input type="text" class="form-control" name="title" placeholder="announcement title"
-                            id="title">
+                        <input type="text" class="form-control" name="title" value="{{ $announcement->title }}"
+                            placeholder="announcement title" id="title">
                         <label class="field_error title_error"> </label>
 
                     </div>
                     <div class="col-sm-6 mb-3">
                         <label class="col-form-label required">Start Date</label>
                         <input type="text" class="form-control  datetimepicker" name="start_date_time"
-                            id="start_date_time" autocomplete="off" placeholder="select date & time">
+                            id="start_date_time" autocomplete="off" placeholder="select date & time"
+                            value="{{ $announcement->start_date_time }}">
                         <label class="field_error start_date_time_error"> </label>
                     </div>
                     <div class="col-sm-6 mb-3">
                         <label class="col-form-label">Expire At</label>
-                        <input type="text" class="form-control  datetimepicker" name="expires_at"autocomplete="off"
-                            placeholder="select date & time">
+                        <input type="text" class="form-control  datetimepicker" name="expires_at" autocomplete="off"
+                            value="{{ $announcement->expires_at }}" placeholder="select date & time">
                         <label class="field_error expires_at_error"> </label>
 
                     </div>
@@ -45,7 +46,8 @@
                             data-allow-clear="true" name="status" style="width:100%" id="status">
                             <option value=""></option>
                             @foreach (transLang('action_status') as $key => $status)
-                                <option value="{{ $key }}">
+                                <option value="{{ $key }}"
+                                    {{ $announcement->status == $key ? 'selected' : '' }}>
                                     {{ $status }}</option>
                             @endforeach
                         </select>
@@ -56,10 +58,12 @@
                         <label class="col-form-label">Image</label>
                         <input type="file" class="form-control" name="image">
                         <label class="field_error image_error"> </label>
+                        <img src="{{ $announcement->announcement_image }}" height="100">
                     </div>
                     <div class="col-sm-6">
                         <label class="col-form-label required">Description</label>
                         <textarea rows="1" class="form-control  " name='description' placeholder="description" id="description">
+                        {{ $announcement->description }}
                         </textarea>
                         <label class="field_error description_error"> </label>
 
@@ -91,7 +95,8 @@
                                             id="company_branch_id">
                                             <option value=""></option>
                                             @foreach ($branches as $key => $row)
-                                                <option value="{{ $row->id }}">
+                                                <option value="{{ $row->id }}"
+                                                    {{ in_array($row->id, $assignBrancheIds) ? 'selected' : '' }}>
                                                     {{ $row->name }}
                                                 </option>
                                             @endforeach
@@ -114,11 +119,12 @@
                                         <label class=" ">Department </label>
                                         <select class="bg-white form-select form-select-solid" data-control="select2"
                                             data-close-on-select="false" data-placeholder="Select the Company Branch"
-                                            data-allow-clear="true" multiple name="department_id[]" id="department_id"
-                                            style="width:100%">
+                                            data-allow-clear="true" multiple name="department_id[]"
+                                            id="department_id" style="width:100%">
                                             <option value=""></option>
                                             @foreach ($departments as $key => $department)
-                                                <option value="{{ $department->id }}">
+                                                <option value="{{ $department->id }}"
+                                                    {{ in_array($row->id, $assignDepartmentIds) ? 'selected' : '' }}>
                                                     {{ $department->name }}
                                                 </option>
                                             @endforeach
@@ -145,7 +151,14 @@
                                             data-allow-clear="true" multiple name="designation_id[]"
                                             id="designation_id" style="width:100%">
                                             <option value=""></option>
-
+                                            @forelse ($designations as $key => $designation)
+                                                <option value="{{ $designation->id }}"
+                                                    {{ in_array($designation->id, $assignDesignationIds) ? 'selected' : '' }}>
+                                                    {{ $designation->name }}
+                                                </option>
+                                            @empty
+                                                <option value=""> </option>
+                                            @endforelse
                                         </select>
                                         <label class="field_error designation_id_error"> </label>
                                     </div>
@@ -190,7 +203,7 @@
                         <div class="card-">
                             <div class="card-body">
                                 <div class="employee_listing">
-                                    @forelse ($branchUsers as $user)
+                                    @forelse ($users as $user)
                                         <div class="d-flex align-items-center mb-3">
                                             <div class="symbol symbol-45px me-5">
                                                 <img src="assets/media/user.jpg" alt="">
@@ -219,7 +232,7 @@
                 </span> --}}
                 <div class="col-md-4">
                     <button type="button" class="btn btn-primary px-5 radius-30 save-assign-anouncement-frm"
-                        onclick="addUpdateFormData('message_assign-anouncement_box','post','{{ route('announcement.store') }}','save-assign-anouncement-frm','','{{ route('announcement.index') }}','class','')">
+                        onclick="addUpdateFormData('message_assign-anouncement_box','post','{{ route('announcement.update',$announcement->id) }}','save-assign-anouncement-frm','','{{ route('announcement.index') }}','class','')">
                         Save
                         & Close</button>
                     <button type="button" class="btn btn-outline-primary px-5 radius-30"
@@ -363,12 +376,15 @@
 
                         $('.employee_listing').html(html);
                         let designations = '<option value=""><option>';
-
-                        $.each(response.data.branchDepartmentDesignations, function(key,
-                            value) {
-                            designations += `<option value="${value.id}">
-                         ${value.name}  </option>`;
-                        });
+                        if (response.data.branchDepartmentDesignations.length > 0) {
+                            $.each(response.data.branchDepartmentDesignations, function(key,
+                                value) {
+                                designations += `<option value="${value.id}">
+                                   ${value.name}  </option>`;
+                            });
+                        }else {
+                            designations += '<option value=""><option>';
+                        }
 
                         $("#designation_id").html(designations);
 

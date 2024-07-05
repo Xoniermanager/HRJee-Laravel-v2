@@ -32,10 +32,7 @@
                         </label></td>
                         <td>
                             <div class="d-flex justify-content-end flex-shrink-0">
-                               
-
-                                <a href="#" data-bs-toggle="modal"
-                                onClick="edit_announcement_details('{{ $announcement }}')"
+                             <a href="{{route('announcement.edit',$announcement->id)}}"  
                                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                 <i class="fa fa-edit"></i>
