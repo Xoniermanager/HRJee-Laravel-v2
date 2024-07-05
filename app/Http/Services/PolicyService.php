@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\Policy;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\PolicyRepository;
 
 class PolicyService
@@ -33,13 +34,20 @@ class PolicyService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $newsCreatedDetails =  $this->policyRepository->create($finalPayload);
-
-    if ($newsCreatedDetails) {
-      $policyDetails = Policy::find($newsCreatedDetails->id);
-      $policyDetails->companyBranches()->sync($data['company_branch_id']);
-      $policyDetails->departments()->sync($data['department_id']);
-      $policyDetails->designations()->sync($data['designation_id']);
+    $finalPayload['company_id'] = Auth::guard('admin')->user()->company_id;
+    // $finalPayload['company_branch_id'] = Auth::guard('admin')->user()->branch_id ?? '';
+    $policyCreatedDetails =  $this->policyRepository->create($finalPayload);
+    if ($policyCreatedDetails) {
+      $policyDetails = Policy::find($policyCreatedDetails->id);
+      if ($policyCreatedDetails->all_company_branch == 0) {
+        $policyDetails->companyBranches()->sync($data['company_branch_id']);
+      }
+      if ($policyCreatedDetails->all_department == 0) {
+        $policyDetails->departments()->sync($data['department_id']);
+      }
+      if ($policyCreatedDetails->all_designation == 0) {
+        $policyDetails->designations()->sync($data['designation_id']);
+      }
     }
     return true;
   }
@@ -72,12 +80,27 @@ class PolicyService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $newsUodatesDetails = $editDetails->update($finalPayload);
-    if ($newsUodatesDetails) {
+    $policyUdatesDetails = $editDetails->update($finalPayload);
+    if ($policyUdatesDetails) {
       $policyDetails = Policy::find($id);
-      $policyDetails->companyBranches()->sync($data['company_branch_id']);
-      $policyDetails->departments()->sync($data['department_id']);
-      $policyDetails->designations()->sync($data['designation_id']);
+      if ($policyDetails->all_company_branch == 0) {
+        $policyDetails->companyBranches()->sync($data['company_branch_id']);
+      }
+      if ($policyDetails->all_department == 0) {
+        $policyDetails->departments()->sync($data['department_id']);
+      }
+      if ($policyDetails->all_designation == 0) {
+        $policyDetails->designations()->sync($data['designation_id']);
+      }
+      if ($policyDetails->all_company_branch == 1) {
+        $policyDetails->companyBranches()->detach();
+      }
+      if ($policyDetails->all_department == 1) {
+        $policyDetails->departments()->detach();
+      }
+      if ($policyDetails->all_designation == 1) {
+        $policyDetails->designations()->detach();
+      }
     }
     return true;
   }

@@ -10,7 +10,7 @@ class News extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'image', 'news_category_id', 'start_date', 'end_date', 'description', 'file', 'designation_id', 'department_id', 'news_category_id', 'company_branch_id','status'];
+    protected $fillable = ['title', 'image', 'news_category_id', 'start_date', 'end_date', 'description', 'file', 'designation_id', 'department_id', 'news_category_id', 'company_branch_id','status','all_company_branch','all_department','all_designation','company_id','company_branches'];
 
     public function designations()
     {

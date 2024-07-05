@@ -4,9 +4,15 @@
     Edit Policy
 @endsection
 @php
-    $selectedDepartmentId = $editPolicyDetails->departments->pluck('id');
-    $selectedCompanyBranchId = $editPolicyDetails->companyBranches->pluck('id');
-    $selectedDesignationId = $editPolicyDetails->designations->pluck('id');
+    if ($editPolicyDetails->all_company_branch == 0) {
+        $selectedDepartmentId = $editPolicyDetails->departments->pluck('id');
+    }
+    if ($editPolicyDetails->all_department == 0) {
+        $selectedCompanyBranchId = $editPolicyDetails->companyBranches->pluck('id');
+    }
+    if ($editPolicyDetails->all_designation == 0) {
+        $selectedDesignationId = $editPolicyDetails->designations->pluck('id');
+    }
 @endphp
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -32,48 +38,121 @@
                                         @endif
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="">Company Branches *</label>
-                                        <select class="bg-white form-select form-select-solid" data-control="select2"
-                                            data-close-on-select="false" data-placeholder="Select the Company Branch"
-                                            data-allow-clear="true" multiple="multiple" name="company_branch_id[]">
-                                            @foreach ($allCompanyBranchesDetails as $compayBranches)
-                                                <option value="{{ $compayBranches->id }}"
-                                                    {{ $selectedCompanyBranchId->contains($compayBranches->id) ? 'selected' : null }}>
-                                                    {{ $compayBranches->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('company_branch_id'))
-                                            <div class="text-danger">{{ $errors->first('company_branch_id') }}</div>
-                                        @endif
+                                        <div class="row">
+                                            <div class="col-md-2 form-group mt-3">
+                                                <label
+                                                    class="form-check form-check-custom form-check-inline form-check-solid">
+                                                    <span class="fw-semibold ps-2 fs-6">
+                                                        All
+                                                    </span>
+                                                    <input class="form-check-input m-4" type="checkbox"
+                                                        name="all_company_branch"
+                                                        onchange="get_checkedValue('company_branch')"
+                                                        id="company_branches_checkbox"
+                                                        {{ $editPolicyDetails->all_company_branch == 1 ? 'checked' : '' }} value= "{{$editPolicyDetails->all_company_branch == 1 ? '1' : '0'}}">
+                                                </label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <label for="">Company Branches *</label>
+                                                <select class="bg-white form-select form-select-solid"
+                                                    data-control="select2" data-close-on-select="false"
+                                                    data-placeholder="Select the Company Branch" data-allow-clear="true"
+                                                    multiple="multiple" name="company_branch_id[]" id="company_branch"
+                                                    {{ $editPolicyDetails->all_company_branch == 1 ? 'disabled' : '' }}>
+                                                    @if ($editPolicyDetails->all_company_branch == 0)
+                                                        @foreach ($allCompanyBranchesDetails as $compayBranches)
+                                                            <option value="{{ $compayBranches->id }}"
+                                                                {{ $selectedCompanyBranchId->contains($compayBranches->id) ? 'selected' : null }}>
+                                                                {{ $compayBranches->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @else
+                                                        @foreach ($allCompanyBranchesDetails as $compayBranches)
+                                                            <option value="{{ $compayBranches->id }}">
+                                                                {{ $compayBranches->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                                @if ($errors->has('company_branch_id'))
+                                                    <div class="text-danger">{{ $errors->first('company_branch_id') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="">Department *</label>
-                                        <select class="bg-white form-select form-select-solid" data-control="select2"
-                                            data-close-on-select="false" data-placeholder="Select the Department"
-                                            data-allow-clear="true" multiple="multiple" id="department_id"
-                                            onchange="get_designation_by_department_id()" name="department_id[]">
-                                            @foreach ($allDepartmentsDetails as $departmentsDetails)
-                                                <option value="{{ $departmentsDetails->id }}"
-                                                    {{ $selectedDepartmentId->contains($departmentsDetails->id) ? 'selected' : null }}>
-                                                    {{ $departmentsDetails->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('department_id'))
-                                            <div class="text-danger">{{ $errors->first('department_id') }}</div>
-                                        @endif
+                                        <div class="row">
+                                            <div class="col-md-2 form-group mt-3">
+                                                <label
+                                                    class="form-check form-check-custom form-check-inline form-check-solid">
+                                                    <span class="fw-semibold ps-2 fs-6">
+                                                        All
+                                                    </span>
+                                                    <input class="form-check-input m-4" type="checkbox"
+                                                        name="all_department" onchange="get_checkedValue('department')"
+                                                        id="department_checkbox"
+                                                        {{ $editPolicyDetails->all_department == 1 ? 'checked' : '' }} value = "{{$editPolicyDetails->all_department == 1 ? '1' : '0'}}" >
+                                                </label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <label for="">Department *</label>
+                                                <select class="bg-white form-select form-select-solid"
+                                                    data-control="select2" data-close-on-select="false"
+                                                    data-placeholder="Select the Department" data-allow-clear="true"
+                                                    multiple="multiple" id="department_id"
+                                                    onchange="get_designation_by_department_id()" name="department_id[]"
+                                                    {{ $editPolicyDetails->all_department == 1 ? 'disabled' : '' }}>
+                                                    @if ($editPolicyDetails->all_department == 0)
+                                                        @foreach ($allDepartmentsDetails as $departmentsDetails)
+                                                            <option value="{{ $departmentsDetails->id }}"
+                                                                {{ $selectedDepartmentId->contains($departmentsDetails->id) ? 'selected' : null }}>
+                                                                {{ $departmentsDetails->name }}</option>
+                                                        @endforeach
+                                                    @else
+                                                        @foreach ($allDepartmentsDetails as $departmentsDetails)
+                                                            <option value="{{ $departmentsDetails->id }}">
+                                                                {{ $departmentsDetails->name }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                                @if ($errors->has('department_id'))
+                                                    <div class="text-danger">{{ $errors->first('department_id') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6 form-group">
-                                        <label for="">Designation *</label>
-                                        <select class="bg-white form-select form-select-solid" data-control="select2"
-                                            data-close-on-select="false" data-placeholder="Select an option"
-                                            data-allow-clear="true" multiple="multiple" id="designation_id"
-                                            name="designation_id[]">
+                                        <div class="row">
+                                            <div class="col-md-2 form-group mt-3">
+                                                <label
+                                                    class="form-check form-check-custom form-check-inline form-check-solid">
+                                                    <span class="fw-semibold ps-2 fs-6">
+                                                        All
+                                                    </span>
+                                                    <input class="form-check-input m-4" type="checkbox"
+                                                        name="all_designation"
+                                                        onchange="get_checkedValue('designation')"
+                                                        id="designation_checkbox"
+                                                        {{ $editPolicyDetails->all_designation == 1 ? 'checked' : '' }}  value = "{{$editPolicyDetails->all_designation == 1 ? '1' : '0'}}">
+                                                </label>
+                                            </div>
+                                            <div class="col-md-10 form-group">
+                                                <label for="">Designation *</label>
+                                                <select class="bg-white form-select form-select-solid"
+                                                    data-control="select2" data-close-on-select="false"
+                                                    data-placeholder="Select an option" data-allow-clear="true"
+                                                    multiple="multiple" id="designation_id" name="designation_id[]"
+                                                    {{ $editPolicyDetails->all_designation == 1 ? 'disabled' : '' }}>
 
-                                        </select>
-                                        @if ($errors->has('designation_id'))
-                                            <div class="text-danger">{{ $errors->first('designation_id') }}</div>
-                                        @endif
+                                                </select>
+                                                @if ($errors->has('designation_id'))
+                                                    <div class="text-danger">{{ $errors->first('designation_id') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label for="">News Category *</label>
@@ -150,41 +229,11 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        var selectedDesignationId = {{ $selectedDesignationId }};
-        get_designation_by_department_id(selectedDesignationId);
+    jQuery(document).ready(function() {
+        var check_condition = {{ $editPolicyDetails->all_department }}
+        if (check_condition == 0) {
+            get_designation_by_department_id({{ $selectedDesignationId ?? '' }});
+        }
     });
-
-    function get_designation_by_department_id(selectedDesignationId) {
-        var selectedValues = $('#department_id').val();
-        $.ajax({
-            type: 'GET',
-            url: company_ajax_base_url + '/designation/get/all/designation',
-            dataType: "json",
-            data: {
-                'department_id': selectedValues,
-            },
-            success: function(response) {
-                var select = $('#designation_id');
-                select.empty()
-                if (response.status == true) {
-                    $.each(response.data, function(key, value) {
-                        select.append('<option value=' +
-                            value.id + '>' + value.name + '</option>');
-                    });
-                    $('#designation_id').val(selectedDesignationId);
-                } else {
-                    return false;
-                }
-            },
-            error: function() {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Something Went Wrong!! Please try Again"
-                });
-            }
-        });
-    };
 </script>
 @endsection

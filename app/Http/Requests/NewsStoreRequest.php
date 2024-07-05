@@ -27,9 +27,9 @@ class NewsStoreRequest extends FormRequest
             'start_date'           => ['required', 'date'],
             'end_date'             => ['required', 'date'],
             'image'                => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'company_branch_id'    => 'required|array', 'exists:company_branches,id',
-            'department_id'        => 'required|array', 'exists:departments,id',
-            'designation_id'       => 'required|array', 'exists:designations,id',
+            'company_branch_id'    => 'required_if:all_company_branch:0,array', 'exists:company_branches,id',
+            'department_id'        => 'required_if:all_department:0,array', 'exists:departments,id',
+            'designation_id'       => 'required_if:all_designation:0,array', 'exists:designations,id',
             'file'                 => 'nullable|mimes:pdf',
             'description'          => 'nullable',
         ];

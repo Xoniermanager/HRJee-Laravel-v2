@@ -26,29 +26,41 @@
                                     <tr>
                                         <th>Company Branches</th>
                                         <td>
-                                            @foreach ($viewNewsDetails->companyBranches as $companyBranch)
-                                                <span
-                                                    class="btn btn-primary btn-sm me-1">{{ $companyBranch->name }}</span>
-                                            @endforeach
+                                            @if ($viewNewsDetails->all_company_branch == 0)
+                                                @foreach ($viewNewsDetails->companyBranches as $companyBranch)
+                                                    <span
+                                                        class="btn btn-primary btn-sm me-1">{{ $companyBranch->name }}</span>
+                                                @endforeach
+                                            @else
+                                                <span class="btn btn-primary btn-sm me-1">All</span>
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Department</th>
                                         <td>
-                                            @foreach ($viewNewsDetails->departments as $departmentDetails)
-                                                <button
-                                                    class="btn btn-sm btn-primary">{{ $departmentDetails->name }}</button>
-                                            @endforeach
+                                            @if ($viewNewsDetails->all_department == 0)
+                                                @foreach ($viewNewsDetails->departments as $departmentDetails)
+                                                    <button
+                                                        class="btn btn-sm btn-primary">{{ $departmentDetails->name }}</button>
+                                                @endforeach
+                                            @else
+                                                <span class="btn btn-primary btn-sm me-1">All</span>
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Designation</th>
                                         <td>
-                                            @foreach ($viewNewsDetails->designations as $designationDetails)
-                                                <button
-                                                    class="btn btn-sm btn-primary">{{ $designationDetails->name }}</button>
-                                            @endforeach
-                                        </td>
+                                            @if ($viewNewsDetails->all_designation == 0)
+                                                @foreach ($viewNewsDetails->designations as $designationDetails)
+                                                    <button
+                                                        class="btn btn-sm btn-primary">{{ $designationDetails->name }}</button>
+                                                @endforeach
+                                            @else
+                                                <span class="btn btn-primary btn-sm me-1">All</span>
+                                            @endif
+                                        </td>       
                                     </tr>
                                     <tr>
                                         <th>Category</th>

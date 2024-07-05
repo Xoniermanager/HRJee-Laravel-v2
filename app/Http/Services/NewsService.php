@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Models\News;
 use Illuminate\Support\Arr;
 use App\Repositories\NewsRepository;
+use Illuminate\Support\Facades\Auth;
 
 class NewsService
 {
@@ -33,13 +34,21 @@ class NewsService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
+    $finalPayload['company_id'] = Auth::guard('admin')->user()->company_id;
+    $finalPayload['company_branch_id'] = Auth::guard('admin')->user()->branch_id ?? '';
     $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
-
-    if ($newsCreatedDetails) {
+    if ($newsCreatedDetails) 
+    {
       $newsDetails = News::find($newsCreatedDetails->id);
-      $newsDetails->companyBranches()->sync($data['company_branch_id']);
-      $newsDetails->departments()->sync($data['department_id']);
-      $newsDetails->designations()->sync($data['designation_id']);
+      if ($newsCreatedDetails->all_company_branch == 0) {
+        $newsDetails->companyBranches()->sync($data['company_branch_id']);
+      }
+      if ($newsCreatedDetails->all_department == 0) {
+        $newsDetails->departments()->sync($data['department_id']);
+      }
+      if ($newsCreatedDetails->all_designation == 0) {
+        $newsDetails->designations()->sync($data['designation_id']);
+      }
     }
     return true;
   }
@@ -75,9 +84,24 @@ class NewsService
     $newsUodatesDetails = $editDetails->update($finalPayload);
     if ($newsUodatesDetails) {
       $newsDetails = News::find($id);
-      $newsDetails->companyBranches()->sync($data['company_branch_id']);
-      $newsDetails->departments()->sync($data['department_id']);
-      $newsDetails->designations()->sync($data['designation_id']);
+      if ($editDetails->all_company_branch == 0) {
+        $newsDetails->companyBranches()->sync($data['company_branch_id']);
+      }
+      if ($editDetails->all_department == 0) {
+        $newsDetails->departments()->sync($data['department_id']);
+      }
+      if ($editDetails->all_designation == 0) {
+        $newsDetails->designations()->sync($data['designation_id']);
+      }
+      if ($editDetails->all_company_branch == 1) {
+        $newsDetails->companyBranches()->detach();
+      }
+      if ($editDetails->all_department == 1) {
+        $newsDetails->departments()->detach();
+      }
+      if ($editDetails->all_designation == 1) {
+        $newsDetails->designations()->detach();
+      }
     }
     return true;
   }
