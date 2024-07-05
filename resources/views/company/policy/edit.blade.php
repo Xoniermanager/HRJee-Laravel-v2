@@ -27,6 +27,9 @@
                         <form action="{{ route('policy.update', $editPolicyDetails->id) }}" method="post"
                             enctype="multipart/form-data">
                             @csrf
+                            <input type="hidden" name="all_company_branch" value="0"> 
+                            <input type="hidden" name="all_department" value="0"> 
+                            <input type="hidden" name="all_designation" value="0"> 
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6 form-group">
@@ -49,7 +52,7 @@
                                                         name="all_company_branch"
                                                         onchange="get_checkedValue('company_branch')"
                                                         id="company_branches_checkbox"
-                                                        {{ $editPolicyDetails->all_company_branch == 1 ? 'checked' : '' }} value= "{{$editPolicyDetails->all_company_branch == 1 ? '1' : '0'}}">
+                                                        {{ $editPolicyDetails->all_company_branch == 1 ? 'checked' : '' }} value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -92,7 +95,7 @@
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_department" onchange="get_checkedValue('department')"
                                                         id="department_checkbox"
-                                                        {{ $editPolicyDetails->all_department == 1 ? 'checked' : '' }} value = "{{$editPolicyDetails->all_department == 1 ? '1' : '0'}}" >
+                                                        {{ $editPolicyDetails->all_department == 1 ? 'checked' : '' }} value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -135,7 +138,7 @@
                                                         name="all_designation"
                                                         onchange="get_checkedValue('designation')"
                                                         id="designation_checkbox"
-                                                        {{ $editPolicyDetails->all_designation == 1 ? 'checked' : '' }}  value = "{{$editPolicyDetails->all_designation == 1 ? '1' : '0'}}">
+                                                        {{ $editPolicyDetails->all_designation == 1 ? 'checked' : '' }} value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
