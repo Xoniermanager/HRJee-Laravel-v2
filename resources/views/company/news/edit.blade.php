@@ -28,6 +28,9 @@
                         <form action="{{ route('news.update', $editNewsDetails->id) }}" method="post"
                             enctype="multipart/form-data">
                             @csrf
+                            <input type="hidden" name="all_company_branch" value="0"> 
+                            <input type="hidden" name="all_department" value="0"> 
+                            <input type="hidden" name="all_designation" value="0"> 
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6 form-group">
@@ -49,7 +52,7 @@
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_company_branch"
                                                         onchange="get_checkedValue('company_branch')"
-                                                        id="company_branches_checkbox" {{$editNewsDetails->all_company_branch == 1 ? 'checked' : ''}}>
+                                                        id="company_branches_checkbox" {{$editNewsDetails->all_company_branch == 1 ? 'checked' : ''}} value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -90,7 +93,7 @@
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_department" onchange="get_checkedValue('department')"
-                                                        id="department_checkbox" {{$editNewsDetails->all_department == 1 ? 'checked' : ''}}>
+                                                        id="department_checkbox" {{$editNewsDetails->all_department == 1 ? 'checked' : ''}} value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -140,7 +143,7 @@
                                                 <select class="bg-white form-select form-select-solid"
                                                     data-control="select2" data-close-on-select="false"
                                                     data-placeholder="Select an option" data-allow-clear="true"
-                                                    multiple="multiple" id="designation_id" name="designation_id[]" {{$editNewsDetails->all_designation == 1 ? 'disabled' : ''}}>
+                                                    multiple="multiple" id="designation_id" name="designation_id[]" {{$editNewsDetails->all_designation == 1 ? 'disabled' : ''}} value="1">
 
                                                 </select>
                                                 @if ($errors->has('designation_id'))
