@@ -20,4 +20,5 @@ return [
     'invalid_or_expired_otp' => 'invalid or expired otp!',
     'verify_otp' => 'please verify otp!',
     'loader_message' => 'loading message!',
+    'announcement_assigned' => 'Announcement has been assigned successfully!',
 ];

@@ -41,10 +41,10 @@
                                 <i class="fa fa-edit"></i>
                                 <!--end::Svg Icon-->
                             </a>
-                                <a href="{{route('announcement.assign',$announcement->id)}}" 
+                                <a href="{{route('announcement.view',$announcement->id)}}" 
                                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                <i class="fa fa-bullhorn"></i>
+                                <i class="fa fa-eye"></i>
                                 <!--end::Svg Icon-->
                             </a>
                          

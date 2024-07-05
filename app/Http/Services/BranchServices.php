@@ -78,4 +78,10 @@ class BranchServices
 
     return $branchDetails->orderBy('id', 'DESC')->paginate(10);
   }
+
+// if for this use already have created then let me know
+  public function getAllBranchByBranchId($ids)
+  {
+    return $this->branchRepository->whereIn('id',$ids)->get();
+  }
 }

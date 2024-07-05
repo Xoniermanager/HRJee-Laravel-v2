@@ -28,4 +28,8 @@ class Announcement extends Model
     {
         return $this->belongsToMany(Designations::class, 'announcement_designation', 'announcement_id', 'designation_id');
     }
+
+    public function scopeActive($query) {
+        return $query->where('status', 'active');
+    }
 }

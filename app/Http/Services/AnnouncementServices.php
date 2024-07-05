@@ -10,7 +10,7 @@ class AnnouncementServices
 {
   private $announcementRepository;
   private $announcementAssignRepository;
-  public function __construct(AnnouncementRepository $announcementRepository,AnnouncementAssignRepository $announcementAssignRepository)
+  public function __construct(AnnouncementRepository $announcementRepository, AnnouncementAssignRepository $announcementAssignRepository)
   {
     $this->announcementRepository = $announcementRepository;
     $this->announcementAssignRepository = $announcementAssignRepository;
@@ -25,7 +25,7 @@ class AnnouncementServices
   }
   public function create(array $data)
   {
-    return $this->announcementRepository->create($data);
+    return $this->announcementRepository->create($data)->id;
   }
   public function announcementDetails($id)
   {
@@ -42,13 +42,7 @@ class AnnouncementServices
   }
   public function announcementAssignStore($request)
   {
-
-    $data['announcement_id'] = $request['announcement_id'];
-    // $data['department_id'] = json_encode($request['department_id']);
-    // $data['company_branch_id'] = json_encode($request['company_branch_id']);
-    // $data['designation_id'] = json_encode($request['designation_id']);
-    $data['notification_schedule_time'] = $request['notification_schedule_time'];
-    $created = $this->announcementAssignRepository->updateOrCreate(['announcement_id'=>$request['announcement_id'],'company_branch_id'=>$request['company_branch_id']],$data);
+    $created = $this->announcementAssignRepository->updateOrCreate(['announcement_id' => $request['announcement_id']], $request);
     if ($created)
       return  true;
     else

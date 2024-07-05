@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HolidayApiController;
 use App\Http\Controllers\Api\BankController;
@@ -27,20 +28,17 @@ Route::post('sendOtp', [AuthController::class, 'sendOtp']);
 
 Route::post('password/forgot', [ForgotPasswordController::class, 'forgotPassword']);
 Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']);
+Route::post('verify/otp', [AuthController::class, 'verifyOtp']);
 
 Route::group(['middleware' =>  'auth:sanctum'], function () {
-
-    Route::post('verify/otp', [AuthController::class, 'verifyOtp']);
-
     // Route::group(['middleware' => 'Check2FA'], function () {
     Route::get('profile', [AuthController::class, 'profile']);
     Route::get('user/details', [AuthController::class, 'userAllDetails']);
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
     Route::post('change/password', [AuthController::class, 'changePassword']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('user/address', [AddressController::class, 'addressDetails']);
-    Route::get('user/addresses', [AddressController::class, 'getAllAddresses']);
+    Route::post('logout', [AuthController::class, 'logout']); 
     Route::put('update/address', [AddressController::class, 'updateAddress']);
+    Route::get('announcement', [AnnouncementController::class, 'announcement']);
 
     /**For Leave Management API */
     Route::get('/leave/type', [LeaveManagementApiController::class, 'leaveType']);

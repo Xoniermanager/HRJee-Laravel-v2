@@ -39383,3 +39383,10 @@ span.relative.z-0.inline-flex.rtl\:flex-row-reverse.shadow-sm.rounded-md {
 .field_error{
   color:red
 }
+.news-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 0.65rem;
+  border: 3px solid var(--kt-body-bg);
+  box-shadow: var(--kt-box-shadow);
+}

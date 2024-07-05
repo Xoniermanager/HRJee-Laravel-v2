@@ -25,6 +25,7 @@ use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
+use App\Http\Controllers\Company\AnnouncementAssignController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserBankDetailsController;
@@ -87,13 +88,24 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('edit/{id?}', [AnnouncementController::class, 'edit'])->name('edit');
         Route::post('update/{id?}', [AnnouncementController::class, 'update'])->name('update');
         Route::get('delete/{id?}', [AnnouncementController::class, 'destroy'])->name('delete');
+        Route::get('view/{id}', [AnnouncementController::class, 'getView'])->name('view');
         Route::get('status/update', [AnnouncementController::class, 'statusUpdate'])->name('statusUpdate');
-        Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
-        Route::post('assign/save', [AnnouncementController::class, 'announcementAssign'])->name('assign.save');
+        // Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
+        // Route::post('assign/save', [AnnouncementController::class, 'announcementAssignStore'])->name('assign.save');
         Route::get('details/{id?}', [AnnouncementController::class, 'getAnnouncementDetails'])->name('details');
         Route::get('branch/users', [AnnouncementController::class, 'getAllUsersByBranchId'])->name('branch.users');
         Route::get('branch/department/users', [AnnouncementController::class, 'getAllUsersByBranchAndDepartmentId'])->name('branch.department.users');
         Route::get('branch/department/designation/users', [AnnouncementController::class, 'getAllUsersByBranchDepartmentAndDesignationId'])->name('branch.department.designation.users');
+    });
+
+    //Announcement Assign Module
+    Route::group(['prefix' => 'announcement/assign', 'as' => 'announcement.assign.'], function () {
+        Route::get('/', [AnnouncementAssignController::class, 'getIndex'])->name('index');
+        Route::get('edit/assign/{id}', [AnnouncementAssignController::class, 'editAnnouncementAssign'])->name('edit');
+        Route::post('update/announcement/assign/{id}', [AnnouncementAssignController::class, 'updateAnnouncementAssign'])->name('update');
+        Route::get('delete/{id?}', [AnnouncementAssignController::class, 'destroyAnnouncementAssign'])->name('delete');
+        Route::get('status/update', [AnnouncementAssignController::class, 'announcementAssignStatusUpdate'])->name('statusUpdate');
+        Route::get('view/{id}', [AnnouncementAssignController::class, 'getView'])->name('view');
     });
 
     //Country Module
@@ -262,7 +274,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
         Route::get('/search/filter', 'searchOfficeTimeFilter');
     });
-    
+
     // Office Shifts
     Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
         Route::get('/', 'index')->name('shifts.index');

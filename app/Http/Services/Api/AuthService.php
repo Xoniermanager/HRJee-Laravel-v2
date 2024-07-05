@@ -17,9 +17,9 @@ use Throwable;
 
 class AuthService
 {
-    private  $authService, $sendOtpService, $countryServices,$stateServices;
+    private  $authService, $sendOtpService, $countryServices, $stateServices;
 
-    public function __construct(SendOtpService $sendOtpService, CountryServices $countryServices,StateServices $stateServices)
+    public function __construct(SendOtpService $sendOtpService, CountryServices $countryServices, StateServices $stateServices)
     {
         $this->sendOtpService = $sendOtpService;
         $this->countryServices = $countryServices;
@@ -32,13 +32,14 @@ class AuthService
             if (!Auth::attempt($request->only(['email', 'password'])))
                 return errorMessage('null', 'invalid_credentials');
 
+
             $otpResponse = $this->sendOtpService->generateOTP($request->email, 'employee');
             if ($otpResponse['status'] == false) {
                 return errorMessage('null', $otpResponse['message'],);
             } else {
-                $user = Auth::guard('employee_api')->user();
-                $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
-                return apiResponse($otpResponse['message'], $user);
+                // $user = Auth::guard('employee_api')->user();
+                // $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
+                return apiResponse($otpResponse['message']);
             }
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
@@ -90,14 +91,17 @@ class AuthService
         try {
             $data = $request;
             $data['type'] = 'employee';
-            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'employee_api');
-            if ($verifyOtpResponse) {
-                $user = auth()->guard('employee_api')->user();
-                // $user->tokens()->delete();
-                $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
-                return apiResponse('otp_verified', $user);
+            if (Auth::attempt($request->only(['email', 'password']))) {
+                $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'employee_api');
+                if ($verifyOtpResponse) {
+                    $user = auth()->guard('employee_api')->user();
+                    $user->access_token = $user->createToken("HrJee TOKEN")->plainTextToken;
+                    return apiResponse('otp_verified', $user);
+                } else {
+                    return errorMessage('null', 'invalid_or_expired_otp');
+                }
             } else {
-                return errorMessage('null', 'invalid_or_expired_otp');
+                return errorMessage('null', 'invalid_credentials');
             }
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);

@@ -62,4 +62,10 @@ class DesignationServices
     }
     return $designationDetails->orderBy('id', 'DESC')->paginate(10);
   }
+
+
+  public function getAllDesignationByDesignationId($ids)
+  {
+    return $this->designationRepository->whereIn('id', $ids)->get();
+  }
 }

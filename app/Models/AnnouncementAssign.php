@@ -11,4 +11,14 @@ class AnnouncementAssign extends Model
 
     protected $table = 'announcement_assignes';
     protected $guarded = ['id'];
+
+
+    public function announcement()
+    {
+        return $this->belongsTo(Announcement::class, 'announcement_id', 'id');
+    }
+
+    public function scopeActive($query) {
+        return $query->where('status', 'active');
+    }
 }

@@ -62,4 +62,11 @@ class DepartmentServices
   {
     return $this->departmentRepository->where('company_id', $companyId)->orwhere('company_id', NUll)->where('status', '1')->get();
   }
+
+
+   // if for this use already have created then let me know
+   public function getAllDepartmentByDepartmentId($ids)
+   {
+     return $this->departmentRepository->whereIn('id',$ids)->get();
+   }
 }

@@ -12,10 +12,10 @@ use App\Models\CompanyUser;
 use App\Models\UserCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Session;
+ 
 use Illuminate\Support\Facades\Validator;
 use Throwable;
+use Illuminate\Support\Facades\Cookie;
 
 class AdminController extends Controller
 {
@@ -40,6 +40,8 @@ class AdminController extends Controller
     {
 
         try {
+            // Cookie::queue(Cookie::make('name', 'value', 60));
+            // dd('test');
             $validateUser = Validator::make($request->all(), [
                 'email' => 'required|exists:company_users,email',
                 'password' => 'required'
@@ -53,9 +55,9 @@ class AdminController extends Controller
                 return Redirect::back()->with('error', 'invalid_credentials');
             } else {
                 $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, 'admin');
-                if ($genrateOtpresponse['status'] == true)
+                if ($genrateOtpresponse['status'] == true) {
                     return redirect('company/verify/otp');
-                else
+                } else
                     return redirect('company/signin')->with('error', $genrateOtpresponse['message']);
             }
         } catch (Throwable $th) {

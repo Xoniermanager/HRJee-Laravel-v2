@@ -28,12 +28,13 @@
                                     <option value=""></option>
                                     @foreach ($announcements as $key => $row)
                                         <option value="{{ $row->id }}"
-                                            {{ old('announcement_id', $row->id) == $announcement->id ? 'selected' : '' }}>
+                                            {{ old('announcement_id', $announcementAssign->announcement_id) == $row->id ? 'selected' : '' }}>
                                             {{ $row->title }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
+
                             <label class="field_error announcement_id_error"> </label>
 
                             <div class="form-group">
@@ -60,14 +61,14 @@
                 <div class="col-md-4">
                     <div class="h-100">
                         <div class="row card-body">
-                            <div class="form-group">
+                            <div class="form-group {{!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)?'':'d-none'}}">
                                 <label class="required">Company Branches </label>
                                 <select class="form-control select2  " multiple name="company_branch_id[]"
                                     id="company_branch_id" style="width:100%">
                                     <option value=""></option>
                                     @foreach ($branches as $key => $row)
                                         <option value="{{ $row->id }}"
-                                            {{ in_array($row->id, $branch_id) ? 'selected' : '' }}>
+                                            {{ in_array($row->id, $assignBrancheIds) ? 'selected' : '' }}>
                                             {{ $row->name }}
                                         </option>
                                     @endforeach
@@ -82,7 +83,7 @@
                                     <option value=""></option>
                                     @foreach ($departments as $key => $department)
                                         <option value="{{ $department->id }}"
-                                            {{ old('department_id', $department) == $department->id ? 'selected' : '' }}>
+                                            {{ in_array($department->id, $assignDepartmentIds) ? 'selected' : '' }}>
                                             {{ $department->name }}
                                         </option>
                                     @endforeach
@@ -93,12 +94,15 @@
                                 <select class="form-control select2  " multiple name="designation_id[]"
                                     id="designation_id" style="width:100%">
                                     <option value=""></option>
-                                    {{-- @foreach ($designations as $key => $designation)
+
+                                    @forelse ($designations as $key => $designation)
                                         <option value="{{ $designation->id }}"
-                                            {{ old('designation_id', $designation) == $designation->id ? 'selected' : '' }}>
+                                            {{ in_array($designation->id, $assignDesignationIds) ? 'selected' : '' }}>
                                             {{ $designation->name }}
                                         </option>
-                                    @endforeach --}}
+                                    @empty
+                                        <option value=""> </option>
+                                    @endforelse
                                 </select>
                             </div>
                             <div class="form-group">
@@ -108,6 +112,7 @@
                                     <label
                                         class="form-check form-check-custom form-check-inline form-check-solid me-5 is-valid">
                                         <input class="form-check-input" name="assign_announcement" type="radio"
+                                            {{ empty($announcementAssign->notification_schedule_time) ? 'checked' : '' }}
                                             onchange="assignAnnouncement(1)" value="1">
                                         <span class="fw-semibold ps-2 fs-6">
                                             Now
@@ -118,7 +123,8 @@
                                     <label
                                         class="form-check form-check-custom form-check-inline form-check-solid is-invalid">
                                         <input class="form-check-input" name="assign_announcement" type="radio"
-                                            onchange="assignAnnouncement(0)" value="0" checked>
+                                            {{ !empty($announcementAssign->notification_schedule_time) ? 'checked' : '' }}
+                                            onchange="assignAnnouncement(0)" value="0">
                                         <span class="fw-semibold ps-2 fs-6">
                                             Leter
                                         </span>
@@ -127,10 +133,11 @@
                                 </div>
                             </div>
 
-                            <div class="form-group notification_schedule_time">
+                            <div
+                                class="form-group notification_schedule_time  {{ empty($announcementAssign->notification_schedule_time) ? 'd-none' : 'hide' }}">
                                 <label class="required">Schedule Date</label>
                                 <input class="form-control datetimepicker" name="notification_schedule_time"
-                                    type="text">
+                                    value="{{ $announcementAssign->notification_schedule_time }}" type="text">
                             </div>
                             <label class="field_error notification_schedule_time_error"> </label>
 
@@ -141,7 +148,7 @@
                     <div class="card-">
                         <div class="card-body">
                             <div class="employee_listing">
-                                @forelse ($branchUsers as $user)
+                                @forelse ($users as $user)
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="symbol symbol-45px me-5">
                                             <img src="assets/media/user.jpg" alt="">
@@ -166,7 +173,7 @@
                 </span> --}}
                 <div class="col-md-4">
                     <button type="button" class="btn btn-primary px-5 radius-30 save-assign-anouncement-frm"
-                        onclick="addUpdateFormData('message_assign-anouncement_box','post','{{ route('announcement.assign.save') }}','save-assign-anouncement-frm','','{{ route('announcement.index') }}','class','')">
+                        onclick="addUpdateFormData('message_assign-anouncement_box','post','{{ route('announcement.assign.update', $announcementAssign->id) }}','save-assign-anouncement-frm','','{{ route('announcement.assign.index') }}','class','')">
                         Save
                         & Close</button>
                     <button type="button" class="btn btn-outline-primary px-5 radius-30"
@@ -315,18 +322,19 @@
 
 
     $(document).on('change', '#designation_id', function() {
-        let department_id = $(this).val();
+        let designation_id = $(this).val();
         // let designation_id = $('select#designation_id option:selected').val();
-        let designation_id = new Array();
+        let department_id = new Array();
         let branch_id = new Array();
         //         let branchsd = $('select#company_branch_id option:selected').val();
         // console.log(branchsd);
         $("select#company_branch_id option:selected").each(function() {
             branch_id.push($(this).val());
         });
-        $("select#designation_id option:selected").each(function() {
-            designation_id.push($(this).val());
+        $("select#department_id option:selected").each(function() {
+            department_id.push($(this).val());
         });
+
         $.ajax({
             url: `{{ route('announcement.branch.department.designation.users') }}`,
             type: 'get',
