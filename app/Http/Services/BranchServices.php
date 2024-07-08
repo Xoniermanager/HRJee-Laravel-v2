@@ -20,9 +20,13 @@ class BranchServices
   {
     return $this->branchRepository->with('country', 'state')->where('status', 1)->orderBy('id', 'DESC')->get();
   }
+  public function allActiveCompanyBranchesByUsingCompanyId($companyId)
+  {
+    return $this->branchRepository->where('company_id',$companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
+  }
   public function create($data)
   {
-    $data['company_id'] = Auth::guard('admin')->user()->id;
+    $data['company_id'] = Auth::guard('admin')->user()->company_id;
     return $this->branchRepository->create($data);
   }
   public function deleteDetails($id)
@@ -73,5 +77,11 @@ class BranchServices
     }
 
     return $branchDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+
+// if for this use already have created then let me know
+  public function getAllBranchByBranchId($ids)
+  {
+    return $this->branchRepository->whereIn('id',$ids)->get();
   }
 }

@@ -19,6 +19,13 @@ class DesignationServices
   {
     return $this->designationRepository->create($data);
   }
+  public function getDesignationsAdminOrCompany($department_id = '')
+  {
+    if (empty($department_id))
+      return  $this->designationRepository->whereNull('company_id')->orWhere('company_id', auth()->guard('admin')->user()->id)->get();
+    else
+      return  $this->designationRepository->where('department_id', $department_id)->get();
+  }
 
   public function updateDetails(array $data, $id)
   {
@@ -31,7 +38,7 @@ class DesignationServices
 
   public function getAllDesignationUsingDepartmentID($department_id)
   {
-    return $this->designationRepository->where('department_id', $department_id)->where('status', '1')->get();
+    return $this->designationRepository->whereIn('department_id', $department_id)->where('status', '1')->get();
   }
   public function serachDesignationFilterList($request)
   {
@@ -54,5 +61,11 @@ class DesignationServices
       $designationDetails = $designationDetails->where('department_id', $request->department_id);
     }
     return $designationDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+
+
+  public function getAllDesignationByDesignationId($ids)
+  {
+    return $this->designationRepository->whereIn('id', $ids)->get();
   }
 }

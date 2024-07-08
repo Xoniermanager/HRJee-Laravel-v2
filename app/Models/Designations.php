@@ -19,5 +19,9 @@ class Designations extends Model
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
+
+    public function news() {
+        return $this->belongsToMany(News::class);
+    }
 }
 

@@ -24,7 +24,7 @@ class Controller extends BaseController
 
     }
 
-    public function send_error($code, $system_error=0, $error='', $error_messages='', $data = null) {
+    public function send_error($code, $error='', $error_messages='', $data = null) {
 
         $returned_error_messages = null;
 
@@ -42,7 +42,6 @@ class Controller extends BaseController
             'status'                => 'failed',
             'error'                 => $error,
             'error_messages'        => $returned_error_messages,
-            'system_error'          => $system_error,
             'data'                  => $data,
         ];
 

@@ -2,7 +2,6 @@
 
 namespace App\Http\Services;
 
-use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\PermissionsRepository;
 

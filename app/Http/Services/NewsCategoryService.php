@@ -18,7 +18,7 @@ class NewsCategoryService
   }
   public function create(array $data)
   {
-    $data['company_id'] = Auth::guard('admin')->user()->id ?? '';
+    $data['company_id'] = Auth::guard('admin')->user()->company_id ?? '';
     return $this->newsCategoryRepository->create($data);
   }
 
@@ -48,5 +48,9 @@ class NewsCategoryService
       $assetCategoryDetails = $assetCategoryDetails->where('status', $request->status);
     }
     return $assetCategoryDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+  public function getAllActiveNewsCategoryUsingByCompanyID($companyId)
+  {
+    return $this->newsCategoryRepository->where('company_id', $companyId)->orwhere('company_id','')->where('status', '1')->get();
   }
 }

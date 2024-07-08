@@ -16,4 +16,6 @@ return new class extends Migration
             $table->unique(['indexable_type', 'indexable_id', 'name']);
         });
     }
+
+    
 };

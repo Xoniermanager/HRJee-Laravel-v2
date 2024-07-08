@@ -10,6 +10,22 @@ function removingSpaceMakingName($name)
     return $finalName;
 }
 
+function unlinkFileOrImage($file)
+{
+    if (file_exists(storage_path('app/public') . $file)) {
+        unlink(storage_path('app/public') . $file);
+    }
+    return true;
+}
+
+function uploadingImageorFile($file, String $path, $namePrefix = '')
+{
+    $image  = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
+    $path = $path . '/' . $image;
+    Storage::disk('public')->put($path, file_get_contents($file));
+    return  $path;
+}
+
 
 if (!function_exists('transLang')) {
     function transLang($template = null, $dataArr = [])
@@ -108,17 +124,17 @@ if (!function_exists('apiResponse')) {
         $output = new \stdClass;
         $output->message = transLang($template);
         $output->status = true;
-         $output->data = $dataArr;
+        $output->data = $dataArr;
         return response()->json($output, $httpCode);
     }
 }
-if (!function_exists('JsonResponse')) {
-    function JsonResponse($status = true, $data = [], $msg = '', $rescode = 200)
-    {
-        $response = [];
-        $response['status'] = $status;
-        $response['data'] = empty($data) ? null : $data;
-        $response['message'] = $msg;
-        return response()->json($response, $rescode);
-    }
-}
+// if (!function_exists('JsonResponse')) {
+//     function JsonResponse($status = true, $data = [], $msg = '', $rescode = 200)
+//     {
+//         $response = [];
+//         $response['status'] = $status;
+//         $response['data'] = empty($data) ? null : $data;
+//         $response['message'] = $msg;
+//         return response()->json($response, $rescode);
+//     }
+// }

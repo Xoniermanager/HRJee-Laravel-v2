@@ -117,6 +117,17 @@
     }
 </style>
 
+<?php
+$username = '';
+$password = '';
+if (request()->hasCookie('user_name') != false) {
+    $username = request()->cookie('user_name');
+}
+if (request()->hasCookie('password') != false) {
+    $password = request()->cookie('password');
+}
+?>
+
 <body class="">
     <div id="wrapper" class="clearfix">
         <!-- preloader -->
@@ -137,8 +148,8 @@
                     <div class="col-md-6 ">
                         <div class="text-center">
                             <a href="">
-                                <img class="logo-default" src="{{ asset('assets/images/logo/logo.png') }}" alt="logo"
-                                    width="150px">
+                                <img class="logo-default" src="{{ asset('assets/images/logo/logo.png') }}"
+                                    alt="logo" width="150px">
                             </a>
                         </div>
 
@@ -149,7 +160,8 @@
                                         <div class="swiper-wrapper testimonial-slider__wrapper">
                                             <div class="swiper-slide">
                                                 <div class="sign_img">
-                                                    <img class="logo-default" src="{{ asset('assets/images/features/screen.png') }}"
+                                                    <img class="logo-default"
+                                                        src="{{ asset('assets/images/features/screen.png') }}"
                                                         alt="logo">
                                                 </div>
                                                 <div class="author-info mt-3">
@@ -161,7 +173,8 @@
                                             </div>
                                             <div class="swiper-slide">
                                                 <div class="sign_img">
-                                                    <img class="logo-default" src="{{ asset('assets/images/features/dashboard.png') }}"
+                                                    <img class="logo-default"
+                                                        src="{{ asset('assets/images/features/dashboard.png') }}"
                                                         alt="logo">
                                                 </div>
                                                 <div class="author-infom mt-3">
@@ -172,7 +185,8 @@
                                             </div>
                                             <div class="swiper-slide">
                                                 <div class="sign_img">
-                                                    <img class="logo-default" src="{{ asset('assets/images/features/4.png') }}"
+                                                    <img class="logo-default"
+                                                        src="{{ asset('assets/images/features/4.png') }}"
                                                         alt="logo">
                                                 </div>
                                                 <div class="author-info mt-3">
@@ -195,8 +209,6 @@
                     </div>
                     <div class="col-md-6 col-xs-12 col-sm-12 ">
                         <div class="container">
-
-
                             <div class="row">
                                 <div class="col-lg-12 ">
                                     <div class="main-form-wrapper mt-5">
@@ -216,8 +228,9 @@
                                                 <div class="form-item" data-form-item>
                                                     <div class="floating-label-group">
                                                         <input type="email" id="email" name="email"
-                                                            class="form-input" data-form-input required />
-                                                        <label class="floating-label">Email Address/UserName</label>
+                                                            class="form-input" data-form-input required
+                                                            value="{{ $username }}" />
+                                                        <label class="floating-label">Email Address/UserName </label>
                                                     </div>
                                                     @error('email')
                                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -227,7 +240,8 @@
                                                 <div class="form-item" data-form-item>
                                                     <div class="floating-label-group">
                                                         <input type="password" id="password" name="password"
-                                                            class="form-input" data-form-input required />
+                                                            class="form-input" data-form-input required
+                                                            value="{{ $password }}" />
                                                         <label class="floating-label">Password</label>
                                                     </div>
                                                     @error('password')
@@ -239,7 +253,8 @@
                                                 <div class="row">
                                                     <div class="col-lg-6">
                                                         <p><input type="checkbox" id="vehicle1" name="vehicle1"
-                                                                value="Bike"> Remember me</p>
+                                                                {{ request()->hasCookie('user_name') != false && request()->hasCookie('password') != false ? 'checked' : '' }}>
+                                                            Remember me</p>
                                                     </div>
                                                     <div class="col-lg-6 text-end">
                                                         <p> <a href="forgot_password.html"

@@ -12,10 +12,10 @@ use App\Models\CompanyUser;
 use App\Models\UserCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Session;
+
 use Illuminate\Support\Facades\Validator;
 use Throwable;
+use Illuminate\Support\Facades\Cookie;
 
 class AdminController extends Controller
 {
@@ -40,6 +40,8 @@ class AdminController extends Controller
     {
 
         try {
+
+
             $validateUser = Validator::make($request->all(), [
                 'email' => 'required|exists:company_users,email',
                 'password' => 'required'
@@ -52,10 +54,13 @@ class AdminController extends Controller
             if (!Auth::guard('admin')->attempt($data)) {
                 return Redirect::back()->with('error', 'invalid_credentials');
             } else {
+                Cookie::queue(Cookie::make('user_name', $request->email, 360));
+                Cookie::queue(Cookie::make('password', $request->password, 360));
+                
                 $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, 'admin');
-                if ($genrateOtpresponse['status'] == true)
+                if ($genrateOtpresponse['status'] == true) {
                     return redirect('company/verify/otp');
-                else
+                } else
                     return redirect('company/signin')->with('error', $genrateOtpresponse['message']);
             }
         } catch (Throwable $th) {
@@ -96,6 +101,7 @@ class AdminController extends Controller
     public function verifyOtpCheck(VerifyOtpRequest $request)
     {
         try {
+
             $data = $request->all();
             $data['email'] = auth()->guard('admin')->user()->email;
             $data['type'] = 'admin';

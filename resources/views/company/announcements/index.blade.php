@@ -41,7 +41,10 @@
                     <!--begin::Action-->
                     {{-- <a href="{{ route('announcement.create') }}" class="btn btn-sm btn-primary align-self-center">
                         Add Announcement</a> --}}
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#add_company_branch"
+                    {{-- <a href="#" data-bs-toggle="modal" data-bs-target="#add_company_branch"
+                        class="btn btn-sm btn-primary align-self-center">
+                        Add Announcement</a> --}}
+                    <a href="{{route('announcement.create')}}"  
                         class="btn btn-sm btn-primary align-self-center">
                         Add Announcement</a>
                     <!--end::Action-->
@@ -98,44 +101,28 @@
                     @csrf
                     <div class="row">
                         <div class="col-sm-6 mb-3">
-                            <label class="col-form-label required">Branches</label>
-                            <select class="form-control select2  " style="width:100%" name="company_branch_id">
-                                <option value=""></option>
-                                @foreach ($branches as $key => $row)
-                                    <option value="{{ $row->id }}">{{ $row->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('company_branch_id')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Title</label>
-                            <input type="text" class="form-control" name="title" placeholder="announcement title">
-                            @error('title')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <input type="text" class="form-control" name="title" placeholder="announcement title"
+                                id="title">
+
                         </div>
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Start Date</label>
                             <input type="text" class="form-control  datetimepicker" name="start_date_time"
-                                autocomplete="off" placeholder="select date & time">
-                            @error('start_date_time')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                                id="start_date_time" autocomplete="off" placeholder="select date & time">
+
                         </div>
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label">Expire At</label>
                             <input type="text" class="form-control  datetimepicker"
                                 name="expires_at"autocomplete="off" placeholder="select date & time">
-                            @error('expires_at')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+
                         </div>
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Status</label>
-                            <select class="form-control select2 " name="status" style="width:100%">
+                            <select class="bg-white form-select form-select-solid " data-control="select2"
+                                data-close-on-select="false" data-placeholder="Select the Company Branch"
+                                data-allow-clear="true" name="status" style="width:100%" id="status">
                                 <option value=""></option>
                                 @foreach (transLang('action_status') as $key => $status)
                                     <option value="{{ $key }}">
@@ -143,9 +130,7 @@
                                 @endforeach
                             </select>
 
-                            @error('status')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
+
                         </div>
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label">Image</label>
@@ -154,15 +139,28 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
                             <label class="col-form-label required">Description</label>
-                            <textarea rows="2" class="form-control  " name='description' placeholder="description">
+                            <textarea rows="2" class="form-control  " name='description' placeholder="description" id="description">
                             </textarea>
                             @error('description')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div
+                            class="col-sm-6 mb-3 {{ !empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id) ? '' : 'd-none' }}">
+                            <label class="col-form-label">Branches</label>
+                            <select class="bg-white form-select form-select-solid " data-control="select2"
+                                data-close-on-select="false" data-placeholder="Select the Company Branch"
+                                data-allow-clear="true" style="width:100%" name="company_branch_id">
+                                <option value=""></option>
+                                @foreach ($branches as $key => $row)
+                                    <option value="{{ $row->id }}">{{ $row->name }}
+                                    </option>
+                                @endforeach
+                            </select>
 
+                        </div>
                     </div><br>
                     <button class="btn btn-primary" type="submit">save</button>
                 </form>
@@ -205,10 +203,64 @@
                 <form id="edit_announcement" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <input type="hidden" name="id" id="id">
+                        <input type="hidden" name="id" id="edit_id">
+
                         <div class="col-sm-6 mb-3">
+                            <label class="col-form-label required">Title</label>
+                            <input type="text" class="form-control" name="title" value="{{ old('title') }}"
+                                placeholder="announcement title" id="edit_title">
+                            @error('title')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="col-form-label required">Start Date</label>
+                            <input type="text" class="form-control  datetimepicker" name="start_date_time"
+                                autocomplete="off" placeholder="select date & time" id='edit_start_date_time'>
+                            @error('start_date_time')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="col-form-label">Expire At</label>
+                            <input type="text" class="form-control  datetimepicker" name="expires_at"
+                                autocomplete="off" placeholder="select date & time" id='edit_expires_at'>
+
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="col-form-label required">Status</label>
+                            <select class="bg-white form-select form-select-solid " data-control="select2"
+                                data-close-on-select="false" data-placeholder="Select the Company Branch"
+                                data-allow-clear="true" name="status" id='edit_status' style="width:100%">
+                                <option value=""></option>
+                                @foreach (transLang('action_status') as $key => $status)
+                                    <option value="{{ $key }}">
+                                        {{ $status }}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="col-form-label">Image</label>
+                            <input type="file" class="form-control " name="image">
+                            @error('image')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="col-form-label required">Description</label>
+                            <textarea rows="2" class="form-control  " name='description' placeholder="description" id='edit_description'>
+                            {{ old('description') }}</textarea>
+                            @error('description')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div
+                            class="col-sm-6 mb-3 {{ !empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id) ? '' : 'd-none' }}">
                             <label class="col-form-label required">Branches</label>
-                            <select class="form-control sele ct2  " name="company_branch_id" id="company_branch_id"
+                            <select class="bg-white form-select form-select-solid " data-control="select2"
+                                data-close-on-select="false" data-placeholder="Select the Company Branch"
+                                data-allow-clear="true" name="company_branch_id" id="edit_company_branch_id"
                                 style="width:100%">
                                 <option value=""></option>
                                 @foreach ($branches as $key => $row)
@@ -218,63 +270,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('company_branch_id')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-sm-6 mb-3">
-                            <label class="col-form-label required">Title</label>
-                            <input type="text" class="form-control" name="title" value="{{ old('title') }}"
-                                placeholder="announcement title" id="title">
-                            @error('title')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-sm-6 mb-3">
-                            <label class="col-form-label required">Start Date</label>
-                            <input type="text" class="form-control  datetimepicker" name="start_date_time"
-                                autocomplete="off" placeholder="select date & time" id='start_date_time'>
-                            @error('start_date_time')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-sm-6 mb-3">
-                            <label class="col-form-label">Expire At</label>
-                            <input type="text" class="form-control  datetimepicker"
-                                name="expires_at"autocomplete="off" placeholder="select date & time" id='expires_at'>
-                            @error('expires_at')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-sm-6 mb-3">
-                            <label class="col-form-label required">Status</label>
-                            <select class="form-control selec t2 " name="status" id='status' style="width:100%">
-                                <option value=""></option>
-                                @foreach (transLang('action_status') as $key => $status)
-                                    <option value="{{ $key }}"
-                                        {{ old('status') == $key ? 'selected' : '' }}>
-                                        {{ $status }}</option>
-                                @endforeach
-                            </select>
 
-                            @error('status')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-sm-6 mb-3">
-                            <label class="col-form-label">Image</label>
-                            <input type="file" class="form-control " name="image">
-                            @error('image')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-sm-12">
-                            <label class="col-form-label required">Description</label>
-                            <textarea rows="2" class="form-control  " name='description' placeholder="description" id='description'>
-                            {{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
                         </div>
 
                     </div><br>
@@ -287,7 +283,7 @@
     </div>
     <!--end::Modal dialog-->
 </div>
- 
+
 <script>
     $(".datetimepicker").each(function() {
         $(this).datetimepicker();
@@ -295,18 +291,12 @@
     $(document).ready(function() {
         $("#create_announcement").validate({
             rules: {
-                company_branch_id: {
-                    required: true,
-                },
                 title: {
                     required: true,
                     minlength: 10
                 },
                 start_date_time: {
                     required: true,
-                },
-                expires_at: {
-                    required: false
                 },
                 description: {
                     required: true,
@@ -325,10 +315,10 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        jQuery('#add_company_branch').modal('hide');
+                        $('#add_company_branch').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        jQuery('#announcement_list').replaceWith(response.data);
-                        jQuery("#create_announcement")[0].reset();
+                        $('#announcement_list').replaceWith(response.data);
+                        $("#create_announcement")[0].reset();
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.errors;
@@ -351,20 +341,16 @@
     $(document).ready(function() {
         $("#edit_announcement").validate({
             rules: {
-                company_branch_id: {
-                    required: true,
-                },
                 title: {
-                    required: true
+                    required: true,
+                    minlength: 10
                 },
                 start_date_time: {
-                    required: true
-                },
-                expires_at: {
-                    required: false
+                    required: true,
                 },
                 description: {
                     required: true,
+                    minlength: 10
                 },
                 status: {
                     required: true,
@@ -380,10 +366,11 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        jQuery('#edit_company_branch').modal('hide');
+                        console.log(response);
+                        $('#edit_company_branch').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        jQuery('#announcement_list').replaceWith(response.data);
-                        jQuery("#edit_announcement")[0].reset();
+                        $('#announcement_list').replaceWith(response.data);
+                        $("#edit_announcement")[0].reset();
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.errors;
@@ -406,48 +393,17 @@
 
     function edit_announcement_details(companyAnnouncementDetails) {
         companyAnnouncementDetails = JSON.parse(companyAnnouncementDetails);
-        console.log(companyAnnouncementDetails);
-        $('#id').val(companyAnnouncementDetails.id);
-        $('#title').val(companyAnnouncementDetails.title);
-        $('#company_branch_id').val(companyAnnouncementDetails.company_branch_id);
-        $('#description').val(companyAnnouncementDetails.description);
-        $('#status').val(companyAnnouncementDetails.status);
-        $('#start_date_time').val(companyAnnouncementDetails.start_date_time);
-        $('#expires_at').val(companyAnnouncementDetails.expires_at);
+        console.log(companyAnnouncementDetails, 'checking');
+
+        $('#edit_id').val(companyAnnouncementDetails.id);
+        $('#edit_title').val(companyAnnouncementDetails.title);
+        $('#edit_company_branch_id').val(companyAnnouncementDetails.company_branch_id);
+        $('#edit_description').val(companyAnnouncementDetails.description);
+        $('#edit_status').val(companyAnnouncementDetails.status);
+        $('#edit_start_date_time').val(companyAnnouncementDetails.start_date_time);
+        $('#edit_expires_at').val(companyAnnouncementDetails.expires_at);
 
         jQuery('#edit_company_branch').modal('show');
-    }
-
-     
-
-    function deleteFunction(id) {
-        event.preventDefault();
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?= route('announcement.delete') ?>",
-                    type: "get",
-                    data: {
-                        id: id
-                    },
-                    success: function(res) {
-                        Swal.fire("Done!", "It was succesfully deleted!", "success");
-                        $('#announcement_list').replaceWith(res.data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        Swal.fire("Error deleting!", "Please try again", "error");
-                    }
-                });
-            }
-        });
     }
 
     function handleStatus(id) {

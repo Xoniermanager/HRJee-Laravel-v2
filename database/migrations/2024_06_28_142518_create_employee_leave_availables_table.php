@@ -17,8 +17,6 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('leave_type_id');
             $table->foreign('leave_type_id')->references('id')->on('leave_types');
-            $table->unsignedBigInteger('employee_leave_management_id');
-            $table->foreign('employee_leave_management_id')->references('id')->on('employee_leave_management');
             $table->integer('available');
             $table->timestamps();
         });

@@ -18,7 +18,7 @@ class HolidayServices
   }
   public function create(array $data)
   {
-    $data['company_id'] = Auth::guard('admin')->user()->id;
+    $data['company_id'] = Auth::guard('admin')->user()->company_id;
     return $this->holidayRepository->create($data);
   }
 

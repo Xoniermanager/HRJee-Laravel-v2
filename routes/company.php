@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AssetController;
-use App\Http\Controllers\Company\AdminController;
+use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Company\NewsController;
 use App\Http\Controllers\Company\LeaveController;
 use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\StateController;
@@ -37,10 +38,12 @@ use App\Http\Controllers\Company\UserDocumentDetailsController;
 use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
+use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
+use App\Http\Controllers\Company\PolicyCategoryController;
+use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
-Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () 
-{
+Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
     Route::controller(CompanyController::class)->group(function () {
         Route::get('company/profile', 'company_profile')->name('company.profile');
@@ -79,16 +82,24 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     });
 
     //Announcement Module
-    Route::group(['prefix' => 'announcement', 'as' => 'announcement.'], function () {
+    Route::group(['prefix' => 'announcement/', 'as' => 'announcement.'], function () {
         Route::get('/', [AnnouncementController::class, 'index'])->name('index');
         Route::get('create', [AnnouncementController::class, 'create'])->name('create');
         Route::post('store', [AnnouncementController::class, 'store'])->name('store');
         Route::get('edit/{id?}', [AnnouncementController::class, 'edit'])->name('edit');
         Route::post('update/{id?}', [AnnouncementController::class, 'update'])->name('update');
-        Route::get('delete', [AnnouncementController::class, 'destroy'])->name('delete');
+        Route::get('delete/{id?}', [AnnouncementController::class, 'destroy'])->name('delete');
+        Route::get('view/{id}', [AnnouncementController::class, 'getView'])->name('view');
         Route::get('status/update', [AnnouncementController::class, 'statusUpdate'])->name('statusUpdate');
-        Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
+        // Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
+        // Route::post('assign/save', [AnnouncementController::class, 'announcementAssignStore'])->name('assign.save');
+        Route::get('details/{id?}', [AnnouncementController::class, 'getAnnouncementDetails'])->name('details');
+        Route::get('branch/users', [AnnouncementController::class, 'getAllUsersByBranchId'])->name('branch.users');
+        Route::get('branch/department/users', [AnnouncementController::class, 'getAllUsersByBranchAndDepartmentId'])->name('branch.department.users');
+        Route::get('branch/department/designation/users', [AnnouncementController::class, 'getAllUsersByBranchDepartmentAndDesignationId'])->name('branch.department.designation.users');
     });
+
+  
 
     //Country Module
     Route::prefix('/country')->controller(CountryController::class)->group(function () {
@@ -256,6 +267,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
         Route::get('/search/filter', 'searchOfficeTimeFilter');
     });
+
     // Office Shifts
     Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
         Route::get('/', 'index')->name('shifts.index');
@@ -353,6 +365,47 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/delete', 'destroy')->name('leave.credit.delete');
         Route::get('/status/update', 'statusUpdate')->name('leave.credit.statusUpdate');
         Route::get('/search/filter', 'serachLeaveCreditFilterList');
+    });
+
+    //Employee Leave Available
+    Route::get('get/allemployee/leave/available', [EmployeeLeaveAvailableController::class, 'getAllEmployeeLeaveAvailableList'])->name('getAllEmployeeLeaveAvailableList');
+
+    //News Module
+    Route::prefix('/news')->controller(NewsController::class)->group(function () {
+        Route::get('/', 'index')->name('news.index');
+        Route::get('/add', 'add')->name('news.add');
+        Route::post('/create', 'store')->name('news.store');
+        Route::get('/edit/{news:id}', 'edit')->name('news.edit');
+        Route::get('/view/{news:id}', 'view')->name('news.view');
+        Route::post('/update/{id}', 'update')->name('news.update');
+        Route::get('/delete/{id}', 'destroy')->name('news.delete');
+        Route::get('/status/update', 'statusUpdate')->name('news.statusUpdate');
+        Route::get('/search/filter', 'serachNewsFilterList');
+    });
+
+    Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
+
+    //Policy Category Module
+    Route::prefix('/policy-category')->controller(PolicyCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('policy.category.index');
+        Route::post('/create', 'store')->name('policy.category.store');
+        Route::post('/update', 'update')->name('policy.category.update');
+        Route::get('/delete', 'destroy')->name('policy.category.delete');
+        Route::get('/status/update', 'statusUpdate')->name('policy.category.statusUpdate');
+        Route::get('/search/filter', 'serachPolicyCategoryFilterList');
+    });
+
+    //Policy Module
+    Route::prefix('/policy')->controller(PolicyController::class)->group(function () {
+        Route::get('/', 'index')->name('policy.index');
+        Route::get('/add', 'add')->name('policy.add');
+        Route::post('/create', 'store')->name('policy.store');
+        Route::get('/edit/{policies:id}', 'edit')->name('policy.edit');
+        Route::get('/view/{policies:id}', 'view')->name('policy.view');
+        Route::post('/update/{id}', 'update')->name('policy.update');
+        Route::get('/delete/{id}', 'destroy')->name('policy.delete');
+        Route::get('/status/update', 'statusUpdate')->name('policy.statusUpdate');
+        Route::get('/search/filter', 'serachPolicyFilterList');
     });
 });
 /**---------------End Company Panel Route----------------*/

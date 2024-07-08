@@ -90,17 +90,16 @@ class AuthController extends Controller
      * This method logs out the authenticated user, clears the session data,
      * and redirects the user to the login page.
      */
-    public function emoloyeeLogout(Request $request)
+    public function emoloyeeLogout()
     {
-        Auth::logout();
-        $request->session()->flash('success', 'You have been logged out.');
+        auth()->guard('employee')->logout();
         return redirect(route('employee'));
     }
 
     public function verifyOtp()
     {
         if (!auth()->guard('employee')->check()) {
-           return  redirect('/employee/signin');
+            return  redirect('/employee/signin');
         }
         return view('employee-verify-otp');
     }
@@ -125,7 +124,7 @@ class AuthController extends Controller
     {
         try {
             if (!auth()->guard('employee')->check()) {
-              return   redirect('/employee/signin');
+                return   redirect('/employee/signin');
             }
             $email = Auth::guard('employee')->user()->id->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'employee');

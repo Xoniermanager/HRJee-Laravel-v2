@@ -38,5 +38,12 @@ class CompanyBranch extends Model
     {
         return $this->belongsTo(state::class);
     }
+    public function news() {
+        return $this->belongsToMany(News::class);
+    }
     
+    public function announcements()
+    {
+        return $this->belongsToMany(Announcement::class, 'announcement_branch', 'branch_id', 'announcement_id');
+    }
 }

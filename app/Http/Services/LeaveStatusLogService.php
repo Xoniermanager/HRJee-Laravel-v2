@@ -2,7 +2,6 @@
 
 namespace App\Http\Services;
 
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\LeaveStatusLogRepository;
 
 class LeaveStatusLogService
@@ -20,7 +19,7 @@ class LeaveStatusLogService
   }
   public function create(array $data)
   {
-    $data['action_taken_by'] = '2'; //Auth::guard('admin')->user()->id;
+    $data['action_taken_by'] = '1'; //Auth::guard('admin')->user()->id;
     if ($this->leaveStatusLogRepository->create($data)) {
       $payload = [
         'leave_status_id' => $data['leave_status_id']

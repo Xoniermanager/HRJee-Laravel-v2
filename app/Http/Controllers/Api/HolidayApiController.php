@@ -18,7 +18,7 @@ class HolidayApiController extends Controller
     public function list()
     {
         try {
-            $companyID = Auth()->user()->company_id;
+            $companyID = auth()->guard('employee_api')->user()->company_id;
             $getHolidayList = $this->holidayService->getListByCompanyId($companyID);
             return response()->json([
                 'status' => true,

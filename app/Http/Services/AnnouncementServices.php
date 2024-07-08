@@ -2,26 +2,30 @@
 
 namespace App\Http\Services;
 
+use App\Models\Announcement;
+use App\Repositories\AnnouncementAssignRepository;
 use App\Repositories\AnnouncementRepository;
 
 class AnnouncementServices
 {
   private $announcementRepository;
-  public function __construct(AnnouncementRepository $announcementRepository)
+  private $announcementAssignRepository;
+  public function __construct(AnnouncementRepository $announcementRepository, AnnouncementAssignRepository $announcementAssignRepository)
   {
     $this->announcementRepository = $announcementRepository;
+    $this->announcementAssignRepository = $announcementAssignRepository;
   }
   public function all($type = '')
   {
-    $query = $this->announcementRepository->orderBy('id', 'DESC');
+
     if ($type == 'paginate')
-      return $query->paginate(10);
+      return $this->announcementRepository->orderBy('id', 'DESC')->paginate(10);
     else
-      return $query->get();
+      return $this->announcementRepository->orderBy('id', 'DESC')->get();
   }
   public function create(array $data)
   {
-    return $this->announcementRepository->create($data);
+    return $this->announcementRepository->create($data)->id;
   }
   public function announcementDetails($id)
   {
@@ -35,5 +39,13 @@ class AnnouncementServices
   public function deleteDetails($id)
   {
     return $this->announcementRepository->find($id)->delete();
+  }
+  public function announcementAssignStore($request)
+  {
+    $created = $this->announcementAssignRepository->updateOrCreate(['announcement_id' => $request['announcement_id']], $request);
+    if ($created)
+      return  true;
+    else
+      return false;
   }
 }

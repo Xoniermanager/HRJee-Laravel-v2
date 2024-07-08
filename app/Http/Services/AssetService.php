@@ -9,12 +9,9 @@ use App\Repositories\AssetRepository;
 class AssetService
 {
   private $assetRepository;
-  private $fileUploadService;
-
-  public function __construct(AssetRepository $assetRepository, FileUploadService $fileUploadService)
+  public function __construct(AssetRepository $assetRepository)
   {
     $this->assetRepository = $assetRepository;
-    $this->fileUploadService = $fileUploadService;
   }
   public function all()
   {
@@ -25,11 +22,11 @@ class AssetService
     if (isset($data['invoice_file']) && !empty($data['invoice_file'])) {
       $nameForImage = removingSpaceMakingName($data['name']);
       $upload_path = "/asset_file";
-      $imagePath = $this->fileUploadService->imageUpload($data['invoice_file'], $upload_path, $nameForImage);
-      $data['invoice_file'] = $imagePath;
+      $filePath = uploadingImageorFile($data['invoice_file'], $upload_path, $nameForImage);
+      $data['invoice_file'] = $filePath;
     }
     $data['asset_status_id'] = AssetStatus::CREATED;
-    $data['company_id'] = Auth::guard('admin')->user()->id;
+    $data['company_id'] = Auth::guard('admin')->user()->company_id;
     return $this->assetRepository->create($data);
   }
 
@@ -39,12 +36,10 @@ class AssetService
     if (isset($data['invoice_file']) && !empty($data['invoice_file'])) {
       $nameForImage = removingSpaceMakingName($data['name']);
       $upload_path = "/asset_file";
-      $imagePath = $this->fileUploadService->imageUpload($data['invoice_file'], $upload_path, $nameForImage);
-      $data['invoice_file'] = $imagePath;
+      $filePath = uploadingImageorFile($data['invoice_file'], $upload_path, $nameForImage);
+      $data['invoice_file'] = $filePath;
       if ($existingDetails->invoice_file != null) {
-        if (file_exists(storage_path('app/public') . $existingDetails->invoice_file)) {
-          unlink(storage_path('app/public') . $existingDetails->invoice_file);
-        }
+        unlinkFileOrImage($existingDetails->invoice_file);
       }
     }
     $data['asset_status_id'] = AssetStatus::UPDATED;
@@ -54,9 +49,7 @@ class AssetService
   {
     $existingDetails =  $this->assetRepository->find($id);
     if ($existingDetails->invoice_file != null) {
-      if (file_exists(storage_path('app/public') . $existingDetails->invoice_file)) {
-        unlink(storage_path('app/public') . $existingDetails->invoice_file);
-      }
+      unlinkFileOrImage($existingDetails->invoice_file);
     }
     return $existingDetails->delete();
   }
@@ -102,6 +95,6 @@ class AssetService
 
   public function getAllAssetByCategoryId($id)
   {
-    return $this->assetRepository->where('asset_category_id', $id)->where('allocation_status','available')->get();
+    return $this->assetRepository->where('asset_category_id', $id)->where('allocation_status', 'available')->get();
   }
 }
