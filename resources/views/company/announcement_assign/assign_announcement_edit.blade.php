@@ -197,6 +197,7 @@
         else
             $('.notification_schedule_time').show();
     }
+    
     $(document).on('change', '#announcement_id', function() {
         let id = $(this).val();
         $.ajax({
