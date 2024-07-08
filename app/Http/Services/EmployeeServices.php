@@ -184,4 +184,12 @@ class EmployeeServices
       return false;
     }
   }
+
+  public function getAllEmployeeByCompanyId($id)
+  {
+
+    return $this->employeeRepository->where('company_id',$id)->get();
+  }
+
+ 
 }

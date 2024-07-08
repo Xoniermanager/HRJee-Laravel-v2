@@ -37,6 +37,7 @@ class UserDetailServices
           ]
         );
       }
+      
 
       //User Skills Created
       foreach ($data['skill_id'] as $skillId) {
@@ -49,8 +50,25 @@ class UserDetailServices
   {
     return $this->userDetailRepository->with('officeShift')->where('user_id', $userId)->first();
   }
+
+  public function getAllUsersByBranchId($branchId)
+  {
+    return $this->userDetailRepository->with('user')->whereIn('company_branch_id', $branchId)->get();
+  }
+  public function getAllUsersByBranchAndDepartmentId($branch_id, $departmentId)
+  {
+    return $this->userDetailRepository->with('user')->whereIn('company_branch_id', $branch_id)->whereIn('department_id', $departmentId)->get();
+  }
+  public function getAllUsersByBranchDepartmentAndDesignationId($branch_id, $departmentId, $designationId)
+  {
+    return $this->userDetailRepository->with('user')->whereIn('company_branch_id', $branch_id)->whereIn('department_id' ,$departmentId)->whereIn('designation_id', $designationId)->get();
+  }
   public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
   {
     return $this->userDetailRepository->with('user')->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('user_id')->get();
+  }
+  public function getAllUserByUserId($userIds)
+  {
+    return $this->userDetailRepository->where('user_id', $userIds)->get();
   }
 }

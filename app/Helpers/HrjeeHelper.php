@@ -128,13 +128,13 @@ if (!function_exists('apiResponse')) {
         return response()->json($output, $httpCode);
     }
 }
-if (!function_exists('JsonResponse')) {
-    function JsonResponse($status = true, $data = [], $msg = '', $rescode = 200)
-    {
-        $response = [];
-        $response['status'] = $status;
-        $response['data'] = empty($data) ? null : $data;
-        $response['message'] = $msg;
-        return response()->json($response, $rescode);
-    }
-}
+// if (!function_exists('JsonResponse')) {
+//     function JsonResponse($status = true, $data = [], $msg = '', $rescode = 200)
+//     {
+//         $response = [];
+//         $response['status'] = $status;
+//         $response['data'] = empty($data) ? null : $data;
+//         $response['message'] = $msg;
+//         return response()->json($response, $rescode);
+//     }
+// }

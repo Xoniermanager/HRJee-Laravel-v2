@@ -1,12 +1,15 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    Announcements
+    Announcement Assignment
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
+        @if (session()->has('error'))
+            <h1>{{ session('error') }}</h1>
+        @endif
         <div class="row gy-5 g-xl-10">
             <div class="card card-body col-md-12">
                 <div class="card-header cursor-pointer p-0">
@@ -44,14 +47,11 @@
                     {{-- <a href="#" data-bs-toggle="modal" data-bs-target="#add_company_branch"
                         class="btn btn-sm btn-primary align-self-center">
                         Add Announcement</a> --}}
-                    <a href="{{route('announcement.create')}}"  
-                        class="btn btn-sm btn-primary align-self-center">
-                        Add Announcement</a>
                     <!--end::Action-->
                 </div>
 
                 <div class="mb-5 mb-xl-10">
-                    @include('company.announcements.announcement_list')
+                    @include('company.announcement_assign.announcement_assign_list')
                 </div>
             </div>
             <!--end::Col-->
@@ -100,6 +100,7 @@
                 <form id="create_announcement" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
+
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Title</label>
                             <input type="text" class="form-control" name="title" placeholder="announcement title"
@@ -147,8 +148,7 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div
-                            class="col-sm-6 mb-3 {{ !empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id) ? '' : 'd-none' }}">
+                        <div class="col-sm-6 mb-3">
                             <label class="col-form-label">Branches</label>
                             <select class="bg-white form-select form-select-solid " data-control="select2"
                                 data-close-on-select="false" data-placeholder="Select the Company Branch"
@@ -203,12 +203,12 @@
                 <form id="edit_announcement" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <input type="hidden" name="id" id="edit_id">
+                        <input type="hidden" name="id" id="id">
 
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Title</label>
                             <input type="text" class="form-control" name="title" value="{{ old('title') }}"
-                                placeholder="announcement title" id="edit_title">
+                                placeholder="announcement title" id="title">
                             @error('title')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -216,7 +216,7 @@
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Start Date</label>
                             <input type="text" class="form-control  datetimepicker" name="start_date_time"
-                                autocomplete="off" placeholder="select date & time" id='edit_start_date_time'>
+                                autocomplete="off" placeholder="select date & time" id='start_date_time'>
                             @error('start_date_time')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -224,17 +224,18 @@
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label">Expire At</label>
                             <input type="text" class="form-control  datetimepicker" name="expires_at"
-                                autocomplete="off" placeholder="select date & time" id='edit_expires_at'>
+                                autocomplete="off" placeholder="select date & time" id='expires_at'>
 
                         </div>
                         <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Status</label>
                             <select class="bg-white form-select form-select-solid " data-control="select2"
                                 data-close-on-select="false" data-placeholder="Select the Company Branch"
-                                data-allow-clear="true" name="status" id='edit_status' style="width:100%">
+                                data-allow-clear="true" name="status" id='status' style="width:100%">
                                 <option value=""></option>
                                 @foreach (transLang('action_status') as $key => $status)
-                                    <option value="{{ $key }}">
+                                    <option value="{{ $key }}"
+                                        {{ old('status') == $key ? 'selected' : '' }}>
                                         {{ $status }}</option>
                                 @endforeach
                             </select>
@@ -249,18 +250,17 @@
                         </div>
                         <div class="col-sm-6">
                             <label class="col-form-label required">Description</label>
-                            <textarea rows="2" class="form-control  " name='description' placeholder="description" id='edit_description'>
+                            <textarea rows="2" class="form-control  " name='description' placeholder="description" id='description'>
                             {{ old('description') }}</textarea>
                             @error('description')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div
-                            class="col-sm-6 mb-3 {{ !empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id) ? '' : 'd-none' }}">
+                        <div class="col-sm-6 mb-3">
                             <label class="col-form-label required">Branches</label>
                             <select class="bg-white form-select form-select-solid " data-control="select2"
                                 data-close-on-select="false" data-placeholder="Select the Company Branch"
-                                data-allow-clear="true" name="company_branch_id" id="edit_company_branch_id"
+                                data-allow-clear="true" name="company_branch_id" id="company_branch_id"
                                 style="width:100%">
                                 <option value=""></option>
                                 @foreach ($branches as $key => $row)
@@ -315,10 +315,10 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        $('#add_company_branch').modal('hide');
+                        jQuery('#add_company_branch').modal('hide');
                         swal.fire("Done!", response.message, "success");
-                        $('#announcement_list').replaceWith(response.data);
-                        $("#create_announcement")[0].reset();
+                        jQuery('#announcement_list').replaceWith(response.data);
+                        jQuery("#create_announcement")[0].reset();
                     },
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.errors;
@@ -393,15 +393,14 @@
 
     function edit_announcement_details(companyAnnouncementDetails) {
         companyAnnouncementDetails = JSON.parse(companyAnnouncementDetails);
-        console.log(companyAnnouncementDetails, 'checking');
-
-        $('#edit_id').val(companyAnnouncementDetails.id);
-        $('#edit_title').val(companyAnnouncementDetails.title);
-        $('#edit_company_branch_id').val(companyAnnouncementDetails.company_branch_id);
-        $('#edit_description').val(companyAnnouncementDetails.description);
-        $('#edit_status').val(companyAnnouncementDetails.status);
-        $('#edit_start_date_time').val(companyAnnouncementDetails.start_date_time);
-        $('#edit_expires_at').val(companyAnnouncementDetails.expires_at);
+        console.log(companyAnnouncementDetails);
+        $('#id').val(companyAnnouncementDetails.id);
+        $('#title').val(companyAnnouncementDetails.title);
+        $('#company_branch_id').val(companyAnnouncementDetails.company_branch_id);
+        $('#description').val(companyAnnouncementDetails.description);
+        $('#status').val(companyAnnouncementDetails.status);
+        $('#start_date_time').val(companyAnnouncementDetails.start_date_time);
+        $('#expires_at').val(companyAnnouncementDetails.expires_at);
 
         jQuery('#edit_company_branch').modal('show');
     }
@@ -418,7 +417,7 @@
             status_name = 'Inactive';
         }
         $.ajax({
-            url: "{{ route('announcement.statusUpdate') }}",
+            url: "{{ route('announcement.assign.statusUpdate') }}",
             type: 'get',
             data: {
                 'id': id,

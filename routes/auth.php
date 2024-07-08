@@ -33,6 +33,7 @@ Route::prefix('company')->controller(AdminController::class)->group(function () 
     Route::post('/login', 'companyLogin')->name('company.login');
     Route::get('/logout', 'companyLogout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');
+    Route::get('/forget/password', 'forgetPassword')->name('signin');
     Route::get('/signup', 'signup')->name('signup');
     Route::get('/resend/otp', 'resendOtp')->name('company.resendOtp');
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');

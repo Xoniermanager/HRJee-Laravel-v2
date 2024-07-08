@@ -82,16 +82,24 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     });
 
     //Announcement Module
-    Route::group(['prefix' => 'announcement', 'as' => 'announcement.'], function () {
+    Route::group(['prefix' => 'announcement/', 'as' => 'announcement.'], function () {
         Route::get('/', [AnnouncementController::class, 'index'])->name('index');
         Route::get('create', [AnnouncementController::class, 'create'])->name('create');
         Route::post('store', [AnnouncementController::class, 'store'])->name('store');
         Route::get('edit/{id?}', [AnnouncementController::class, 'edit'])->name('edit');
         Route::post('update/{id?}', [AnnouncementController::class, 'update'])->name('update');
-        Route::get('delete', [AnnouncementController::class, 'destroy'])->name('delete');
+        Route::get('delete/{id?}', [AnnouncementController::class, 'destroy'])->name('delete');
+        Route::get('view/{id}', [AnnouncementController::class, 'getView'])->name('view');
         Route::get('status/update', [AnnouncementController::class, 'statusUpdate'])->name('statusUpdate');
-        Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
+        // Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
+        // Route::post('assign/save', [AnnouncementController::class, 'announcementAssignStore'])->name('assign.save');
+        Route::get('details/{id?}', [AnnouncementController::class, 'getAnnouncementDetails'])->name('details');
+        Route::get('branch/users', [AnnouncementController::class, 'getAllUsersByBranchId'])->name('branch.users');
+        Route::get('branch/department/users', [AnnouncementController::class, 'getAllUsersByBranchAndDepartmentId'])->name('branch.department.users');
+        Route::get('branch/department/designation/users', [AnnouncementController::class, 'getAllUsersByBranchDepartmentAndDesignationId'])->name('branch.department.designation.users');
     });
+
+  
 
     //Country Module
     Route::prefix('/country')->controller(CountryController::class)->group(function () {
@@ -259,6 +267,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
         Route::get('/search/filter', 'searchOfficeTimeFilter');
     });
+
     // Office Shifts
     Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
         Route::get('/', 'index')->name('shifts.index');

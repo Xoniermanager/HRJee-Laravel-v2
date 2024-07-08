@@ -98,6 +98,98 @@
                     <!--end::Svg Icon-->
                 </div>
 </body>
+<script>
+    function deleteFunction(replaceWithDataId, url) {
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    success: function(res) {
+                        Swal.fire("Done!", "It was succesfully deleted!", "success");
+                        $(`#${replaceWithDataId}`).replaceWith(res.data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire("Error deleting!", "Please try again", "error");
+                    }
+                });
+            }
+        });
+    }
+
+    function addUpdateFormData(messageBox, method, url, formId, btnClose = "", reloadUrl = '', error_type = null
+        , dataTable = '') {
+        let btn = $(`.${formId}`);
+        let loader = $('.' + messageBox);
+
+        $.ajax({
+            type: method
+            , dataType: 'json'
+            , url: url
+            , data: new FormData($('#' + formId)[0])
+            , processData: false
+            , contentType: false
+            , beforeSend: () => {
+                btn.attr('disabled', true);
+                loader.html(`{!! transLang('loader_message') !!}`).removeClass(
+                    'd-none alert-danger alert-success').addClass('alert-info');
+            }
+            , error: (jqXHR, exception) => {
+                let data = JSON.parse(jqXHR.responseText);
+                $(".field_error").text('');
+                $.each(data.errors, function(key, value) {
+
+                    if (key.indexOf(".")) {
+                        key = key.replace(".", "_");
+                    }
+                    if (error_type == 'class') {
+                        $("." + key + "_error").text(value);
+                    } else {
+                        $("#" + key + "_error").text(value);
+                    }
+                });
+
+                btn.attr('disabled', false);
+                loader.html(``).removeClass('alert alert-info');
+            }
+            , success: response => {
+                btn.attr('disabled', false);
+                if (btnClose != "") {
+                    $("." + btnClose).click();
+                }
+                if (response.status == false) {
+                    notifySuccess(response.errors[0], 'error');
+                } else {
+                    if (reloadUrl != '') {
+                        setInterval(function() {
+                            window.location.href = reloadUrl;
+                        }, 2000);
+                    } else {
+                        reloadTable(dataTable);
+                    }
+                    // notifySuccess(response.message, 'success');
+                }
+
+            }
+        });
+    }
+
+    function resetForm(id) {
+        $('#' + id)[0].reset();
+        $("textarea").text("");
+    }
+
+
+</script>
 <!--end::Body-->
 @include('layouts.company.footer')
 
