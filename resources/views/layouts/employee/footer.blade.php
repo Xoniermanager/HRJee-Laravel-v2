@@ -19,4 +19,7 @@
         jQuery(".alert-dismissible").remove();
     }, 3000);
 </script>
+<script type="text/javascript">
+    var jQuery_1_7_0 = $.noConflict(true);  // <- this
+</script>
 <!--end::Custom Javascript-->

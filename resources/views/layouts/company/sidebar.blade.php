@@ -32,20 +32,6 @@
                                 <!--end:Menu link-->
                             </div>
                             <!--end:Menu item-->
-                            <!--begin:Menu item-->
-                            <div class="menu-item" data-url="{{ route('branch') }}">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('branch') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-globe-americas"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> Branch</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
                             <div class="menu-item" data-url="{{ route('country.index') }}">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('country.index') }}">
@@ -155,6 +141,20 @@
                                 <!--end:Menu sub-->
                             </div>
                             <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item" data-url="{{ route('branch') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('branch') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-globe-americas"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title"> Branch</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
 
                             <!--begin:Menu item-->
                             <div class="menu-item" data-url="{{ route('employee.index') }}">

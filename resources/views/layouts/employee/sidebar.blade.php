@@ -129,6 +129,18 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item ">
+                                <a class="menu-link" href="{{ route('employee.leave') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-file-contract"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Apply Leave</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <!--begin:Menu item-->
                             <div class="menu-item ">
                                 <!--begin:Menu link-->
