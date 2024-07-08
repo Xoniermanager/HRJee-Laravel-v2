@@ -228,7 +228,7 @@
     </div>
 </div>
 <script>
-    jQuery(document).ready(function() {
+    $(document).ready(function() {
         var check_condition = {{ $editNewsDetails->all_department }}
         if (check_condition == 0) {
             get_designation_by_department_id({{ $selectedDesignationId ?? '' }});

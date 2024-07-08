@@ -29,9 +29,7 @@ class AddAnnouncementRequest extends FormRequest
             "description" => "required|string",
             "image" => "nullable",
             "status" => "required|in:active,inactive",
-            // after
-           
-            'branch_id' => ['required', 'exists:company_branches,id'],
+            'branch_id' => ['nullable', 'exists:company_branches,id'],
             'department_id' => ['nullable', 'exists:departments,id'],
             'designation_id' => ['nullable', 'exists:designations,id'],
             'assign_announcement' => ['required', 'in:1,0'],

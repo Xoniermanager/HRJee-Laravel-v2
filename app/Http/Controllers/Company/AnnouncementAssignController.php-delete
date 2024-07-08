@@ -86,7 +86,6 @@ class AnnouncementAssignController extends Controller
         $assignDesignationIds = $announcement->designations()->pluck('designation_id')->toArray();
        
         $activeBranches = $this->branchServices->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
-   
 
         // if (!empty($announcement->company_branch_id))
         //     $branchIds[] = $announcement->company_branch_id;

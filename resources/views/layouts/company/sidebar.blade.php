@@ -426,7 +426,7 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            <div class="menu-item " data-url="{{ route('announcement.assign.index') }}">
+                            {{-- <div class="menu-item " data-url="{{ route('announcement.assign.index') }}">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('announcement.assign.index') }}">
                                     <span class="menu-icon">
@@ -438,7 +438,7 @@
                                     <span class="menu-title"> Announcement Assignments</span>
                                 </a>
                                 <!--end:Menu link-->
-                            </div>
+                            </div> --}}
                             <div class="menu-item " data-url="{{ route('getAllEmployeeLeaveAvailableList') }}">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('getAllEmployeeLeaveAvailableList') }}">
