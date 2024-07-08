@@ -34,7 +34,8 @@ class LeaveService
 
     if (isset($data['leave_applied_by']) && !empty($data['leave_applied_by'])) {
       $payload['user_id']          = $data['user_id'];
-    } else {
+    } 
+    else {
       $payload['leave_applied_by'] = Auth::guard('admin')->user()->id ?? Auth::guard('employee')->user()->id ?? Auth()->user()->id;
       $payload['user_id'] = Auth::guard('admin')->user()->id ?? Auth::guard('employee')->user()->id ?? Auth()->user()->id;
     }
@@ -44,7 +45,8 @@ class LeaveService
       $payload['to_half_day']      = $data['to_half_day'] ?? '';
     }
     $appliedLeaveDetails = $this->leaveRepository->create($payload);
-    if ($appliedLeaveDetails) {
+    if ($appliedLeaveDetails)
+    {
       $startDate = Carbon::parse($data['from']);
       $endDate = Carbon::parse($data['to']);
       $days = $startDate->diffInDays($endDate);
@@ -74,5 +76,9 @@ class LeaveService
   public function getAppliedLeaveDetailsUsingId($id)
   {
     return $this->leaveRepository->where('id', $id)->where('leave_status_id', '!=', 3)->where('leave_status_id', '!=', 4)->first();
+  }
+  public function getDetailsById($id)
+  {
+    return $this->leaveRepository->find($id);
   }
 }

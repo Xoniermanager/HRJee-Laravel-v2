@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Requests\VerifyOtpRequest;
-use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Services\AuthService;
 use App\Http\Services\SendOtpService;
-use App\Models\CompanyUser;
-use App\Models\UserCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-
 use Illuminate\Support\Facades\Validator;
 use Throwable;
 use Illuminate\Support\Facades\Cookie;
@@ -78,7 +74,7 @@ class AdminController extends Controller
      */
     public function companyLogout()
     {
-        Auth::logout();
+        Auth()->guard('admin')->logout();
         return redirect(route('signin'));
     }
 
