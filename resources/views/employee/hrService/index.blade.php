@@ -23,7 +23,8 @@
                                 <!--begin::Item-->
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 gy-10">
                                     <div class="col text-center mb-9">
-                                        <a href="{{route('employee.attendance.service')}}" class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
+                                        <a href="{{ route('employee.attendance.service') }}"
+                                            class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
                                             <!--begin::Content-->
                                             <div class="text-center">
                                                 <!--begin::Symbol-->
@@ -32,7 +33,8 @@
                                                 <!--begin::Text-->
                                                 <div class="mt-1">
                                                     <!--begin::Animation-->
-                                                    <div class="fs-lg-2hx fs-2x fw-bold text-white d-flex align-items-center">
+                                                    <div
+                                                        class="fs-lg-2hx fs-2x fw-bold text-white d-flex align-items-center">
                                                         <div class="min-w-50px fs-2x ">Attendance</div>
                                                     </div>
                                                     <!--end::Animation-->
@@ -46,7 +48,8 @@
 
                                     <div class="col text-center mb-9">
                                         <!--begin::Item-->
-                                        <a href="{{route('employee.leave')}}" class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
+                                        <a href="{{ route('employee.leave') }}"
+                                            class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
                                             <!--begin::Content-->
                                             <div class="text-center">
                                                 <!--begin::Symbol-->
@@ -55,7 +58,8 @@
                                                 <!--begin::Text-->
                                                 <div class="mt-1">
                                                     <!--begin::Animation-->
-                                                    <div class="fs-lg-2hx fs-2 fw-bold text-white d-flex align-items-center">
+                                                    <div
+                                                        class="fs-lg-2hx fs-2 fw-bold text-white d-flex align-items-center">
                                                         <div class="min-w-50px fs-2x ">Leave</div>
                                                     </div>
                                                     <!--end::Animation-->
@@ -70,7 +74,8 @@
 
                                     <div class="col text-center mb-9">
                                         <!--begin::Item-->
-                                        <a href="{{route('employee.holidays')}}" class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
+                                        <a href="{{ route('employee.holidays') }}"
+                                            class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
                                             <!--begin::Content-->
                                             <div class="text-center">
                                                 <!--begin::Symbol-->
@@ -79,7 +84,8 @@
                                                 <!--begin::Text-->
                                                 <div class="mt-1">
                                                     <!--begin::Animation-->
-                                                    <div class="fs-lg-2hx fs-2x fw-bold text-white d-flex align-items-center">
+                                                    <div
+                                                        class="fs-lg-2hx fs-2x fw-bold text-white d-flex align-items-center">
                                                         <div class="min-w-50px fs-2x ">Holidays</div>
                                                     </div>
                                                     <!--end::Animation-->
@@ -93,7 +99,8 @@
                                     </div>
                                     <div class="col text-center mb-9">
                                         <!--begin::Item-->
-                                        <a href="{{route('employee.payslips')}}" class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
+                                        <a href="{{ route('employee.payslips') }}"
+                                            class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
                                             <!--begin::Content-->
                                             <div class="text-center">
                                                 <!--begin::Symbol-->
@@ -102,7 +109,8 @@
                                                 <!--begin::Text-->
                                                 <div class="mt-1">
                                                     <!--begin::Animation-->
-                                                    <div class="fs-lg-2hx fs-2x fw-bold text-white d-flex align-items-center">
+                                                    <div
+                                                        class="fs-lg-2hx fs-2x fw-bold text-white d-flex align-items-center">
                                                         <div class="min-w-50px fs-2x ">Pay Slip</div>
                                                     </div>
                                                     <!--end::Animation-->
@@ -116,7 +124,8 @@
                                     </div>
                                     <div class="col text-center mb-9">
                                         <!--begin::Item-->
-                                        <a href="{{route('employee.resignation')}}" class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
+                                        <a href="{{ route('employee.resignation') }}"
+                                            class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
                                             <!--begin::Content-->
                                             <div class="text-center">
                                                 <!--begin::Symbol-->
@@ -125,7 +134,8 @@
                                                 <!--begin::Text-->
                                                 <div class="mt-1">
                                                     <!--begin::Animation-->
-                                                    <div class="fs-lg-2hx fs-2x fw-bold text-white d-flex align-items-center">
+                                                    <div
+                                                        class="fs-lg-2hx fs-2x fw-bold text-white d-flex align-items-center">
                                                         <div class="min-w-50px fs-2x ">Resignation</div>
                                                     </div>
                                                     <!--end::Animation-->
@@ -145,7 +155,7 @@
                             <!--end::Items-->
                         </div>
                         <!--end::Wrapper-->
-                    
+
                     </div>
                     <!--end::Body-->
                 </div>

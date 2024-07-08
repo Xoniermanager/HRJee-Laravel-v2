@@ -14,8 +14,6 @@ class LeaveStatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
         \DB::table('leave_statuses')->delete();
         
         \DB::table('leave_statuses')->insert(array (
@@ -40,6 +38,15 @@ class LeaveStatusesTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
+                'name' => 'CANCELLED',
+                'status' => 1,
+                'company_id' => 1,
+                'created_at' => '2024-06-24 10:05:21',
+                'updated_at' => '2024-06-24 10:05:21',
+            ),
+            3 => 
+            array (
+                'id' => 4,
                 'name' => 'REJECTED',
                 'status' => 1,
                 'company_id' => 1,
@@ -47,7 +54,5 @@ class LeaveStatusesTableSeeder extends Seeder
                 'updated_at' => '2024-06-24 10:05:21',
             ),
         ));
-        
-        
     }
 }

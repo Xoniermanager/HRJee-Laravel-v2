@@ -60,7 +60,7 @@ class NewsCategoriesTableSeeder extends Seeder
                 'id' => 5,
                 'name' => 'Good News',
                 'status' => 1,
-                'company_id' => NULL,
+                'company_id' => 1,
                 'created_at' => '2024-06-25 15:41:38',
                 'updated_at' => '2024-06-25 15:41:38',
             ),
@@ -71,7 +71,7 @@ class NewsCategoriesTableSeeder extends Seeder
                 'status' => 1,
                 'company_id' => 1,
                 'created_at' => '2024-06-25 15:51:15',
-                'updated_at' => '2024-06-25 15:51:15',
+                'updated_at' => '2024-07-02 11:17:36',
             ),
         ));
         

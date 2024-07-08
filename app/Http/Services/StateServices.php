@@ -33,6 +33,11 @@ class StateServices
   {
     return $this->stateRepository->where('country_id', $country_id)->where('status', '1')->get();
   }
+  // created by ashish
+  public function getAllStates()
+  {
+    return $this->stateRepository->where('status', '1')->get();
+  }
 
   public function searchStateFilter($request)
   {
@@ -50,9 +55,9 @@ class StateServices
       } else {
         $status = $request->status;
       }
-      $stateDetails = $stateDetails->where('status',$status);
+      $stateDetails = $stateDetails->where('status', $status);
     }
-    
+
     /**List By Country ID or Filter */
     if (isset($request->country_id) && !empty($request->country_id)) {
       $stateDetails = $stateDetails->where('country_id', $request->country_id);

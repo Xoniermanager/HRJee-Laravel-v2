@@ -8,7 +8,6 @@ use App\Mail\ResetPassword;
 use App\Models\User;
 use App\Models\UserCode;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Services\FileUploadService;
 use App\Repositories\EmployeeRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -17,11 +16,9 @@ use Throwable;
 class EmployeeServices
 {
   private $employeeRepository;
-  private $imageUploadService;
-  public function __construct(EmployeeRepository $employeeRepository, FileUploadService $imageUploadService)
+  public function __construct(EmployeeRepository $employeeRepository)
   {
     $this->employeeRepository = $employeeRepository;
-    $this->imageUploadService = $imageUploadService;
   }
   public function all($request = null)
   {
@@ -128,21 +125,18 @@ class EmployeeServices
     $nameForImage = removingSpaceMakingName($data['name']);
     if (isset($data['profile_image']) && !empty($data['profile_image'])) {
       $upload_path = "/user_profile_picture";
-      $imagePath = $this->imageUploadService->imageUpload($data['profile_image'], $upload_path, $nameForImage);
-      $data['profile_image'] = $imagePath;
+      $filePath = uploadingImageorFile($data['profile_image'], $upload_path, $nameForImage);
+      $data['profile_image'] = $filePath;
     }
     if (!isset($data['password']) && empty($data['password'])) {
       $data['password'] = Hash::make(($data['password'] ?? 'password'));
-    } else {
     }
-    $data['company_id'] = Auth::guard('admin')->user()->id;
+    $data['company_id'] = Auth::guard('admin')->user()->company_id;
     $data['last_login_ip'] = request()->ip();
     if ($data['id'] != null) {
       $existingDetails = $this->employeeRepository->find($data['id']);
       if ($existingDetails->profile_image != null) {
-        if (file_exists(storage_path('app/public') . $existingDetails->profile_image)) {
-          unlink(storage_path('app/public') . $existingDetails->profile_image);
-        }
+        unlinkFileOrImage($existingDetails->profile_image);
       }
       $existingDetails->update($data);
     } else {
@@ -191,4 +185,11 @@ class EmployeeServices
     }
   }
 
+  public function getAllEmployeeByCompanyId($id)
+  {
+
+    return $this->employeeRepository->where('company_id',$id)->get();
+  }
+
+ 
 }

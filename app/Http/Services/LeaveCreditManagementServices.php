@@ -48,4 +48,13 @@ class LeaveCreditManagementServices
     }
     return $leaveCreditManagementDetails->orderBy('id', 'DESC')->paginate(10);
   }
+
+  public function getAllActiveLeaveCreditManagementDetails()
+  {
+    return $this->leaveCreditManagementRepository->where('status', '1')->get();
+  }
+  public function getAllLeaveCreditManagementDetailsBasedOnCurrentDay($currentDay)
+  {
+    return $this->leaveCreditManagementRepository->where('credit_leave_on_day',$currentDay)->where('status', '1')->get();
+  }
 }

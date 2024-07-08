@@ -17,8 +17,9 @@ Route::controller(ForgetPasswordController::class)->group(function () {
 
 
 /**---------------Employee Auth Route----------------*/
+Route::get('/', [AuthController::class, 'index'])->name('employee');
+
 Route::prefix('employee')->controller(AuthController::class)->group(function () {
-    Route::get('/signin', 'index')->name('employee');
     Route::post('/login', 'employeeLogin')->name('employee.login');
     Route::get('/logout', 'emoloyeeLogout')->name('employee.logout');
     Route::get('/verify/otp', 'verifyOtp')->name('employee.verifyOtp');
@@ -32,8 +33,9 @@ Route::prefix('company')->controller(AdminController::class)->group(function () 
     Route::post('/login', 'companyLogin')->name('company.login');
     Route::get('/logout', 'companyLogout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');
+    Route::get('/forget/password', 'forgetPassword')->name('signin');
     Route::get('/signup', 'signup')->name('signup');
-    Route::get('/resend/otp', 'resendOtp')->name('comapny.resendOtp');
+    Route::get('/resend/otp', 'resendOtp')->name('company.resendOtp');
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
 });

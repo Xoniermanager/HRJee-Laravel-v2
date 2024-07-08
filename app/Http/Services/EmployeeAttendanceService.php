@@ -3,7 +3,6 @@
 namespace App\Http\Services;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\EmployeeAttendanceRepository;
 
 class EmployeeAttendanceService

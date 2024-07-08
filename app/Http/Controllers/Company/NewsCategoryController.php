@@ -33,7 +33,7 @@ class NewsCategoryController extends Controller
     {
         try {
             $validateData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:asset_categories,name'],
+                'name' => ['required', 'string', 'unique:news_categories,name'],
             ]);
 
             if ($validateData->fails()) {
@@ -59,7 +59,7 @@ class NewsCategoryController extends Controller
     public function update(Request $request)
     {
         $validateData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:asset_categories,name,' . $request->id]
+            'name' => ['required', 'string', 'unique:news_categories,name,' . $request->id]
         ]);
 
         if ($validateData->fails()) {

@@ -1,23 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\SkillController;
-use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Employee\NewsController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
+use App\Http\Controllers\Employee\ApplyLeaveController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Employee\ContactUsController;
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\HRServiceController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
-use App\Http\Controllers\Employee\LeaveMangementController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Employee\AttendanceServiceController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
+use App\Http\Controllers\Employee\LeaveAvailableController;
+use App\Http\Controllers\Employee\LeaveTrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,11 +30,7 @@ use App\Http\Controllers\Employee\EmployeeAttendanceController;
 |
 */
 
-Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
-
 /** ---------------Employee Panel Started--------------  */
-Route::get('/', [AuthController::class, 'index'])->name('employee');
-
 Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
     //Employee Dashboard
@@ -74,9 +70,10 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     Route::get('/attendance/service', [AttendanceServiceController::class, 'index'])->name('employee.attendance.service');
 
     // Leave Management
-    Route::controller(LeaveMangementController::class)->group(function () {
+    Route::controller(ApplyLeaveController::class)->group(function () {
         Route::get('/leave', 'index')->name('employee.leave');
         Route::get('/apply/leave', 'applyLeave')->name('employee.apply.leave');
+        Route::post('/create/leave', 'store')->name('employee.apply.store');
     });
 
     // Holidays Management
@@ -93,5 +90,11 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
     //Employee Attendance Management]
     Route::post('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
+
+    //Employee Leave Available
+    Route::get('get/leave/available', [LeaveAvailableController::class, 'getAllLeaveAvailableByUserId'])->name('employee.leave.available');
+
+    //Leave Tracking
+    Route::get('/leave-tracking/{id}', [LeaveTrackingController::class, 'index'])->name('employee.leave.tracking');
 });
 /**----------------- End Employee Pannel Route ----------------------*/

@@ -5,22 +5,16 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ValidateCompany;
 use App\Http\Services\CompanyServices;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Services\FileUploadService;
-use Illuminate\Support\Facades\Validator;
 
 class AdminCompanyController extends Controller
 {
 
     private $companyServices;
-    private $imageUploadService;
-
-    public function __construct(CompanyServices $companyServices ,FileUploadService $imageUploadService) {
+    public function __construct(CompanyServices $companyServices)
+    {
         $this->companyServices = $companyServices;
-        $this->imageUploadService = $imageUploadService;
     }
     public function index()
     {
@@ -37,35 +31,35 @@ class AdminCompanyController extends Controller
     public function edit_company(Request $request)
     {
         $companyDetails = $this->companyServices->get_company_by_id($request->query('id'));
-        return view('super_admin.company.edit_company',['companyDetails' => $companyDetails]);
+        return view('super_admin.company.edit_company', ['companyDetails' => $companyDetails]);
     }
 
     public function store(ValidateCompany $request)
     {
         $validated = $request->validated();
         if ($request->hasFile('logo')) {
-            $filename = uniqid() . '_' . $validated['logo']->getClientOriginalName();
-            Storage::disk('public')->putFileAs('uploads', $validated['logo'], $filename);
-            $url = Storage::disk('public')->url('uploads/' . $filename);
-            $request->merge(['logo' => $url]);
+            $nameForImage = removingSpaceMakingName($request->name);
+            $upload_path = "/company_profile";
+            $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
+            $request->merge(['logo' => $filePath]);
         }
         $request->merge([
             'joining_date' => Carbon::today()->toDateString(),
         ]);
 
-        if(isset($request->company_id)) {
+        if (isset($request->company_id)) {
             $this->companyServices->updateDetails($request->all(), $request->company_id);
             return response()->json([
-                'success'=> 'Company Updated Successfully',
+                'success' => 'Company Updated Successfully',
                 'id'     =>  $request->company_id,
             ]);
         } else {
             $createdCompany = $this->companyServices->create($request->all());
             return response()->json([
-                'success'=> 'Company Created Successfully',
+                'success' => 'Company Created Successfully',
                 'id'     =>  $createdCompany->id,
             ]);
-    }
+        }
     }
     public function destroy(Request $request)
     {
@@ -84,7 +78,7 @@ class AdminCompanyController extends Controller
     }
 
     public function search(Request $request)
-    {   
+    {
         $searchedItems = $this->companyServices->searchInCompany($request->all());
         if ($searchedItems) {
             return response()->json([
@@ -113,7 +107,4 @@ class AdminCompanyController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-
 }
-
-
