@@ -8,137 +8,128 @@
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
         <div class="row gy-5 g-xl-10">
+            <!--begin::Col-->
             <div class="card card-body col-md-12">
-
-
-                <div class="d-flex mt-3 mb-5">
-                    <!--begin::Due-->
-                    <div class="border bg-light-info border-gray-300 border-dashed rounded min-w-125px py-3 px-5 me-3 mb-3">
-                        <div class="fs-6 text-gray-800 fw-bold">Earned Leave (Yearly)</div>
-                        <div class="fw-semibold text-gray-400">Total leave : 20 days </div>
-                        <div class="fw-semibold text-gray-400">Taken leave : 0 days  </div>
-                        <div class="fw-semibold text-gray-400">Balance leave :20 days </div>
-                    </div>
-                    <!--end::Due-->
-                    <!--begin::Budget-->
-                    <div class="border bg-light-info border-gray-300 border-dashed rounded min-w-125px py-3 px-5 me-3 mb-3">
-                        <div class="fs-6 text-gray-800 fw-bold">Casual Leave (Yearly)</div>
-                        <div class="fw-semibold text-gray-400">Total leave : 10 days </div>
-                        <div class="fw-semibold text-gray-400">Taken leave : 0 days  </div>
-                        <div class="fw-semibold text-gray-400">Balance leave :10 days </div>
-                    </div>
-                    <!--end::Budget-->
-                    <!--begin::Budget-->
-                    <div class="border bg-light-info border-gray-300 border-dashed rounded min-w-125px py-3 px-5 me-3 mb-3">
-                        <div class="fs-6 text-gray-800 fw-bold">Comp Off Leave (Yearly)</div>
-                        <div class="fw-semibold text-gray-400">Total leave : 10 days </div>
-                        <div class="fw-semibold text-gray-400">Taken leave : 0 days  </div>
-                        <div class="fw-semibold text-gray-400">Balance leave : 10 days </div>
-                    </div>
-                    <!--end::Budget-->
-                    <!--begin::Budget-->
-                    <div class="border  bg-light-info border-gray-300 border-dashed rounded min-w-125px py-3 px-5 me-3 mb-3">
-                        <div class="fs-6 text-gray-800 fw-bold">Planned  Leave (Yearly)</div>
-                        <div class="fw-semibold text-gray-400">Total leave : 15 days </div>
-                        <div class="fw-semibold text-gray-400">Taken leave : 0 days  </div>
-                        <div class="fw-semibold text-gray-400">Balance leave : 15 days </div>
-                    </div>
-                    <!--end::Budget-->
-                    <!--begin::Budget-->
-                    <div class="border bg-light-info border-gray-300 border-dashed rounded min-w-125px py-3 px-5 me-3 mb-3">
-                        <div class="fs-6 text-gray-800 fw-bold">Emergency Leave (Yearly)</div>
-                        <div class="fw-semibold text-gray-400">Total leave : 5 days </div>
-                        <div class="fw-semibold text-gray-400">Taken leave : 0 days  </div>
-                        <div class="fw-semibold text-gray-400">Balance leave : 5 days </div>
-                    </div>
-                    <!--end::Budget-->
-                </div>
-
-
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
-                        <h3 class="fw-bold m-0"> Applied Leave</h3>
-                    
+                        <div class="d-flex align-items-center position-relative my-1">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                            <span class="svg-icon svg-icon-1 position-absolute ms-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none">
+                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
+                                        rx="1" transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
+                                    <path
+                                        d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                                        fill="black"></path>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                            <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
+                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
+                                value="">
+                            <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+                        </div>
+
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
-                    <a href="{{route('employee.apply.leave')}}" class="btn btn-sm btn-primary align-self-center">
+                    <a href="{{ route('employee.apply.leave') }}" class="btn btn-sm btn-primary align-self-center">
                         Apply Leave</a>
                     <!--end::Action-->
                 </div>
-
-                <div class="mb-5 mb-xl-10">
-                    
-
-                    <div class="">
-                        <div class="">
-                            <!--begin::Body-->
-                            <div class="">
-                                <div class="card-body py-3">
-                                    <!--begin::Table container-->
-                                    <div class="table-responsive">
-                                        <!--begin::Table-->
-                                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                            <!--begin::Table head-->
-                                            <thead>
-                                                <tr class="fw-bold">
-                                                    <th>Sr. No.</th>
-                                                    <th>Name</th>
-                                                    <th>Designation</th>
-                                                    <th>Apply Date</th>
-                                                    <th>Status</th>
-                                                    
-                                                    <th class="float-right">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <!--end::Table head-->
-                                            <!--begin::Table body-->
-                                            <tbody class="">
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>Shibli Sone</td>
-                                                    <td> Testing</td>
-                                                    <td>March 27,2024 </td>
-                                                    
-                                                    <td>
-                                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                                        <input class="form-check-input" type="checkbox" value="" id="status" name="status" checked="checked">
-                                                    </div>
-                                                </td>
-                                                    
-                                                    <td>
-                                                        <div class="d-flex justify-content-end flex-shrink-0">
-                                                            <a href="view_support.html" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                                                <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                                <i class="fa fa-eye"></i>
-                                                                <!--end::Svg Icon-->
-                                                            </a>
-
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                
-                                            </tbody>
-                                            <!--end::Table body-->
-                                        </table>
-                                        <!--end::Table-->
-                                    </div>
-                                    <!--end::Table container-->
-
-                                </div>
-                            </div>
-                            <!--begin::Body-->
-
-                        </div>
-                        <!--begin::Body-->
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible">
+                        {{ session('error') }}
                     </div>
-                    <!--begin::Body-->
+                @endif
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                <div class="mb-5 mb-xl-10">
+                    <div class="card-body py-3">
+                        <!--begin::Table container-->
+                        <div class="table-responsive">
+                            <!--begin::Table-->
+                            <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                                <!--begin::Table head-->
+                                <thead>
+                                    <tr class="fw-bold">
+                                        <th>Sr. No.</th>
+                                        <th>Leave Type</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Half Day</th>
+                                        <th>From Half Day</th>
+                                        <th>To Half Day</th>
+                                        <th>Leave Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <!--end::Table head-->
+                                <!--begin::Table body-->
+                                <tbody class="">
+                                    @foreach ($allLeavesDetails as $index => $leavesDetails)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $leavesDetails->leaveTypeName }}</td>
+                                            <td>{{ $leavesDetails->from }}</td>
+                                            <td>{{ $leavesDetails->to }}</td>
+                                            @if ($leavesDetails->is_half_day == '1')
+                                                <td>Yes</td>
+                                            @else
+                                                <td>No</td>
+                                            @endif
+                                            @php
+                                                $leaveFromDay = '';
+                                                if ($leavesDetails->from_half_day == 'first_half') {
+                                                    $leaveFromDay = 'First Half';
+                                                } elseif ($leavesDetails->from_half_day == 'second_half') {
+                                                    $leaveFromDay = 'Second Half';
+                                                } else {
+                                                    $leaveFromDay;
+                                                }
+                                            @endphp
+                                            <td>{{ $leaveFromDay }}</td>
+                                            @php
+                                                $leaveToDay = '';
+                                                if ($leavesDetails->from_half_day == 'first_half') {
+                                                    $leaveToDay = 'First Half';
+                                                } elseif ($leavesDetails->from_half_day == 'second_half') {
+                                                    $leaveToDay = 'Second Half';
+                                                } else {
+                                                    $leaveToDay;
+                                                }
+                                            @endphp
+                                            <td>{{ $leaveToDay }}</td>
+                                            <td>{{ $leavesDetails->leaveStatus->name }}</td>
+                                            <td>
+                                                <a href="{{ route('employee.leave.tracking',$leavesDetails->id) }}">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/3273/3273365.png"
+                                                        class="h-35px leavetracking" alt="">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <!--end::Table body-->
+                            </table>
+                            <!--end::Table-->
+                        </div>
+                        <!--end::Table container-->
+
+                    </div>
                 </div>
+                <!--begin::Body-->
+
             </div>
+            <!--begin::Body-->
+            <!--end::Row-->
         </div>
-        <!--end::Row-->
+        <!--end::Container-->
     </div>
-    <!--end::Container-->
 </div>
 @endsection

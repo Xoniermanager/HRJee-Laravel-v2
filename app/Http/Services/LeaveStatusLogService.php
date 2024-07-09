@@ -28,4 +28,9 @@ class LeaveStatusLogService
     }
     return $response;
   }
+
+  public function getDetailsByLeaveId($id)
+  {
+    return $this->leaveStatusLogRepository->where('leave_id', $id)->first();
+  }
 }
