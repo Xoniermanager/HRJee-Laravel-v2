@@ -22,14 +22,13 @@ class AddAnnouncementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // "company_branch_id" => "nullable|exists:company_branches,id",
             "title" => "required|string|min:10",
             "start_date_time" => "required|after_or_equal:now",
             "expires_at" => "nullable|after_or_equal:start_date_time",
             "description" => "required|string",
-            "image" => "nullable",
+            "image" => 'mimes|jpeg|png|jpg|gif|svg|max:2048',
             "status" => "required|in:active,inactive",
-            'branch_id' => ['nullable', 'exists:company_branches,id'],
+            'company_branch_id' => ['nullable', 'exists:company_branches,id'],
             'department_id' => ['nullable', 'exists:departments,id'],
             'designation_id' => ['nullable', 'exists:designations,id'],
             'assign_announcement' => ['required', 'in:1,0'],

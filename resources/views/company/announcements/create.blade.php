@@ -76,7 +76,7 @@
                                                 All
                                             </span>
                                             <input class="form-check-input m-4" type="checkbox" name="all_branch"
-                                                onchange="get_checkedValue('company_branch')"
+                                                onchange="get_checked_value('company_branch')"
                                                 id="company_branches_checkbox">
 
                                         </label>
@@ -106,8 +106,8 @@
                                                 All
                                             </span>
                                             <input class="form-check-input m-4" type="checkbox" name="all_department"
-                                                onchange="get_checkedValue('department')" id="department_checkbox">
-                                            {{-- onchange="get_checkedValue('department')" id="department_checkbox" --}}
+                                                onchange="get_checked_value('department')" id="department_checkbox">
+                                            {{-- onchange="get_checked_value('department')" id="department_checkbox" --}}
                                         </label>
                                     </div>
 
@@ -133,8 +133,8 @@
                                                 All
                                             </span>
                                             <input class="form-check-input m-4" type="checkbox" name="all_department"
-                                                onchange="get_checkedValue('designation')" id="designation_checkbox">
-                                            {{-- onchange="get_checkedValue('department')" id="department_checkbox" --}}
+                                                onchange="get_checked_value('designation')" id="designation_checkbox">
+                                            {{-- onchange="get_checked_value('department')" id="department_checkbox" --}}
                                         </label>
                                     </div>
 

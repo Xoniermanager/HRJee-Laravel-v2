@@ -31,14 +31,18 @@ class DesignationServices
   {
     return $this->designationRepository->find($id)->update($data);
   }
-  public function deleteDetails($id)
+  public function deleteDetails($id)  
   {
     return $this->designationRepository->find($id)->delete();
   }
 
-  public function getAllDesignationUsingDepartmentID($department_id)
+  public function getAllDesignationByDepartmentIds($departmentIds, $allDepartment = null)
   {
-    return $this->designationRepository->whereIn('department_id', $department_id)->where('status', '1')->get();
+    if ($allDepartment == true) {
+      return $this->designationRepository->where('department_id', '!=', NULL)->where('status', '1')->get();
+    } else {
+      return $this->designationRepository->whereIn('department_id', $departmentIds)->where('status', '1')->get();
+    }
   }
   public function serachDesignationFilterList($request)
   {

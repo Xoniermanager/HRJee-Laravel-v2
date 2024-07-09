@@ -20,7 +20,7 @@ class BranchServices
   {
     return $this->branchRepository->with('country', 'state')->where('status', 1)->orderBy('id', 'DESC')->get();
   }
-  public function allActiveCompanyBranchesByUsingCompanyId($companyId)
+  public function getAllActiveCompanyBranchesByCompanyId($companyId)
   {
     return $this->branchRepository->where('company_id',$companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
   }

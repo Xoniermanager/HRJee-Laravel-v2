@@ -77,7 +77,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('/update', 'update')->name('designation.update');
         Route::get('/delete', 'destroy')->name('designation.delete');
         Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
-        Route::get('/get/all/designation', 'getAllDesignation')->name('get.all.designation');
+        Route::get('/get-designation-by-departments', 'getAllDesignation')->name('get.all.designation');
         Route::get('/search/filter', 'serachDesignationFilterList');
     });
 

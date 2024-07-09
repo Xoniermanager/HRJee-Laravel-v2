@@ -4,23 +4,17 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddAnnouncementRequest;
-use App\Http\Requests\AnnouncementAssignRequest;
 use App\Http\Services\AnnouncementAssignServices;
 use App\Http\Services\AnnouncementServices;
 use App\Http\Services\BranchServices;
-use App\Http\Services\CompanyUserService;
 use App\Http\Services\DepartmentServices;
 use App\Http\Services\DesignationServices;
 use App\Http\Services\EmployeeServices;
 use App\Http\Services\UserDetailServices;
-use App\Jobs\AssignAnnouncement;
 use App\Models\Announcement;
-use App\Models\AnnouncementAssign;
-use App\Models\CompanyBranch;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Throwable;
 
 class AnnouncementController extends Controller
@@ -52,7 +46,7 @@ class AnnouncementController extends Controller
     {
         return view('company.announcements.index', [
             'announcements' => $this->announcementService->all('paginate'),
-            'branches' => $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id)
+            'branches' => $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id)
         ]);
     }
 
@@ -61,7 +55,7 @@ class AnnouncementController extends Controller
     {
         $announcement = $this->announcementService->announcementDetails($request->id);
         // question ? company can add directly a user without select any branch or department or designation 
-        $activeBranches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+        $activeBranches = $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
 
         if (!empty($announcement->company_branch_id)) {
             $type = 1;
@@ -103,7 +97,7 @@ class AnnouncementController extends Controller
             if (!empty(auth()->guard('admin')->user()->branch_id)) {
                 $branchIds[] = auth()->guard('admin')->user()->branch_id;
             } else if (!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)) {
-                $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+                $branches = $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
                 $branchIds = $branches->pluck('id')->toArray();
             }
         } elseif (empty($request->ids)) {
@@ -127,7 +121,7 @@ class AnnouncementController extends Controller
             if (!empty(auth()->guard('admin')->user()->branch_id)) {
                 $branchIds[] = auth()->guard('admin')->user()->branch_id;
             } else if (!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)) {
-                $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+                $branches = $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
                 $branchIds = $branches->pluck('id')->toArray();
             }
         } elseif (empty($request->branchIds)) {
@@ -148,7 +142,7 @@ class AnnouncementController extends Controller
 
         $branchUsers = $this->userDetailServices->getAllUsersByBranchAndDepartmentId($branchIds, $departmentIds);
         $data['branchDepartmentUsers'] = $branchUsers;
-        $data['branchDepartmentDesignations'] = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds);
+        $data['branchDepartmentDesignations'] = $this->designationServices->getAllDesignationByDepartmentIds($departmentIds);
         return response()->json(['status' => true, 'data' => $data]);
     }
     public function getAllUsersByBranchDepartmentAndDesignationId(Request $request)
@@ -157,7 +151,7 @@ class AnnouncementController extends Controller
             if (!empty(auth()->guard('admin')->user()->branch_id)) {
                 $branchIds[] = auth()->guard('admin')->user()->branch_id;
             } else if (!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)) {
-                $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+                $branches = $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
                 $branchIds = $branches->pluck('id')->toArray();
             }
         } elseif (empty($request->branchIds)) {
@@ -178,7 +172,7 @@ class AnnouncementController extends Controller
 
         // get designation ids
         if ($request->designation_type == 1) {
-            $designations = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds);
+            $designations = $this->designationServices->getAllDesignationByDepartmentIds($departmentIds);
             $designationIds = $designations->pluck('id')->toArray();
         } elseif (empty($request->designationIds)) {
             $designationIds =  [];
@@ -205,9 +199,9 @@ class AnnouncementController extends Controller
         }
         $branchUsers = $this->userDetailServices->getAllUsersByBranchId($branchIds);
 
-        $activeBranches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+        $activeBranches = $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
         $departments =  $this->departmentServices->getDepartmentsByAdminAndCompany();
-        $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+        $branches = $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
         return view('company.announcements.create', compact('branches', 'branchUsers', 'departments', 'activeBranches'));
     }
     public function edit(Request $request)
@@ -235,7 +229,7 @@ class AnnouncementController extends Controller
             $assignDepartmentIds = $announcement->departments()->pluck('department_id')->toArray();
         }
 
-        $designations = $this->designationServices->getAllDesignationUsingDepartmentID($assignDepartmentIds);
+        $designations = $this->designationServices->getAllDesignationByDepartmentIds($assignDepartmentIds);
         if ($announcement->all_designation == 1) {
           $assignDesignationIds=  $designations->pluck('id')->toArray();
         } else {
@@ -243,9 +237,9 @@ class AnnouncementController extends Controller
             $assignDesignationIds = $announcement->designations()->pluck('designation_id')->toArray();
         }
 
-        $activeBranches = $this->branchServices->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+        $activeBranches = $this->branchServices->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
         $allUsers = $this->userDetailServices->getAllUsersByBranchDepartmentAndDesignationId($assignBrancheIds, $assignDepartmentIds, $assignDesignationIds);
-        // $designations = $this->designationServices->getAllDesignationUsingDepartmentID($assignDepartmentIds);
+        // $designations = $this->designationServices->getAllDesignationByDepartmentIds($assignDepartmentIds);
 
         return view('company.announcements.edit', [
             'announcement' => $this->announcementService->announcementDetails($request->id),
@@ -253,7 +247,7 @@ class AnnouncementController extends Controller
             'assignDepartmentIds' => $assignDepartmentIds,
             'assignBrancheIds' => $assignBrancheIds,
             'assignDesignationIds' => $assignDesignationIds,
-            'branches' => $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id),
+            'branches' => $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id),
             'departments' =>  $this->departmentServices->getDepartmentsByAdminAndCompany(),
             'designations' => $designations,
             'branches' => $activeBranches,
@@ -319,7 +313,7 @@ class AnnouncementController extends Controller
                 $allAssignedBranchIds = $announcement->branches()->pluck('branch_id')->toArray();
                 $branches = $this->branchServices->getAllBranchByBranchId($allAssignedBranchIds);
             } else if ($announcement->all_branch == 1) {
-                $branches = $this->branchServices->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+                $branches = $this->branchServices->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
             }
 
             if ($announcement->all_department == 0) {
@@ -385,7 +379,7 @@ class AnnouncementController extends Controller
 
             $html =   view('company.announcements.announcement_list', [
                 'announcements' => $this->announcementService->all('paginate'),
-                'branches' => $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id),
+                'branches' => $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id),
             ])->render();
             return response()->json([
                 'message' => 'Announcement Updated Successfully!',
@@ -404,7 +398,7 @@ class AnnouncementController extends Controller
         $id = $request->id;
         $data = $this->announcementService->deleteDetails($id);
         $announcements = $this->announcementService->all('paginate');
-        $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+        $branches = $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
         if ($data) {
             return response()->json([
                 'success', 'Deleted Successfully!',
@@ -491,7 +485,7 @@ class AnnouncementController extends Controller
     //     $assignDepartmentIds = $announcement->departments()->pluck('department_id')->toArray();
     //     $assignDesignationIds = $announcement->designations()->pluck('designation_id')->toArray();
 
-    //     $activeBranches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+    //     $activeBranches = $this->branch_services->getAllActiveCompanyBranchesByCompanyId(auth()->guard('admin')->user()->company_id);
     //     // $ids = $activeBranches->pluck('id')->toArray();
 
     //     // if (!empty($announcement->company_branch_id))
@@ -501,7 +495,7 @@ class AnnouncementController extends Controller
 
 
     //     $allUsers = $this->userDetailServices->getAllUsersByBranchDepartmentAndDesignationId($assignBrancheIds, $assignDepartmentIds, $assignDesignationIds);
-    //     $designations = $this->designationServices->getAllDesignationUsingDepartmentID($assignDepartmentIds);
+    //     $designations = $this->designationServices->getAllDesignationByDepartmentIds($assignDepartmentIds);
     //     return view('company.announcement_assign.assign_announcement_edit', [
     //         'announcement' => $announcement,
     //         'assignDepartmentIds' => $assignDepartmentIds,

@@ -80,10 +80,10 @@
                                                 All
                                             </span>
                                             <input class="form-check-input m-4" type="checkbox" name="all_branch"
-                                                onchange="get_checkedValue('company_branch')"
+                                                onchange="get_checked_value('company_branch')"
                                                 id="company_branches_checkbox"
                                                 {{ $announcement->all_branch == 1 ? 'checked' : '' }}>
-                                            {{-- onchange="get_checkedValue('department')" id="department_checkbox" --}}
+                                            {{-- onchange="get_checked_value('department')" id="department_checkbox" --}}
                                         </label>
                                     </div>
 
@@ -126,10 +126,10 @@
                                                 All
                                             </span>
                                             <input class="form-check-input m-4" type="checkbox"
-                                                onchange="get_checkedValue('department')" id="department_checkbox"
+                                                onchange="get_checked_value('department')" id="department_checkbox"
                                                 name="all_department"
                                                 {{ $announcement->all_department == 1 ? 'checked' : '' }}>
-                                            {{-- onchange="get_checkedValue('department')" id="department_checkbox" --}}
+                                            {{-- onchange="get_checked_value('department')" id="department_checkbox" --}}
                                         </label>
                                     </div>
 
@@ -171,10 +171,10 @@
                                                 All
                                             </span>
                                             <input class="form-check-input m-4" type="checkbox"
-                                                name="all_designation" onchange="get_checkedValue('designation')"
+                                                name="all_designation" onchange="get_checked_value('designation')"
                                                 id="designation_checkbox"
                                                 {{ $announcement->all_designation == 1 ? 'checked' : '' }}>
-                                            {{-- onchange="get_checkedValue('department')" id="department_checkbox" --}}
+                                            {{-- onchange="get_checked_value('department')" id="department_checkbox" --}}
                                         </label>
                                     </div>
 
