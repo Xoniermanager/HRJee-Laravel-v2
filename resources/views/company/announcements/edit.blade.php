@@ -132,7 +132,6 @@
                                             {{-- onchange="get_checkedValue('department')" id="department_checkbox" --}}
                                         </label>
                                     </div>
-
                                     <div class="col-md-10 form-group">
                                         <label class=" ">Department </label>
                                         <select class="bg-white form-select form-select-solid" data-control="select2"
@@ -183,7 +182,8 @@
                                         <select class="bg-white form-select form-select-solid" data-control="select2"
                                             data-close-on-select="false" data-placeholder="Select the Company Branch"
                                             data-allow-clear="true" multiple name="designation_id[]"
-                                            id="designation_id" style="width:100%" {{ $announcement->all_designation == 1 ? 'disabled' : '' }}>
+                                            id="designation_id" style="width:100%"
+                                            {{ $announcement->all_designation == 1 ? 'disabled' : '' }}>
                                             {{-- @forelse ($designations as $key => $designation)
                                                 <option value="{{ $designation->id }}"
                                                     {{ in_array($designation->id, $assignDesignationIds) ? 'selected' : '' }}>
@@ -195,17 +195,17 @@
 
 
                                             @if ($announcement->all_designation == 0)
-                                            @foreach ($designations as $departmentsDetails)
-                                                <option value="{{ $departmentsDetails->id }}"
-                                                    {{ in_array($departmentsDetails->id, $assignDesignationIds) ? 'selected' : '' }}>
-                                                    {{ $departmentsDetails->name }}</option>
-                                            @endforeach
-                                        @else
-                                            @foreach ($designations as $departmentsDetails)
-                                                <option value="{{ $departmentsDetails->id }}">
-                                                    {{ $departmentsDetails->name }}</option>
-                                            @endforeach
-                                        @endif
+                                                @foreach ($designations as $departmentsDetails)
+                                                    <option value="{{ $departmentsDetails->id }}"
+                                                        {{ in_array($departmentsDetails->id, $assignDesignationIds) ? 'selected' : '' }}>
+                                                        {{ $departmentsDetails->name }}</option>
+                                                @endforeach
+                                            @else
+                                                @foreach ($designations as $departmentsDetails)
+                                                    <option value="{{ $departmentsDetails->id }}">
+                                                        {{ $departmentsDetails->name }}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                         <label class="field_error designation_id_error"> </label>
                                     </div>
@@ -310,6 +310,8 @@
 
 
     $(document).ready(function() {
+
+        // for company check box filter
         $('#company_branches_checkbox').on('change', function(event) {
             let branch_id = new Array();
             $("select#company_branch option:selected").each(function() {
@@ -318,8 +320,6 @@
             var type = $(this).val(); // this gives me null
             getUsesByBranchIdAndType(type, branch_id);
         });
-
-
         $(document).on('change', '#company_branch', function() {
             let branch_id = new Array();
             $("select#company_branch option:selected").each(function() {
@@ -333,6 +333,9 @@
             }
             getUsesByBranchIdAndType(type, branch_id);
         })
+
+// for department checkbox filter
+
         $(document).on('change', '#department_id', function() {
             let branch_id = new Array();
             let department_id = new Array();
@@ -359,6 +362,9 @@
                 department_id);
 
         })
+
+
+// for designation checkbox filter
         $(document).on('change', '#designation_id', function() {
             let branch_id = new Array();
             let department_id = new Array();
@@ -384,18 +390,48 @@
             if (typeCheck == true) {
                 department_type = 1;
             }
-            let designation_type = 0;
             let typeCheckDesignation = $("#designation_checkbox").is(":checked");
             if (typeCheckDesignation == true) {
-                designation_type = 1;
+                let designation_type = 1;
+            }else {
+                let designation_type=0;
             }
 
             getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
                 department_id, designation_type, designationIds);
 
         })
+        $('#designation_checkbox').on('change', function(event) {
+            let branch_id = new Array();
+            let department_id = new Array();
+            let designationIds = new Array();
+            $("select#company_branch option:selected").each(function() {
+                branch_id.push($(this).val());
+            });
+
+            $("select#department_id option:selected").each(function() {
+                department_id.push($(this).val());
+            });
+            $("select#designation_id option:selected").each(function() {
+                designationIds.push($(this).val());
+            });
+            let branch_type = 0;
+            let type = $("#company_branches_checkbox").is(":checked");
+            if (type == true) {
+                branch_type = 1;
+            }
+            let typeCheckDesignation = $("#designation_checkbox").is(":checked");
+            if (typeCheckDesignation == true) {
+                let designation_type = 1;
+            }else {
+                let designation_type=0;
+            }
 
 
+
+            getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
+                department_id, designation_type, designationIds);
+        });
     })
 
     function getUsesByBranchIdAndType(type, ids) {

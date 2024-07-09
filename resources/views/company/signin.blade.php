@@ -257,7 +257,7 @@ if (request()->hasCookie('password') != false) {
                                                             Remember me</p>
                                                     </div>
                                                     <div class="col-lg-6 text-end">
-                                                        <p> <a href="forgot_password.html"
+                                                        <p> <a href="{{route('company.forget.password')}}"
                                                                 class="text-color-secondary ">Forgot Password?</a></p>
                                                     </div>
                                                 </div>

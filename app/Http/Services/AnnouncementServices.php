@@ -2,18 +2,14 @@
 
 namespace App\Http\Services;
 
-use App\Models\Announcement;
-use App\Repositories\AnnouncementAssignRepository;
 use App\Repositories\AnnouncementRepository;
 
 class AnnouncementServices
 {
   private $announcementRepository;
-  private $announcementAssignRepository;
-  public function __construct(AnnouncementRepository $announcementRepository, AnnouncementAssignRepository $announcementAssignRepository)
+  public function __construct(AnnouncementRepository $announcementRepository)
   {
     $this->announcementRepository = $announcementRepository;
-    $this->announcementAssignRepository = $announcementAssignRepository;
   }
   public function all($type = '')
   {
@@ -40,12 +36,12 @@ class AnnouncementServices
   {
     return $this->announcementRepository->find($id)->delete();
   }
-  public function announcementAssignStore($request)
-  {
-    $created = $this->announcementAssignRepository->updateOrCreate(['announcement_id' => $request['announcement_id']], $request);
-    if ($created)
-      return  true;
-    else
-      return false;
-  }
+  // public function announcementAssignStore($request)
+  // {
+  //   $created = $this->announcementRepository->where('id',$request['announcement_id'])->update($request);
+  //   if ($created)
+  //     return  true;
+  //   else
+  //     return false;
+  // }
 }
