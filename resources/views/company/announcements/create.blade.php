@@ -144,7 +144,7 @@
                                             data-close-on-select="false" data-placeholder="Select the Company Branch"
                                             data-allow-clear="true" multiple name="designation_id[]"
                                             id="designation_id" style="width:100%">
-                                            s
+
                                         </select>
                                         <label class="field_error designation_id_error"> </label>
                                     </div>
@@ -243,19 +243,15 @@
             $('.notification_schedule_time').show();
     }
 
-
-
-
     $(document).ready(function() {
-        $('#company_branches_checkbox').on('change', function(event) {
-            let branch_id = new Array();
-            $("select#company_branch option:selected").each(function() {
-                branch_id.push($(this).val());
-            });
-            var type = $(this).val(); // this gives me null
-            getUsesByBranchIdAndType(type, branch_id);
-        });
-
+        // $('#company_branches_checkbox').on('change', function(event) {
+        //     let branch_id = new Array();
+        //     $("select#company_branch option:selected").each(function() {
+        //         branch_id.push($(this).val());
+        //     });
+        //     var type = $(this).val(); // this gives me null
+        //     getUsesByBranchIdAndType(type, branch_id);
+        // });
 
         $(document).on('change', '#company_branch', function() {
             let branch_id = new Array();
@@ -270,6 +266,7 @@
             }
             getUsesByBranchIdAndType(type, branch_id);
         })
+
         $(document).on('change', '#department_id', function() {
             let branch_id = new Array();
             let department_id = new Array();
@@ -321,6 +318,9 @@
             if (typeCheck == true) {
                 department_type = 1;
             }
+          
+          
+
             let designation_type = 0;
             let typeCheckDesignation = $("#designation_checkbox").is(":checked");
             if (typeCheckDesignation == true) {
@@ -332,6 +332,35 @@
 
         })
 
+        // $('#designation_checkbox').on('change', function(event) {
+        //     let branch_id = new Array();
+        //     let department_id = new Array();
+        //     let designationIds = new Array();
+        //     $("select#company_branch option:selected").each(function() {
+        //         branch_id.push($(this).val());
+        //     });
+
+        //     $("select#department_id option:selected").each(function() {
+        //         department_id.push($(this).val());
+        //     });
+        //     $("select#designation_id option:selected").each(function() {
+        //         designationIds.push($(this).val());
+        //     });
+        //     let branch_type = 0;
+        //     let type = $("#company_branches_checkbox").is(":checked");
+        //     if (type == true) {
+        //         branch_type = 1;
+        //     }
+        //     let typeCheckDesignation = $("#designation_checkbox").is(":checked");
+        //     if (typeCheckDesignation == true) {
+        //         let designation_type = 1;
+        //     }else {
+        //         let designation_type=0;
+        //     }
+           
+        //     getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
+        //         department_id, designation_type, designationIds);
+        // });
 
     })
 
@@ -391,6 +420,7 @@
             department_type: department_type,
             departmentIds: departmentIds
         };
+  
         $.ajax({
             url: `{{ route('announcement.branch.department.users') }}`,
             type: 'get',
@@ -452,8 +482,9 @@
             success: function(response) {
                 if (response.status == true) {
                     let html = '';
+                    $('.employee_listing').html(html);
                     if (response.data.length > 0) {
-                        $('.employee_listing').html(html);
+                        
                         $.each(response.data, function(key, value) {
                             html += ` <div class="d-flex align-items-center mb-3">
                                     <div class="symbol symbol-45px me-5">

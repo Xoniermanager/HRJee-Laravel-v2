@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddAnnouncementRequest;
-use App\Http\Requests\AnnouncementAssignRequest;
-use App\Http\Services\AnnouncementAssignServices;
+ 
 use App\Http\Services\AnnouncementServices;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CompanyUserService;
@@ -13,14 +12,11 @@ use App\Http\Services\DepartmentServices;
 use App\Http\Services\DesignationServices;
 use App\Http\Services\EmployeeServices;
 use App\Http\Services\UserDetailServices;
-use App\Jobs\AssignAnnouncement;
 use App\Models\Announcement;
-use App\Models\AnnouncementAssign;
 use App\Models\CompanyBranch;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Throwable;
 
 class AnnouncementController extends Controller
@@ -30,12 +26,10 @@ class AnnouncementController extends Controller
     private $announcementService;
     private $userDetailServices;
     private $designationServices;
-    private $announcementAssignServices;
     private $employeeServices;
     private $branchServices;
-    public function __construct(BranchServices $branchServices, EmployeeServices $employeeServices, AnnouncementAssignServices $announcementAssignServices, AnnouncementServices $announcementService, BranchServices $branch_services, DepartmentServices $departmentServices, DesignationServices $designationServices, UserDetailServices $userDetailServices)
+    public function __construct(BranchServices $branchServices, EmployeeServices $employeeServices,  AnnouncementServices $announcementService, BranchServices $branch_services, DepartmentServices $departmentServices, DesignationServices $designationServices, UserDetailServices $userDetailServices)
     {
-        $this->announcementAssignServices = $announcementAssignServices;
         $this->announcementService = $announcementService;
         $this->departmentServices = $departmentServices;
         $this->designationServices = $designationServices;
@@ -59,6 +53,7 @@ class AnnouncementController extends Controller
 
     public function getAnnouncement(Request $request)
     {
+        
         $announcement = $this->announcementService->announcementDetails($request->id);
         // question ? company can add directly a user without select any branch or department or designation 
         $activeBranches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
@@ -194,6 +189,7 @@ class AnnouncementController extends Controller
 
     public function create()
     {
+
         if (!empty(auth()->guard('admin')->user()->branch_id)) {
             $branchIds[] = auth()->guard('admin')->user()->branch_id;
         } else if (!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)) {
@@ -442,95 +438,30 @@ class AnnouncementController extends Controller
 
 
 
-    public function announcementAssignStore(Request $request)
-    {
-        try {
-
-            $request['all_branch'] = in_array('all', $request->company_branch_id) ? 1 : 0;
-            $request['all_department'] = in_array('all', $request->department_id) ? 1 : 0;
-            $request['all_designation'] = in_array('all', $request->designation_id) ? 1 : 0;
-            $request['notification_schedule_time'] = $request->assign_announcement == 0 ? $request->notification_schedule_time : null;
-            $data = $request->except('department_id', 'designation_id', 'company_branch_id', 'assign_announcement');
-            $dataCheck =  $this->announcementService->announcementAssignStore($data);
-            if ($dataCheck) {
-
-                $announcement = Announcement::find($request->announcement_id);
-                if ($data['all_branch'] != 1)
-                    $announcement->branches()->sync($request->company_branch_id);
-                if ($data['all_department'] != 1)
-                    $announcement->departments()->sync($request->department_id);
-
-                if ($data['all_designation'] != 1)
-                    $announcement->designations()->sync($request->designation_id);
-
-
-
-                return apiResponse('announcement_assigned');
-            } else
-                return errorMessage('announcement_not_assigned');
-        } catch (Throwable $th) {
-            return exceptionErrorMessage($th);
-        }
-    }
-
-
-
-
-
-
-    // public function editAnnouncementAssign(Request $request)
-    // {
-    //     $announcementAssign = $this->announcementAssignServices->announcementAssignDetails($request->id);
-    //     if (empty($announcementAssign))
-    //         return redirect()->route('announcement.assign.index')->with('error', 'invalid id provided');
-
-
-
-    //     $announcement = $this->announcementService->announcementDetails($announcementAssign->announcement_id);
-    //     $assignBrancheIds = $announcement->branches()->pluck('branch_id')->toArray();
-    //     $assignDepartmentIds = $announcement->departments()->pluck('department_id')->toArray();
-    //     $assignDesignationIds = $announcement->designations()->pluck('designation_id')->toArray();
-
-    //     $activeBranches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
-    //     // $ids = $activeBranches->pluck('id')->toArray();
-
-    //     // if (!empty($announcement->company_branch_id))
-    //     //     $branchIds[] = $announcement->company_branch_id;
-    //     // else
-    //     //     $branchIds = $ids;
-
-
-    //     $allUsers = $this->userDetailServices->getAllUsersByBranchDepartmentAndDesignationId($assignBrancheIds, $assignDepartmentIds, $assignDesignationIds);
-    //     $designations = $this->designationServices->getAllDesignationUsingDepartmentID($assignDepartmentIds);
-    //     return view('company.announcement_assign.assign_announcement_edit', [
-    //         'announcement' => $announcement,
-    //         'assignDepartmentIds' => $assignDepartmentIds,
-    //         'assignBrancheIds' => $assignBrancheIds,
-    //         'assignDesignationIds' => $assignDesignationIds,
-    //         'announcementAssign' => $announcementAssign,
-    //         'announcements' => $this->announcementService->all(),
-    //         'departments' =>  $this->departmentServices->getDepartmentsByAdminAndCompany(),
-    //         'designations' => $designations,
-    //         'branches' => $activeBranches,
-    //         'users' => $allUsers,
-    //         // 'branch_id' => $branchIds
-    //     ]);
-    // }
-
-
-    // public function updateAnnouncementAssign(AnnouncementAssignRequest $request)
+    // public function announcementAssignStore(Request $request)
     // {
     //     try {
-    //         $data =  $this->announcementService->announcementAssignStore($request);
-    //         if ($data) {
-    //             $announcement = Announcement::find($request->announcement_id);
-    //             $announcement->branches()->sync($request->company_branch_id);
-    //             $announcement->departments()->sync($request->department_id);
-    //             $announcement->designations()->sync($request->designation_id);
-    //             // if ($request->assign_announcement == 1)
-    //             //     AssignAnnouncement::dispatch(['name'=>'ejhsdjfg']);
 
-    //             return apiResponse('announcement_assign_updated');
+    //         $request['all_branch'] = in_array('all', $request->company_branch_id) ? 1 : 0;
+    //         $request['all_department'] = in_array('all', $request->department_id) ? 1 : 0;
+    //         $request['all_designation'] = in_array('all', $request->designation_id) ? 1 : 0;
+    //         $request['notification_schedule_time'] = $request->assign_announcement == 0 ? $request->notification_schedule_time : null;
+    //         $data = $request->except('department_id', 'designation_id', 'company_branch_id', 'assign_announcement');
+    //         $dataCheck =  $this->announcementService->announcementAssignStore($data);
+    //         if ($dataCheck) {
+
+    //             $announcement = Announcement::find($request->announcement_id);
+    //             if ($data['all_branch'] != 1)
+    //                 $announcement->branches()->sync($request->company_branch_id);
+    //             if ($data['all_department'] != 1)
+    //                 $announcement->departments()->sync($request->department_id);
+
+    //             if ($data['all_designation'] != 1)
+    //                 $announcement->designations()->sync($request->designation_id);
+
+
+
+    //             return apiResponse('announcement_assigned');
     //         } else
     //             return errorMessage('announcement_not_assigned');
     //     } catch (Throwable $th) {
@@ -541,48 +472,4 @@ class AnnouncementController extends Controller
 
 
 
-    // public function destroyAnnouncementAssign(Request $request)
-    // {
-
-    //     $id = $request->id;
-    //     $announcementAssign = $this->announcementAssignServices->announcementAssignDetails($id);
-
-    //     $data = $this->announcementAssignServices->deleteDetails($id);
-    //     if ($data) {
-    //         $announcement = $this->announcementService->announcementDetails($announcementAssign->announcement_id);
-    //         $announcement->branches()->detach();
-    //         $announcement->departments()->detach();
-    //         $announcement->designations()->detach();
-    //     }
-    //     $announcements = $this->announcementAssignServices->all('paginate');
-
-    //     if ($data) {
-    //         return response()->json([
-    //             'success', 'Deleted Successfully!',
-    //             'data'   =>  view('company.announcement_assign.announcement_assign_list', [
-    //                 'announcement_assigns' => $announcements,
-    //             ])->render()
-    //         ]);
-    //     } else {
-    //         return response()->json([
-    //             'error', 'Something Went Wrong! Pleaase try Again',
-    //             'data'   =>  view('company.announcements.announcement_list', [
-    //                 'announcement_assigns' => $announcements,
-    //             ])->render()
-    //         ]);
-    //     }
-    // }
-
-
-    // public function announcementAssignStatusUpdate(Request $request)
-    // {
-    //     $id = $request->id;
-    //     $data['status'] = $request->status;
-    //     $statusDetails = $this->announcementAssignServices->updateDetails($data, $id);
-    //     if ($statusDetails) {
-    //         echo 1;
-    //     } else {
-    //         echo 0;
-    //     }
-    // }
 }
