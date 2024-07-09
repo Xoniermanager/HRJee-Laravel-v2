@@ -91,61 +91,61 @@ class AnnouncementController extends Controller
     }
 
 
-    public function getAllUsersByBranchId(Request $request)
-    {
+    // public function getAllUsersByBranchId(Request $request)
+    // {
 
-        if ($request->type == 1) {
-            if (!empty(auth()->guard('admin')->user()->branch_id)) {
-                $branchIds[] = auth()->guard('admin')->user()->branch_id;
-            } else if (!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)) {
-                $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
-                $branchIds = $branches->pluck('id')->toArray();
-            }
-        } elseif (empty($request->ids)) {
-            $branchIds =  [];
-        } else {
-            $branchIds =  $request->ids;
-        }
-        // dd($request->type);
-
-
-        $branchUsers = $this->userDetailServices->getAllUsersByBranchId($branchIds);
-        $data['branchUsers'] = $branchUsers;
-        $data['branchDepartments'] = $this->departmentServices->getDepartmentsByAdminAndCompany();
-        return response()->json(['status' => true, 'data' => $data]);
-    }
-    public function getAllUsersByBranchAndDepartmentId(Request $request)
-    {
+    //     if ($request->type == 1) {
+    //         if (!empty(auth()->guard('admin')->user()->branch_id)) {
+    //             $branchIds[] = auth()->guard('admin')->user()->branch_id;
+    //         } else if (!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)) {
+    //             $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+    //             $branchIds = $branches->pluck('id')->toArray();
+    //         }
+    //     } elseif (empty($request->ids)) {
+    //         $branchIds =  [];
+    //     } else {
+    //         $branchIds =  $request->ids;
+    //     }
+    //     // dd($request->type);
 
 
-        if ($request->branch_type == 1) {
-            if (!empty(auth()->guard('admin')->user()->branch_id)) {
-                $branchIds[] = auth()->guard('admin')->user()->branch_id;
-            } else if (!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)) {
-                $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
-                $branchIds = $branches->pluck('id')->toArray();
-            }
-        } elseif (empty($request->branchIds)) {
-            $branchIds =  [];
-        } else {
-            $branchIds =  $request->branchIds;
-        }
+    //     $branchUsers = $this->userDetailServices->getAllUsersByBranchId($branchIds);
+    //     $data['branchUsers'] = $branchUsers;
+    //     $data['branchDepartments'] = $this->departmentServices->getDepartmentsByAdminAndCompany();
+    //     return response()->json(['status' => true, 'data' => $data]);
+    // }
+    // public function getAllUsersByBranchAndDepartmentId(Request $request)
+    // {
 
 
-        if ($request->department_type == 1) {
-            $departments = $this->departmentServices->getDepartmentsByAdminAndCompany();
-            $departmentIds = $departments->pluck('id')->toArray();
-        } elseif (empty($request->departmentIds)) {
-            $departmentIds =  [];
-        } else {
-            $departmentIds =  $request->departmentIds;
-        }
+    //     if ($request->branch_type == 1) {
+    //         if (!empty(auth()->guard('admin')->user()->branch_id)) {
+    //             $branchIds[] = auth()->guard('admin')->user()->branch_id;
+    //         } else if (!empty(auth()->guard('admin')->user()->company_id) && empty(auth()->guard('admin')->user()->branch_id)) {
+    //             $branches = $this->branch_services->allActiveCompanyBranchesByUsingCompanyId(auth()->guard('admin')->user()->company_id);
+    //             $branchIds = $branches->pluck('id')->toArray();
+    //         }
+    //     } elseif (empty($request->branchIds)) {
+    //         $branchIds =  [];
+    //     } else {
+    //         $branchIds =  $request->branchIds;
+    //     }
 
-        $branchUsers = $this->userDetailServices->getAllUsersByBranchAndDepartmentId($branchIds, $departmentIds);
-        $data['branchDepartmentUsers'] = $branchUsers;
-        $data['branchDepartmentDesignations'] = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds);
-        return response()->json(['status' => true, 'data' => $data]);
-    }
+
+    //     if ($request->department_type == 1) {
+    //         $departments = $this->departmentServices->getDepartmentsByAdminAndCompany();
+    //         $departmentIds = $departments->pluck('id')->toArray();
+    //     } elseif (empty($request->departmentIds)) {
+    //         $departmentIds =  [];
+    //     } else {
+    //         $departmentIds =  $request->departmentIds;
+    //     }
+
+    //     $branchUsers = $this->userDetailServices->getAllUsersByBranchAndDepartmentId($branchIds, $departmentIds);
+    //     $data['branchDepartmentUsers'] = $branchUsers;
+    //     $data['branchDepartmentDesignations'] = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds);
+    //     return response()->json(['status' => true, 'data' => $data]);
+    // }
     public function getAllUsersByBranchDepartmentAndDesignationId(Request $request)
     {
 

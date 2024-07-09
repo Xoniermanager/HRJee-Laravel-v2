@@ -94,8 +94,8 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         // Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
         // Route::post('assign/save', [AnnouncementController::class, 'announcementAssignStore'])->name('assign.save');
         Route::get('details/{id?}', [AnnouncementController::class, 'getAnnouncementDetails'])->name('details');
-        Route::get('branch/users', [AnnouncementController::class, 'getAllUsersByBranchId'])->name('branch.users');
-        Route::get('branch/department/users', [AnnouncementController::class, 'getAllUsersByBranchAndDepartmentId'])->name('branch.department.users');
+        // Route::get('branch/users', [AnnouncementController::class, 'getAllUsersByBranchId'])->name('branch.users');
+        // Route::get('branch/department/users', [AnnouncementController::class, 'getAllUsersByBranchAndDepartmentId'])->name('branch.department.users');
         Route::get('branch/department/designation/users', [AnnouncementController::class, 'getAllUsersByBranchDepartmentAndDesignationId'])->name('branch.department.designation.users');
     });
 
