@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\ForgetPasswordController as AdminForgetPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Admin\SuperAdminController;
+use App\Http\Controllers\Company\ForgetPasswordController as CompanyForgetPasswordController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 
 /**---------------Reset And Forget Password Route----------------*/
@@ -14,6 +16,24 @@ Route::controller(ForgetPasswordController::class)->group(function () {
     Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
 });
 /**---------------End Reset And Forget Password Route----------------*/
+
+/**---------------Reset And Forget Password Route FOR Company----------------*/
+Route::prefix('company')->controller(CompanyForgetPasswordController::class)->group(function () {
+    Route::get('/forget/password', 'index')->name('company.forget.password');
+    Route::post('/submit/ForgetPassword/Form', 'submitForgetPasswordForm')->name('company.submitForgetPasswordForm');
+    Route::get('reset-password/{token}', 'showResetPasswordForm')->name('company.reset.password.get');
+    Route::post('reset-password', 'submitResetPasswordForm')->name('company.reset.password.post');
+});
+/**---------------End Reset And Forget Password Route FOR Company----------------*/
+
+/**---------------Reset And Forget Password Route FOR Admin----------------*/
+Route::prefix('admin')->controller(AdminForgetPasswordController::class)->group(function () {
+    Route::get('/forget/password', 'index')->name('admin.forget.password');
+    Route::post('/submit/ForgetPassword/Form', 'submitForgetPasswordForm')->name('admin.submitForgetPasswordForm');
+    Route::get('reset-password/{token}', 'showResetPasswordForm')->name('admin.reset.password.get');
+    Route::post('reset-password', 'submitResetPasswordForm')->name('admin.reset.password.post');
+});
+/**---------------End Reset And Forget Password Route FOR Admin----------------*/
 
 
 /**---------------Employee Auth Route----------------*/
@@ -33,7 +53,7 @@ Route::prefix('company')->controller(AdminController::class)->group(function () 
     Route::post('/login', 'companyLogin')->name('company.login');
     Route::get('/logout', 'companyLogout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');
-    Route::get('/forget/password', 'forgetPassword')->name('signin');
+    // Route::get('/forget/password', 'forgetPassword')->name('signin');
     Route::get('/signup', 'signup')->name('signup');
     Route::get('/resend/otp', 'resendOtp')->name('company.resendOtp');
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');

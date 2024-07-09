@@ -48,7 +48,10 @@ class SuperAdminController extends Controller
                 $email = $request->email;
                 $genrateOtpresponse = $this->sendOtpService->generateOTP($email, 'super_admin');
                 if ($genrateOtpresponse['status'] == true)
+                {
                     return redirect('/admin/verify/otp');
+
+                }
                 else
                     return redirect('/signin')->with('error', $genrateOtpresponse['message']);
             }
@@ -98,7 +101,7 @@ class SuperAdminController extends Controller
             if ($verifyOtpResponse)
                 return redirect('/admin/dashboard');
             else
-                return redirect('/verify/otp')->with('error',  'invalid or expired otp! ');
+                return redirect('/admin/verify/otp')->with('error',  'invalid or expired otp! ');
         } catch (Throwable $th) {
             return Redirect::back()->withErrors($th->getMessage());
         }
