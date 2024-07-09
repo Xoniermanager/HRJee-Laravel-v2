@@ -143,7 +143,7 @@
                                         <select class="bg-white form-select form-select-solid" data-control="select2"
                                             data-close-on-select="false" data-placeholder="Select the Company Branch"
                                             data-allow-clear="true" multiple name="designation_id[]"
-                                            id="designation_id" style="width:100%">
+                                            id="designation_id" style="width:100%" >
 
                                         </select>
                                         <label class="field_error designation_id_error"> </label>
@@ -166,7 +166,7 @@
                                         <label
                                             class="form-check form-check-custom form-check-inline form-check-solid is-invalid">
                                             <input class="form-check-input" name="assign_announcement" type="radio"
-                                                onchange="assignAnnouncement(0)" value="0" checked>
+                                                onchange="assignAnnouncement(0)" value="0" checked id="checkLeter">
                                             <span class="fw-semibold ps-2 fs-6">
                                                 Leter
                                             </span>
@@ -217,8 +217,8 @@
                     <a href="#" class="btn btn-primary mt-5">Save</a>
                 </span> --}}
                 <div class="col-md-4">
-                    <button type="button" class="btn btn-primary px-5 radius-30 save-assign-anouncement-frm"
-                        onclick="addUpdateFormData('message_assign-anouncement_box','post','{{ route('announcement.store') }}','save-assign-anouncement-frm','','{{ route('announcement.index') }}','class','')">
+                    <button type="submit" class="btn btn-primary px-5 radius-30 save-assign-anouncement-frm"
+                       >
                         Save
                         & Close</button>
                     <button type="button" class="btn btn-outline-primary px-5 radius-30"
@@ -244,16 +244,35 @@
     }
 
     $(document).ready(function() {
-        // $('#company_branches_checkbox').on('change', function(event) {
-        //     let branch_id = new Array();
-        //     $("select#company_branch option:selected").each(function() {
-        //         branch_id.push($(this).val());
-        //     });
-        //     var type = $(this).val(); // this gives me null
-        //     getUsesByBranchIdAndType(type, branch_id);
-        // });
+        $("#save-assign-anouncement-frm").validate({
+            rules: {
+                title: {
+                    required: true,
+                },
+                start_date_time: {
+                    required: true,
+                },
+                status: {
+                    required: true,
+                },
+                description: {
+                    required: true,
+                },
+                notification_schedule_time: {
+                    required:'#checkLeter:checked'
+                },
+                 
+            },
+            submitHandler: function(form) {
+                addUpdateFormData('message_assign-anouncement_box', 'post',
+                    '{{ route('announcement.store') }}', 'save-assign-anouncement-frm', '',
+                    '{{ route('announcement.index') }}', 'class', '');
+            }
+        });
+
 
         $(document).on('change', '#company_branch', function() {
+            let department_id = new Array();
             let branch_id = new Array();
             $("select#company_branch option:selected").each(function() {
                 branch_id.push($(this).val());
@@ -264,7 +283,27 @@
             } else {
                 type = 0;
             }
-            getUsesByBranchIdAndType(type, branch_id);
+
+            $("select#department_id option:selected").each(function() {
+                department_id.push($(this).val());
+            });
+            let department_type = 0;
+            let typeCheck = $("#department_checkbox").is(":checked");
+            if (typeCheck == true) {
+                department_type = 1;
+            }
+
+            let designation_type = 0;
+            let typeCheckDesignation = $("#designation_checkbox").is(":checked");
+            if (typeCheckDesignation == true) {
+                designation_type = 1;
+            }
+            let designationIds = new Array();
+            $("select#designation_id option:selected").each(function() {
+                designationIds.push($(this).val());
+            });
+            getUsesByBranchAndDepartmentDesignationIdAndType(type, branch_id, department_type,
+                department_id, '', [], 'department');
         })
 
         $(document).on('change', '#department_id', function() {
@@ -288,9 +327,17 @@
             if (typeCheck == true) {
                 department_type = 1;
             }
-
-            getUsesByBranchAndDepartmentIdAndType(branch_type, branch_id, department_type,
-                department_id);
+            let designation_type = 0;
+            let typeCheckDesignation = $("#designation_checkbox").is(":checked");
+            if (typeCheckDesignation == true) {
+                designation_type = 1;
+            }
+            let designationIds = new Array();
+            $("select#designation_id option:selected").each(function() {
+                designationIds.push($(this).val());
+            });
+            getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
+                department_id, designation_type, designationIds, 'designation');
 
         })
         $(document).on('change', '#designation_id', function() {
@@ -318,8 +365,6 @@
             if (typeCheck == true) {
                 department_type = 1;
             }
-          
-          
 
             let designation_type = 0;
             let typeCheckDesignation = $("#designation_checkbox").is(":checked");
@@ -328,7 +373,7 @@
             }
 
             getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
-                department_id, designation_type, designationIds);
+                department_id, designation_type, designationIds, 'designationUser');
 
         })
 
@@ -357,116 +402,18 @@
         //     }else {
         //         let designation_type=0;
         //     }
-           
+
         //     getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
         //         department_id, designation_type, designationIds);
         // });
 
     })
 
-    function getUsesByBranchIdAndType(type, ids) {
-        let data = {
-            ids: ids,
-            type: type
-        };
-        $.ajax({
-            url: `{{ route('announcement.branch.users') }}`,
-            type: 'get',
-            data: data,
-            success: function(response) {
-                if (response.status == true) {
-                    let html = '';
-                    console.log(response.data);
-                    if (response.data.branchUsers.length > 0) {
-                        $('.employee_listing').html(html);
-                        $.each(response.data.branchUsers, function(key, value) {
-                            html += ` <div class="d-flex align-items-center mb-3">
-                                    <div class="symbol symbol-45px me-5">
-                                        <img src="assets/media/user.jpg" alt="">
-                                    </div>
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
-                                            ${value.user.name }</a>
-                                        <span
-                                            class="text-muted fw-semibold text-muted d-block fs-7">${value.user.email }</span>
-                                    </div>
-                                </div>`;
 
-                        });
-                    } else {
-                        html += `<p>Users not found</p>`;
-                    }
 
-                    $('.employee_listing').html(html);
-                    let departments = '';
-                    $.each(response.data.branchDepartments, function(key, value) {
-                        departments += `<option value="${value.id}">
-                         ${value.name}  </option>`;
-                    });
-                    $("#department_id").html(departments);
-
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-
-    function getUsesByBranchAndDepartmentIdAndType(branch_type, branchIds, department_type, departmentIds) {
-        let data = {
-            branch_type: branch_type,
-            branchIds: branchIds,
-            department_type: department_type,
-            departmentIds: departmentIds
-        };
-  
-        $.ajax({
-            url: `{{ route('announcement.branch.department.users') }}`,
-            type: 'get',
-            data: data,
-            success: function(response) {
-                if (response.status == true) {
-                    let html = '';
-                    console.log(response.data);
-                    if (response.data.branchDepartmentUsers.length > 0) {
-                        $('.employee_listing').html(html);
-                        $.each(response.data.branchDepartmentUsers, function(key, value) {
-                            html += ` <div class="d-flex align-items-center mb-3">
-                                    <div class="symbol symbol-45px me-5">
-                                        <img src="assets/media/user.jpg" alt="">
-                                    </div>
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
-                                            ${value.user.name }</a>
-                                        <span
-                                            class="text-muted fw-semibold text-muted d-block fs-7">${value.user.email }</span>
-                                    </div>
-                                </div>`;
-
-                        });
-                    } else {
-                        html += `<p>Users not found</p>`;
-                    }
-
-                    $('.employee_listing').html(html);
-                    let designations = '';
-                    $.each(response.data.branchDepartmentDesignations, function(key, value) {
-                        designations += `<option value="${value.id}">  ${value.name}  </option>`;
-                    });
-
-                    $("#designation_id").html(designations);
-
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-
-    function getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branchIds, department_type, departmentIds,
-        designation_type, designationids) {
+    function getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branchIds, department_type = '',
+        departmentIds = [],
+        designation_type = '', designationids = [], filter_type) {
         let data = {
             branch_type: branch_type,
             branchIds: branchIds,
@@ -483,13 +430,16 @@
                 if (response.status == true) {
                     let html = '';
                     $('.employee_listing').html(html);
-                    if (response.data.length > 0) {
-                        
-                        $.each(response.data, function(key, value) {
+                    if (response.data.users.length > 0) {
+                        $.each(response.data.users, function(key, value) {
                             html += ` <div class="d-flex align-items-center mb-3">
-                                    <div class="symbol symbol-45px me-5">
-                                        <img src="assets/media/user.jpg" alt="">
-                                    </div>
+                                    <div class="symbol symbol-45px me-5">`
+                            if (value.user.profile_image)
+                                `<img src="asset('assets/media/user.jpg')" alt="">`
+                            else
+                                `<img src="asset('assets/media/user.jpg}}')" alt="">`
+
+                            `</div>
                                     <div class="d-flex justify-content-start flex-column">
                                         <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
                                             ${value.user.name }</a>
@@ -503,10 +453,20 @@
                         html += `<p>Users not found</p>`;
                     }
                     $('.employee_listing').html(html);
+                    if (filter_type == 'designation') {
+                        let filterData = '';
+                        $.each(response.data.data, function(key, value) {
+                            filterData += `<option value="${value.id}">  ${value.name}  </option>`;
+                        });
+
+                        $(`#${filter_type}_id`).html(filterData);
+                    }
+
                 }
             },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
+            error: function(jqXHR, error) {
+                let data = JSON.parse(jqXHR.responseText);
+                Swal.fire("Error deleting!", data.errors, "error");
             }
         });
     }

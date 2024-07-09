@@ -34,7 +34,7 @@
                                     @forelse($branches as $row)
                                         <span class="btn btn-primary btn-sm me-1">{{ $row->name }}</span>
                                     @empty
-                                        <span class="btn btn-primary btn-sm me-1"></span>
+                                        --
                                     @endforelse
                                 </td>
                             </tr>
@@ -46,7 +46,7 @@
                                     @forelse($departments as $row)
                                         <button class="btn btn-sm btn-primary">{{ $row->name }}</button>
                                     @empty
-                                        <button class="btn btn-sm btn-primary"></button>
+                                       --
                                     @endforelse
                                 </td>
                             </tr>
@@ -56,7 +56,7 @@
                                     @forelse($designations as $row)
                                         <button class="btn btn-sm btn-primary">{{ $row->name }}</button>
                                     @empty
-                                        <button class="btn btn-sm btn-primary"></button>
+                                      --
                                     @endforelse
 
                                 </td>

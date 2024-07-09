@@ -7,7 +7,7 @@
     <div class="card-header p-4">
         <!--begin::Card title-->
         <div class="card-title m-0">
-            <h3 class="fw-bold m-0"> Add Announcement</h3>
+            <h3 class="fw-bold m-0"> Edit Announcement</h3>
         </div>
         <!--end::Card title-->
     </div>
@@ -58,7 +58,9 @@
                         <label class="col-form-label">Image</label>
                         <input type="file" class="form-control" name="image">
                         <label class="field_error image_error"> </label>
-                        <img src="{{ $announcement->announcement_image }}" height="100">
+                        @if ($announcement->image)
+                            <img src="{{ $announcement->announcement_image }}" height="100">
+                        @endif
                     </div>
                     <div class="col-sm-6">
                         <label class="col-form-label required">Description</label>
@@ -193,7 +195,6 @@
                                                 <option value=""> </option>
                                             @endforelse --}}
 
-
                                             @if ($announcement->all_designation == 0)
                                                 @foreach ($designations as $departmentsDetails)
                                                     <option value="{{ $departmentsDetails->id }}"
@@ -242,7 +243,7 @@
                                     class="form-group notification_schedule_time  {{ empty($announcement->notification_schedule_time) ? 'd-none' : 'hide' }}">
                                     <label class="required">Schedule Date</label>
                                     <input class="form-control datetimepicker" name="notification_schedule_time"
-                                        type="text" value="{{ $announcement->notification_schedule_time }}">
+                                        type="text" value="{{ $announcement->notification_schedule_time }}" id="checkLeter">
                                 </div>
                                 <label class="field_error notification_schedule_time_error"> </label>
 
@@ -256,7 +257,7 @@
                                     @forelse ($users as $user)
                                         <div class="d-flex align-items-center mb-3">
                                             <div class="symbol symbol-45px me-5">
-                                                <img src="assets/media/user.jpg" alt="">
+                                                <img src="{{$user->user->profile_image}}" alt="">
                                             </div>
                                             <div class="d-flex justify-content-start flex-column">
                                                 <a href="#"
@@ -301,26 +302,20 @@
 </div>
 <script>
     function assignAnnouncement(value) {
-        if (value == 1)
+        if (value == 1) {
+
             $('.notification_schedule_time').hide();
-        else
+        } else {
+
+
+            $('.notification_schedule_time').removeClass('d-none');
             $('.notification_schedule_time').show();
+
+        }
     }
-
-
-
     $(document).ready(function() {
-
-        // for company check box filter
-        $('#company_branches_checkbox').on('change', function(event) {
-            let branch_id = new Array();
-            $("select#company_branch option:selected").each(function() {
-                branch_id.push($(this).val());
-            });
-            var type = $(this).val(); // this gives me null
-            getUsesByBranchIdAndType(type, branch_id);
-        });
         $(document).on('change', '#company_branch', function() {
+            let department_id = new Array();
             let branch_id = new Array();
             $("select#company_branch option:selected").each(function() {
                 branch_id.push($(this).val());
@@ -331,10 +326,28 @@
             } else {
                 type = 0;
             }
-            getUsesByBranchIdAndType(type, branch_id);
-        })
 
-// for department checkbox filter
+            $("select#department_id option:selected").each(function() {
+                department_id.push($(this).val());
+            });
+            let department_type = 0;
+            let typeCheck = $("#department_checkbox").is(":checked");
+            if (typeCheck == true) {
+                department_type = 1;
+            }
+
+            let designation_type = 0;
+            let typeCheckDesignation = $("#designation_checkbox").is(":checked");
+            if (typeCheckDesignation == true) {
+                designation_type = 1;
+            }
+            let designationIds = new Array();
+            $("select#designation_id option:selected").each(function() {
+                designationIds.push($(this).val());
+            });
+            getUsesByBranchAndDepartmentDesignationIdAndType(type, branch_id, department_type,
+                department_id, '', [], 'department');
+        })
 
         $(document).on('change', '#department_id', function() {
             let branch_id = new Array();
@@ -357,14 +370,19 @@
             if (typeCheck == true) {
                 department_type = 1;
             }
-
-            getUsesByBranchAndDepartmentIdAndType(branch_type, branch_id, department_type,
-                department_id);
+            let designation_type = 0;
+            let typeCheckDesignation = $("#designation_checkbox").is(":checked");
+            if (typeCheckDesignation == true) {
+                designation_type = 1;
+            }
+            let designationIds = new Array();
+            $("select#designation_id option:selected").each(function() {
+                designationIds.push($(this).val());
+            });
+            getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
+                department_id, designation_type, designationIds, 'designation');
 
         })
-
-
-// for designation checkbox filter
         $(document).on('change', '#designation_id', function() {
             let branch_id = new Array();
             let department_id = new Array();
@@ -390,152 +408,25 @@
             if (typeCheck == true) {
                 department_type = 1;
             }
+
+            let designation_type = 0;
             let typeCheckDesignation = $("#designation_checkbox").is(":checked");
             if (typeCheckDesignation == true) {
-                let designation_type = 1;
-            }else {
-                let designation_type=0;
+                designation_type = 1;
             }
 
             getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
-                department_id, designation_type, designationIds);
+                department_id, designation_type, designationIds, 'designationUser');
 
         })
-        $('#designation_checkbox').on('change', function(event) {
-            let branch_id = new Array();
-            let department_id = new Array();
-            let designationIds = new Array();
-            $("select#company_branch option:selected").each(function() {
-                branch_id.push($(this).val());
-            });
-
-            $("select#department_id option:selected").each(function() {
-                department_id.push($(this).val());
-            });
-            $("select#designation_id option:selected").each(function() {
-                designationIds.push($(this).val());
-            });
-            let branch_type = 0;
-            let type = $("#company_branches_checkbox").is(":checked");
-            if (type == true) {
-                branch_type = 1;
-            }
-            let typeCheckDesignation = $("#designation_checkbox").is(":checked");
-            if (typeCheckDesignation == true) {
-                let designation_type = 1;
-            }else {
-                let designation_type=0;
-            }
-
-
-
-            getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
-                department_id, designation_type, designationIds);
-        });
     })
 
-    function getUsesByBranchIdAndType(type, ids) {
-        let data = {
-            ids: ids,
-            type: type
-        };
-        $.ajax({
-            url: `{{ route('announcement.branch.users') }}`,
-            type: 'get',
-            data: data,
-            success: function(response) {
-                if (response.status == true) {
-                    let html = '';
-                    console.log(response.data);
-                    if (response.data.branchUsers.length > 0) {
-                        $('.employee_listing').html(html);
-                        $.each(response.data.branchUsers, function(key, value) {
-                            html += ` <div class="d-flex align-items-center mb-3">
-                                    <div class="symbol symbol-45px me-5">
-                                        <img src="assets/media/user.jpg" alt="">
-                                    </div>
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
-                                            ${value.user.name }</a>
-                                        <span
-                                            class="text-muted fw-semibold text-muted d-block fs-7">${value.user.email }</span>
-                                    </div>
-                                </div>`;
 
-                        });
-                    } else {
-                        html += `<p>Users not found</p>`;
-                    }
 
-                    $('.employee_listing').html(html);
-                    let departments = '';
-                    $.each(response.data.branchDepartments, function(key, value) {
-                        departments += `<option value="${value.id}">
-                         ${value.name}  </option>`;
-                    });
-                    $("#department_id").html(departments);
 
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-
-    function getUsesByBranchAndDepartmentIdAndType(branch_type, branchIds, department_type, departmentIds) {
-        let data = {
-            branch_type: branch_type,
-            branchIds: branchIds,
-            department_type: department_type,
-            departmentIds: departmentIds
-        };
-        $.ajax({
-            url: `{{ route('announcement.branch.department.users') }}`,
-            type: 'get',
-            data: data,
-            success: function(response) {
-                if (response.status == true) {
-                    let html = '';
-                    console.log(response.data);
-                    if (response.data.branchDepartmentUsers.length > 0) {
-                        $('.employee_listing').html(html);
-                        $.each(response.data.branchDepartmentUsers, function(key, value) {
-                            html += ` <div class="d-flex align-items-center mb-3">
-                                    <div class="symbol symbol-45px me-5">
-                                        <img src="assets/media/user.jpg" alt="">
-                                    </div>
-                                    <div class="d-flex justify-content-start flex-column">
-                                        <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
-                                            ${value.user.name }</a>
-                                        <span
-                                            class="text-muted fw-semibold text-muted d-block fs-7">${value.user.email }</span>
-                                    </div>
-                                </div>`;
-
-                        });
-                    } else {
-                        html += `<p>Users not found</p>`;
-                    }
-
-                    $('.employee_listing').html(html);
-                    let designations = '';
-                    $.each(response.data.branchDepartmentDesignations, function(key, value) {
-                        designations += `<option value="${value.id}">  ${value.name}  </option>`;
-                    });
-
-                    $("#designation_id").html(designations);
-
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-
-    function getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branchIds, department_type, departmentIds,
-        designation_type, designationids) {
+    function getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branchIds, department_type = '',
+        departmentIds = [],
+        designation_type = '', designationids = [], filter_type) {
         let data = {
             branch_type: branch_type,
             branchIds: branchIds,
@@ -551,9 +442,9 @@
             success: function(response) {
                 if (response.status == true) {
                     let html = '';
-                    if (response.data.length > 0) {
-                        $('.employee_listing').html(html);
-                        $.each(response.data, function(key, value) {
+                    $('.employee_listing').html(html);
+                    if (response.data.users.length > 0) {
+                        $.each(response.data.users, function(key, value) {
                             html += ` <div class="d-flex align-items-center mb-3">
                                     <div class="symbol symbol-45px me-5">
                                         <img src="assets/media/user.jpg" alt="">
@@ -571,214 +462,25 @@
                         html += `<p>Users not found</p>`;
                     }
                     $('.employee_listing').html(html);
+                    if (filter_type == 'designation') {
+                        let filterData = '';
+                        $.each(response.data.data, function(key, value) {
+                            filterData += `<option value="${value.id}">  ${value.name}  </option>`;
+                        });
+
+                        $(`#${filter_type}_id`).html(filterData);
+                    }
+
                 }
             },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
+            error: function(jqXHR, error) {
+                let data = JSON.parse(jqXHR.responseText);
+                Swal.fire("Error deleting!", data.errors, "error");
             }
         });
     }
-
-
-    // $(document).ready(function() {
-
-    //     $(document).on('change', '#company_branch', function() {
-    //         let ids = $(this).val();
-    //         $.ajax({
-    //             url: `{{ route('announcement.branch.users') }}`,
-    //             type: 'get',
-    //             data: {
-    //                 ids: ids
-    //             },
-    //             contentType: 'json',
-    //             success: function(response) {
-    //                 if (response.status == true) {
-    //                     let html = '';
-    //                     if (response.data.branchUsers.length > 0) {
-    //                         $('.employee_listing').html(html);
-    //                         $.each(response.data.branchUsers, function(key, value) {
-    //                             html += ` <div class="d-flex align-items-center mb-3">
-    //                                 <div class="symbol symbol-45px me-5">
-    //                                     <img src="assets/media/user.jpg" alt="">
-    //                                 </div>
-    //                                 <div class="d-flex justify-content-start flex-column">
-    //                                     <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
-    //                                         ${value.user.name }</a>
-    //                                     <span
-    //                                         class="text-muted fw-semibold text-muted d-block fs-7">${value.user.email }</span>
-    //                                 </div>
-    //                             </div>`;
-
-    //                         });
-    //                     } else {
-    //                         html += `<p>Users not found</p>`;
-    //                     }
-
-    //                     $('.employee_listing').html(html);
-    //                     let departments = '<option value=""></option>';
-    //                     $.each(response.data.branchDepartments, function(key, value) {
-    //                         departments += `<option value="${value.id}">
-    //                      ${value.name}  </option>`;
-    //                     });
-
-
-    //                     $("#department_id").html(departments);
-
-    //                 }
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error(xhr.responseText);
-    //             }
-    //         });
-    //     })
-    //     $(document).on('change', '#department_id', function() {
-    //         let department_id = $(this).val();
-    //         // let branch_id = $('select#company_branch_id option:selected').val();
-    //         let branch_id = new Array();
-    //         $("select#company_branch option:selected").each(function() {
-    //             branch_id.push($(this).val());
-    //         });
-    //         $.ajax({
-    //             url: `{{ route('announcement.branch.department.users') }}`,
-    //             type: 'get',
-    //             data: {
-    //                 branchIds: branch_id,
-    //                 departmentIds: department_id
-    //             },
-    //             contentType: 'json',
-    //             success: function(response) {
-    //                 if (response.status == true) {
-    //                     $("#designation_id").val(null);
-
-    //                     let html = '';
-    //                     if (response.data.branchDepartmentUsers.length > 0) {
-    //                         $.each(response.data.branchDepartmentUsers, function(key,
-    //                             value) {
-    //                             html += ` <div class="d-flex align-items-center mb-3">
-    //                                 <div class="symbol symbol-45px me-5">
-    //                                     <img src="assets/media/user.jpg" alt="">
-    //                                 </div>
-    //                                 <div class="d-flex justify-content-start flex-column">
-    //                                     <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
-    //                                         ${value.user.name }</a>
-    //                                     <span
-    //                                         class="text-muted fw-semibold text-muted d-block fs-7">${value.user.email }</span>
-    //                                 </div>
-    //                             </div>`;
-
-    //                         });
-    //                     } else {
-    //                         html += `<p>Users Not Found</p>`;
-    //                     }
-
-    //                     $('.employee_listing').html(html);
-    //                     let designations = '<option value=""><option>';
-    //                     if (response.data.branchDepartmentDesignations.length > 0) {
-    //                         $.each(response.data.branchDepartmentDesignations, function(key,
-    //                             value) {
-    //                             designations += `<option value="${value.id}">
-    //                                ${value.name}  </option>`;
-    //                         });
-    //                     } else {
-    //                         designations += '<option value=""><option>';
-    //                     }
-    //                     $("#designation_id").html(designations);
-
-
-    //                 }
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 // console.error(xhr.responseText);
-    //             }
-    //         });
-    //     })
-
-
-    //     $(document).on('change', '#designation_id', function() {
-    //         let designation_id = $(this).val();
-    //         // let designation_id = $('select#designation_id option:selected').val();
-    //         let department_id = new Array();
-    //         let branch_id = new Array();
-    //         //         let branchsd = $('select#company_branch_id option:selected').val();
-    //         // console.log(branchsd);
-    //         $("select#company_branch option:selected").each(function() {
-    //             branch_id.push($(this).val());
-    //         });
-    //         $("select#department_id option:selected").each(function() {
-    //             department_id.push($(this).val());
-    //         });
-
-    //         $.ajax({
-    //             url: `{{ route('announcement.branch.department.designation.users') }}`,
-    //             type: 'get',
-    //             data: {
-    //                 branchIds: branch_id,
-    //                 departmentIds: department_id,
-    //                 designationIds: designation_id,
-    //             },
-    //             success: function(response) {
-    //                 if (response.status == true) {
-    //                     let html = '';
-    //                     console.log(response.data, 'checking');
-    //                     if (response.data.length > 0) {
-    //                         $.each(response.data, function(key, value) {
-    //                             html += ` <div class="d-flex align-items-center mb-3">
-    //                                 <div class="symbol symbol-45px me-5">
-    //                                     <img src="assets/media/user.jpg" alt="">
-    //                                 </div>
-    //                                 <div class="d-flex justify-content-start flex-column">
-    //                                     <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
-    //                                         ${value.user.name }</a>
-    //                                     <span
-    //                                         class="text-muted fw-semibold text-muted d-block fs-7">${value.user.email }</span>
-    //                                 </div>
-    //                             </div>`;
-
-    //                         });
-    //                     } else {
-    //                         html += `<p>Users Not Found</p>`;
-    //                     }
-    //                     $('.employee_listing').html(html);
-
-    //                 }
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 // console.error(xhr.responseText);
-    //             }
-    //         });
-    //     })
-    // })
-
-
-    // $(".datetimepicker").each(function() {
-    //     $(this).datetimepicker();
-    // });
-
-    $(document).ready(function() {
-        $("#create_announcement").validate({
-            rules: {
-                company_branch_id: {
-                    required: true,
-                },
-            },
-            messages: {
-                company_branch_id: "Please enter old password",
-            },
-            submitHandler: function(form) {
-                let data = new FormData($('form#create_announcement')[0]);
-                $.ajax({
-                    url: "{{ route('announcement.store') }}",
-                    type: 'post',
-                    data: data,
-                    success: function(response) {
-                        location.reload();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            }
-        });
+    $(".datetimepicker").each(function() {
+        $(this).datetimepicker();
     });
 </script>
 @endsection
