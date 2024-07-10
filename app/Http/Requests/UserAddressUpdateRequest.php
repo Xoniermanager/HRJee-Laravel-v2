@@ -22,6 +22,7 @@ class UserAddressUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'both_same'                   =>  'required|in:0,1',
             'address'                   =>  'required|array',
             'address.*'                 =>  'required|array',
             'address.*.addressId'       => ['sometimes'],

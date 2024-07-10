@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AnnouncementController;
+use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HolidayApiController;
 use App\Http\Controllers\Api\BankController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\LeaveAvailableApiController;
 use App\Http\Controllers\Api\LeaveManagementController;
 use App\Http\Controllers\Api\LeaveManagementApiController;
+use App\Http\Controllers\Api\NewsController;
+use App\Http\Controllers\Api\PolicyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,22 +26,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:30,1');
 Route::post('sendOtp', [AuthController::class, 'sendOtp']);
 
 Route::post('password/forgot', [ForgotPasswordController::class, 'forgotPassword']);
 Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']);
-Route::post('verify/otp', [AuthController::class, 'verifyOtp']);
+Route::post('verify/otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:30,1');
 
 Route::group(['middleware' =>  'auth:sanctum'], function () {
-    // Route::group(['middleware' => 'Check2FA'], function () {
+    Route::post('logout', [AuthController::class, 'logout']);
     Route::get('profile', [AuthController::class, 'profile']);
     Route::get('user/details', [AuthController::class, 'userAllDetails']);
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
     Route::post('change/password', [AuthController::class, 'changePassword']);
-    Route::post('logout', [AuthController::class, 'logout']); 
     Route::put('update/address', [AddressController::class, 'updateAddress']);
     Route::get('announcement', [AnnouncementController::class, 'announcement']);
+    Route::post('punch/in', [AttendanceController::class, 'punchIn']);
+    Route::get('news', [NewsController::class, 'assignedNews']);
+    Route::get('announcement', [AnnouncementController::class, 'getAllAssignedAnnouncement']);
+    Route::get('policy', [PolicyController::class, 'getAllAssignedPolicy']);
+    Route::get('applied/leave/history', [LeaveManagementApiController::class, 'appliedLeaveHistory']);
 
     /**For Leave Management API */
     Route::get('/leave/type', [LeaveManagementApiController::class, 'leaveType']);

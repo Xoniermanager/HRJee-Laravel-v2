@@ -143,7 +143,7 @@
                                         <select class="bg-white form-select form-select-solid" data-control="select2"
                                             data-close-on-select="false" data-placeholder="Select the Company Branch"
                                             data-allow-clear="true" multiple name="designation_id[]"
-                                            id="designation_id" style="width:100%" >
+                                            id="designation_id" style="width:100%">
 
                                         </select>
                                         <label class="field_error designation_id_error"> </label>
@@ -166,7 +166,8 @@
                                         <label
                                             class="form-check form-check-custom form-check-inline form-check-solid is-invalid">
                                             <input class="form-check-input" name="assign_announcement" type="radio"
-                                                onchange="assignAnnouncement(0)" value="0" checked id="checkLeter">
+                                                onchange="assignAnnouncement(0)" value="0" checked
+                                                id="checkLeter">
                                             <span class="fw-semibold ps-2 fs-6">
                                                 Leter
                                             </span>
@@ -217,8 +218,7 @@
                     <a href="#" class="btn btn-primary mt-5">Save</a>
                 </span> --}}
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary px-5 radius-30 save-assign-anouncement-frm"
-                       >
+                    <button type="submit" class="btn btn-primary px-5 radius-30 save-assign-anouncement-frm">
                         Save
                         & Close</button>
                     <button type="button" class="btn btn-outline-primary px-5 radius-30"
@@ -259,9 +259,9 @@
                     required: true,
                 },
                 notification_schedule_time: {
-                    required:'#checkLeter:checked'
+                    required: '#checkLeter:checked'
                 },
-                 
+
             },
             submitHandler: function(form) {
                 addUpdateFormData('message_assign-anouncement_box', 'post',
@@ -269,7 +269,6 @@
                     '{{ route('announcement.index') }}', 'class', '');
             }
         });
-
 
         $(document).on('change', '#company_branch', function() {
             let department_id = new Array();
@@ -377,35 +376,7 @@
 
         })
 
-        // $('#designation_checkbox').on('change', function(event) {
-        //     let branch_id = new Array();
-        //     let department_id = new Array();
-        //     let designationIds = new Array();
-        //     $("select#company_branch option:selected").each(function() {
-        //         branch_id.push($(this).val());
-        //     });
-
-        //     $("select#department_id option:selected").each(function() {
-        //         department_id.push($(this).val());
-        //     });
-        //     $("select#designation_id option:selected").each(function() {
-        //         designationIds.push($(this).val());
-        //     });
-        //     let branch_type = 0;
-        //     let type = $("#company_branches_checkbox").is(":checked");
-        //     if (type == true) {
-        //         branch_type = 1;
-        //     }
-        //     let typeCheckDesignation = $("#designation_checkbox").is(":checked");
-        //     if (typeCheckDesignation == true) {
-        //         let designation_type = 1;
-        //     }else {
-        //         let designation_type=0;
-        //     }
-
-        //     getUsesByBranchAndDepartmentDesignationIdAndType(branch_type, branch_id, department_type,
-        //         department_id, designation_type, designationIds);
-        // });
+       
 
     })
 
@@ -427,19 +398,17 @@
             type: 'get',
             data: data,
             success: function(response) {
+
                 if (response.status == true) {
+                    console.log(response.data.users);
                     let html = '';
                     $('.employee_listing').html(html);
                     if (response.data.users.length > 0) {
                         $.each(response.data.users, function(key, value) {
                             html += ` <div class="d-flex align-items-center mb-3">
-                                    <div class="symbol symbol-45px me-5">`
-                            if (value.user.profile_image)
-                                `<img src="asset('assets/media/user.jpg')" alt="">`
-                            else
-                                `<img src="asset('assets/media/user.jpg}}')" alt="">`
-
-                            `</div>
+                                    <div class="symbol symbol-45px me-5">
+                                <img src="asset('assets/media/user.jpg}}')" alt="">
+                                 </div>
                                     <div class="d-flex justify-content-start flex-column">
                                         <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
                                             ${value.user.name }</a>
@@ -470,7 +439,6 @@
             }
         });
     }
-
     $(".datetimepicker").each(function() {
         $(this).datetimepicker();
     });

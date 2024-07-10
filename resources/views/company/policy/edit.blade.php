@@ -4,6 +4,8 @@
     Edit Policy
 @endsection
 @php
+ 
+
     if ($editPolicyDetails->all_company_branch == 0) {
         $selectedDepartmentId = $editPolicyDetails->departments->pluck('id');
     }
@@ -62,7 +64,7 @@
                                                     data-placeholder="Select the Company Branch" data-allow-clear="true"
                                                     multiple="multiple" name="company_branch_id[]" id="company_branch"
                                                     {{ $editPolicyDetails->all_company_branch == 1 ? 'disabled' : '' }}>
-                                                    @if ($editPolicyDetails->all_company_branch == 0)
+                                                    @if ($editPolicyDetails->all_company_branch == 1)
                                                         @foreach ($allCompanyBranchesDetails as $compayBranches)
                                                             <option value="{{ $compayBranches->id }}"
                                                                 {{ $selectedCompanyBranchId->contains($compayBranches->id) ? 'selected' : null }}>

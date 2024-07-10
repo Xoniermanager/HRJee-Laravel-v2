@@ -146,9 +146,10 @@ class AnnouncementController extends Controller
     //     $data['branchDepartmentDesignations'] = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds);
     //     return response()->json(['status' => true, 'data' => $data]);
     // }
+
+
     public function getAllUsersByBranchDepartmentAndDesignationId(Request $request)
     {
-
         if ($request->branch_type == 1) {
             if (!empty(auth()->guard('admin')->user()->branch_id)) {
                 $branchIds[] = auth()->guard('admin')->user()->branch_id;
@@ -186,6 +187,7 @@ class AnnouncementController extends Controller
         }
         if (!empty($branchIds) && empty($departmentIds) && empty($designationIds)) {
             $users =  $this->userDetailServices->getAllUsersByBranchId($branchIds);
+       
         } elseif (!empty($branchIds) && !empty($departmentIds) && empty($designationIds)) {
             $users = $this->userDetailServices->getAllUsersByBranchAndDepartmentId($branchIds, $departmentIds);
         } elseif (!empty($branchIds) && !empty($departmentIds) && !empty($designationIds)) {
@@ -355,12 +357,13 @@ class AnnouncementController extends Controller
     {
         $data = $request->except(['_token',  'id']);
         $data['all_branch'] = !empty($request->all_branch) && $request->all_branch == 1 ? 1 : 0;
-        $data['all_department'] = !empty($request->all_department) && $request->all_department == 1  ? 1 : 0;
+        $data['all_department'] = !empty($request->all_department) && $request->all_department == 1 ? 1 : 0;
         $data['all_designation'] = !empty($request->all_designation) && $request->all_designation == 1  ? 1 : 0;
         $data['notification_schedule_time'] = $request->assign_announcement == 0 ? $request->notification_schedule_time : null;
         if ($request->has('image')) {
             $data['image'] = uploadFile('image', 'image', 'originalAnnouncementImagePath');
         }
+
         $loginUser = auth()->guard('admin')->user();
         if (!empty($loginUser->company_id) && !empty($loginUser->branch_id))
             $data['company_branch_id'] = $loginUser->branch_id;
@@ -426,6 +429,9 @@ class AnnouncementController extends Controller
             ]);
         }
     }
+
+
+
     public function statusUpdate(Request $request)
     {
         $id = $request->id;

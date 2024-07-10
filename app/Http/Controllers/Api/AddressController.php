@@ -50,39 +50,67 @@ class AddressController extends Controller
     {
         $data = $request->validated();
         try {
-            // if(count($data))
-            // {
 
-            // }
+            $addresOne = $data['address'][0];
+            $addresTwo = $data['address'][1];
+            if ($request->both_same == 1) {
+                $this->userAddressServices->deleteUserAddress(Auth::guard('employee_api')->user()->id);
+                $addressCreate  = $addresOne;
+                $addressCreate['user_id'] = Auth::guard('employee_api')->user()->id;
+                unset($addressCreate['addressId']);
+                $addressCreate['address_type'] = 'both_same';
 
-            if (count($data['address']) == 2) {
-                foreach ($data['address'] as $address) {
-                    if (isset($address['addressId']) && !empty($address['addressId'])) {
-                        $addressId = $address['addressId'];
-                        unset($address['addressId']);
-                        $address['address_type'] = 'permanent';
-                        $addressUpdate =   $this->userAddressServices->update(Auth::guard('employee_api')->user()->id, $addressId, $address);
-                    } else {
-                        $address['address_type'] = 'local';
-                        $address['user_id'] = Auth::guard('employee_api')->user()->id;
-                        $addressUpdate =  $this->userAddressServices->createAddress($address);
-                    }
+                // check address type both type should not same 
+                if ($addresTwo['address_type'] == $addresOne['address_type']) {
+                    return errorMessage('null', 'both address can not be same time ');
                 }
-            } else if (count($data['address']) == 1) {
-                foreach ($data['address'] as $address) {
-                    if (isset($address['addressId']) && !empty($address['addressId'])) {
-                        $this->userAddressServices->deleteUserAddress(Auth::guard('employee_api')->user()->id);
-                        $addressId = $address['addressId'];
-                        $address['address_type'] = 'both_same';
-                        $address['user_id'] = Auth::guard('employee_api')->user()->id;
-                        unset($address['addressId']);
-                        $addressUpdate =   $this->userAddressServices->createAddress($address);
-                    }
+
+                if ($addressCreate['address'] != $addressCreate['address'])
+                    return errorMessage('null', 'address are not same');
+                if ($addressCreate['city'] != $addressCreate['city'])
+                    return errorMessage('null', 'city are not same');
+                if ($addressCreate['pin_code'] != $addressCreate['pin_code'])
+                    return errorMessage('null', 'pin code are not same');
+                if ($addressCreate['country_id'] != $addressCreate['country_id'])
+                    return errorMessage('null', 'country are not same');
+                if ($addressCreate['state_id'] != $addressCreate['state_id'])
+                    return errorMessage('null', 'state are not same');
+
+
+
+                $addressUpdate =   $this->userAddressServices->createAddress($addressCreate);
+            } else {
+                // if ($addresOne['address_type'] == 'permanent') {
+                if (isset($addresOne['addressId']) && !empty($addresOne['addressId'])) {
+                    $addressId = $addresOne['addressId'];
+                    unset($addresOne['addressId']);
+                    $addresOne['address_type'] = 'permanent';
+                    $this->userAddressServices->update(Auth::guard('employee_api')->user()->id, $addressId, $addresOne);
                 }
+
+                // check address type both type should not same 
+                if ($addresTwo['address_type'] == $addresOne['address_type']) {
+                    return errorMessage('null', 'both address can not be same time ');
+                }
+
+                if (isset($addresTwo['addressId']) && !empty($addresTwo['addressId'])) {
+                    $addressId = $addresTwo['addressId'];
+                    unset($addresTwo['addressId']);
+                    $addressUpdate =   $this->userAddressServices->update(Auth::guard('employee_api')->user()->id, $addressId, $addresTwo);
+                } else {
+                    $checkAddress = $this->userAddressServices->getDetailById(Auth::guard('employee_api')->user()->id);
+                    if (count($checkAddress) == 2) {
+                        return errorMessage('null', 'not allowed to add more then two address,instead add you can update');
+                    }
+                    
+                    $addresTwo['user_id'] = Auth::guard('employee_api')->user()->id;
+                    $addressUpdate =  $this->userAddressServices->createAddress($addresTwo);
+                }
+                // }
             }
 
-            // $data = $request->except(['addressId', 'address_type']);
-            // $address = $this->userAddressServices->update(Auth::guard('employee_api')->user()->id, $request->addressId, $request->address_type, $data);
+
+
             if ($addressUpdate)
                 return apiResponse('address_updated');
             else

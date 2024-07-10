@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -23,15 +24,28 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      */
-    public function register(): void
+    // public function register(): void
+    // {
+    //     // if ($request->is('api/*')) {
+    //     //     if ($e instanceof ModelNotFoundException) {
+    //     //         return errorMessage('','Data not found');
+    //     //     } elseif ($e instanceof NotFoundHttpException) {
+    //     //         return errorMessage('','route not found');
+
+    //     //     }
+    //     // }
+    // }
+
+    public function render($request, Throwable $exception)
     {
-        // if ($request->is('api/*')) {
-        //     if ($e instanceof ModelNotFoundException) {
-        //         return errorMessage('','Data not found');
-        //     } elseif ($e instanceof NotFoundHttpException) {
-        //         return errorMessage('','route not found');
-              
-        //     }
-        // }
+        if ($request->is('api/*')) {
+            if ($exception instanceof ThrottleRequestsException) {
+                return response()->json([
+                    'error' => 'Too Many Attempts. Please try again later.',
+                ], 429);
+            }
+        }
+
+        return parent::render($request, $exception);
     }
 }

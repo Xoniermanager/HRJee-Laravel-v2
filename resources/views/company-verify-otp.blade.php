@@ -372,8 +372,8 @@
                                     </button>
                                 </div>
                                 <!--end::Submit button-->
-                                <a href="{{ route('company.resendOtp') }}" class="text-primary">
-                                    Resend Code</a>
+                                {{-- <a href="{{ route('company.resendOtp') }}" class="text-primary">
+                                    Resend Code</a> --}}
                             </form>
                             <!--end::Form-->
                         </div>

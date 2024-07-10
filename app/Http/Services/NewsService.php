@@ -3,16 +3,26 @@
 namespace App\Http\Services;
 
 use App\Models\News;
+use App\Models\UserDetail;
 use Illuminate\Support\Arr;
 use App\Repositories\NewsRepository;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class NewsService
 {
   private $newsRepository;
-  public function __construct(NewsRepository $newsRepository)
+  private $branchServices;
+  private $userDetailServices;
+  private $departmentServices;
+  private $designationServices;
+  public function __construct(DesignationServices $designationServices, DepartmentServices $departmentServices, UserDetailServices $userDetailServices, NewsRepository $newsRepository, BranchServices $branchServices)
   {
     $this->newsRepository = $newsRepository;
+    $this->branchServices = $branchServices;
+    $this->userDetailServices = $userDetailServices;
+    $this->departmentServices = $departmentServices;
+    $this->designationServices = $designationServices;
   }
   public function all()
   {
@@ -37,8 +47,7 @@ class NewsService
     $finalPayload['company_id'] = Auth::guard('admin')->user()->company_id;
     // $finalPayload['company_branch_id'] = Auth::guard('admin')->user()->branch_id ?? 'NULL';
     $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
-    if ($newsCreatedDetails) 
-    {
+    if ($newsCreatedDetails) {
       $newsDetails = News::find($newsCreatedDetails->id);
       if ($newsCreatedDetails->all_company_branch == 0) {
         $newsDetails->companyBranches()->sync($data['company_branch_id']);
@@ -162,5 +171,63 @@ class NewsService
       );
     }
     return $newsDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+
+
+  public function getAllAssignedNews($request)
+  {
+    try {
+
+      $user = auth()->guard('employee_api')->user();
+      $newsIds = [];
+      $news = $this->newsRepository->with('newsCategories:id,name')->where('company_id', $user->company_id)->get();
+      // ->select('id','title','image','start_date','end_date','file','description','news_category_id')
+      $departments = $this->departmentServices->getAllActiveDepartmentsUsingByCompanyID($user->company_id);
+      $userDetails = $this->userDetailServices->getDetailsByUserId($user->id);
+
+      foreach ($news as $row) {
+        // check for branch 
+        if ($row->all_company_branch == 1) {
+          $branches = $this->branchServices->allActiveCompanyBranchesByUsingCompanyId($row->company_id);
+          $branchIds = $branches->pluck('id')->toArray();
+        } else if ($row->all_company_branch == 0) {
+          $branchIds = $row->companyBranches()->pluck('company_branch_id')->toArray();
+        }
+
+        // check for department 
+        if ($row->all_department == 1) {
+          $departmentIds = $departments->pluck('id')->toArray();
+        } else if ($row->all_department == 0) {
+          $departmentIds = $row->departments()->pluck('department_id')->toArray();
+        }
+
+
+        // check for designation 
+        if ($row->all_designation == 1) {
+          $designationIds = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds)->pluck('id')->toArray();
+        } else if ($row->all_designation == 0) {
+          $designationIds = $row->designations()->pluck('designation_id')->toArray();
+        }
+
+        // check user is exists or not in assigned branches & departments & designations 
+        if (in_array($userDetails->company_branch_id, $branchIds) && in_array($userDetails->department_id, $departmentIds) &&  in_array($userDetails->designation_id, $designationIds)) {
+          array_push($newsIds, $row->id);
+        }
+      }
+
+      $finalNews = $news->whereIn('id', $newsIds)->makeHidden([
+        "all_company_branch",
+        "all_department",
+        "all_designation",
+        "company_id",
+        "company_branch_id",
+        "created_at",
+        "news_category_id",
+        "updated_at"
+      ]);;
+      return $finalNews;
+    } catch (Throwable $th) {
+      return errorMessage('null', $th->getMessage());
+    }
   }
 }

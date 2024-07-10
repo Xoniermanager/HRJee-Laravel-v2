@@ -122,6 +122,7 @@ class EmployeeServices
   }
   public function create($data)
   {
+ 
     $nameForImage = removingSpaceMakingName($data['name']);
     if (isset($data['profile_image']) && !empty($data['profile_image'])) {
       $upload_path = "/user_profile_picture";

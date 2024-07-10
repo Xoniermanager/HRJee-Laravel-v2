@@ -6,6 +6,7 @@ use App\Http\Services\CountryServices;
 use App\Http\Services\SendOtpService;
 use App\Http\Services\StateServices;
 use App\Mail\LoginVerification;
+use App\Models\Employee;
 use App\Models\User;
 use App\Models\UserCode;
 use Carbon\Carbon;
@@ -29,8 +30,17 @@ class AuthService
     {
         try {
 
-            if (!Auth::attempt($request->only(['email', 'password'])))
-                return errorMessage('null', 'invalid_credentials');
+            // if (!Auth::attempt($request->only(['email', 'password'])))
+            //     return errorMessage('null', 'invalid_credentials');
+
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return errorMessage('null', 'please enter valid email!');
+            }
+            if (!Hash::check($request->password, $user->password)) {
+                return errorMessage('null', 'please enter valid password!');
+            }
+
 
 
             $otpResponse = $this->sendOtpService->generateOTP($request->email, 'employee');
@@ -61,7 +71,7 @@ class AuthService
 
             $countries = $this->countryServices->getAllActiveCountry();
             $states = $this->stateServices->getAllStates();
-            $singleUserDetails = $user->load('bankDetails', 'addressDetails', 'assetDetails', 'documentDetails', 'userDetails');
+            $singleUserDetails = $user->load('bankDetails', 'addressDetails', 'assetDetails', 'documentDetails:id,document_type_id,user_id,document', 'documentDetails.documentTypes:id,name', 'userDetails');
             $singleUserDetails->countries = $countries;
             $singleUserDetails->states = $states;
             return apiResponse('user_details', $singleUserDetails);
@@ -71,7 +81,7 @@ class AuthService
     }
     public function logout($request)
     {
-        auth()->guard('employee_api')->user()->tokens()->delete();
+        auth()->guard('employee_api')->user()->currentAccessToken()->delete();
         return apiResponse('logut');
     }
     public function sendOtp($request, $type)
@@ -91,6 +101,14 @@ class AuthService
         try {
             $data = $request;
             $data['type'] = 'employee';
+            
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return errorMessage('null', 'please enter valid email!');
+            }
+            if (!Hash::check($request->password, $user->password)) {
+                return errorMessage('null', 'please enter valid password!');
+            }
             if (Auth::attempt($request->only(['email', 'password']))) {
                 $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'employee_api');
                 if ($verifyOtpResponse) {
@@ -100,8 +118,6 @@ class AuthService
                 } else {
                     return errorMessage('null', 'invalid_or_expired_otp');
                 }
-            } else {
-                return errorMessage('null', 'invalid_credentials');
             }
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
@@ -132,7 +148,12 @@ class AuthService
             $data = $request->validated();
             $date = date_create($request->date_of_birth);
             $data['date_of_birth'] = date_format($date, "Y/m/d");
-            #Update the new Password
+
+            if (isset($data['profile_image']) && !empty($data['profile_image'])) {
+                $upload_path = "/user_profile_picture";
+                $filePath = uploadingImageorFile($data['profile_image'], $upload_path);
+                $data['profile_image'] = $filePath;
+            }
             User::whereId(auth()->user()->id)->update($data);
             return apiResponse('profile_updated');
         } catch (Throwable $th) {
