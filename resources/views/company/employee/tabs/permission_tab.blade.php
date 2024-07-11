@@ -5,7 +5,7 @@
         <input type="hidden" id="highest_qualification_id" value="{{ $userDetails->qualification_id ?? '' }}">
         <p id="get_skills_id" style="display: none">{{ $userSkills ?? '' }}</p>
         <div class="row">
-            <input type="hidden" name="user_id" value="{{ $userDetails->user_id ?? (Request::segment(3) ?? '') }}">
+            <input type="hidden" name="user_id" value="{{ $userDetails->user_id ?? (Request::segment(4) ?? '') }}">
             <div class="col-md-4 form-group">
                 <label for="">Employment Type *</label>
                 <select class="form-control" name="employee_type_id">

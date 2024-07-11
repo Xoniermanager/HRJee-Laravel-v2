@@ -3,7 +3,7 @@
     <form id="document_details">
         @csrf
         <input type="hidden" name="user_id"
-            value="{{ $userdocumentDetails[0]['user_id'] ?? (Request::segment(3) ?? '11') }}">
+            value="{{ $userdocumentDetails[0]['user_id'] ?? (Request::segment(4) ?? '11') }}">
         <div class="row">
             @forelse ($allDocumentTypeDetails as $key => $item)
                 <div class="col-md-4 form-group">
@@ -70,7 +70,7 @@
                     timer: 1500
                 });
                 setTimeout(function() {
-                    location.href = "/employee/index";
+                    location.href = "/company/employee/index";
                 }, 3000);
                 // This variable is used on save all records button
                 all_data_saved = true;

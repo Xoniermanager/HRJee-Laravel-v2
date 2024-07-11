@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Announcement extends Model
 {
@@ -20,5 +21,11 @@ class Announcement extends Model
     public function companyBranches()
     {
         return $this->belongsToMany(CompanyBranch::class, 'announcement_company_branch', 'announcement_id', 'company_branch_id');
+    }
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => url("storage/" .  $value)
+        );
     }
 }
