@@ -11,7 +11,6 @@ class AnnouncementServices
 {
   private $announcementRepository;
   public function __construct(AnnouncementRepository $announcementRepository)
-  public function __construct(AnnouncementRepository $announcementRepository)
   {
     $this->announcementRepository = $announcementRepository;
   }
