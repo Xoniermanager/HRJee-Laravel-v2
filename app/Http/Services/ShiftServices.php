@@ -2,7 +2,7 @@
 
 namespace App\Http\Services;
 
-use App\Repositories\shiftRepository;
+use App\Repositories\ShiftRepository;
 
 class ShiftServices
 {
