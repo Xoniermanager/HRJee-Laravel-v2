@@ -424,21 +424,17 @@
                                     <!--begin::Input group-->
                                     <div class="d-flex flex-wrap flex-stack">
                                         <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
-                                            maxlength="1" id="first"
-                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
-                                            inputmode="text">
+                                            maxLength="1" id="n0" data-next="1"
+                                            class="form-control authInput bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2">
                                         <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
-                                            maxlength="1" id="second"
-                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
-                                            inputmode="text">
+                                            maxlength="1" id="n1" data-next="2"
+                                            class="form-control authInput bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2">
                                         <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
-                                            maxlength="1" id="third"
-                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
-                                            inputmode="text">
+                                            maxlength="1" id="n2" data-next="3"
+                                            class="form-control authInput bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2">
                                         <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
-                                            maxlength="1" id="fourth"
-                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
-                                            inputmode="text">
+                                            maxlength="1" id="n3" data-next="4"
+                                            class="form-control authInput bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2">
                                     </div>
                                     @if ($errors->has('otp'))
                                         <div class="error">{{ $errors->first('otp') }}</div>
@@ -497,15 +493,23 @@
     <!--end::Custom Javascript-->
     <!--end::Custom Javascript-->
     <script>
+        
         $("#kt_sign_in_submit").on('click', function() {
-            let first = $('#first').val();
-            let second = $('#second').val();
-            let third = $('#third').val();
-            let fourth = $('#fourth').val();
+            let first = $('#n0').val();
+            let second = $('#n1').val();
+            let third = $('#n2').val();
+            let fourth = $('#n3').val();
             let otp = first + second + third + fourth;
             $('#otp').val(otp);
             $("#kt_sign_in_form").submit();
         })
+
+        $('.authInput').keyup(function(e) {
+            if (this.value.length === this.maxLength) {
+                let next = $(this).data('next');
+                $('#n' + next).focus();
+            }
+        });
     </script>
 </body>
 <!--end::Body-->

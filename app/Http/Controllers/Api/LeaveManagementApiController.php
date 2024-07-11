@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Services\LeaveTypeService;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class LeaveManagementApiController extends Controller
 {
@@ -69,6 +70,20 @@ class LeaveManagementApiController extends Controller
                 "error" =>  $e->getMessage(),
                 "message" => "Unable to Apply the Leave"
             ], 500);
+        }
+    }
+
+
+    public function appliedLeaveHistory(Request $request)
+    {
+        try {
+
+            $appliedLeaves =  $this->leaveService->getAllAppliedLeave();
+            $appliedLeaves->makeHidden(['created_at','updated_at','leave_type_id','leave_applied_by','leave_status_id']);
+            // $appliedLeaves->leave_action->makeHidden('leave_id');
+            return apiResponse('success', $appliedLeaves);
+        } catch (Throwable $th) {
+            return errorMessage('null', $th->getMessage());
         }
     }
 }

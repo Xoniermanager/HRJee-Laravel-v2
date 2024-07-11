@@ -7,6 +7,7 @@ use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Company\ForgetPasswordController as CompanyForgetPasswordController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
+use Illuminate\Support\Facades\Artisan;
 
 /**---------------Reset And Forget Password Route----------------*/
 Route::controller(ForgetPasswordController::class)->group(function () {
@@ -50,6 +51,10 @@ Route::prefix('employee')->controller(AuthController::class)->group(function () 
 
 /**---------------Company Panel Route----------------*/
 Route::prefix('company')->controller(AdminController::class)->group(function () {
+    Route::get('/clear-cache', function() {
+        Artisan::call('optimize:clear');
+        return '<h1>Cache cleared</h1>';
+    });
     Route::post('/login', 'companyLogin')->name('company.login');
     Route::get('/logout', 'companyLogout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');

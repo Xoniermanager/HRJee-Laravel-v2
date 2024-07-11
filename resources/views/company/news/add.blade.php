@@ -176,6 +176,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-md-6 form-group">
                                         <label for="">Attachment File </label>
                                         <input class="form-control" name="file" type="file" accept="pdf" value="{{old('file')}}">

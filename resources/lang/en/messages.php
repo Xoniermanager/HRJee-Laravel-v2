@@ -21,4 +21,10 @@ return [
     'verify_otp' => 'please verify otp!',
     'loader_message' => 'loading message!',
     'announcement_assigned' => 'Announcement has been assigned successfully!',
+    'news' => 'All News',
+    'invalid_email' => 'please enter valid email!',
+    'invalid_password' => 'please enter valid password!',
+    'announcement' => 'announcements',
+    'otp_verified' => 'otp has been successfully verified.',
+    'policies' => 'policies',
 ];

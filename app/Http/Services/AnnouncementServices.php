@@ -6,6 +6,7 @@ use App\Models\Announcement;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\AnnouncementRepository;
+use Throwable;
 
 class AnnouncementServices
 {

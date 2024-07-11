@@ -16,6 +16,10 @@ class LeaveStatusLog extends Model
     {
         return $this->belongsTo(LeaveStatus::class);
     }
+    public function actionTakenBy()
+    {
+        return $this->belongsTo(User::class,'action_taken_by','id');
+    }
     public function leave()
     {
         return $this->belongsTo(Leave::class);
