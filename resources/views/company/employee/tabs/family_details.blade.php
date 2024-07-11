@@ -3,7 +3,7 @@
     <form id="family_details_form">
         @csrf
         <input type="hidden" name="user_id" class="id"
-            value="{{ $userfamilyDetails[0]['user_id'] ?? (Request::segment(3) ?? '') }}">
+            value="{{ $userfamilyDetails[0]['user_id'] ?? (Request::segment(4) ?? '') }}">
         {{-- <div class="row align-items-center panel panel-body mb-3">
             <div class="col-md-3 form-group">
                 <label for="">Relationship *</label>

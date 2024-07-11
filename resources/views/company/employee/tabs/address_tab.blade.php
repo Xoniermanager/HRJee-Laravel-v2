@@ -23,7 +23,7 @@
     <!--begin::Wrapper-->
     <form id="address_Details_form">
         @csrf
-        <input type="hidden" name="user_id" value="{{ $local->user_id ?? (Request::segment(3) ?? '') }}">
+        <input type="hidden" name="user_id" value="{{ $local->user_id ?? (Request::segment(4) ?? '') }}">
         <input type="hidden" name="address_type" id="address_type" value="{{ $addressTypeValue ?? '0' }}">
         <div class="row">
             <div class="col-md-6">

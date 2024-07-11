@@ -3,7 +3,7 @@
     <!--begin::Wrapper-->
     <form id="advance_details_form">
         @csrf
-        <input type="hidden" name="user_id" value="{{ $userAdvanceDetails->user_id ?? (Request::segment(3) ?? '') }}">
+        <input type="hidden" name="user_id" value="{{ $userAdvanceDetails->user_id ?? (Request::segment(4) ?? '') }}">
         <input type="hidden" name="id" value="{{ $userAdvanceDetails->id ?? ''}}">
         <div class="row">
             <div class="col-md-4 form-group">

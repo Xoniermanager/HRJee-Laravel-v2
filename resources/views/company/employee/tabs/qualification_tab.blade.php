@@ -3,7 +3,7 @@
     <form id="qualification_details_form">
         @csrf
         <input type="hidden" name="user_id" class="id"
-            value="{{ $userQualificationDetails[0]['user_id'] ?? (Request::segment(3) ?? '') }}">
+            value="{{ $userQualificationDetails[0]['user_id'] ?? (Request::segment(4) ?? '') }}">
         <div class="row">
             <div class="col-md-4 form-group">
                 <label for="">Degree*</label>
