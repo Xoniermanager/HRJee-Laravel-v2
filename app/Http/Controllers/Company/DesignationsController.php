@@ -124,9 +124,19 @@ class DesignationsController extends Controller
 
     public function getAllDesignation(Request $request)
     {
-        $department_id = $request->department_id; 
-        $allDesignationDetails = $this->designationService->getAllDesignationUsingDepartmentID($department_id);
-        if (count($allDesignationDetails) > 0 && isset($allDesignationDetails)) {
+        $validateDesignation  = Validator::make($request->all(), [
+            'all_departments'      =>   'in:false,true',
+            'department_id'        =>   'required_if:all_departments,==,false',
+            'department_id.*'      =>   'exists:departments,id',
+
+        ]);
+        $departmentIds = $request->department_id;
+        if ($request->all_departments == true) {
+            $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($departmentIds,true);
+        } else {
+            $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($departmentIds);
+        }
+        if (isset($allDesignationDetails) && count($allDesignationDetails) > 0) {
             $response = [
                 'status'    =>  true,
                 'data'      =>  $allDesignationDetails

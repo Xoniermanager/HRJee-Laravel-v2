@@ -77,30 +77,25 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('/update', 'update')->name('designation.update');
         Route::get('/delete', 'destroy')->name('designation.delete');
         Route::get('/status/update', 'statusUpdate')->name('designation.statusUpdate');
-        Route::get('/get/all/designation', 'getAllDesignation')->name('get.all.designation');
+        Route::get('/get-designation-by-departments', 'getAllDesignation')->name('get.all.designation');
         Route::get('/search/filter', 'serachDesignationFilterList');
     });
 
     //Announcement Module
-    Route::group(['prefix' => 'announcement/', 'as' => 'announcement.'], function () {
-        Route::get('/', [AnnouncementController::class, 'index'])->name('index');
-        Route::get('create', [AnnouncementController::class, 'create'])->name('create');
-        Route::post('store', [AnnouncementController::class, 'store'])->name('store');
-        Route::get('edit/{id?}', [AnnouncementController::class, 'edit'])->name('edit');
-        Route::post('update/{id?}', [AnnouncementController::class, 'update'])->name('update');
-        Route::get('delete/{id?}', [AnnouncementController::class, 'destroy'])->name('delete');
-        Route::get('view/{id}', [AnnouncementController::class, 'getView'])->name('view');
-        Route::get('status/update', [AnnouncementController::class, 'statusUpdate'])->name('statusUpdate');
-        // Route::get('assign/{id}', [AnnouncementController::class, 'getAnnouncement'])->name('assign');
-        // Route::post('assign/save', [AnnouncementController::class, 'announcementAssignStore'])->name('assign.save');
-        Route::get('details/{id?}', [AnnouncementController::class, 'getAnnouncementDetails'])->name('details');
-        Route::get('branch/users', [AnnouncementController::class, 'getAllUsersByBranchId'])->name('branch.users');
-        Route::get('branch/department/users', [AnnouncementController::class, 'getAllUsersByBranchAndDepartmentId'])->name('branch.department.users');
-        Route::get('branch/department/designation/users', [AnnouncementController::class, 'getAllUsersByBranchDepartmentAndDesignationId'])->name('branch.department.designation.users');
+    Route::prefix('/announcement')->controller(AnnouncementController::class)->group(function () {
+        Route::get('/', 'index')->name('announcement.index');
+        Route::get('/add', 'add')->name('announcement.add');
+        Route::post('/create', 'store')->name('announcement.store');
+        Route::get('/edit/{announcements:id}', 'edit')->name('announcement.edit');
+        Route::get('/view/{announcements:id}', 'view')->name('announcement.view');
+        Route::post('/update/{id}', 'update')->name('announcement.update');
+        Route::get('/delete/{id}', 'destroy')->name('announcement.delete');
+        Route::get('/status/update', 'statusUpdate')->name('announcement.statusUpdate');
+        Route::get('/search/filter', 'serachAnnouncementFilterList');
+        Route::get('get-all-user', 'getAllUserByBranchIds');
+        Route::post('/assign', 'updateAssignAnnounce')->name('assign.announcement');
     });
-
-  
-
+    
     //Country Module
     Route::prefix('/country')->controller(CountryController::class)->group(function () {
         Route::get('/', 'index')->name('country.index');

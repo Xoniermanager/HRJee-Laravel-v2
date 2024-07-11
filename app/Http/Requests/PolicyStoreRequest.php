@@ -22,16 +22,19 @@ class PolicyStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'                => ['required'],
-            'policy_category_id'   => ['required', 'exists:policy_categories,id'],
-            'start_date'           => ['required', 'date'],
-            'end_date'             => ['required', 'date'],
-            'image'                => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'company_branch_id'    => 'required_if:all_company_branch:0,array', 'exists:company_branches,id',
-            'department_id'        => 'required_if:all_department:0,array', 'exists:departments,id',
-            'designation_id'       => 'required_if:all_designation:0,array', 'exists:designations,id',
-            'file'                 => 'nullable|mimes:pdf',
-            'description'          => 'nullable',
+            'title'                =>   'required',
+            'policy_category_id'   =>   'required', 'exists:policy_categories,id',
+            'start_date'           =>   'required|date',
+            'end_date'             =>   'required|date',
+            'image'                =>   'mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'company_branch_id'    =>   'required_if:all_company_branch,==,0|array',
+            'company_branch_id.*'  =>   'exists:company_branches,id',
+            'department_id'        =>   'required_if:all_department,==,0|array',
+            'department_id.*'      =>   'exists:departments,id',
+            'designation_id'       =>   'required_if:all_designation,==,0|array',
+            'designation_id.*'     =>   'exists:designations,id',
+            'file'                 =>   'nullable|mimes:pdf',
+            'description'          =>   'nullable',
         ];
     }
 }

@@ -51,7 +51,7 @@
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_company_branch"
-                                                        onchange="get_checkedValue('company_branch')"
+                                                        onchange="get_checked_value('company_branch')"
                                                         id="company_branches_checkbox" {{$editNewsDetails->all_company_branch == 1 ? 'checked' : ''}} value="1">
                                                 </label>
                                             </div>
@@ -92,7 +92,7 @@
                                                         All
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
-                                                        name="all_department" onchange="get_checkedValue('department')"
+                                                        name="all_department" onchange="get_checked_value('department')"
                                                         id="department_checkbox" {{$editNewsDetails->all_department == 1 ? 'checked' : ''}} value="1">
                                                 </label>
                                             </div>
@@ -134,7 +134,7 @@
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_designation"
-                                                        onchange="get_checkedValue('designation')"
+                                                        onchange="get_checked_value('designation')"
                                                         id="designation_checkbox" {{$editNewsDetails->all_designation == 1 ? 'checked' : ''}}>
                                                 </label>
                                             </div>
