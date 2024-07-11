@@ -132,7 +132,7 @@ class DesignationsController extends Controller
         ]);
         $departmentIds = $request->department_id;
         if ($request->all_departments == true) {
-            $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($departmentIds, $allDepartment = true);
+            $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($departmentIds,true);
         } else {
             $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($departmentIds);
         }
