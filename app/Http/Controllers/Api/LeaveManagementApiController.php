@@ -79,7 +79,8 @@ class LeaveManagementApiController extends Controller
         try {
 
             $appliedLeaves =  $this->leaveService->getAllAppliedLeave();
-            $appliedLeaves->makeHidden(['created_at','updated_at']);
+            $appliedLeaves->makeHidden(['created_at','updated_at','leave_type_id','leave_applied_by','leave_status_id']);
+            // $appliedLeaves->leave_action->makeHidden('leave_id');
             return apiResponse('success', $appliedLeaves);
         } catch (Throwable $th) {
             return errorMessage('null', $th->getMessage());

@@ -17,6 +17,14 @@ class Leave extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function leaveAppliedBy()
+    {
+        return $this->belongsTo(User::class,'leave_applied_by','id');
+    }
+    public function leaveAction()
+    {
+        return $this->hasOne(LeaveStatusLog::class,'leave_id','id');
+    }
 
     public function leaveType()
     {

@@ -75,7 +75,7 @@ class LeaveService
   }
   public function getAllAppliedLeave()
   {
-    return $this->leaveRepository->with('leaveStatus:id,status,name','leaveType')->where('user_id', auth()->guard('employee_api')->user()->id)->get();
+    return $this->leaveRepository->with(['leaveStatus:id,status,name','leaveType:id,name','leaveAppliedBy:id,name','leaveAction:id,leave_id,remarks,action_taken_by,leave_status_id','leaveAction.leaveStatus:id,name,status','leaveAction.actionTakenBy:id,name,email'])->where('user_id', auth()->guard('employee_api')->user()->id)->get();
   }
   public function getAppliedLeaveDetailsUsingId($id)
   {
