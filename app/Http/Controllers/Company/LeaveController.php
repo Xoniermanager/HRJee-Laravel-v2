@@ -24,7 +24,7 @@ class LeaveController extends Controller
     public function index()
     {
         $allLeavesDetails = $this->leaveService->all();
-        return view('company.leave.index',compact('allLeavesDetails'));
+        return view('company.leave.index', compact('allLeavesDetails'));
     }
 
     public function applyLeave()
@@ -36,11 +36,12 @@ class LeaveController extends Controller
 
     public function store(Request $request)
     {
+
         try {
             $request->validate([
                 'leave_type_id'      => ['required', 'exists:leave_types,id'],
                 'leave_applied_by'   => ['boolean'],
-                'user_id'            => ['required_if:leave_applied_by,==,1','exists:users,id'],
+                'user_id'            => ['required_if:leave_applied_by,==,1', 'exists:users,id'],
                 'from'               => ['required', 'date'],
                 'to'                 => ['required', 'date'],
                 'is_half_day'        => ['boolean'],
@@ -50,6 +51,7 @@ class LeaveController extends Controller
                 
             ]);
             $data = $request->all();
+
             if ($this->leaveService->create($data)) {
                 return redirect(route('leave.index'))->with('success', 'Added successfully');
             }

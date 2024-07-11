@@ -6,11 +6,11 @@ use App\Models\Announcement;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\AnnouncementRepository;
+use Throwable;
 
 class AnnouncementServices
 {
   private $announcementRepository;
-  public function __construct(AnnouncementRepository $announcementRepository)
   public function __construct(AnnouncementRepository $announcementRepository)
   {
     $this->announcementRepository = $announcementRepository;

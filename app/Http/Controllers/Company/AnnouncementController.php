@@ -105,6 +105,9 @@ class AnnouncementController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
+
+
+
     public function statusUpdate(Request $request)
     {
         $id = $request->id;

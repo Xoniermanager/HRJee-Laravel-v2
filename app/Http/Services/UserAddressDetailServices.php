@@ -115,6 +115,10 @@ class UserAddressDetailServices
   {
     return $this->userAddressDetailRepository->where('user_id', $id)->delete();
   }
+  public function deleteUserAddressById($id)
+  {
+    return $this->userAddressDetailRepository->where('id', $id)->delete();
+  }
   public function update($id, $addressId, $data)
   {
     return $this->userAddressDetailRepository->where(['user_id' => $id, 'id' => $addressId])->update($data);
