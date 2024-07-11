@@ -1,97 +1,76 @@
-@extends('layouts.company.main')
-@section('content')
-@section('title')
-    Announcements
-@endsection
-<div class="card card-body col-md-12">
-    <div class="mb-5 mb-xl-10">
-        <div class="card-body">
-            <form action="{{ route('announcement.store') }}" method="POST" enctype="multipart/form-data">
+<div class="modal-dialog modal-dialog-centered modal-lg">
+    <!--begin::Modal content-->
+    <div class="modal-content">
+        <!--begin::Modal header-->
+        <div class="modal-header">
+            <!--begin::Close-->
+            <h2>Assign Announcement</h2>
+            <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                <span class="svg-icon svg-icon-1">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                            transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1"
+                            transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </div>
+            <!--end::Close-->
+        </div>
+        <!--begin::Modal header-->
+        <!--begin::Modal body-->
+        <div class="modal-body scroll-y pt-0 pb-5 border-top">
+            <!--begin::Wrapper-->
+            <form id="assign_announcement_form" class="card-body">
                 @csrf
-                <input type="hidden" name="all_company_branch" value="0">
-                <input type="hidden" name="all department" value="0">
-                <input type="hidden" name="all_designation" value="0">
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label class="col-form-label required">Title</label>
-                        <input type="text" class="form-control" name="title" placeholder="Enter the title"
-                            value="{{ old('title') }}">
-                        @if ($errors->has('title'))
-                            <div class="text-danger">{{ $errors->first('title') }}</div>
-                        @endif
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label class="col-form-label required">Start Date</label>
-                        <input class="form-control" name="start_date_time" type="datetime-local"
-                            value="{{ old('start_date_time') }}">
-                        @if ($errors->has('start_date_time'))
-                            <div class="text-danger">{{ $errors->first('start_date_time') }}</div>
-                        @endif
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label class="col-form-label required">End Date</label>
-                        <input class="form-control" name="expires_at_time" type="datetime-local"
-                            value="{{ old('expires_at_time') }}">
-                        @if ($errors->has('expires_at_time'))
-                            <div class="text-danger">{{ $errors->first('expires_at_time') }}</div>
-                        @endif
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label class="col-form-label">Image</label>
-                        <input type="file" class="form-control" name="image">
-                        @if ($errors->has('image'))
-                            <div class="text-danger">{{ $errors->first('image') }}</div>
-                        @endif
-                    </div>
-                    <div class="col-md-12 form-group mb-4">
-                        <label class="col-form-label required">Description </label>
-                        <textarea id="editor" name="description" value="{{ old('description') }}"></textarea>
-                        @if ($errors->has('description'))
-                            <div class="text-danger">{{ $errors->first('description') }}</div>
-                        @endif
-                    </div>
-                    <div class="col-md-12 form-group mb-4">
-                        <div class="row h-75px">
-                            <div class="col-md-6">
-                                <label class="required">Assign Announcement </label>
-                                <div class="d-flex align-items-center">
-                                    <!--begin::Option-->
-                                    <label
-                                        class="form-check form-check-custom form-check-inline form-check-solid me-5 is-valid">
-                                        <input class="form-check-input" name="assign_announcement" type="radio"
-                                            onchange="assignAnnouncement(1)" value="1">
-                                        <span class="fw-semibold ps-2 fs-6">
-                                            Now
-                                        </span>
-                                    </label>
-                                    <!--end::Option-->
-                                    <!--begin::Option-->
-                                    <label
-                                        class="form-check form-check-custom form-check-inline form-check-solid is-invalid">
-                                        <input class="form-check-input" name="assign_announcement" type="radio"
-                                            onchange="assignAnnouncement(0)" value="0" checked>
-                                        <span class="fw-semibold ps-2 fs-6">
-                                            later
-                                        </span>
-                                    </label>
-                                    <!--end::Option-->
-                                </div>
+                <div class="row"> 
+                <input type="hidden" name="id" id="id">
+                <div class="col-md-12 mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="required">Assign Announcement </label>
+                            <div class="d-flex align-items-center mt-5">
+                                <!--begin::Option-->
+                                <label
+                                    class="form-check form-check-custom form-check-inline form-check-solid me-5 is-valid">
+                                    <input class="form-check-input" name="assign_announcement" type="radio"
+                                        onchange="assignAnnouncement(1)" value="1" id="now">
+                                    <span class="fw-semibold ps-2 fs-6">
+                                        Now
+                                    </span>
+                                </label>
+                                <!--end::Option-->
+                                <!--begin::Option-->
+                                <label
+                                    class="form-check form-check-custom form-check-inline form-check-solid is-invalid">
+                                    <input class="form-check-input" name="assign_announcement" type="radio"
+                                        onchange="assignAnnouncement(0)" value="0" checked id="later">
+                                    <span class="fw-semibold ps-2 fs-6">
+                                        later
+                                    </span>
+                                </label>
+                                <!--end::Option-->
                             </div>
-                            <div class="col-md-6">
-                                {{-- <div class="col-md-6 mb-2"> --}}
-                                <div class="form-group notification_schedule_time mb-0">
-                                    <label class="required">Schedule Date</label>
-                                    <input class="form-control" name="notification_schedule_time" type="datetime-local"
-                                        value="{{ old('notification_schedule_time') }}">
-                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            {{-- <div class="col-md-6 mb-2"> --}}
+                            <div class="form-group notification_schedule_time mb-0">
+                                <label class="required">Schedule Date</label>
+                                <input class="form-control" name="notification_schedule_time" type="datetime-local"
+                                    value="{{ old('notification_schedule_time') }}" id="time">
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-12 mb-4">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-12 form-group">
                                 <div class="row">
-                                    <div class="col-md-2 mt-3">
+                                    <div class="col-md-2 mt-3 p-0">
                                         <label class="form-check form-check-custom form-check-inline form-check-solid">
                                             <span class="fw-semibold ps-2 fs-6">
                                                 All
@@ -116,7 +95,8 @@
                                             @endforeach
                                         </select>
                                         @if ($errors->has('company_branch_id'))
-                                            <div class="text-danger">{{ $errors->first('company_branch_id') }}
+                                            <div class="text-danger">
+                                                {{ $errors->first('company_branch_id') }}
                                             </div>
                                         @endif
                                     </div>
@@ -124,7 +104,7 @@
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="row">
-                                    <div class="col-md-2 mt-3">
+                                    <div class="col-md-2 mt-3 p-0">
                                         <label class="form-check form-check-custom form-check-inline form-check-solid">
                                             <span class="fw-semibold ps-2 fs-6">
                                                 All
@@ -148,14 +128,15 @@
                                             @endforeach
                                         </select>
                                         @if ($errors->has('department_id'))
-                                            <div class="text-danger">{{ $errors->first('department_id') }}</div>
+                                            <div class="text-danger">{{ $errors->first('department_id') }}
+                                            </div>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="row">
-                                    <div class="col-md-2 mt-3">
+                                    <div class="col-md-2 mt-3 p-0">
                                         <label class="form-check form-check-custom form-check-inline form-check-solid">
                                             <span class="fw-semibold ps-2 fs-6">
                                                 All
@@ -174,21 +155,34 @@
                                             name="designation_id[]" onchange="get_all_user()">
                                         </select>
                                         @if ($errors->has('designation_id'))
-                                            <div class="text-danger">{{ $errors->first('designation_id') }}
+                                            <div class="text-danger">
+                                                {{ $errors->first('designation_id') }}
                                             </div>
                                         @endif
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-md-6" id="user_listing">
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="d-flex flex-end flex-row-fluid pt-2 border-top">
+                    <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="kt_modal_upgrade_plan_btn">
+                        <!--begin::Indicator label-->
+                        <span class="indicator-label">Submit</span>
+                        <!--end::Indicator label-->
+                        <!--begin::Indicator progress-->
+                        <span class="indicator-progress">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        <!--end::Indicator progress-->
+                    </button>
+                </div>
+            </div>
             </form>
         </div>
+        <!--end::Modal body-->
     </div>
+    <!--end::Modal content-->
 </div>
-@endsection

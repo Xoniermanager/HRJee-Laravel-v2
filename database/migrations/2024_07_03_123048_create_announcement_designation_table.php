@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('announcement_designation', function (Blueprint $table) {
             $table->unsignedBigInteger('announcement_id');
-            $table->foreign('announcement_id')->references('id')->on('announcements')->onDelete('cascade');
+            $table->foreign('announcement_id')->references('id')->on('announcements');
             $table->unsignedBigInteger('designation_id');
-            $table->foreign('designation_id')->references('id')->on('designations')->onDelete('cascade');
+            $table->foreign('designation_id')->references('id')->on('designations');
         });
     }
-
     /**
      * Reverse the migrations.
      */

@@ -52,7 +52,7 @@
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_company_branch"
-                                                        onchange="get_checkedValue('company_branch')"
+                                                        onchange="get_checked_value('company_branch')"
                                                         id="company_branches_checkbox"
                                                         {{ $editPolicyDetails->all_company_branch == 1 ? 'checked' : '' }} value="1">
                                                 </label>
@@ -95,7 +95,7 @@
                                                         All
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
-                                                        name="all_department" onchange="get_checkedValue('department')"
+                                                        name="all_department" onchange="get_checked_value('department')"
                                                         id="department_checkbox"
                                                         {{ $editPolicyDetails->all_department == 1 ? 'checked' : '' }} value="1">
                                                 </label>
@@ -138,7 +138,7 @@
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_designation"
-                                                        onchange="get_checkedValue('designation')"
+                                                        onchange="get_checked_value('designation')"
                                                         id="designation_checkbox"
                                                         {{ $editPolicyDetails->all_designation == 1 ? 'checked' : '' }} value="1">
                                                 </label>

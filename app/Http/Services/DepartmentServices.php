@@ -20,12 +20,12 @@ class DepartmentServices
   {
     return $this->departmentRepository->create($data);
   }
-  
-  public function getDepartmentsByAdminAndCompany()
+
+  public function getAllDepartmentsByCompanyId()
   {
     return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', auth()->guard('admin')->user()->id)->get();
   }
- 
+
   public function updateDetails(array $data, $id)
   {
     return $this->departmentRepository->find($id)->update($data);
@@ -58,15 +58,15 @@ class DepartmentServices
   {
     return $this->departmentRepository->where('status', '1')->get();
   }
-  public function getAllActiveDepartmentsUsingByCompanyID($companyId)
+  public function getAllActiveDepartmentsByCompanyId($companyId)
   {
     return $this->departmentRepository->where('company_id', $companyId)->orwhere('company_id', NUll)->where('status', '1')->get();
   }
 
 
-   // if for this use already have created then let me know
-   public function getAllDepartmentByDepartmentId($ids)
-   {
-     return $this->departmentRepository->whereIn('id',$ids)->get();
-   }
+  // if for this use already have created then let me know
+  public function getAllDepartmentByDepartmentId($ids)
+  {
+    return $this->departmentRepository->whereIn('id', $ids)->get();
+  }
 }

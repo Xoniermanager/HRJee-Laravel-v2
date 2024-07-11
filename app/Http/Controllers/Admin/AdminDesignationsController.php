@@ -125,7 +125,7 @@ class AdminDesignationsController extends Controller
     public function getAllDesignation(Request $request)
     {
         $department_id = $request->department_id;
-        $allDesignationDetails = $this->designationService->getAllDesignationUsingDepartmentID($department_id);
+        $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($department_id);
         if (count($allDesignationDetails) > 0 && isset($allDesignationDetails)) {
             $response = [
                 'status'    =>  true,

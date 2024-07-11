@@ -23,7 +23,7 @@ class Leave extends Model
     }
     public function leaveAction()
     {
-        return $this->hasOne(LeaveStatusLog::class,'leave_id','id');
+        return $this->hasMany(LeaveStatusLog::class,'leave_id','id');
     }
 
     public function leaveType()

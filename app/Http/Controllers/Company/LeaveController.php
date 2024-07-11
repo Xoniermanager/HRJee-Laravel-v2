@@ -48,7 +48,7 @@ class LeaveController extends Controller
                 'from_half_day'      => ['required_if:is_half_day,==,1', 'in:first_half,second_half'],
                 'to_half_day'        => ['required_if:from,>,to', 'in:first_half,second_half'],
                 'reason'             => ['required'],
-
+                
             ]);
             $data = $request->all();
 
