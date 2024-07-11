@@ -126,12 +126,12 @@ class AuthController extends Controller
             if (!auth()->guard('employee')->check()) {
                 return   redirect('/employee/signin');
             }
-            $email = Auth::guard('employee')->user()->id->email;
+            $email = Auth::guard('employee')->user()->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'employee');
             if ($otpResponse['status'] == true)
-                return redirect('employee/verify/otp')->with('success',  $otpResponse['message']);
+                return redirect('employee/verify/otp')->with('success',  transLang($otpResponse['message']));
             else
-                return redirect('employee/verify/otp')->with('error',  $otpResponse['message']);
+                return redirect('employee/verify/otp')->with('error',  transLang($otpResponse['message']));
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }

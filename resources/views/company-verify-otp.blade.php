@@ -294,92 +294,104 @@
     <!--begin::Main-->
     <!--begin::Root-->
 
+    <div class="d-flex flex-column flex-root">
+        <!--begin::Authentication - Sign-in -->
+        <div class="d-flex flex-column flex-lg-row flex-column-fluid overflow-hidden">
+            <!--begin::Aside-->
+            <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2"
+                style="background-image: url(assets/media/misc/bg7.jpg);background-size: cover;height: 100%;">
+                <!--begin::Content-->
+                <div class="d-flex flex-column flex-center w-100">
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6 col-sm-offset-2"><!-- col -->
-                <h2>
-                    <h1>Check your email!
-                       </h1>
-                </h2>
-                <p class="desc">We’ve sent a four-digit confirmation code to <strong></strong>.
-                    Enter it below to
-                    confirm your email address.</p>
-                <br><br><br>
-                @if (session('error'))
-                <div class="alert alert-danger alert-dismissible">
-                    {{ session('error') }}
-                </div>
-            @endif
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible">
-                    {{ session('success') }}
-                </div>
-            @endif
-                @if ($errors->has('otp'))
-                    <div class="error">{{ $errors->first('otp') }}</div>
-                @endif
-         
-                <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden" id="kt_sign_in_form"
-                    action="{{  route('verifyOtpCheck')}}"
-                    method="POST">
+                    <!--end::Logo-->
+                    <div class="w-450px">
+                        <!--begin::Wrapper-->
+                        <div class="card card-body p-10 zoom-out">
+                            <!--begin::Logo-->
+                            <a href="#" class="mb-0 mb-lg-12 text-center">
+                                <img alt="Logo" src="{{ asset('assets/images/logo/logo.png') }}" class="h-75px" />
 
-                    @csrf
-                    <input type="hidden" name='otp' id='otp'>
+                            </a>
 
-                    <!--begin::Input group=-->
-                    <label><span class="normal">Your </span>confirmation code</label>
-                    <div class="confirmation_code split_input large_bottom_margin" data-multi-input-code="true">
-                        <div class="confirmation_code_group">
-                            <div class="split_input_item input_wrapper">
-                                <input type="text" class="inline_input" id='first'   maxlength="1">
+                            <!--begin::Form-->
+                            <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden"
+                                id="kt_sign_in_form" action="{{ route('verifyOtpCheck') }}" method="POST">
+                                @csrf
+                                <div class="fv-row mb-8 fv-plugins-icon-container">
+                                    <h2>Check your email!</h2>
+                                    <p>Please enter the four-digit confirmation code we've sent to your email address
+                                        below to verify it.
+                                    </p>
+                                </div>
 
-                            </div>
-                            <div class="split_input_item input_wrapper">
-                                <input type="text" class="inline_input" id='second'   maxlength="1">
-                                 
-                            </div>
+                                <input type="hidden" name='otp' id='otp'>
+                                <!--begin::Input group=-->
+                                <div class="mb-10">
+                                    <!--begin::Label-->
+                                    <div class="fw-bold text-start text-dark fs-6 mb-1 ms-1">
+                                        Type your 4 digit security code</div>
+                                    <!--end::Label-->
+                                    <!--begin::Input group-->
+                                    <div class="d-flex flex-wrap flex-stack">
+                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
+                                            maxlength="1" id="first"
+                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
+                                            inputmode="text">
+                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
+                                            maxlength="1" id="second"
+                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
+                                            inputmode="text">
+                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
+                                            maxlength="1" id="third"
+                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
+                                            inputmode="text">
+                                        <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
+                                            maxlength="1" id="fourth"
+                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
+                                            inputmode="text">
+                                    </div>
+                                    @if ($errors->has('otp'))
+                                        <div class="error">{{ $errors->first('otp') }}</div>
+                                    @endif
+                                    @if (session('error'))
+                                        <div class="error"> {{ session('error') }}</div>
+                                    @endif
+                                    @if (session('success'))
+                                        <div class="text-success"> {{ session('success') }}</div>
+                                    @endif
+                                    <!--begin::Input group-->
+                                </div>
 
+                                <!--begin::Submit button-->
+                                <div class="text-center mt-10">
+                                    <button id="kt_sign_in_submit" class="btn btn-primary signin-btn" type="button">
+                                        <!--begin::Indicator label-->
+                                        <span class="indicator-label">Verify</span>
+                                        <!--end::Indicator label-->
+                                        <!--begin::Indicator progress-->
+                                        <span class="indicator-progress">Please wait...
+                                            <span
+                                                class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                        <!--end::Indicator progress-->
+                                    </button>
+                                </div>
+                                <!--end::Submit button-->
+                                <a href="{{ route('company.resendOtp') }}" class="text-primary">
+                                    Resend Code</a>
+                            </form>
+                            <!--end::Form-->
                         </div>
-
-                        <div class="confirmation_code_span_cell">—</div>
-
-                        <div class="confirmation_code_group">
-                            <div class="split_input_item input_wrapper">
-                                <input type="text" class="inline_input"  maxlength="1" id='third'>
-                                
-                            </div>
-                            <div class="split_input_item input_wrapper">
-                                <input type="text" class="inline_input"  maxlength="1"
-                                    id='fourth'>
-                            </div>
-
-                        </div>
+                        <!--end::Wrapper-->
                     </div>
-                    <!--end::Input group=-->
 
-                    <!--begin::Submit button-->
-                    <div class="text-center mt-10">
-                        <button id="kt_sign_in_submit" class="btn btn-primary signin-btn" type="button">
-                            <!--begin::Indicator label-->
-                            <span class="indicator-label">Verify</span>
-                            <!--end::Indicator label-->
-                            <!--begin::Indicator progress-->
-                            <span class="indicator-progress">Please wait...
-                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                            <!--end::Indicator progress-->
-                        </button>
-                    </div>
-                    <!--end::Submit button-->
-
-                </form>
-
-                <a href="{{ route('company.resendOtp') }}">resendOtp</a>
-
-
-            </div><!-- endof col -->
+                </div>
+                <!--end::Content-->
+            </div>
+            <!--end::Aside-->
         </div>
+        <!--end::Authentication - Sign-in-->
     </div>
+
     <script>
         var hostUrl = "assets/index.html";
     </script>
