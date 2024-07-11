@@ -141,8 +141,4 @@ class AnnouncementServices
     }
     return $announcementDetails->orderBy('id', 'DESC')->paginate(10);
   }
-  public function assignAnncouncement($data, $id)
-  {
-    return $this->announcementRepository->find($id)->update($data);
-  }
 }
