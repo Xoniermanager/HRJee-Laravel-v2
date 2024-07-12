@@ -6,10 +6,10 @@
 
 @php
     if ($editAnnouncementDetails->all_company_branch == 0) {
-        $selectedDepartmentId = $editAnnouncementDetails->departments->pluck('id');
+        $selectedCompanyBranchId = $editAnnouncementDetails->companyBranches->pluck('id');
     }
     if ($editAnnouncementDetails->all_department == 0) {
-        $selectedCompanyBranchId = $editAnnouncementDetails->companyBranches->pluck('id');
+        $selectedDepartmentId = $editAnnouncementDetails->departments->pluck('id');
     }
     if ($editAnnouncementDetails->all_designation == 0) {
         $selectedDesignationId = $editAnnouncementDetails->designations->pluck('id');
