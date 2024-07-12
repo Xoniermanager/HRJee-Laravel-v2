@@ -128,8 +128,8 @@
                                         <select class="form-control" name="policy_category_id">
                                             <option value="">Select the News Category</option>
                                             @foreach ($allPolicyCategoryDetails as $policyCategoryDetails)
-                                                <option value="{{ $policyCategoryDetails->id }}">
-                                                       {{ old('policy_category_id') == $policyCategoryDetails->name ? 'selected' : ''}}</option>
+                                                <option value="{{ $policyCategoryDetails->id }}"
+                                                       {{ old('policy_category_id') == $policyCategoryDetails->name ? 'selected' : ''}}>{{ $policyCategoryDetails->name }}</option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('policy_category_id'))
