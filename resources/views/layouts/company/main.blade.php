@@ -103,8 +103,8 @@
                 </div>
 </body>
 <script>
-    function addUpdateFormData(messageBox, method, url, formId, btnClose = "", reloadUrl = '', error_type = null,
-        dataTable = '') {
+    function addUpdateFormData(messageBox, method, url, formId, btnClose = "", reloadUrl = '', error_type = null
+        , dataTable = '') {
         let btn = $(`.${formId}`);
         let loader = $('.' + messageBox);
 

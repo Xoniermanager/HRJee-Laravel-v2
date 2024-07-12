@@ -237,9 +237,13 @@
         var check_all_company_branch = {{ $editAnnouncementDetails->all_company_branch }}
         var check_all_designaion = {{ $editAnnouncementDetails->all_designation }}
         var check_assign_announcement = {{ $editAnnouncementDetails->assign_announcement }}
-
-        if (check_condition == 0) {
+        if (check_condition == 0) 
+        {
             get_designation_by_department_id({{ $selectedDesignationId ?? '' }});
+        }
+        if (check_condition ==  1) 
+        {
+            get_designation_by_department_id('',true,'');
         }
         if (check_all_company_branch == 1) {
             get_all_user(true, '', '');
