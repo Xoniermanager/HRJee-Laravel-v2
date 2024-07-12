@@ -132,7 +132,7 @@
                     type: "get",
                     success: function(res) {
                         Swal.fire("Done!", "It was succesfully deleted!", "success");
-                        $('#announcement_list').replaceWith(response.data);
+                        $('#announcement_list').replaceWith(res.data);
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         Swal.fire("Error deleting!", "Please try again", "error");

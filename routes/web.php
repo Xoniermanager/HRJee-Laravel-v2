@@ -16,6 +16,7 @@ use App\Http\Controllers\Employee\AttendanceServiceController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
+use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\LeaveTrackingController;
 
@@ -96,5 +97,8 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
     //Leave Tracking
     Route::get('/leave-tracking/{id}', [LeaveTrackingController::class, 'index'])->name('employee.leave.tracking');
+
+    //Employee Break History
+    Route::post('/break-history', [EmployeeBreakHistoryController::class, 'store'])->name('employee_break_history');
 });
 /**----------------- End Employee Pannel Route ----------------------*/
