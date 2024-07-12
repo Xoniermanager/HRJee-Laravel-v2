@@ -11,9 +11,17 @@ use Throwable;
 class AnnouncementServices
 {
   private $announcementRepository;
-  public function __construct(AnnouncementRepository $announcementRepository)
+  private $designationServices;
+  private $departmentServices;
+  private $userDetailServices;
+  private $branchServices;
+  public function __construct(BranchServices $branchServices, UserDetailServices $userDetailServices, AnnouncementRepository $announcementRepository, DepartmentServices $departmentServices, DesignationServices $designationServices)
   {
     $this->announcementRepository = $announcementRepository;
+    $this->departmentServices = $departmentServices;
+    $this->designationServices = $designationServices;
+    $this->userDetailServices = $userDetailServices;
+    $this->branchServices = $branchServices;
   }
   public function all()
   {
@@ -141,5 +149,59 @@ class AnnouncementServices
       );
     }
     return $announcementDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+
+  public function getAllAssignedAnnouncement($user)
+  {
+    try {
+      $announcementIds = [];
+      $announcements = $this->announcementRepository->where('company_id', $user->company_id)->get();
+      //->select('id','title','image','start_date','end_date','file','description','news_category_id')
+      $departments = $this->departmentServices->getAllActiveDepartmentsByCompanyId($user->company_id);
+      $userDetails = $this->userDetailServices->getDetailsByUserId($user->id);
+      foreach ($announcements as $row) {
+        // check for branch 
+        if ($row->all_company_branch == 1) {
+          $branches = $this->branchServices->getAllCompanyBranchByCompanyId($row->company_id);
+          $branchIds = $branches->pluck('id')->toArray();
+        } else if ($row->all_branch == 0) {
+          $branchIds = $row->companyBranches()->pluck('company_branch_id')->toArray();
+        }
+
+        // check for department 
+        if ($row->all_department == 1) {
+          $departmentIds = $departments->pluck('id')->toArray();
+        } else if ($row->all_department == 0) {
+          $departmentIds = $row->departments()->pluck('department_id')->toArray();
+        }
+
+
+        // check for designation 
+        if ($row->all_designation == 1) {
+          $designationIds = $this->designationServices->getAllDesignationByDepartmentIds($departmentIds)->pluck('id')->toArray();
+        } else if ($row->all_designation == 0) {
+          $designationIds = $row->designations()->pluck('designation_id')->toArray();
+        }
+
+        // check user is exists or not in assigned branches & departments & designations 
+        if (in_array($userDetails->company_branch_id, $branchIds) && in_array($userDetails->department_id, $departmentIds) &&  in_array($userDetails->designation_id, $designationIds)) {
+          array_push($announcementIds, $row->id);
+        }
+      }
+
+
+      $finalAnnouncement = $announcements->whereIn('id', $announcementIds)->makeHidden([
+        "all_branch",
+        "all_department",
+        "all_designation",
+        "company_id",
+        "company_branch_id",
+        "created_at",
+        "updated_at"
+      ]);
+      return $finalAnnouncement;
+    } catch (Throwable $th) {
+      return errorMessage('null', $th->getMessage());
+    }
   }
 }

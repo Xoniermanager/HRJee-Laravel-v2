@@ -76,7 +76,7 @@
                                 </a>
 
                                 <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                    onclick="deleteFunction('announcement_list',`{{ route('announcement.delete', $announcementDetails->id) }}`)">
+                                    onclick="deleteFunction('{{$announcementDetails->id}}')">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

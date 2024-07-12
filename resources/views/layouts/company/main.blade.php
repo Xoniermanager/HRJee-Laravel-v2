@@ -50,23 +50,27 @@
         rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
     </script>
-    <script src="https://cdn.tiny.cloud/1/z1qoq3vmki5r4bldcrbrijy8rm3txecup4qyxt3wpfj7qhwl/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/z1qoq3vmki5r4bldcrbrijy8rm3txecup4qyxt3wpfj7qhwl/tinymce/7/tinymce.min.js"
+        referrerpolicy="origin"></script>
 
-    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
-    <script>
-      tinymce.init({
-        selector: '#editor',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
-        height:300,
-        ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
-      });
+    <!-- Place the following <script>
+        and < textarea > tags your HTML 's <body> -->  
+           <script>
+            tinymce.init({
+                selector: '#editor',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                tinycomments_mode: 'embedded',
+                tinycomments_author: 'Author name',
+                height: 300,
+                ai_request: (request, respondWith) => respondWith.string(() => Promise.reject(
+                    "See docs to implement AI Assistant")),
+            });
     </script>
 </head>
 <!--end::Head-->
-<!--begin::Body-->
+    <!--begin::Body-->
+
 <body id="kt_body" class="sidebar-enabled">
     <!--begin::Theme mode setup on page load-->
     <!--begin::Root-->
@@ -99,51 +103,24 @@
                 </div>
 </body>
 <script>
-    function deleteFunction(replaceWithDataId, url) {
-        event.preventDefault();
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: url,
-                    type: "get",
-                    success: function(res) {
-                        Swal.fire("Done!", "It was succesfully deleted!", "success");
-                        $(`#${replaceWithDataId}`).replaceWith(res.data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        Swal.fire("Error deleting!", "Please try again", "error");
-                    }
-                });
-            }
-        });
-    }
-
-    function addUpdateFormData(messageBox, method, url, formId, btnClose = "", reloadUrl = '', error_type = null
-        , dataTable = '') {
+    function addUpdateFormData(messageBox, method, url, formId, btnClose = "", reloadUrl = '', error_type = null,
+        dataTable = '') {
         let btn = $(`.${formId}`);
         let loader = $('.' + messageBox);
 
         $.ajax({
-            type: method
-            , dataType: 'json'
-            , url: url
-            , data: new FormData($('#' + formId)[0])
-            , processData: false
-            , contentType: false
-            , beforeSend: () => {
+            type: method,
+            dataType: 'json',
+            url: url,
+            data: new FormData($('#' + formId)[0]),
+            processData: false,
+            contentType: false,
+            beforeSend: () => {
                 btn.attr('disabled', true);
                 loader.html(`{!! transLang('loader_message') !!}`).removeClass(
                     'd-none alert-danger alert-success').addClass('alert-info');
-            }
-            , error: (jqXHR, exception) => {
+            },
+            error: (jqXHR, exception) => {
                 let data = JSON.parse(jqXHR.responseText);
                 $(".field_error").text('');
                 $.each(data.errors, function(key, value) {
@@ -160,8 +137,8 @@
 
                 btn.attr('disabled', false);
                 loader.html(``).removeClass('alert alert-info');
-            }
-            , success: response => {
+            },
+            success: response => {
                 btn.attr('disabled', false);
                 if (btnClose != "") {
                     $("." + btnClose).click();
@@ -187,8 +164,6 @@
         $('#' + id)[0].reset();
         $("textarea").text("");
     }
-
-
 </script>
 <!--end::Body-->
 @include('layouts.company.footer')

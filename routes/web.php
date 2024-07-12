@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Employee\NewsController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
+use App\Http\Controllers\Employee\AnnouncementController;
 use App\Http\Controllers\Employee\ApplyLeaveController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Employee\ContactUsController;
@@ -45,8 +46,15 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
         Route::get('/news/details/{id}', 'viewDetails')->name('employee.news.details');
     });
 
+    //News Module
+    Route::controller(AnnouncementController::class)->group(function () {
+        Route::get('/announcement', 'index')->name('employee.announcement.index');
+        Route::get('/announcement/details/{id}', 'viewDetails')->name('employee.announcement.details');
+    });
+
     //Policy Module
     Route::get('/policy', [PolicyController::class, 'index'])->name('employee.policy');
+    Route::get('/details', [PolicyController::class, 'viewDetails'])->name('employee.policy.details');
 
     //HR Service Module
     Route::get('/hr/service', [HRServiceController::class, 'index'])->name('employee.hr.service');

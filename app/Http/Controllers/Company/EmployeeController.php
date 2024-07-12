@@ -204,4 +204,10 @@ class EmployeeController extends Controller
         $singleViewEmployeeDetails = $user->load('assetDetails','familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
+
+
+    public function exportEmployee()
+    {
+        
+    }
 }

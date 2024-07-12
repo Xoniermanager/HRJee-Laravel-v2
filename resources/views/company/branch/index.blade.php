@@ -404,8 +404,7 @@
         /**-------------End----------*/
 
         /** Validation and Ajax Creation and Updated*/
-        jQuery(document).ready(function($) 
-        {
+        jQuery(document).ready(function($) {
             jQuery("#edit_company_branch_form").validate({
                 rules: {
                     name: "required",
@@ -535,7 +534,7 @@
             jQuery('#edit_company_branch').modal('show');
         }
 
-       
+
 
         function handleStatus(id) {
             var checked_value = $('#checked_value_' + id).prop('checked');
@@ -566,6 +565,34 @@
                     }
                 }
             })
+        }
+
+
+        function deleteFunction(id) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('company.branch.delete') }}` + "/" + id,
+                        type: "get",
+                        success: function(res) {
+                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            $('#company_branch_list').replaceWith(response.data);
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire("Error deleting!", "Please try again", "error");
+                        }
+                    });
+                }
+            });
         }
         /**-------------End----------*/
     </script>

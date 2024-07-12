@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-    Policy
+    Announcement
 @endsection
 <!--begin::Header-->
 <!--end::Header-->
@@ -16,7 +16,7 @@
                 <div class="card-header p-4">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
-                        <h3 class="fw-bold m-0"> All Policies</h3>
+                        <h3 class="fw-bold m-0"> All Announcement</h3>
                     </div>
                     <!--end::Card title-->
                 </div>
@@ -30,12 +30,11 @@
                             <div class="card-xl-stretch me-md-6">
                                 <!--begin::Image-->
                                 <img src="{{ $item->image }}" class="card-rounded min-h-175px mb-5">
-
                                 <!--end::Image-->
                                 <!--begin::Body-->
                                 <div class="m-0">
                                     <!--begin::Title-->
-                                    <a href="{{ route('employee.news.details',$item->id) }}"
+                                    <a href="{{ route('employee.announcement.details',$item->id) }}"
                                         class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">
                                         {{  Str::of($item->title)->limit(20)  }}</a>
                                     <!--end::Title-->

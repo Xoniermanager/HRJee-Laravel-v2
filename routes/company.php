@@ -56,7 +56,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('branch', 'index')->name('branch');
         Route::post('create', 'store')->name('company.branch.store');
         Route::post('/update', 'update')->name('company.branch.update');
-        Route::get('/delete', 'destroy')->name('company.branch.delete');
+        Route::get('/delete/{id?}', 'destroy')->name('company.branch.delete');
         Route::get('/status/update', 'statusUpdate')->name('company.branch.statusUpdate');
         Route::get('/company/branch/search', 'searchBranchFilter')->name('company.branch.search');
     });
@@ -145,6 +145,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/get/filter/list', 'getfilterlist');
         Route::get('/get/personal/details/{users:id}', 'getPersonalDetails')->name('employee.personal.details');
         Route::get('/view/{user:id}', 'view')->name('employee.view');
+        Route::post('/export', 'exportEmployee')->name('export.employee');
     });
     //Advance Details for employee
     Route::controller(UserAdvanceDetailsController::class)->group(function () {

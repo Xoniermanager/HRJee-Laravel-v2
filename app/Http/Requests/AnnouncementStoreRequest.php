@@ -26,7 +26,7 @@ class AnnouncementStoreRequest extends FormRequest
             "start_date_time"       => "required|after_or_equal:date",
             "expires_at_time"       => "nullable|after_or_equal:start_date_time",
             "description"           => "required",
-            "image"                 => 'mimes|jpeg|png|jpg|gif|svg|max:2048',
+            "image"                 => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
             'company_branch_id'     => 'required_if:all_company_branch,==,0|array',
             'company_branch_id.*'   => 'exists:company_branches,id',
             'department_id'         => 'required_if:all_department,==,0|array',

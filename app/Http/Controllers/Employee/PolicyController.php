@@ -20,4 +20,10 @@ class PolicyController extends Controller
         $data = $this->policyService->getAllAssignedPolicies($user);
         return view('employee.policy.index', compact('data'));
     }
+
+    public function viewDetails(Request $request)
+    {
+        $policy = $this->policyService->findByPolicyId($request->id);
+        return view('employee.policy.details',compact('policy'));
+    }
 }
