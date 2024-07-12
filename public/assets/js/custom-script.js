@@ -201,7 +201,7 @@ function get_designation_by_department_id(selectedDesignationId = null, all_depa
     }
     $.ajax({
         type: 'GET',
-        url: company_ajax_base_url + '/designation/get-designation-by-departments',
+        url: '/company/designation/get-designation-by-departments',
         dataType: "json",
         data: {
             'department_id': selectedValues,
@@ -264,7 +264,8 @@ function get_checked_value(type = null) {
             $('#designation_checkbox').val(1);
             $('#designation_id').prop('disabled', true);
             get_all_user('', '', true);
-        } else {
+        }
+        else {
             $('#designation_checkbox').val(0);
             $('#designation_id').prop('disabled', false);
             get_all_user();
@@ -272,12 +273,11 @@ function get_checked_value(type = null) {
     }
 }
 function get_all_user(all_company_branch = false, all_department = false, all_designation = false) {
-    let company_branch_ids = $('#company_branch').val();
     $.ajax({
-        url: company_ajax_base_url + '/announcement/get-all-user',
+        url: '/company/announcement/get-all-user',
         type: 'get',
         data: {
-            'company_branch_id': company_branch_ids,
+            'company_branch_id': $('#company_branch').val(),
             'department_ids': $('#department_id').val(),
             'designation_ids': $('#designation_id').val(),
             'all_company_branch': all_company_branch,
