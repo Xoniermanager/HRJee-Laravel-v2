@@ -24,36 +24,27 @@
                         <td>{{ $announcementDetails->title }} </td>
                         <td>{{ date('Y-m-d h:i A', strtotime($announcementDetails->start_date_time)) }}</td>
                         <td>{{ date('Y-m-d h:i A', strtotime($announcementDetails->expires_at_time)) }}</td>
-                        @if ($announcementDetails->assign_announcement == 1)
-                            <td>
-                                <a href="#" data-bs-toggle="modal"
-                                    onclick="assign_announcement('{{ $announcementDetails->id }}','{{ $announcementDetails->assign_announcement }}',
+                        @php
+                            $button = '';
+                            if ($announcementDetails->assign_announcement == 1) {
+                                $button = 'Now';
+                            } else {
+                                $button = 'Later';
+                            }
+                        @endphp
+                        <td>
+                            <a href="#" data-bs-toggle="modal"
+                                onclick="assign_announcement('{{ $announcementDetails->id }}','{{ $announcementDetails->assign_announcement }}',
                                     '{{ $announcementDetails->notification_schedule_time }}','{{ $announcementDetails->all_company_branch }}',
                                     '{{ $announcementDetails->all_department }}','{{ $announcementDetails->all_designation }}',
                                     '{{ $announcementDetails->companyBranches->pluck('id') }}','{{ $announcementDetails->departments->pluck('id') }}',
                                     '{{ $announcementDetails->designations->pluck('id') }}')"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                    <span class="btn btn-primary btn-sm me-1">Now</span>
-                                    <!--end::Svg Icon-->
-                                </a>
-                                {{-- <button>Now</button> --}}
-                            </td>
-                        @else
-                            <td>
-                                <a href="#" data-bs-toggle="modal"
-                                    onclick="assign_announcement('{{ $announcementDetails->id }}','{{ $announcementDetails->assign_announcement }}',
-                                '{{ $announcementDetails->notification_schedule_time }}','{{ $announcementDetails->all_company_branch }}',
-                                '{{ $announcementDetails->all_department }}','{{ $announcementDetails->all_designation }}',
-                                '{{ $announcementDetails->companyBranches->pluck('id') }}','{{ $announcementDetails->departments->pluck('id') }}',
-                                '{{ $announcementDetails->designations->pluck('id') }}')"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                    <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                    <span class="btn btn-primary btn-sm me-1">Later</span>
-                                    <!--end::Svg Icon-->
-                                </a>
-                            </td>
-                        @endif
+                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                <span class="btn btn-primary btn-sm me-1">{{ $button }}</span>
+                                <!--end::Svg Icon-->
+                            </a>
+                        </td>
                         <td> <label class="switch">
                                 <input type="checkbox" <?= $announcementDetails->status == '1' ? 'checked' : '' ?>
                                     onchange="handleStatus({{ $announcementDetails->id }})"
@@ -76,7 +67,7 @@
                                 </a>
 
                                 <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                    onclick="deleteFunction('announcement_list',`{{ route('announcement.delete', $announcementDetails->id) }}`)">
+                                    onclick="deleteFunction('{{ $announcementDetails->id }}')">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

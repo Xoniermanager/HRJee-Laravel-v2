@@ -128,7 +128,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: company_ajax_base_url + '/announcement/delete/' + id,
+                    url: '/company/announcement/delete/' + id,
                     type: "get",
                     success: function(res) {
                         Swal.fire("Done!", "It was succesfully deleted!", "success");
@@ -182,33 +182,30 @@
             jQuery('#time').val(time)
             assignAnnouncement(0)
         }
-        if (all_company_branch_check == 1)
-        {
+        if (all_company_branch_check == 1) {
             jQuery('#company_branches_checkbox').prop('checked', true);
-            get_checked_value('company_branch');
+            jQuery('#company_branch').prop('disabled', true);
         } 
-        else if (all_company_branch_check == 0)
-        {
+        else if (all_company_branch_check == 0) {
             $("#company_branch").val(JSON.parse(all_company_branch)).trigger('change');
         }
-        if (all_department_check == 1) 
-        {
+        if (all_department_check == 1) {
             jQuery('#department_checkbox').prop('checked', true);
-            get_checked_value('department');
-        } else if (all_department_check == 0)
-        {
+            jQuery('#department_id').prop('disabled', true);
+        } 
+        else if (all_department_check == 0) {
             $("#department_id").val(JSON.parse(all_department)).trigger('change');
             get_designation_by_department_id(JSON.parse(all_designation));
         }
         if (all_designation_check == 1) {
             jQuery('#designation_checkbox').prop('checked', true);
-            get_checked_value('designation');
+            jQuery('#designation').prop('disabled', true);
         }
         jQuery('#assign_announcement').modal('show');
+        get_all_user();
     }
     jQuery.noConflict();
     jQuery(document).ready(function($) {
-        get_all_user();
         jQuery("#assign_announcement_form").validate({
             rules: {
                 assign_announcement: "required",
