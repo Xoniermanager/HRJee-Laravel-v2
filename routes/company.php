@@ -30,6 +30,7 @@ use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
+use App\Http\Controllers\Company\BreakTypeController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
@@ -95,7 +96,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('get-all-user', 'getAllUserByBranchIds');
         Route::post('/assign', 'updateAssignAnnounce')->name('assign.announcement');
     });
-    
+
     //Country Module
     Route::prefix('/country')->controller(CountryController::class)->group(function () {
         Route::get('/', 'index')->name('country.index');
@@ -401,6 +402,16 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/delete/{id}', 'destroy')->name('policy.delete');
         Route::get('/status/update', 'statusUpdate')->name('policy.statusUpdate');
         Route::get('/search/filter', 'serachPolicyFilterList');
+    });
+
+    //Break Types Module
+    Route::prefix('/break-type')->controller(BreakTypeController::class)->group(function () {
+        Route::get('/', 'index')->name('break_type.index');
+        Route::post('/create', 'store')->name('break_type.store');
+        Route::post('/update', 'update')->name('break_type.update');
+        Route::get('/delete/{id}', 'destroy')->name('break_type.delete');
+        Route::get('/status/update', 'statusUpdate')->name('break_type.statusUpdate');
+        Route::get('/search/filter', 'serachBreakTypeFilterList');
     });
 });
 /**---------------End Company Panel Route----------------*/

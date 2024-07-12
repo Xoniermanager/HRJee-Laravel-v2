@@ -49,7 +49,8 @@ class EmployeeAttendanceService
         $data = 'Puch Out';
       }
       return $response = ['data' => $data, 'status' => true];
-    } else {
+    } 
+    else {
       return $response = ['status' => true];
     }
   }
