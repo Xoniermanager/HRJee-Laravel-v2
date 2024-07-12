@@ -42,7 +42,7 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     //News Module
     Route::controller(NewsController::class)->group(function () {
         Route::get('/news', 'index')->name('employee.news');
-        Route::get('/news/details', 'viewDetails')->name('employee.news.details');
+        Route::get('/news/details/{id}', 'viewDetails')->name('employee.news.details');
     });
 
     //Policy Module

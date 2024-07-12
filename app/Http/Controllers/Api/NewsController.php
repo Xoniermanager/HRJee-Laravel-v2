@@ -17,7 +17,8 @@ class NewsController extends Controller
 
     public function assignedNews(Request $request)
     {
-        $data = $this->newsService->getAllAssignedNews($request);
+        $user = auth()->guard('employee_api')->user();
+        $data = $this->newsService->getAllAssignedNews($request, $user);
         return apiResponse('news', $data);
     }
 }

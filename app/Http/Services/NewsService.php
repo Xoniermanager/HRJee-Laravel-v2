@@ -174,21 +174,21 @@ class NewsService
   }
 
 
-  public function getAllAssignedNews($request)
+  public function getAllAssignedNews($request,$user)
   {
     try {
 
-      $user = auth()->guard('employee_api')->user();
+   
       $newsIds = [];
       $news = $this->newsRepository->with('newsCategories:id,name')->where('company_id', $user->company_id)->get();
       // ->select('id','title','image','start_date','end_date','file','description','news_category_id')
-      $departments = $this->departmentServices->getAllActiveDepartmentsUsingByCompanyID($user->company_id);
+      $departments = $this->departmentServices->getAllActiveDepartmentsByCompanyId($user->company_id);
       $userDetails = $this->userDetailServices->getDetailsByUserId($user->id);
 
       foreach ($news as $row) {
         // check for branch 
         if ($row->all_company_branch == 1) {
-          $branches = $this->branchServices->allActiveCompanyBranchesByUsingCompanyId($row->company_id);
+          $branches = $this->branchServices->getAllCompanyBranchByCompanyId($row->company_id);
           $branchIds = $branches->pluck('id')->toArray();
         } else if ($row->all_company_branch == 0) {
           $branchIds = $row->companyBranches()->pluck('company_branch_id')->toArray();
@@ -204,7 +204,7 @@ class NewsService
 
         // check for designation 
         if ($row->all_designation == 1) {
-          $designationIds = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds)->pluck('id')->toArray();
+          $designationIds = $this->designationServices->getAllDesignationByDepartmentIds($departmentIds)->pluck('id')->toArray();
         } else if ($row->all_designation == 0) {
           $designationIds = $row->designations()->pluck('designation_id')->toArray();
         }

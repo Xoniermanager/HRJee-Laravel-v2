@@ -51,6 +51,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('company/change/password', 'company_change_password')->name('company.change.password');
     });
 
+    
     Route::controller(CompanyBranchesController::class)->group(function () {
         Route::get('branch', 'index')->name('branch');
         Route::post('create', 'store')->name('company.branch.store');
@@ -340,6 +341,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/delete', 'destroy')->name('asset.delete');
         Route::get('/search/filter', 'serachAssetFilterList');
         Route::get('/get/all/asset/{id}', 'getAllAssetByCategory');
+        Route::get('/dashboard', 'getDashboard')->name('asset.dashboard');
     });
 
     //News Category Module

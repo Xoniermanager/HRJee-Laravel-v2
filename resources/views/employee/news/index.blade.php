@@ -24,60 +24,40 @@
 
                 <div class="row g-10">
                     <!--begin::Col-->
-                    <div class="col-md-4">
-                        <!--begin::Feature post-->
-                        <div class="card-xl-stretch me-md-6">
-                            <!--begin::Image-->
-                            <img src="{{ asset('employee/assets/media/news/1.png') }}"
-                                class="card-rounded min-h-175px mb-5">
+                    @forelse ($data as $item)
+                        <div class="col-md-4">
+                            <!--begin::Feature post-->
+                            <div class="card-xl-stretch me-md-6">
+                                <!--begin::Image-->
+                                <img src="{{ $item->image }}" class="card-rounded min-h-175px mb-5">
 
-                            <!--end::Image-->
-                            <!--begin::Body-->
-                            <div class="m-0">
-                                <!--begin::Title-->
-                                <a href="{{route('employee.news.details')}}"
-                                    class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">Scrum
-                                    Meeting</a>
-                                <!--end::Title-->
-                                <!--begin::Text-->
-                                <div class="fw-semibold fs-5 text-gray-600 text-dark my-4">
-                                    <i class="fa fa-calendar-days"></i> March 27,2024
+                                <!--end::Image-->
+                                <!--begin::Body-->
+                                <div class="m-0">
+                                    <!--begin::Title-->
+                                    <a href="{{ route('employee.news.details',$item->id) }}"
+                                        class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">
+                                        {{  Str::of($item->title)->limit(20)  }}</a>
+                                    <!--end::Title-->
+                                    <!--begin::Text-->
+                                    <div class="fw-semibold fs-5 text-gray-600 text-dark my-4">
+                                        <i class="fa fa-calendar-days"></i> {{date('y-m-d h:i A',strtotime($item->created_at)) }}
+                                    </div>
+                                    <!--end::Text-->
+
                                 </div>
-                                <!--end::Text-->
-
+                                <!--end::Body-->
                             </div>
-                            <!--end::Body-->
+                            <!--end::Feature post-->
                         </div>
-                        <!--end::Feature post-->
-                    </div>
-                    <!--end::Col-->
-                    <!--begin::Col-->
-                    <div class="col-md-4">
-                        <!--begin::Feature post-->
-                        <div class="card-xl-stretch me-md-6">
-                            <!--begin::Image-->
-                            <img src="{{ asset('employee/assets/media/news/2.jpg') }}"
-                                class="card-rounded min-h-175px mb-5">
+                    @empty
+                        <p> not found</p>
+                    @endforelse
 
-                            <!--end::Image-->
-                            <!--begin::Body-->
-                            <div class="m-0">
-                                <!--begin::Title-->
-                                <a href="{{route('employee.news.details')}}"
-                                    class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">First news</a>
-                                <!--end::Title-->
-                                <!--begin::Text-->
-                                <div class="fw-semibold fs-5 text-gray-600 text-dark my-4">
-                                    <i class="fa fa-calendar-days"></i> March 27,2024
-                                </div>
-                                <!--end::Text-->
 
-                            </div>
-                            <!--end::Body-->
-                        </div>
-                        <!--end::Feature post-->
-                    </div>
+
                     <!--end::Col-->
+
 
                 </div>
             </div>

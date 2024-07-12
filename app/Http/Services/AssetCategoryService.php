@@ -33,6 +33,10 @@ class AssetCategoryService
   {
     return $this->assetCategoryRepository->where('status', '1')->get();
   }
+  public function getAllActiveAssetCategoryWithAsset()
+  {
+    return $this->assetCategoryRepository->has('assets')->where('status', '1')->get();
+  }
 
   public function serachAssetCategoryFilterList($request)
   {

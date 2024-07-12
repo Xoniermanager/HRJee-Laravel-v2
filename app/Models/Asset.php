@@ -19,4 +19,8 @@ class Asset extends Model
     {
         return $this->belongsTo(AssetCategory::class,'asset_category_id','id');
     }
+    public function userAsset()
+    {
+        return $this->hasOne(UserAsset::class,'asset_id','id');
+    }
 }

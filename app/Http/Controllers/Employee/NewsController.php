@@ -3,18 +3,28 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\NewsService;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
-    public function index()
+    protected $newsService;
+    public function __construct(NewsService $newsService)
     {
-        return view('employee.news.index');
+        $this->newsService = $newsService;
+    }
+    public function index(Request $request)
+    {
+        $user = auth()->guard('employee')->user();
+        $data = $this->newsService->getAllAssignedNews($request, $user);
+        return view('employee.news.index', compact('data'));
     }
 
-    public function viewDetails()
+    public function viewDetails(Request $request)
     {
-        return view('employee.news.details');
+        $news = $this->newsService->findByNewsId($request->id);
+        // $user = auth()->guard('employee')->user();
+        // $data = $this->newsService->getAllAssignedNews($);
+        return view('employee.news.details',compact('news'));
     }
-    
 }

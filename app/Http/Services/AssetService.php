@@ -13,9 +13,20 @@ class AssetService
   {
     $this->assetRepository = $assetRepository;
   }
-  public function all()
+  public function all($type = '')
   {
-    return $this->assetRepository->orderBy('id', 'DESC')->paginate(10);
+    $query = $this->assetRepository->orderBy('id', 'DESC');
+    if ($type == 'all') {
+      $query = $query->get();
+    } else {
+      $query =   $query->paginate(10);
+    }
+    return $query;
+  }
+  public function allAssetWithUser()
+  {
+
+    return  $this->assetRepository->with('userAsset.user')->orderBy('id', 'DESC')->paginate(10);
   }
   public function create(array $data)
   {
