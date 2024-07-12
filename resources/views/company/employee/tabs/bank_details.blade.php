@@ -2,7 +2,7 @@
     <!--begin::Wrapper-->
     <form id="bank_details_form">
         @csrf
-        <input type="hidden" name="user_id" value="{{ $userbankDetails->user_id ?? (Request::segment(3) ?? '') }}">
+        <input type="hidden" name="user_id" value="{{ $userbankDetails->user_id ?? (Request::segment(4) ?? '') }}">
         <input type="hidden" name="id" value="{{ $userbankDetails->id ?? '' }}">
 
         <div class="row">

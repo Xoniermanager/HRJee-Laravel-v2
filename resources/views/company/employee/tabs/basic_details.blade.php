@@ -165,7 +165,7 @@
             data: basic_details_Data,
             success: function(response) {
                 if (response.data.status == 'createData') {
-                    location.href = '/employee/edit/' + response.data.id;
+                    location.href = '/company/employee/edit/' + response.data.id;
                     setTimeout(function() {
                         Swal.fire({
                             position: "top-end",

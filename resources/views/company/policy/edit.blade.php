@@ -4,13 +4,11 @@
     Edit Policy
 @endsection
 @php
- 
-
     if ($editPolicyDetails->all_company_branch == 0) {
-        $selectedDepartmentId = $editPolicyDetails->departments->pluck('id');
+        $selectedCompanyBranchId = $editPolicyDetails->companyBranches->pluck('id');
     }
     if ($editPolicyDetails->all_department == 0) {
-        $selectedCompanyBranchId = $editPolicyDetails->companyBranches->pluck('id');
+        $selectedDepartmentId = $editPolicyDetails->departments->pluck('id');
     }
     if ($editPolicyDetails->all_designation == 0) {
         $selectedDesignationId = $editPolicyDetails->designations->pluck('id');
@@ -29,9 +27,9 @@
                         <form action="{{ route('policy.update', $editPolicyDetails->id) }}" method="post"
                             enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="all_company_branch" value="0"> 
-                            <input type="hidden" name="all_department" value="0"> 
-                            <input type="hidden" name="all_designation" value="0"> 
+                            <input type="hidden" name="all_company_branch" value="0">
+                            <input type="hidden" name="all_department" value="0">
+                            <input type="hidden" name="all_designation" value="0">
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6 form-group">
@@ -54,7 +52,8 @@
                                                         name="all_company_branch"
                                                         onchange="get_checked_value('company_branch')"
                                                         id="company_branches_checkbox"
-                                                        {{ $editPolicyDetails->all_company_branch == 1 ? 'checked' : '' }} value="1">
+                                                        {{ $editPolicyDetails->all_company_branch == 1 ? 'checked' : '' }}
+                                                        value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -64,7 +63,7 @@
                                                     data-placeholder="Select the Company Branch" data-allow-clear="true"
                                                     multiple="multiple" name="company_branch_id[]" id="company_branch"
                                                     {{ $editPolicyDetails->all_company_branch == 1 ? 'disabled' : '' }}>
-                                                    @if ($editPolicyDetails->all_company_branch == 1)
+                                                    @if ($editPolicyDetails->all_company_branch == 0)
                                                         @foreach ($allCompanyBranchesDetails as $compayBranches)
                                                             <option value="{{ $compayBranches->id }}"
                                                                 {{ $selectedCompanyBranchId->contains($compayBranches->id) ? 'selected' : null }}>
@@ -97,7 +96,8 @@
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_department" onchange="get_checked_value('department')"
                                                         id="department_checkbox"
-                                                        {{ $editPolicyDetails->all_department == 1 ? 'checked' : '' }} value="1">
+                                                        {{ $editPolicyDetails->all_department == 1 ? 'checked' : '' }}
+                                                        value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -140,7 +140,8 @@
                                                         name="all_designation"
                                                         onchange="get_checked_value('designation')"
                                                         id="designation_checkbox"
-                                                        {{ $editPolicyDetails->all_designation == 1 ? 'checked' : '' }} value="1">
+                                                        {{ $editPolicyDetails->all_designation == 1 ? 'checked' : '' }}
+                                                        value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -176,7 +177,7 @@
                                     <div class="col-md-6 form-group">
                                         <label for="">Start Date *</label>
                                         <input class="form-control" name="start_date" type="date"
-                                            min="{{ date('Y-m-d') }}" value="{{ $editPolicyDetails->start_date }}">
+                                            value="{{ $editPolicyDetails->start_date }}">
                                         @if ($errors->has('start_date'))
                                             <div class="text-danger">{{ $errors->first('start_date') }}</div>
                                         @endif
@@ -184,7 +185,7 @@
                                     <div class="col-md-6 form-group">
                                         <label for="">End Date *</label>
                                         <input class="form-control" name="end_date" type="date"
-                                            min="{{ date('Y-m-d') }}" value="{{ $editPolicyDetails->end_date }}">
+                                            value="{{ $editPolicyDetails->end_date }}">
                                         @if ($errors->has('end_date'))
                                             <div class="text-danger">{{ $errors->first('end_date') }}</div>
                                         @endif
