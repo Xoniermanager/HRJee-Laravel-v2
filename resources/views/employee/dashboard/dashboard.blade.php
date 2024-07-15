@@ -158,43 +158,47 @@ border-bottom-right-radius: 30px;">
                                             <!--begin::Table head-->
                                             <thead>
                                                 <tr>
-                                                    <td>
+                                                    <td class="w-10px">
                                                         <span data-kt-element="bullet"
                                                             class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"></span>
                                                     </td>
 
-                                                    <td>
+                                                    <td class="min-w-300px">
                                                         <div class="timer-display-id">
-                                                            <p id="timer" style="display: none">00:00:00</p>
+                                                            <h4 id="timer" class="m-0" style="display: none">00:00:00
+                                                            </h4>
                                                         </div>
 
                                                         <span class="text-primary-400 fw-bold fs-7 d-block ">Working
                                                             Hours</span>
                                                     </td>
-
+                                                    <td>
+                                                        <a href="#" data-bs-toggle="modal" class=""
+                                                            modal-target="#employee_break_history">
+                                                            <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
+                                                            <span class="btn btn-primary fs-3 py-2 "> Take a Break</span>
+                                                            <!--end::Svg Icon-->
+                                                        </a>
+                                                    </td>
                                                     <td class="text-end">
                                                         <!--begin::Icon-->
                                                         <div class="d-flex justify-content-end flex-shrink-0">
                                                             <form action="{{ route('employee.attendance') }}"
                                                                 method="post">
                                                                 @csrf
-                                                                <input type="hidden" name="time_date"
-                                                                    value="{{ date('Y/m/d H:i:s') }}">
                                                                 <!--begin::Attach-->
-                                                                <button
-                                                                    class="btn btn-sm fs-4 btn-primary align-self-center"
-                                                                    id="start-timer" onclick="start()" style="display:none">
+                                                                <button class="btn btn-primary fs-3 py-2 " id="start-timer"
+                                                                    onclick="start()" style="display:none">
                                                                     Punch In
                                                                 </button>
-                                                                <button
-                                                                    class="btn btn-sm fs-4 btn-primary align-self-center"
-                                                                    id="stop-timer" onclick="stop()" style="display:none">
+                                                                <button class="btn btn-primary fs-3 py-2 " id="stop-timer"
+                                                                    onclick="stop()" style="display:none">
                                                                     Punch Out
                                                                 </button>
                                                             </form>
                                                             <!--end::Attach-->
                                                         </div>
-                                                        <!--end::Icon-->
+
                                                     </td>
                                                 </tr>
                                             </thead>
@@ -211,7 +215,7 @@ border-bottom-right-radius: 30px;">
                             </div>
                         </div>
                         <!--begin::Row-->
-                        <div class="row gy-5 g-xl-10">
+                        {{-- <div class="row gy-5 g-xl-10">
                             <!--begin::Col-->
                             <div class="card card-body col-md-12">
                                 <div class="card-header p-4">
@@ -282,9 +286,34 @@ border-bottom-right-radius: 30px;">
                                 </div>
                             </div>
                             <!--end::Col-->
-                        </div>
+                        </div> --}}
                         <!--end::Row-->
+                        <form id="employee_break_history">
+                            @csrf
+                            <input type="hidden" name="employee_attendance_id" value="{{ $existingDetails->id ?? '' }}">
+                            <!--begin::Wrapper-->
+                            <div class="mw-lg-600px mx-auto p-4">
+                                <!--begin::Input group-->
+                                <div class="mt-3 mb-3">
+                                    <label class="required">Break Type</label>
+                                    <select class="form-control mb-3" name="break_type_id">
+                                        <option value="">Select Break Type</option>
+                                        @forelse ($allBreakTypeDetails as $breakTypeDetails)
+                                            <option value="{{ $breakTypeDetails->id }}">{{ $breakTypeDetails->name }}
+                                            </option>
+                                        @empty
+                                            <option value="">No Break Type Available</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                                <div class="mt-3 mb-3">
+                                    <label class="">Comment</label>
+                                    <input type="text" name="comment" class="form-control">
+                                </div>
+                           <button type="submit" class="btn btn-primary">Submit</button>
 
+                            </div>
+                        </form>
 
                         <!--begin::Body-->
                     </div>
@@ -293,10 +322,41 @@ border-bottom-right-radius: 30px;">
             </div>
             <!--end::Row-->
         </div>
-        <!--end::Container-->
     </div>
-    <!--end::Content-->
-    {{-- {{ dd($existingDetails) }} --}}
+    {{-- <div class="modal" id="employee_break_history">
+        <!--begin::Modal dialog-->
+        <div class="modal-dialog modal-dialog-centered mw-500px">
+            <!--begin::Modal content-->
+            <div class="modal-content">
+                <!--begin::Modal header-->
+                <div class="modal-header">
+                    <!--begin::Close-->
+                    <h2>Take Break</h2>
+                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                    transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
+                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--begin::Modal header-->
+                <!--begin::Modal body-->
+                <div class="modal-body scroll-y pt-0 pb-5 border-top">
+                </div>
+                <!--end::Modal body-->
+            </div>
+            <!--end::Modal content-->
+        </div>
+        <!--end::Modal dialog-->
+    </div> --}}
     <script>
         function stop() {
             let punch_in = "{{ $existingDetails->punch_in ?? '' }}";
@@ -320,10 +380,13 @@ border-bottom-right-radius: 30px;">
             }
         }
         jQuery(document).ready(function() {
-            let punch_in = '{{ $existingDetails->punch_in ?? '' }}';
-            let punch_out = '{{ $existingDetails->punch_out ?? '' }}';
+            let start_time = '{{ $existingDetails->punch_in ?? '' }}';
+            let end_time = '{{ $existingDetails->punch_out ?? '' }}';
+             get_timer_clock(start_time, end_time)
+        });
+
+        function get_timer_clock(punch_in, punch_out) {
             var refreshIntervalId = '';
-            console.log('punch_in', punch_in, punch_out);
             if (punch_in != '' && punch_out == '') {
                 $("#start-timer").hide();
                 $("#stop-timer").show();
@@ -368,9 +431,42 @@ border-bottom-right-radius: 30px;">
                 $("#start-timer").show();
                 $("#stop-timer").hide();
                 $("#timer").hide();
-                console.log('not available');
             }
+        }
+        jQuery(document).ready(function() {
+            $("#employee_break_history").validate({
+                rules: {
+                    break_type_id: "required"
+                },
+                messages: {
+                    break_type_id: "Please Select the Break Type"
+                },
+                submitHandler: function(form) {
+                    var break_history_details = $(form).serialize();
+                    $.ajax({
+                        url: "{{ route('employee_break_history') }}",
+                        type: 'POST',
+                        data: break_history_details,
+                        success: function(response) {
+                            jQuery('#employee_break_history').modal('hide');
+                            swal.fire("Done!", response.message, "success");
+                            jQuery("#employee_break_history")[0].reset();
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.error;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span class="' + error_key +
+                                    '_error text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("." + error_key + "_error").remove();
+                                }, 4000);
+                            }
+                        }
+                    });
+                }
+            });
         });
     </script>
-
 @endsection

@@ -19,11 +19,12 @@ class EmployeeAttendanceService
   public function create($data)
   {
     $userId = Auth()->guard('employee')->user()->id;
+    $attendanceTime = date('Y/m/d H:i:s');
     $userDetails =  $this->userDetailRepository->getDetailsByUserId($userId);
     $startingTime = Carbon::parse($userDetails->officeShift->start_time);
     $loginBeforeShiftTime = $startingTime->subMinutes($userDetails->officeShift->login_before_shift_time);
     // dd($userDetails->officeShift->officeTimingConfigs->half_day_hours);
-    if ($data['time_date'] >= $loginBeforeShiftTime) {
+    if ($attendanceTime >= $loginBeforeShiftTime) {
       $payload = [];
       $payload =
         [
@@ -33,13 +34,13 @@ class EmployeeAttendanceService
       /** If Data Exit in Table Soo we Implement for Puch Out  */
       $existingDetails = $this->getExtistingDetailsByUserId($userId);
       if (isset($existingDetails) && !empty($existingDetails)) {
-        $payload['punch_out'] = $data['time_date'];
+        $payload['punch_out'] = $attendanceTime;
         $puchOutDetail =  $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
       }
 
       /** If Data No Exit in Table Soo we Implement for Puch In  */
       else {
-        $payload['punch_in'] = $data['time_date'];
+        $payload['punch_in'] = $attendanceTime;
         $puchInDetail =  $this->employeeAttendanceRepository->create($payload);
       }
       if (isset($puchInDetail)) {
@@ -49,7 +50,8 @@ class EmployeeAttendanceService
         $data = 'Puch Out';
       }
       return $response = ['data' => $data, 'status' => true];
-    } else {
+    } 
+    else {
       return $response = ['status' => true];
     }
   }

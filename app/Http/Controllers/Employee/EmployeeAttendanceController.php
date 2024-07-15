@@ -17,17 +17,14 @@ class EmployeeAttendanceController extends Controller
     public function makeAttendance(Request $request)
     {
         $response = $this->employeeAttendanceService->create($request->all());
-        if($response['status'] == true && $response['data'] == 'Puch Out')
-        {
+        if ($response['status'] == true && $response['data'] == 'Puch Out') {
             return back()->with('success', "You Puch Out Successfully");
         }
-        if($response['status'] == true && $response['data'] == 'Puch In')
-        {
+        if ($response['status'] == true && $response['data'] == 'Puch In') {
             return back()->with('success', "You Puch In Successfully");
         }
-        if ($response['status'] == false)
-        {
+        if ($response['status'] == false) {
             return back()->with('error', "Don't Access you to Puch In Current Time");
-        } 
+        }
     }
 }
