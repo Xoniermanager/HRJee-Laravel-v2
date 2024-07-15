@@ -16,4 +16,8 @@ class EmployeeBreakHistoryService
     $data['start_time'] = date('h:i');
     return $this->employeeBreakHistoryRepository->create($data);
   }
+  public function getBreakHistoryByAttendanceId($id)
+  {
+    return $this->employeeBreakHistoryRepository->where('employee_attendance_id', $id)->first();
+  }
 }
