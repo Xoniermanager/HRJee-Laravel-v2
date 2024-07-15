@@ -186,8 +186,6 @@ border-bottom-right-radius: 30px;">
                                                             <form action="{{ route('employee.attendance') }}"
                                                                 method="post">
                                                                 @csrf
-                                                                <input type="hidden" name="time_date"
-                                                                    value="{{ date('Y/m/d H:i:s') }}">
                                                                 <!--begin::Attach-->
                                                                 <button class="btn btn-primary fs-3 py-2 " id="start-timer"
                                                                     onclick="start()" style="display:none">
@@ -312,19 +310,8 @@ border-bottom-right-radius: 30px;">
                                     <label class="">Comment</label>
                                     <input type="text" name="comment" class="form-control">
                                 </div>
-                            </div>
-                            <!--end::Wrapper-->
-                            <div class="d-flex flex-end flex-row-fluid pt-2 border-top">
-                                <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary" id="kt_modal_upgrade_plan_btn">
-                                    <!--begin::Indicator label-->
-                                    <span class="indicator-label">Submit</span>
-                                    <!--end::Indicator label-->
-                                    <!--begin::Indicator progress-->
-                                    <span class="indicator-progress">Please wait...
-                                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                                    <!--end::Indicator progress-->
-                                </button>
+                           <button type="submit" class="btn btn-primary">Submit</button>
+
                             </div>
                         </form>
 
@@ -393,8 +380,12 @@ border-bottom-right-radius: 30px;">
             }
         }
         jQuery(document).ready(function() {
-            let punch_in = '{{ $existingDetails->punch_in ?? '' }}';
-            let punch_out = '{{ $existingDetails->punch_out ?? '' }}';
+            let start_time = '{{ $existingDetails->punch_in ?? '' }}';
+            let end_time = '{{ $existingDetails->punch_out ?? '' }}';
+             get_timer_clock(start_time, end_time)
+        });
+
+        function get_timer_clock(punch_in, punch_out) {
             var refreshIntervalId = '';
             if (punch_in != '' && punch_out == '') {
                 $("#start-timer").hide();
@@ -416,8 +407,7 @@ border-bottom-right-radius: 30px;">
                     $("#timer").text(timeLaps);
 
                 }, 1);
-            } 
-            else if (punch_out != '') {
+            } else if (punch_out != '') {
                 $("#start-timer").hide();
                 $("#stop-timer").hide();
                 clearInterval(refreshIntervalId);
@@ -442,8 +432,7 @@ border-bottom-right-radius: 30px;">
                 $("#stop-timer").hide();
                 $("#timer").hide();
             }
-        });
-
+        }
         jQuery(document).ready(function() {
             $("#employee_break_history").validate({
                 rules: {
