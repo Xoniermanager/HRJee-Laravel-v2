@@ -41,6 +41,7 @@ use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Company\PolicyController;
+use App\Http\Controllers\Company\SpreadsheetController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () {
@@ -51,7 +52,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('company/change/password', 'company_change_password')->name('company.change.password');
     });
 
-    
+
     Route::controller(CompanyBranchesController::class)->group(function () {
         Route::get('branch', 'index')->name('branch');
         Route::post('create', 'store')->name('company.branch.store');
@@ -96,7 +97,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('get-all-user', 'getAllUserByBranchIds');
         Route::post('/assign', 'updateAssignAnnounce')->name('assign.announcement');
     });
-    
+
     //Country Module
     Route::prefix('/country')->controller(CountryController::class)->group(function () {
         Route::get('/', 'index')->name('country.index');
@@ -145,9 +146,16 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/get/filter/list', 'getfilterlist');
         Route::get('/get/personal/details/{users:id}', 'getPersonalDetails')->name('employee.personal.details');
         Route::get('/view/{user:id}', 'view')->name('employee.view');
-        Route::post('/export', 'exportEmployee')->name('export.employee');
     });
-    //Advance Details for employee
+
+
+    Route::controller(SpreadsheetController::class)->group(function () {
+        Route::post('/export/employee', 'exportEmployee')->name('export.employee');
+        Route::post('/export/employee/bank/details', 'exportEmployeeBankDetails')->name('export.employee.bank.details');
+        Route::post('/export/employee/address/details', 'exportEmployeeAddressDetails')->name('export.employee.address.details');
+    });
+
+
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
         Route::get('/get/advance/details/{id}', 'getAdvanceDetails');

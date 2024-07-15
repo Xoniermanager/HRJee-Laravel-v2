@@ -10,9 +10,9 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "maatwebsite/excel": "^1.1",
         "mckenziearts/laravel-notify": "^2.4",
         "orangehill/iseed": "^3.0",
+        "phpoffice/phpspreadsheet": "*",
         "prettus/l5-repository": "^2.9",
         "spatie/laravel-ciphersweet": "^1.6",
         "spatie/laravel-permission": "^6.7"

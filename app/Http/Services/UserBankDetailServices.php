@@ -23,5 +23,6 @@ class UserBankDetailServices
   {
     return $this->userBankDetailRepository->where('user_id',$id)->first();
   }
+ 
 
 }
