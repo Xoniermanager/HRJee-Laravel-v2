@@ -30,7 +30,7 @@ class CompanyBranchesController extends Controller
      */
     public function index()
     {
-        $branches  = $this->branch_services->all();
+        $branches  = $this->branch_services->all(Auth::guard('admin')->user()->company_id);
         $countries = $this->countryService->getAllActiveCountry();
         return view('company.branch.index', [
             'branches' => $branches,
@@ -81,7 +81,7 @@ class CompanyBranchesController extends Controller
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->messages()], 400);
             }
-            
+
             $updateData = $request->except(['_token', 'id']);
             $companyBranches = $this->branch_services->updateDetails($updateData, $request->id);
             if ($companyBranches) {

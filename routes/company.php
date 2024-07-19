@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Company\ComplainCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AssetController;
 use App\Http\Controllers\Admin\SkillController;
@@ -31,6 +32,8 @@ use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
 use App\Http\Controllers\Company\BreakTypeController;
+use App\Http\Controllers\Company\ComplainController;
+use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
@@ -412,6 +415,26 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/delete/{id}', 'destroy')->name('break_type.delete');
         Route::get('/status/update', 'statusUpdate')->name('break_type.statusUpdate');
         Route::get('/search/filter', 'serachBreakTypeFilterList');
+    });
+
+    //Complain Status Module
+    Route::prefix('/complain-status')->controller(ComplainStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('complain.status.index');
+        Route::post('/create', 'store')->name('complain.status.store');
+        Route::post('/update', 'update')->name('complain.status.update');
+        Route::get('/delete/{id}', 'destroy')->name('complain.status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('complain.status.statusUpdate');
+        Route::get('/search/filter', 'serachComplainStatusFilterList');
+    });
+
+    //Complain Category Module
+    Route::prefix('/complain-category')->controller(ComplainCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('complain.category.index');
+        Route::post('/create', 'store')->name('complain.category.store');
+        Route::post('/update', 'update')->name('complain.category.update');
+        Route::get('/delete/{id}', 'destroy')->name('complain.category.delete');
+        Route::get('/status/update', 'statusUpdate')->name('complain.category.statusUpdate');
+        Route::get('/search/filter', 'serachComplainCategoryFilterList');
     });
 });
 /**---------------End Company Panel Route----------------*/

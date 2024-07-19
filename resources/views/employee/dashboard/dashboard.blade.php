@@ -172,14 +172,14 @@ border-bottom-right-radius: 30px;">
                                                         <span class="text-primary-400 fw-bold fs-7 d-block ">Working
                                                             Hours</span>
                                                     </td>
-                                                    <td>
+                                                    {{-- <td>
                                                         <a href="#" data-bs-toggle="modal" class=""
                                                             modal-target="#employee_break_history">
                                                             <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                                             <span class="btn btn-primary fs-3 py-2 "> Take a Break</span>
                                                             <!--end::Svg Icon-->
                                                         </a>
-                                                    </td>
+                                                    </td> --}}
                                                     <td class="text-end">
                                                         <!--begin::Icon-->
                                                         <div class="d-flex justify-content-end flex-shrink-0">
@@ -288,7 +288,7 @@ border-bottom-right-radius: 30px;">
                             <!--end::Col-->
                         </div> --}}
                         <!--end::Row-->
-                        <form id="employee_break_history">
+                        {{-- <form id="employee_break_history">
                             @csrf
                             <input type="hidden" name="employee_attendance_id" value="{{ $existingDetails->id ?? '' }}">
                             <!--begin::Wrapper-->
@@ -310,10 +310,10 @@ border-bottom-right-radius: 30px;">
                                     <label class="">Comment</label>
                                     <input type="text" name="comment" class="form-control">
                                 </div>
-                           <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
 
                             </div>
-                        </form>
+                        </form> --}}
 
                         <!--begin::Body-->
                     </div>
@@ -357,82 +357,12 @@ border-bottom-right-radius: 30px;">
         </div>
         <!--end::Modal dialog-->
     </div> --}}
-    <script>
-        function stop() {
-            let punch_in = "{{ $existingDetails->punch_in ?? '' }}";
-            let punch_out = "{{ $existingDetails->punch_out ?? '' }}";
-            $("#start-timer").hide();
-            $("#stop-timer").hide();
-            if (punch_out != 'NULL') {
-                var StartedTime = new Date(punch_in).getTime();
-                var EndedTime = new Date(punch_out).getTime();
-
-                var diff = EndedTime - StartedTime;
-                var hours = Math.floor(diff / 3.6e6);
-                var minutes = Math.floor((diff % 3.6e6) / 6e4);
-                var seconds = Math.floor((diff % 6e4) / 1000);
-                let h = hours < 10 ? '0' + hours : hours;
-                let m = minutes < 10 ? '0' + minutes : minutes;
-                let s = seconds < 10 ? '0' + seconds : seconds;
-                var duration = h + ":" + m + ":" + s;
-                timeLaps = duration;
-                $("#timer").text(timeLaps);
-            }
-        }
+    {{-- <script>
         jQuery(document).ready(function() {
             let start_time = '{{ $existingDetails->punch_in ?? '' }}';
             let end_time = '{{ $existingDetails->punch_out ?? '' }}';
-             get_timer_clock(start_time, end_time)
+            get_timer_clock(start_time, end_time)
         });
-
-        function get_timer_clock(punch_in, punch_out) {
-            var refreshIntervalId = '';
-            if (punch_in != '' && punch_out == '') {
-                $("#start-timer").hide();
-                $("#stop-timer").show();
-                let timeLaps = '';
-                $("#timer").show();
-                var StartedTime = new Date(punch_in).getTime();
-                refreshIntervalId = setInterval(() => {
-                    var EndedTime = new Date().getTime();
-                    var diff = EndedTime - StartedTime;
-                    var hours = Math.floor(diff / 3.6e6);
-                    var minutes = Math.floor((diff % 3.6e6) / 6e4);
-                    var seconds = Math.floor((diff % 6e4) / 1000);
-                    let h = hours < 10 ? '0' + hours : hours;
-                    let m = minutes < 10 ? '0' + minutes : minutes;
-                    let s = seconds < 10 ? '0' + seconds : seconds;
-                    var duration = h + ":" + m + ":" + s;
-                    timeLaps = duration;
-                    $("#timer").text(timeLaps);
-
-                }, 1);
-            } else if (punch_out != '') {
-                $("#start-timer").hide();
-                $("#stop-timer").hide();
-                clearInterval(refreshIntervalId);
-                $("#timer").show();
-                if (punch_out) {
-                    var StartedTime = new Date(punch_in).getTime();
-                    var EndedTime = new Date(punch_out).getTime();
-
-                    var diff = EndedTime - StartedTime;
-                    var hours = Math.floor(diff / 3.6e6);
-                    var minutes = Math.floor((diff % 3.6e6) / 6e4);
-                    var seconds = Math.floor((diff % 6e4) / 1000);
-                    let h = hours < 10 ? '0' + hours : hours;
-                    let m = minutes < 10 ? '0' + minutes : minutes;
-                    let s = seconds < 10 ? '0' + seconds : seconds;
-                    var duration = h + ":" + m + ":" + s;
-                    timeLaps = duration;
-                    $("#timer").text(timeLaps);
-                }
-            } else {
-                $("#start-timer").show();
-                $("#stop-timer").hide();
-                $("#timer").hide();
-            }
-        }
         jQuery(document).ready(function() {
             $("#employee_break_history").validate({
                 rules: {
@@ -468,5 +398,5 @@ border-bottom-right-radius: 30px;">
                 }
             });
         });
-    </script>
+    </script> --}}
 @endsection
