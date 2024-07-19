@@ -288,7 +288,7 @@ border-bottom-right-radius: 30px;">
                             <!--end::Col-->
                         </div> --}}
                         <!--end::Row-->
-                        {{-- <form id="employee_break_history">
+                        <form id="employee_break_history">
                             @csrf
                             <input type="hidden" name="employee_attendance_id" value="{{ $existingDetails->id ?? '' }}">
                             <!--begin::Wrapper-->
@@ -313,7 +313,7 @@ border-bottom-right-radius: 30px;">
                                 <button type="submit" class="btn btn-primary">Submit</button>
 
                             </div>
-                        </form> --}}
+                        </form>
 
                         <!--begin::Body-->
                     </div>
@@ -357,46 +357,46 @@ border-bottom-right-radius: 30px;">
         </div>
         <!--end::Modal dialog-->
     </div> --}}
-    {{-- <script>
+    <script>
         jQuery(document).ready(function() {
             let start_time = '{{ $existingDetails->punch_in ?? '' }}';
             let end_time = '{{ $existingDetails->punch_out ?? '' }}';
             get_timer_clock(start_time, end_time)
         });
-        jQuery(document).ready(function() {
-            $("#employee_break_history").validate({
-                rules: {
-                    break_type_id: "required"
-                },
-                messages: {
-                    break_type_id: "Please Select the Break Type"
-                },
-                submitHandler: function(form) {
-                    var break_history_details = $(form).serialize();
-                    $.ajax({
-                        url: "{{ route('employee_break_history') }}",
-                        type: 'POST',
-                        data: break_history_details,
-                        success: function(response) {
-                            jQuery('#employee_break_history').modal('hide');
-                            swal.fire("Done!", response.message, "success");
-                            jQuery("#employee_break_history")[0].reset();
-                        },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span class="' + error_key +
-                                    '_error text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("." + error_key + "_error").remove();
-                                }, 4000);
-                            }
-                        }
-                    });
-                }
-            });
-        });
-    </script> --}}
+        jQuery(document).ready(function () {
+    // $("#employee_break_history").validate({
+    //     rules: {
+    //         break_type_id: "required"
+    //     },
+    //     messages: {
+    //         break_type_id: "Please Select the Break Type"
+    //     },
+    //     submitHandler: function (form) {
+    //         var break_history_details = $(form).serialize();
+    //         $.ajax({
+    //             url: "{{ route('employee_break_history') }}",
+    //             type: 'POST',
+    //             data: break_history_details,
+    //             success: function (response) {
+    //                 jQuery('#employee_break_history').modal('hide');
+    //                 swal.fire("Done!", response.message, "success");
+    //                 jQuery("#employee_break_history")[0].reset();
+    //             },
+    //             error: function (error_messages) {
+    //                 let errors = error_messages.responseJSON.error;
+    //                 for (var error_key in errors) {
+    //                     $(document).find('[name=' + error_key + ']').after(
+    //                         '<span class="' + error_key +
+    //                         '_error text text-danger">' + errors[
+    //                         error_key] + '</span>');
+    //                     setTimeout(function () {
+    //                         jQuery("." + error_key + "_error").remove();
+    //                     }, 4000);
+    //                 }
+    //             }
+    //         });
+    //     }
+    // });
+});
+    </script>
 @endsection
