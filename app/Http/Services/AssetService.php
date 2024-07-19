@@ -15,7 +15,7 @@ class AssetService
   }
   public function all($type = '')
   {
-    $query = $this->assetRepository->orderBy('id', 'DESC');
+    $query = $this->assetRepository->with(['userAsset', 'userAsset.user','assetStatus','assetCategories','assetManufacturers'])->orderBy('id', 'DESC');
     if ($type == 'all') {
       $query = $query->get();
     } else {
@@ -101,7 +101,7 @@ class AssetService
     if (isset($request->ownership) && !empty($request->ownership)) {
       $assetDetails = $assetDetails->where('ownership', $request->ownership);
     }
-    return $assetDetails->orderBy('id', 'DESC')->paginate(10);
+    return $assetDetails->with(['userAsset', 'userAsset.user','assetStatus','assetCategories','assetManufacturers'])->orderBy('id', 'DESC')->paginate(10);
   }
 
   public function getAllAssetByCategoryId($id)

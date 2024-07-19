@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AnnouncementController;
+use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HolidayApiController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\Api\LeaveManagementController;
 use App\Http\Controllers\Api\LeaveManagementApiController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\PolicyController;
+use App\Http\Controllers\Api\ResignationController;
+use App\Http\Controllers\Api\ResignationStatusController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,6 +48,7 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     Route::get('news', [NewsController::class, 'assignedNews']);
     Route::get('announcement', [AnnouncementController::class, 'getAllAssignedAnnouncement']);
     Route::get('policy', [PolicyController::class, 'getAllAssignedPolicy']);
+    Route::get('asset/details', [AssetController::class, 'assetDetails']);
     Route::get('applied/leave/history', [LeaveManagementApiController::class, 'appliedLeaveHistory']);
 
     /**For Leave Management API */
@@ -56,4 +60,11 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
 
     /** Get All Leave Avaialble of Employee */
     Route::get('/get/leave/available', [LeaveAvailableApiController::class, 'getAllLeaveAvailableByUserId']);
+
+  /** resignation route */
+  Route::post('/resignation-apply', [ResignationController::class, 'applyResignation']);
+  Route::get('/resignation/details/{id?}', [ResignationController::class, 'resignationDetails']);
+  Route::post('/change/resignation/status', [ResignationStatusController::class, 'changeResignationStatus']);
+  Route::get('/resignation/status/lists', [ResignationStatusController::class, 'getResignationStatusList']);
+
 });

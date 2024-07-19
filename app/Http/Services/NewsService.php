@@ -178,13 +178,12 @@ class NewsService
   {
     try {
 
-   
+  //  dd($user->company_id);
       $newsIds = [];
       $news = $this->newsRepository->with('newsCategories:id,name')->where('company_id', $user->company_id)->get();
       // ->select('id','title','image','start_date','end_date','file','description','news_category_id')
       $departments = $this->departmentServices->getAllActiveDepartmentsByCompanyId($user->company_id);
       $userDetails = $this->userDetailServices->getDetailsByUserId($user->id);
-
       foreach ($news as $row) {
         // check for branch 
         if ($row->all_company_branch == 1) {

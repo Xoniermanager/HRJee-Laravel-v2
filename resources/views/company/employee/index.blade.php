@@ -360,7 +360,6 @@
                         <div class="modal-body scroll-y p-4">
                             <form action="{{ route('export.employee') }}" method="post" id="export_employee_form">
                                 @csrf
-
                                 <input type="hidden" name="gender_filter" class="export_gender">
                                 <input type="hidden" name="emp_status_id" class="export_emp_status">
                                 <input type="hidden" name="marital_status_filter" class="export_marital_status">
@@ -479,8 +478,8 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <button class="btn btn-sm btn-danger ms-3 align-self-center"
-                                                type="button"   onclick="exportData('export_employee_form')">Export</button>
+                                            <button class="btn btn-sm btn-danger ms-3 align-self-center" type="button"
+                                                onclick="exportData('export_employee_form')">Export</button>
                                         </div>
                                     </div>
                                 </div>
@@ -717,6 +716,8 @@
                 </div>
             </div>
         </div>
+     
+
         <script>
             let submit_handler = false;
             $(".filter").on("click", function(event) {

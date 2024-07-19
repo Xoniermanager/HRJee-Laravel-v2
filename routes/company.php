@@ -42,6 +42,7 @@ use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Company\PolicyController;
+use App\Http\Controllers\Company\ResignationStatusController;
 use App\Http\Controllers\Company\SpreadsheetController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
@@ -52,7 +53,6 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('company/update/{id}', 'update_company')->name('update.company');
         Route::post('company/change/password', 'company_change_password')->name('company.change.password');
     });
-
 
     Route::controller(CompanyBranchesController::class)->group(function () {
         Route::get('branch', 'index')->name('branch');
@@ -98,6 +98,18 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('get-all-user', 'getAllUserByBranchIds');
         Route::post('/assign', 'updateAssignAnnounce')->name('assign.announcement');
     });
+
+    //Resignation Status Module
+    Route::prefix('/resignation/status')->name('resignation.')->controller(ResignationStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('status.index');
+        Route::post('/create', 'store')->name('status.store');
+        Route::post('/update', 'update')->name('status.update');
+        Route::get('/delete/{id?}', 'destroy')->name('status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('status.statusUpdate');
+        Route::get('/search', 'searchResignationStatusFilter')->name('status.search');
+    });
+
+
 
     //Country Module
     Route::prefix('/country')->controller(CountryController::class)->group(function () {
@@ -149,12 +161,13 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/view/{user:id}', 'view')->name('employee.view');
     });
 
-
     Route::controller(SpreadsheetController::class)->group(function () {
         Route::post('/export/employee', 'exportEmployee')->name('export.employee');
         Route::post('/export/employee/bank/details', 'exportEmployeeBankDetails')->name('export.employee.bank.details');
         Route::post('/export/employee/address/details', 'exportEmployeeAddressDetails')->name('export.employee.address.details');
     });
+
+
 
 
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
@@ -199,10 +212,12 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     //User / Permission Details for employee
     Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
 
+
     //Asset Details for user
     Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class)->group(function () {
         Route::post('/details/store', 'store')->name('employee.asset.details');
         Route::post('/details/update', 'updateDetails')->name('employee.asset.details.update');
+        Route::post('/export/employee/asset/details', 'exportEmployeeAssetDetails')->name('export.employee.asset.details');
     });
 
     //Holiday Module
@@ -213,6 +228,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/delete', 'destroy')->name('holiday.delete');
         Route::get('/status/update', 'statusUpdate')->name('holiday.statusUpdate');
     });
+
 
     //Leave Module
     Route::prefix('/leave')->controller(LeaveController::class)->group(function () {

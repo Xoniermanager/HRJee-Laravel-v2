@@ -93,14 +93,14 @@ if (!function_exists('generateOtp')) {
 
 
 if (!function_exists('exceptionErrorMessage')) {
-    function exceptionErrorMessage($e, $throw_exception = false)
+    function exceptionErrorMessage($e, $throw_exception = false, $data = '')
     {
 
         Log::error($e);
         if (env('APP_DEBUG')) {
-            return errorMessage($e->getMessage(), true, $throw_exception);
+            return errorMessage($data, $e->getMessage(), true, $throw_exception);
         }
-        return errorMessage('session_expire', false, $throw_exception);
+        return errorMessage($data, 'session_expire', false, $throw_exception);
     }
 }
 

@@ -3,11 +3,11 @@
 namespace App\Http\Services;
 
 use Illuminate\Support\Facades\File;
-
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Font;
-
+use Throwable;
 
 class SpreadsheetService
 {
@@ -35,6 +35,10 @@ class SpreadsheetService
     }
     $writer = new Xlsx($spreadsheet);
     $writer->save($filePath);
+    if ($writer)
+      return true;
+    else
+      return false;
   }
 
 
@@ -47,5 +51,30 @@ class SpreadsheetService
       $col = floor(($col - 1) / 26);
     }
     return $column . $row;
+  }
+
+
+  public function exportData($datas, $headers = [])
+  {
+    try {
+      $arrayKeys = [];
+      $data = array_map(function ($employee) use ($headers, $arrayKeys) {
+        foreach ($headers as $row) {
+          array_push($arrayKeys, $employee[$row]);
+        }
+        return $arrayKeys;
+      }, $datas);
+
+      array_walk($headers, function (&$v) {
+        $v = str_replace('_', ' ', trim($v));
+      });
+      // dd($data);
+      array_unshift($data, $headers);
+      $filePath = 'spreadsheets/export.xlsx';
+      $path = storage_path('app/' . $filePath);
+      return ['status' => true, 'data' => $data, 'path' => $path];
+    } catch (Throwable $th) {
+      Log::error($th->getMessage());
+    }
   }
 }

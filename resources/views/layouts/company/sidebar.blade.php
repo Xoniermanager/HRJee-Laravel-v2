@@ -476,6 +476,19 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item " data-url="{{ route('resignation.status.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('resignation.status.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-file"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Resignation Status</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                                 <!--begin:Menu link-->
                                 <span class="menu-link">

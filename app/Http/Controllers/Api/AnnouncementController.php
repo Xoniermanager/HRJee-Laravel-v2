@@ -8,6 +8,7 @@ use App\Http\Services\AnnouncementServices;
 use App\Http\Services\UserDetailServices;
 use App\Models\AnnouncementDesignation;
 use Illuminate\Http\Request;
+use Throwable;
 
 class AnnouncementController extends Controller
 {
@@ -19,7 +20,12 @@ class AnnouncementController extends Controller
 
     public function getAllAssignedAnnouncement(Request $request)
     {
-        $data = $this->announcementServices->getAllAssignedAnnouncement($request);
-        return apiResponse('announcement', $data);
+        try {
+            $user = auth()->guard('employee_api')->user();
+            $data = $this->announcementServices->getAllAssignedAnnouncement($user);
+            return apiResponse('announcement', $data);
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
     }
 }

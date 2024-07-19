@@ -67,6 +67,22 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'branch',
+        'designation',
+        'department',
+        'official_mobile_no',
+        'bank_name',
+        'account_name',
+        'account_number',
+        'ifsc_code',
+        'permanent_address',
+        'permanent_city',
+        'local_address',
+        'local_city',
+        'permanent_country',
+        'local_country',
+        'permanent_state',
+        'local_state',
     ];
 
     /**

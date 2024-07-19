@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Services\PolicyService;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PolicyController extends Controller
 {
@@ -16,7 +17,11 @@ class PolicyController extends Controller
 
     public function getAllAssignedPolicy(Request $request)
     {
-        $data = $this->policyService->getAllAssignedPolicies($request);
-        return apiResponse('policies', $data);
+        try {
+            $data = $this->policyService->getAllAssignedPolicies($request);
+            return apiResponse('policies', $data);
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
     }
 }

@@ -16,8 +16,10 @@ class UserAssetDetailService
 
   public function all()
   {
-    return $this->userAssetService->all()->with('');
+    return $this->userAssetService->all();
   }
+
+
   public function create(array $data)
   {
     $allocatedDetails = $this->userAssetDetailRepository->create($data);
@@ -37,5 +39,12 @@ class UserAssetDetailService
       $updatedDetails->update($data);
     }
     return true;
+  }
+
+
+
+  public function getAllAssignedAsset()
+  {
+    return  $this->userAssetDetailRepository->with('asset:id,name')->where('user_id', auth()->guard('employee_api')->user()->id)->get();
   }
 }

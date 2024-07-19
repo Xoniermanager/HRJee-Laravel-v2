@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\BranchServices;
 use App\Http\Services\NewsService;
 use Illuminate\Http\Request;
+use Throwable;
 
 class NewsController extends Controller
 {
@@ -17,8 +18,12 @@ class NewsController extends Controller
 
     public function assignedNews(Request $request)
     {
-        $user = auth()->guard('employee_api')->user();
-        $data = $this->newsService->getAllAssignedNews($request, $user);
-        return apiResponse('news', $data);
+        try {
+            $user = auth()->guard('employee_api')->user();
+            $data = $this->newsService->getAllAssignedNews($request, $user);
+            return apiResponse('news', $data);
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
     }
 }

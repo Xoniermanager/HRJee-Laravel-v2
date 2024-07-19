@@ -27,15 +27,13 @@ class EmployeeServices
     $allEmployeeDetails = $this->employeeRepository->load('userDetails');
     //List Selected by Gender
     if (isset($request->gender) && !empty($request->gender)) {
-     
       $allEmployeeDetails = $allEmployeeDetails->where('gender', $request->gender);
     }
-
     //List Selected by Emp Status
     if (isset($request->emp_status_id) && !empty($request->emp_status_id)) {
       $allEmployeeDetails = $allEmployeeDetails->where('employee_status_id', $request->emp_status_id);
     }
-// dd($request->marital_status);
+    // dd($request->marital_status);
     //List Selected by Marrital Status
     if (isset($request->marital_status) && !empty($request->marital_status)) {
       $allEmployeeDetails = $allEmployeeDetails->where('marital_status', $request->marital_status);
@@ -121,7 +119,7 @@ class EmployeeServices
         );
     }
     // added relationship data 
-    return $allEmployeeDetails->with(['userDetails', 'addressDetails', 'addressDetails.country', 'addressDetails.state','bankDetails'])->orderBy('id', 'DESC')->paginate(10);
+    return $allEmployeeDetails->with(['userDetails', 'addressDetails', 'addressDetails.country', 'addressDetails.state', 'bankDetails'])->orderBy('id', 'DESC')->paginate(10);
   }
   public function create($data)
   {
@@ -162,20 +160,7 @@ class EmployeeServices
   {
     return $this->employeeRepository->find($id);
   }
-  public function getAllEmployee()
-  {
-    return $this->employeeRepository->with('userDetails')->get();
-  }
-  public function getAllEmployeeWithBankDetails()
-  {
-    return $this->employeeRepository->with('userDetails')->has('bankDetails')->get();
-  }
-
-  public function getAllEmployeeWithAddressDetails()
-  {
-    return $this->employeeRepository->with(['userDetails', 'addressDetails', 'addressDetails.country', 'addressDetails.state'])->has('addressDetails')->get();
-  }
-
+  
   public function forgetPassword($request, $code)
   {
     try {
@@ -202,31 +187,8 @@ class EmployeeServices
 
   public function getAllEmployeeByCompanyId($id)
   {
-
     return $this->employeeRepository->where('company_id', $id)->get();
   }
 
-  public function exportData($employees, $headers = [])
-  {
-    try {
-      $arrayKeys = [];
-      $data = array_map(function ($employee) use ($headers, $arrayKeys) {
-        foreach ($headers as $row) {
-          array_push($arrayKeys, $employee[$row]);
-        }
-        return $arrayKeys;
-      }, $employees);
-
-      array_walk($headers, function (&$v) {
-        $v = str_replace('_', ' ', trim($v));
-      });
-      // dd($data);
-      array_unshift($data, $headers);
-      $filePath = 'spreadsheets/export.xlsx';
-      $path = storage_path('app/' . $filePath);
-      return ['status' => true, 'data' => $data, 'path' => $path];
-    } catch (Throwable $th) {
-      Log::error($th->getMessage());
-    }
-  }
+ 
 }
