@@ -12,9 +12,9 @@ class BranchServices
   {
     $this->branchRepository = $branchRepository;
   }
-  public function all()
+  public function all($companyId)
   {
-    return $this->branchRepository->with('country', 'state')->orderBy('id', 'DESC')->paginate(10);
+    return $this->branchRepository->with('country', 'state')->where('company_id',$companyId)->orderBy('id', 'DESC')->paginate(10);
   }
   public function allActiveBranches()
   {

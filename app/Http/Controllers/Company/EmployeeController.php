@@ -84,7 +84,7 @@ class EmployeeController extends Controller
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allShifts = $this->shiftService->getAllActiveShifts();
-        $allBranches = $this->branchService->all();
+        $allBranches = $this->branchService->all(Auth()->guard('admin')->user()->company_id);
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
         return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills'));
@@ -100,7 +100,7 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages =   $this->languagesServices->defaultLanguages();
-        $allBranches = $this->branchService->all();
+        $allBranches = $this->branchService->all(Auth()->guard('admin')->user()->company_id);
         $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->getAllActiveShifts();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
@@ -134,7 +134,7 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
-        $allBranches = $this->branchService->all();
+        $allBranches = $this->branchService->all(Auth()->guard('admin')->user()->company_id);
         $allRoles = $this->roleService->all();
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages =   $this->languagesServices->defaultLanguages();

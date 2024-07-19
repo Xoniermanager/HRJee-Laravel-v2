@@ -101,6 +101,19 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item ">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('hr_complain.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-headphones"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">HR Complain</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <!--begin:Menu item-->
                             <div class="menu-item ">
                                 <!--begin:Menu link-->

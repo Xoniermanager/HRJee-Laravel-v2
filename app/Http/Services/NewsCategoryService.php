@@ -14,7 +14,7 @@ class NewsCategoryService
   }
   public function all()
   {
-    return $this->newsCategoryRepository->orderBy('id', 'DESC')->paginate(10);
+    return $this->newsCategoryRepository->where('company_id',Auth::guard('admin')->user()->company_id)->orderBy('id', 'DESC')->paginate(10);
   }
   public function create(array $data)
   {

@@ -7,6 +7,7 @@ use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Company\ForgetPasswordController as CompanyForgetPasswordController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
+use App\Http\Controllers\EmployeeComplainController;
 use Illuminate\Support\Facades\Artisan;
 
 /**---------------Reset And Forget Password Route----------------*/
@@ -51,7 +52,7 @@ Route::prefix('employee')->controller(AuthController::class)->group(function () 
 
 /**---------------Company Panel Route----------------*/
 Route::prefix('company')->controller(AdminController::class)->group(function () {
-    Route::get('/clear-cache', function() {
+    Route::get('/clear-cache', function () {
         Artisan::call('optimize:clear');
         return '<h1>Cache cleared</h1>';
     });
@@ -76,3 +77,7 @@ Route::prefix('/admin')->controller(SuperAdminController::class)->group(function
 });
 /**---------------End Super Admin Auth Route----------------*/
 
+/** Employee Complain */
+Route::prefix('employee')->controller(EmployeeComplainController::class)->group(function () {
+    Route::post('/send/message/{employee_complains:id}', 'sendMessage')->name('send.message');
+});

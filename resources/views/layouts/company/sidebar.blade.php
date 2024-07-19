@@ -324,8 +324,55 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-
-
+                            <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+                                <!--begin:Menu link-->
+                                <span class="menu-link">
+                                    <span class="menu-icon">
+                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr001.svg-->
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-calendar-times"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Complain</span>
+                                    <span class="menu-arrow"></span>
+                                </span>
+                                <!--end:Menu link-->
+                                <!--begin:Menu sub-->
+                                <div class="menu-sub menu-sub-accordion"
+                                    data-url="{{ route('complain.status.index') }}">
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{ route('complain.status.index') }}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Complain Status</span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                </div>
+                                <!--end:Menu sub-->
+                                <!--begin:Menu sub-->
+                                <div class="menu-sub menu-sub-accordion"
+                                    data-url="{{ route('complain.category.index') }}">
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{ route('complain.category.index') }}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Complain Category</span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
+                                </div>
+                                <!--end:Menu sub-->
+                            </div>
                             <!--end:Menu item-->
                             <!--begin:Menu item-->
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
@@ -559,7 +606,6 @@
                                 </div>
                                 <!--end:Menu sub-->
                             </div>
-
                         </div>
                         <!--end:Menu item-->
                         <div class="aside-footer flex-column-auto" id="kt_aside_footer">

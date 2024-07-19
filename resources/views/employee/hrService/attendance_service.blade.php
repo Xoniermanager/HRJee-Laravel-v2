@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-Attendance
+    Attendance
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -16,95 +16,34 @@ Attendance
                         <div class="row">
                             <div class="col-md-5">
                                 <label for="">From date</label>
-                                <input type="date" class="form-control mb-3" name="">
+                                <input type="date" class="form-control mb-3 date" id="from_date"
+                                    value="{{ old('from_date') }}">
                             </div>
                             <div class="col-md-5">
                                 <label for="">To date</label>
-                                <input type="date" class="form-control mb-3 " name="">
-                            </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary mt-8 ">Send</button>
+                                <input type="date" class="form-control mb-3 date" id="to_date"
+                                    value="{{ old('to_date') }}">
                             </div>
                         </div>
-                    
+
                     </div>
                     <!--end::Card title-->
-                    
                 </div>
                 <div class="separator  mb-9"></div>
 
                 <div class="mb-5 mb-xl-10">
                     <h1 class="d-flex flex-column text-dark fs-2 fw-bold title-text">
-                        Attendance Logs
+                        Attendance Details
                     </h1>
-
                     <div class="">
                         <div class="">
                             <!--begin::Body-->
                             <div class="">
                                 <div class="card-body py-3">
-                                    <!--begin::Table container-->
-                                    <div class="table-responsive">
-                                        <!--begin::Table-->
-                                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                            <!--begin::Table head-->
-                                            <thead>
-                                                <tr class="fw-bold">
-                                                    <th>Date</th>
-                                                
-                                                    <th>Hours</th>
-                                                </tr>
-                                            </thead>
-                                            <!--end::Table head-->
-                                            <!--begin::Table body-->
-                                            <tbody class="">
-                                                <tr>
-                                                    <td>March 28, 2024</td>
-                                                    
-                                                    <td>
-                                                    NA
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>March 27, 2024</td>
-                                                    
-                                                    <td>
-                                                    09:47
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>March 26, 2024</td>
-                                                    
-                                                    <td>
-                                                    09:30
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>March 25, 2024</td>
-                                                    
-                                                    <td>
-                                                    09:28
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>March 24, 2024</td>
-                                                    
-                                                    <td>
-                                                    09:32
-                                                    </td>
-                                                </tr>
-                                                
-                                            </tbody>
-                                            <!--end::Table body-->
-                                        </table>
-                                        <!--end::Table-->
-                                    </div>
-                                    <!--end::Table container-->
-
+                                    @include('employee.hrService.attendance_list')
                                 </div>
                             </div>
                             <!--begin::Body-->
-
                         </div>
                         <!--begin::Body-->
                     </div>
@@ -117,4 +56,29 @@ Attendance
     </div>
     <!--end::Container-->
 </div>
+<script>
+    jQuery(".date").on('change', function() {
+        var from_date = $('#from_date').val();
+        var to_date = $('#to_date').val();
+        if (from_date && to_date) {
+            search_filter_results(from_date, to_date)
+        } else {
+            return false;
+        }
+    });
+
+    function search_filter_results(from_date, to_date) {
+        $.ajax({
+            type: 'GET',
+            url: "<?= route('search.filter.attendance') ?>",
+            data: {
+                'from_date': from_date,
+                'to_date': to_date
+            },
+            success: function(response) {
+                $('#attendance_list').replaceWith(response.data);
+            }
+        });
+    }
+</script>
 @endsection

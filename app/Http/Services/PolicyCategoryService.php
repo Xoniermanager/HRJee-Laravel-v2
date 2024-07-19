@@ -14,7 +14,7 @@ class PolicyCategoryService
   }
   public function all()
   {
-    return $this->policyCategoryRepository->orderBy('id', 'DESC')->paginate(10);
+    return $this->policyCategoryRepository->where('company_id',Auth::guard('admin')->user()->company_id)->orderBy('id', 'DESC')->paginate(10);
   }
   public function create(array $data)
   {

@@ -50,8 +50,7 @@ class EmployeeAttendanceService
         $data = 'Puch Out';
       }
       return $response = ['data' => $data, 'status' => true];
-    } 
-    else {
+    } else {
       return $response = ['status' => true];
     }
   }
@@ -59,5 +58,13 @@ class EmployeeAttendanceService
   public function getExtistingDetailsByUserId($userId)
   {
     return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('created_at', Carbon::today())->first();
+  }
+  public function getAllAttendanceDetails($userId)
+  {
+    return $this->employeeAttendanceRepository->where('user_id', $userId)->orderBy('id', 'DESC')->paginate(10);
+  }
+  public function getAttendanceByFromAndToDate($fromDate, $toDate)
+  {
+    return $this->employeeAttendanceRepository->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('id', 'DESC')->paginate(10);
   }
 }

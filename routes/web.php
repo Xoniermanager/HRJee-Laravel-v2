@@ -12,11 +12,12 @@ use App\Http\Controllers\Employee\HRServiceController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
-use App\Http\Controllers\Employee\AttendanceServiceController;
+use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
+use App\Http\Controllers\Employee\HrComplainController;
 use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\LeaveTrackingController;
 
@@ -68,7 +69,11 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     Route::get('/contact-us', [ContactUsController::class, 'index'])->name('employee.contact.us');
 
     // Attendance Service
-    Route::get('/attendance/service', [AttendanceServiceController::class, 'index'])->name('employee.attendance.service');
+    Route::controller(AttendanceController::class)->group(function () {
+        Route::get('/attendance/service', 'index')->name('employee.attendance.service');
+        Route::get('/search/filter/date', 'getAttendanceByFromAndToDate')->name('search.filter.attendance');
+    });
+
 
     // Leave Management
     Route::controller(ApplyLeaveController::class)->group(function () {
@@ -100,5 +105,13 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
     //Employee Break History
     Route::post('/break-history', [EmployeeBreakHistoryController::class, 'store'])->name('employee_break_history');
+
+    //Employee Complain
+    Route::prefix('/hr-complain')->controller(HrComplainController::class)->group(function () {
+        Route::get('/index', 'index')->name('hr_complain.index');
+        Route::get('/add', 'add')->name('hr_complain.add');
+        Route::post('/store', 'store')->name('hr_complain.store');
+        Route::get('/chat/{employee_complains:id}', 'getComplainDetails')->name('employee.getComplainDetails');
+    });
 });
 /**----------------- End Employee Pannel Route ----------------------*/
