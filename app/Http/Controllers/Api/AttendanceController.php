@@ -119,4 +119,31 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
+    public function getLastTenDaysAttendance()
+    {
+        try {
+            $lastAttendanceDetails = $this->employeeAttendanceService->getLastTenDaysAttendance();
+            if (isset($lastAttendanceDetails) && count($lastAttendanceDetails) > 0) {
+                foreach ($lastAttendanceDetails as $attendanceDetails) {
+                    $finalData[] =
+                        [
+                            'date'     => date('j F,Y', strtotime($attendanceDetails->punch_in)),
+                            'day'     => date('l', strtotime($attendanceDetails->punch_in)),
+                            'total_hours' => getTotalHour($attendanceDetails->punch_in, $attendanceDetails->punch_out)
+                        ];
+                }
+            } else {
+                $finalData = "No Last Attendance Available";
+            }
+            return response()->json([
+                'status' => true,
+                'data' => $finalData,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -62,6 +62,6 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
         Route::get('/employee/make/attendance', 'makeAttendance');
         Route::post('/search/filter/attendance', 'getAttendanceByFromAndToDate');
         Route::get('/get-today-attendance', 'getTodayAttendance');
-
+        Route::get('/get-last-attendance', 'getLastTenDaysAttendance');
     });
 });

@@ -68,4 +68,9 @@ class EmployeeAttendanceService
     $userId = Auth()->guard('employee')->user()->id ?? auth()->guard('employee_api')->user()->id;
     return $this->employeeAttendanceRepository->where('user_id', $userId)->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('id', 'DESC')->paginate(10);
   }
+  public function getLastTenDaysAttendance()
+  {
+    $userId = Auth()->guard('employee')->user()->id ?? auth()->guard('employee_api')->user()->id;
+    return $this->employeeAttendanceRepository->where('user_id', $userId)->where('punch_in', '>', now()->subDays(10)->endOfDay())->orderBy('id', 'DESC')->get();
+  }
 }
