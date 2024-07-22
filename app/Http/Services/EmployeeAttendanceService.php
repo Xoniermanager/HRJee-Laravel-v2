@@ -49,7 +49,7 @@ class EmployeeAttendanceService
       if (isset($puchOutDetail)) {
         $message = 'Puch Out';
       }
-      return $response = ['data' => $message, 'status' => true ];
+      return $response = ['data' => $message, 'status' => true];
     } else {
       return $response = ['status' => false];
     }
@@ -65,6 +65,7 @@ class EmployeeAttendanceService
   }
   public function getAttendanceByFromAndToDate($fromDate, $toDate)
   {
-    return $this->employeeAttendanceRepository->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('id', 'DESC')->paginate(10);
+    $userId = Auth()->guard('employee')->user()->id ?? auth()->guard('employee_api')->user()->id;
+    return $this->employeeAttendanceRepository->where('user_id', $userId)->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('id', 'DESC')->paginate(10);
   }
 }

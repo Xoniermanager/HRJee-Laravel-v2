@@ -21,18 +21,26 @@ class AttendanceController extends Controller
             $data['punch_in_using'] = 'Mobile';
             $attendanceDetails = $this->employeeAttendanceService->create($data);
             if ($attendanceDetails['status'] == true && $attendanceDetails['data'] == 'Puch Out') {
-                $message = "You Puch Out Successfully";
+                return response()->json([
+                    'status' => true,
+                    'puch_out' => true,
+                    'message' => "You Puch Out Successfully"
+                ], 200);
             }
             if ($attendanceDetails['status'] == true && $attendanceDetails['data'] == 'Puch In') {
-                $message = "You Puch In Successfully";
+                return response()->json([
+                    'status' => true,
+                    'puch_in' => true,
+                    'message' => "You Puch In Successfully"
+                ], 200);
             }
             if ($attendanceDetails['status'] == false) {
-                $message = "Don't Access you to Puch In Current Time";
+                return response()->json([
+                    'status' => true,
+                    'atttendance_Status' => true,
+                    'message' => "Don't Access you to Puch In Current Time",
+                ], 200);
             }
-            return response()->json([
-                'status' => true,
-                'message' => $message,
-            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -87,6 +95,22 @@ class AttendanceController extends Controller
                 'status' => true,
                 'data' => $finalData,
                 'paginationDetails' => $paginationDetails,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+    public function getTodayAttendance()
+    {
+        try {
+            $todayAttendanceDetails = $this->employeeAttendanceService->getExtistingDetailsByUserId(auth()->guard('employee_api')->user()->id);
+            return response()->json([
+                'status' => true,
+                'todayAttendanceDetails' => $todayAttendanceDetails,
+                'message' => "Retrieved Attendance Today"
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

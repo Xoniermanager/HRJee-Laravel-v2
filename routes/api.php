@@ -60,6 +60,8 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     /** Punch In */
     Route::controller(AttendanceController::class)->group(function () {
         Route::get('/employee/make/attendance', 'makeAttendance');
-        Route::get('/search/filter/attendance', 'getAttendanceByFromAndToDate');
+        Route::post('/search/filter/attendance', 'getAttendanceByFromAndToDate');
+        Route::get('/get-today-attendance', 'getTodayAttendance');
+
     });
 });
