@@ -18,7 +18,7 @@ class EmployeeAttendanceService
   }
   public function create($data)
   {
-    $userId = Auth()->guard('employee')->user()->id;
+    $userId = Auth()->guard('employee')->user()->id ?? auth()->guard('employee_api')->user()->id;
     $attendanceTime = date('Y/m/d H:i:s');
     $userDetails =  $this->userDetailRepository->getDetailsByUserId($userId);
     $startingTime = Carbon::parse($userDetails->officeShift->start_time);
@@ -29,7 +29,7 @@ class EmployeeAttendanceService
       $payload =
         [
           'user_id' => $userId,
-          'punch_in_using' => 'Web'
+          'punch_in_using' => $data['punch_in_using']
         ];
       /** If Data Exit in Table Soo we Implement for Puch Out  */
       $existingDetails = $this->getExtistingDetailsByUserId($userId);
@@ -44,14 +44,14 @@ class EmployeeAttendanceService
         $puchInDetail =  $this->employeeAttendanceRepository->create($payload);
       }
       if (isset($puchInDetail)) {
-        $data = 'Puch In';
+        $message = 'Puch In';
       }
       if (isset($puchOutDetail)) {
-        $data = 'Puch Out';
+        $message = 'Puch Out';
       }
-      return $response = ['data' => $data, 'status' => true];
+      return $response = ['data' => $message, 'status' => true ];
     } else {
-      return $response = ['status' => true];
+      return $response = ['status' => false];
     }
   }
 

@@ -56,4 +56,10 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
 
     /** Get All Leave Avaialble of Employee */
     Route::get('/get/leave/available', [LeaveAvailableApiController::class, 'getAllLeaveAvailableByUserId']);
+
+    /** Punch In */
+    Route::controller(AttendanceController::class)->group(function () {
+        Route::get('/employee/make/attendance', 'makeAttendance');
+        Route::get('/search/filter/attendance', 'getAttendanceByFromAndToDate');
+    });
 });

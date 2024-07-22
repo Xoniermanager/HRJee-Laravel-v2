@@ -16,7 +16,8 @@ class EmployeeAttendanceController extends Controller
     }
     public function makeAttendance(Request $request)
     {
-        $response = $this->employeeAttendanceService->create($request->all());
+        $data['punch_in_using'] = 'Web';
+        $response = $this->employeeAttendanceService->create($data);
         if ($response['status'] == true && $response['data'] == 'Puch Out') {
             return back()->with('success', "You Puch Out Successfully");
         }
