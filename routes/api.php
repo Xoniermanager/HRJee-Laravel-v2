@@ -34,7 +34,7 @@ Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']
 Route::post('verify/otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:30,1');
 
 Route::group(['middleware' =>  'auth:sanctum'], function () {
-    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('logout', [AuthController::class, 'logout']);
     Route::get('profile', [AuthController::class, 'profile']);
     Route::get('user/details', [AuthController::class, 'userAllDetails']);
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
