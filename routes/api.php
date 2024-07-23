@@ -34,7 +34,7 @@ Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']
 Route::post('verify/otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:30,1');
 
 Route::group(['middleware' =>  'auth:sanctum'], function () {
-    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('logout', [AuthController::class, 'logout']);
     Route::get('profile', [AuthController::class, 'profile']);
     Route::get('user/details', [AuthController::class, 'userAllDetails']);
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
@@ -60,6 +60,8 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     /** Punch In */
     Route::controller(AttendanceController::class)->group(function () {
         Route::get('/employee/make/attendance', 'makeAttendance');
-        Route::get('/search/filter/attendance', 'getAttendanceByFromAndToDate');
+        Route::post('/search/filter/attendance', 'getAttendanceByFromAndToDate');
+        Route::get('/get-today-attendance', 'getTodayAttendance');
+        Route::get('/get-last-attendance', 'getLastTenDaysAttendance');
     });
 });
