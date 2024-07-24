@@ -37,7 +37,7 @@ class ResetPassword extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'email.otp.template',
+            markdown: 'email.otpTemplate',
             with: [
                 'resetPassword' => $this->resetPassword
             ],
