@@ -51,22 +51,35 @@
             <!--end::Col-->
             <div class="col-md-3">
                 <div class="card mb-3">
-                    <div class="card-body">
-                        <table class="table m-0">
-                            <tr>
-                                <th>Start Date: </th>
-                                <td><button
-                                        class="btn btn-sm btn-success">{{ date('j F,Y', strtotime($announcementDetails->start_date)) }}</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Expiry Date: </th>
-                                <td><button
-                                        class="btn btn-sm btn-danger">{{ date('j F,Y', strtotime($announcementDetails->end_date)) }}</button>
-                                </td>
-                            </tr>
-                        </table>
-
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5> Recent Policy</h5>
+                        </div>
+                    </div>
+                    <div class="card mb-3 scrollbar-news">
+                        <div class="card-body">
+                            <table class="table m-0">
+                                @foreach ($allAssinedAnnouncementDetails as $allAnnouncementDetails)
+                                    @if ($allAnnouncementDetails->id != $announcementDetails->id)
+                                        <div class="small-post">
+                                            <div class="eblog-post-list-style">
+                                                <div class="image-area">
+                                                    <a href="#"><img src="{{ $allAnnouncementDetails->image }}"
+                                                            alt=""></a>
+                                                </div>
+                                                <div class="blog-content">
+                                                    <h4 class="heading-title">
+                                                        <a class="title-animation"
+                                                            href="{{ route('employee.announcement.details', $allAnnouncementDetails->id) }}">
+                                                            {{ $allAnnouncementDetails->title }}</a>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

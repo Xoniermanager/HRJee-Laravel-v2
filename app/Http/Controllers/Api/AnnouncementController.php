@@ -22,6 +22,8 @@ class AnnouncementController extends Controller
             foreach ($allAnnouncementDetails as $announcementDetails) {
                 $announcementPayloadDetails[] =
                     [
+                        'id' => $announcementDetails->id,
+                        'date' =>  date('j F,Y', strtotime($announcementDetails->start_date_time)),
                         'title' => $announcementDetails->title,
                         'image' => $announcementDetails->image,
                     ];
@@ -44,6 +46,7 @@ class AnnouncementController extends Controller
             $announcementDetails = $this->announcementServices->findById($id);
             $viewDetails =
                 [
+                    'date' =>  date('j F,Y', strtotime($announcementDetails->start_date_time)),
                     'title' => $announcementDetails->title,
                     'image' => $announcementDetails->image,
                     'description' => $announcementDetails->description,

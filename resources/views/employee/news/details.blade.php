@@ -23,8 +23,10 @@
                                 <!--begin::Body-->
                                 <div class="m-0">
                                     <!--begin::Title-->
-                                    <a href="#"
-                                        class="fs-6 text-dark fw-bold text-hover-primary text-dark lh-base cat-links">{{ $newsDetails->title }}</a>
+                                    <h5>
+                                        <span class="category">{{ $newsDetails->newsCategories->name }}</span>
+                                        {{ $newsDetails->title }}
+                                    </h5>
                                     <!--end::Title-->
                                     <!--begin::Text-->
                                     <div class="fw-semibold fs-5 text-gray-900 text-dark my-4">
@@ -51,33 +53,38 @@
             <!--end::Col-->
             <div class="col-md-3">
                 <div class="card mb-3">
-                    <div class="card-body">
-                        <h5> Category</h5>
-                        <button class="btn btn-sm btn-primary">{{ $newsDetails->newsCategories->name }}</button>
-
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5> Recent News</h5>
+                        </div>
                     </div>
-                </div>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <table class="table m-0">
-                            <tr>
-                                <th>Start Date: </th>
-                                <td><button
-                                        class="btn btn-sm btn-success">{{ date('j F,Y', strtotime($newsDetails->start_date)) }}</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Expiry Date: </th>
-                                <td><button
-                                        class="btn btn-sm btn-danger">{{ date('j F,Y', strtotime($newsDetails->end_date)) }}</button>
-                                </td>
-                            </tr>
-                        </table>
-
+                    <div class="card mb-3 scrollbar-news">
+                        <div class="card-body">
+                            <table class="table m-0">
+                                @foreach ($allAssinedNewsDetails as $allNewsDetails)
+                                    @if ($allNewsDetails->id != $newsDetails->id)
+                                        <div class="small-post">
+                                            <div class="eblog-post-list-style">
+                                                <div class="image-area">
+                                                    <a href="#"><img src="{{ $allNewsDetails->image }}"
+                                                            alt=""></a>
+                                                </div>
+                                                <div class="blog-content">
+                                                    <h4 class="heading-title">
+                                                        <a class="title-animation"
+                                                            href="{{ route('employee.news.details', $allNewsDetails->id) }}">
+                                                            {{ $allNewsDetails->title }}</a>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+                                @endforeach
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

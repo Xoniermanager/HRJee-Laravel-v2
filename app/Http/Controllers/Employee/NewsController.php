@@ -23,6 +23,7 @@ class NewsController extends Controller
     public function viewDetails($id)
     {
         $newsDetails = $this->newsService->findByNewsId($id);
-        return view('employee.news.details', compact('newsDetails'));
+        $allAssinedNewsDetails = $this->newsService->getAllAssignedNewsForEmployee();
+        return view('employee.news.details', compact('newsDetails','allAssinedNewsDetails'));
     }
 }

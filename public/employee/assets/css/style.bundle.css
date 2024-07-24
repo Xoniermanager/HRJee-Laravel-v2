@@ -39882,3 +39882,90 @@ span, a, a:hover {
   height: 40px;
   overflow: hidden;
 }
+.eblog-post-list-style:last-child {
+  margin-bottom: 0;
+  }
+  .eblog-post-list-style {
+  gap: 13px;
+  margin-bottom: 20px;
+  }
+  .eblog-post-list-style {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  }
+  .eblog-post-list-style .image-area {
+  flex-basis: 30%;
+  }
+  .eblog-post-list-style .image-area {
+  position: relative;
+  z-index: 1;
+  transition: var(--transition);
+  overflow: hidden;
+  max-width: 110px;
+  }
+  .eblog-post-list-style .image-area a {
+  display: block;
+  overflow: hidden;
+  border-radius: 10px;
+  }
+  .eblog-post-list-style .image-area a img {
+  width: 100%;
+  -webkit-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  border: 1px solid #eee;
+  }
+  .scrollbar-news {
+    max-height: 550px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+.scrollbar-news::-webkit-scrollbar {
+  width: 4px;
+  height: 8px;
+  border-radius: 50px;
+  margin: 0 10px;
+}
+
+.scrollbar-news::-webkit-scrollbar-track {
+  background: transparent !important;
+  border: 1px solid var(--kt-primary)  !important;
+  border-radius: 50px;
+  margin: 0;
+}
+
+.scrollbar-news::-webkit-scrollbar-thumb {
+  background: var(--kt-primary) !important;
+  border-radius: 50px;
+  cursor: grabbing;
+  margin: 1px;
+}
+ 
+
+  .eblog-post-list-style .blog-content {
+  flex-basis: 70%;
+  }
+  .eblog-post-list-style .blog-content .heading-title {
+  line-height: 22px;
+  }
+  .eblog-post-list-style .blog-content .heading-title {
+  margin-bottom: 12px;
+  line-height: 26px;
+  }
+  .blog-content .heading-title {
+  max-width: max-content;
+  }
+  .eblog-post-list-style .blog-content .heading-title a {
+  font-size: 15px; 
+  color: #444;
+  }
+  .small-post {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  }
+  .small-post:last-child {
+  border-bottom: none;
+  padding: 10px 0;
+  }

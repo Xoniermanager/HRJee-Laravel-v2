@@ -23,8 +23,10 @@
                                 <!--begin::Body-->
                                 <div class="m-0">
                                     <!--begin::Title-->
-                                    <a href="#"
-                                        class="fs-6 text-dark fw-bold text-hover-primary text-dark lh-base cat-links">{{ $policyDetails->title }}</a>
+                                    <h5>
+                                        <span class="category">{{ $policyDetails->policyCategories->name }}</span>
+                                        {{ $policyDetails->title }}
+                                    </h5>
                                     <!--end::Title-->
                                     <!--begin::Text-->
                                     <div class="fw-semibold fs-5 text-gray-900 text-dark my-4">
@@ -51,29 +53,35 @@
             <!--end::Col-->
             <div class="col-md-3">
                 <div class="card mb-3">
-                    <div class="card-body">
-                        <h5> Category</h5>
-                        <button class="btn btn-sm btn-primary">{{ $policyDetails->policyCategories->name }}</button>
-
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5> Recent Policy</h5>
+                        </div>
                     </div>
-                </div>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <table class="table m-0">
-                            <tr>
-                                <th>Start Date: </th>
-                                <td><button
-                                        class="btn btn-sm btn-success">{{ date('j F,Y', strtotime($policyDetails->start_date)) }}</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Expiry Date: </th>
-                                <td><button
-                                        class="btn btn-sm btn-danger">{{ date('j F,Y', strtotime($policyDetails->end_date)) }}</button>
-                                </td>
-                            </tr>
-                        </table>
-
+                    <div class="card mb-3 scrollbar-news">
+                        <div class="card-body">
+                            <table class="table m-0">
+                                @foreach ($allAssignPolicyDetails as $allPolicyDetails)
+                                    @if ($allPolicyDetails->id != $policyDetails->id)
+                                        <div class="small-post">
+                                            <div class="eblog-post-list-style">
+                                                <div class="image-area">
+                                                    <a href="#"><img src="{{ $allPolicyDetails->image }}"
+                                                            alt=""></a>
+                                                </div>
+                                                <div class="blog-content">
+                                                    <h4 class="heading-title">
+                                                        <a class="title-animation"
+                                                            href="{{ route('employee.policy.details', $allPolicyDetails->id) }}">
+                                                            {{ $allPolicyDetails->title }}</a>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

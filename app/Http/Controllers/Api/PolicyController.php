@@ -17,10 +17,12 @@ class PolicyController extends Controller
     {
         try {
             $allAssignedPolicy = $this->policyService->getAllAssignedPolicyForEmployee();
-            $assinedPolicy = [];
+            $assinedPolicyPayload = [];
             foreach ($allAssignedPolicy as $assignedpolicy) {
-                $assinedPolicy[] =
+                $assinedPolicyPayload[] =
                     [
+                        'id' => $assignedpolicy->id,
+                        'date' =>  date('j F,Y', strtotime($assignedpolicy->start_date)),
                         'title' => $assignedpolicy->title,
                         'image' => $assignedpolicy->image,
                         'policy_Category' => $assignedpolicy->policyCategories->name
@@ -29,7 +31,7 @@ class PolicyController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Retried Policy List Successfully',
-                'data' => $assinedPolicy,
+                'data' => $assinedPolicyPayload,
             ], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -44,6 +46,7 @@ class PolicyController extends Controller
             $policyDetails = $this->policyService->findByPolicyId($id);
             $viewPolicyDetails =
                 [
+                    'date' =>  date('j F,Y', strtotime($policyDetails->start_date)),
                     'title' => $policyDetails->title,
                     'image' => $policyDetails->image,
                     'policy_Category' => $policyDetails->policyCategories->name,
