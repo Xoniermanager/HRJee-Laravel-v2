@@ -22,6 +22,8 @@ class NewsController extends Controller
             foreach ($allAssignedNews as $assignedNews) {
                 $assinedNews[] =
                     [
+                        'id' => $assignedNews->id,
+                        'date' =>  date('j F,Y', strtotime($assignedNews->start_date)),
                         'title' => $assignedNews->title,
                         'image' => $assignedNews->image,
                         'news_Category' => $assignedNews->newsCategories->name
@@ -45,6 +47,7 @@ class NewsController extends Controller
             $newsDetails = $this->newsService->findByNewsId($id);
             $viewNewsDetails =
                 [
+                    'date' =>  date('j F,Y', strtotime($newsDetails->start_date)),
                     'title' => $newsDetails->title,
                     'image' => $newsDetails->image,
                     'news_Category' => $newsDetails->newsCategories->name,

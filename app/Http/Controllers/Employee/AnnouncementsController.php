@@ -22,6 +22,7 @@ class AnnouncementsController extends Controller
     public function viewDetails($id)
     {
         $announcementDetails = $this->announcementService->findById($id);
-        return view('employee.announcement.details', compact('announcementDetails'));
+        $allAssinedAnnouncementDetails = $this->announcementService->getAllAssignedAnnouncementForEmployee();
+        return view('employee.announcement.details', compact('announcementDetails','allAssinedAnnouncementDetails'));
     }
 }
