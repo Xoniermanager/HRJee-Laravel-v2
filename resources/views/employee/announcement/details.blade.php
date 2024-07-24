@@ -53,7 +53,7 @@
                 <div class="card mb-3">
                     <div class="card mb-3">
                         <div class="card-body">
-                            <h5> Recent Policy</h5>
+                            <h5> Recent Announcements</h5>
                         </div>
                     </div>
                     <div class="card mb-3 scrollbar-news">
