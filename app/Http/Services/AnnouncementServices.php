@@ -11,9 +11,17 @@ use Throwable;
 class AnnouncementServices
 {
   private $announcementRepository;
-  public function __construct(AnnouncementRepository $announcementRepository)
+  private $userDetailServices;
+  private $companyBranchServices;
+  private $departmentServices;
+  private $designationServices;
+  public function __construct(AnnouncementRepository $announcementRepository, UserDetailServices $userDetailServices, BranchServices $companyBranchServices, DepartmentServices $departmentServices, DesignationServices $designationServices)
   {
     $this->announcementRepository = $announcementRepository;
+    $this->userDetailServices = $userDetailServices;
+    $this->companyBranchServices = $companyBranchServices;
+    $this->departmentServices = $departmentServices;
+    $this->designationServices = $designationServices;
   }
   public function all()
   {
@@ -141,5 +149,23 @@ class AnnouncementServices
       );
     }
     return $announcementDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+  public function getAllAssignedAnnouncementForEmployee()
+  {
+    $user = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+    $allAnnouncementDetails = $this->announcementRepository->where('company_id', $user->company_id)->where('status', 1)->where('start_date_time', '<=', date('Y-m-d'))
+      ->where('expires_at_time', '>=', date('Y-m-d'))->get();
+    $userDetails = $this->userDetailServices->getDetailsByUserId($user->id);
+    $allAssignedAnnouncement = [];
+    foreach ($allAnnouncementDetails as $announcementsDetails) {
+      $assignedCompanyBranchesIds = $this->companyBranchServices->getAllAssignedCompanyBranches($announcementsDetails);
+      $assignedDepartmentIds = $this->departmentServices->getAllAssignedDepartment($announcementsDetails);
+      $assignedDesignationIds = $this->designationServices->getAllAssignedDesignation($announcementsDetails);
+
+      if (in_array($userDetails->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
+        $allAssignedAnnouncement[] = $announcementsDetails;
+      }
+    }
+    return $allAssignedAnnouncement;
   }
 }

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\BranchServices;
+use Exception;
 use App\Http\Services\NewsService;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class NewsController extends Controller
 {
@@ -15,9 +14,53 @@ class NewsController extends Controller
         $this->newsService = $newsService;
     }
 
-    public function assignedNews(Request $request)
+    public function allAssignedNews()
     {
-        $data = $this->newsService->getAllAssignedNews($request);
-        return apiResponse('news', $data);
+        try {
+            $allAssignedNews = $this->newsService->getAllAssignedNewsForEmployee();
+            $assinedNews = [];
+            foreach ($allAssignedNews as $assignedNews) {
+                $assinedNews[] =
+                    [
+                        'title' => $assignedNews->title,
+                        'image' => $assignedNews->image,
+                        'news_Category' => $assignedNews->newsCategories->name
+                    ];
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Retried News List Successfully',
+                'data' => $assinedNews,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function viewNewsDetails($id)
+    {
+        try {
+            $newsDetails = $this->newsService->findByNewsId($id);
+            $viewNewsDetails =
+                [
+                    'title' => $newsDetails->title,
+                    'image' => $newsDetails->image,
+                    'news_Category' => $newsDetails->newsCategories->name,
+                    'description' => $newsDetails->description,
+                    'file' => $newsDetails->file
+                ];
+            return response()->json([
+                'status' => true,
+                'message' => 'Retried News Details Successfully',
+                'data' => $viewNewsDetails,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

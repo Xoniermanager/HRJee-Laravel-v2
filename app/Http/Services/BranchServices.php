@@ -14,7 +14,7 @@ class BranchServices
   }
   public function all($companyId)
   {
-    return $this->branchRepository->with('country', 'state')->where('company_id',$companyId)->orderBy('id', 'DESC')->paginate(10);
+    return $this->branchRepository->with('country', 'state')->where('company_id', $companyId)->orderBy('id', 'DESC')->paginate(10);
   }
   public function allActiveBranches()
   {
@@ -22,7 +22,7 @@ class BranchServices
   }
   public function getAllCompanyBranchByCompanyId($companyId)
   {
-    return $this->branchRepository->where('company_id',$companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
+    return $this->branchRepository->where('company_id', $companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
   }
   public function create($data)
   {
@@ -79,9 +79,17 @@ class BranchServices
     return $branchDetails->orderBy('id', 'DESC')->paginate(10);
   }
 
-// if for this use already have created then let me know
+  // if for this use already have created then let me know
   public function getAllBranchByBranchId($ids)
   {
-    return $this->branchRepository->whereIn('id',$ids)->get();
+    return $this->branchRepository->whereIn('id', $ids)->get();
+  }
+  public function getAllAssignedCompanyBranches($data)
+  {
+    if ($data->all_company_branch == 1) {
+      return $this->getAllCompanyBranchByCompanyId($data->company_id)->pluck('id')->toArray();
+    } else {
+      return $data->companyBranches->pluck('id')->toArray();
+    }
   }
 }

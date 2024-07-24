@@ -32,7 +32,6 @@ use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
 use App\Http\Controllers\Company\BreakTypeController;
-use App\Http\Controllers\Company\ComplainController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;

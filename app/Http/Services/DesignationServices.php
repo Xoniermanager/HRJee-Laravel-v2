@@ -7,9 +7,11 @@ use App\Repositories\DesignationsRepository;
 class DesignationServices
 {
   private $designationRepository;
-  public function __construct(DesignationsRepository $designationRepository)
+  private $departmentService;
+  public function __construct(DesignationsRepository $designationRepository, DepartmentServices $departmentService)
   {
     $this->designationRepository = $designationRepository;
+    $this->departmentService = $departmentService;
   }
   public function all()
   {
@@ -31,15 +33,17 @@ class DesignationServices
   {
     return $this->designationRepository->find($id)->update($data);
   }
-  public function deleteDetails($id)  
+  public function deleteDetails($id)
   {
     return $this->designationRepository->find($id)->delete();
   }
 
-  public function getAllDesignationByDepartmentIds($departmentIds, $allDepartment = null)
+  public function getAllDesignationByDepartmentIds($departmentIds = null, $allDepartment = null)
   {
     if ($allDepartment == true) {
-      return $this->designationRepository->where('department_id', '!=', NULL)->where('status', '1')->get();
+      $company_id = auth()->guard('admin')->user()->company_id ?? Auth()->guard('employee')->user()->company_id ?? auth()->guard('employee_api')->user()->company_id;
+      $departmentIds = $this->departmentService->getAllActiveDepartmentsByCompanyId($company_id)->pluck('id')->toArray();
+      return $this->designationRepository->whereIn('department_id', $departmentIds)->where('status', '1')->get();
     } else {
       return $this->designationRepository->whereIn('department_id', $departmentIds)->where('status', '1')->get();
     }
@@ -66,10 +70,12 @@ class DesignationServices
     }
     return $designationDetails->orderBy('id', 'DESC')->paginate(10);
   }
-
-
-  public function getAllDesignationByDesignationId($ids)
+  public function getAllAssignedDesignation($data)
   {
-    return $this->designationRepository->whereIn('id', $ids)->get();
+    if ($data->all_designation == 1) {
+      return $this->getAllDesignationByDepartmentIds('', true)->pluck('id')->toArray();
+    } else {
+      return $data->designations->pluck('id')->toArray();
+    }
   }
 }

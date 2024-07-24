@@ -40,11 +40,7 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::put('update/address', [AddressController::class, 'updateAddress']);
-    Route::get('announcement', [AnnouncementController::class, 'announcement']);
-    Route::post('punch/in', [AttendanceController::class, 'punchIn']);
-    Route::get('news', [NewsController::class, 'assignedNews']);
-    Route::get('announcement', [AnnouncementController::class, 'getAllAssignedAnnouncement']);
-    Route::get('policy', [PolicyController::class, 'getAllAssignedPolicy']);
+
     Route::get('applied/leave/history', [LeaveManagementApiController::class, 'appliedLeaveHistory']);
 
     /**For Leave Management API */
@@ -63,5 +59,23 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
         Route::post('/search/filter/attendance', 'getAttendanceByFromAndToDate');
         Route::get('/get-today-attendance', 'getTodayAttendance');
         Route::get('/get-last-attendance', 'getLastTenDaysAttendance');
+    });
+
+    /** News Module  */
+    Route::prefix('news')->controller(NewsController::class)->group(function () {
+        Route::get('/list', 'allAssignedNews');
+        Route::get('/view-details/{news:id}', 'viewNewsDetails');
+    });
+
+    /** Policy Modules */
+    Route::prefix('policy')->controller(PolicyController::class)->group(function () {
+        Route::get('/list', 'allAssignedPolicy');
+        Route::get('/view-details/{policies:id}', 'viewPolicyDetails');
+    });
+
+    /** Announcement Modules */
+    Route::prefix('announcements')->controller(AnnouncementController::class)->group(function () {
+        Route::get('/list', 'allAssignedAnnouncement');
+        Route::get('/view-details/{announcements:id}', 'viewAnnouncementDetails');
     });
 });

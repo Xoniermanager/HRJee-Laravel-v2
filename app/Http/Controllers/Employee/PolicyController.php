@@ -3,12 +3,24 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Services\PolicyService;
 
 class PolicyController extends Controller
 {
+    public $policyService;
+
+    public function __construct(PolicyService $policyService)
+    {
+        $this->policyService = $policyService;
+    }
     public function index()
     {
-        return view('employee.policy.index');
+        $allAssignPolicyDetails = $this->policyService->getAllAssignedPolicyForEmployee();
+        return view('employee.policy.index', compact('allAssignPolicyDetails'));
+    }
+    public function viewDetails($id)
+    {
+        $policyDetails = $this->policyService->findByPolicyId($id);
+        return view('employee.policy.details', compact('policyDetails'));
     }
 }
