@@ -12,14 +12,14 @@ class PolicyService
 {
   private $policyRepository;
   private $departmentServices;
-  private $branchServices;
+  private $companyBranchServices;
   private $userDetailServices;
   private $designationServices;
-  public function __construct(DesignationServices $designationServices, UserDetailServices $userDetailServices, BranchServices $branchServices, DepartmentServices $departmentServices, PolicyRepository $policyRepository)
+  public function __construct(DesignationServices $designationServices, UserDetailServices $userDetailServices, BranchServices $companyBranchServices, DepartmentServices $departmentServices, PolicyRepository $policyRepository)
   {
     $this->policyRepository = $policyRepository;
     $this->departmentServices = $departmentServices;
-    $this->branchServices = $branchServices;
+    $this->companyBranchServices = $companyBranchServices;
     $this->userDetailServices = $userDetailServices;
     $this->designationServices = $designationServices;
   }
@@ -171,60 +171,22 @@ class PolicyService
     }
     return $policyDetails->orderBy('id', 'DESC')->paginate(10);
   }
-
-
-
-
-  public function getAllAssignedPolicies()
+  public function getAllAssignedPolicyForEmployee()
   {
-    try {
+    $user = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+    $allPolicyDetails = $this->policyRepository->where('company_id', $user->company_id)->where('status', 1)->where('start_date', '<=', date('Y-m-d'))
+      ->where('end_date', '>=', date('Y-m-d'))->get();
+    $userDetails = $this->userDetailServices->getDetailsByUserId($user->id);
+    $allAssignedPolicy = [];
+    foreach ($allPolicyDetails as $policyDetails) {
+      $assignedCompanyBranchesIds = $this->companyBranchServices->getAllAssignedCompanyBranches($policyDetails);
+      $assignedDepartmentIds = $this->departmentServices->getAllAssignedDepartment($policyDetails);
+      $assignedDesignationIds = $this->designationServices->getAllAssignedDesignation($policyDetails);
 
-      $user = auth()->guard('employee_api')->user();
-      $policyIds = [];
-      $policies = $this->policyRepository->with('policyCategories:id,name')->where('company_id', $user->company_id)->get();
-      //->select('id','title','image','start_date','end_date','file','description','news_category_id')
-      $departments = $this->departmentServices->getAllActiveDepartmentsUsingByCompanyID($user->company_id);
-      $userDetails = $this->userDetailServices->getDetailsByUserId($user->id);
-
-      foreach ($policies as $row) {
-        // check for branch 
-        if ($row->all_company_branch == 1) {
-          $branchIds = $this->branchServices->allActiveCompanyBranchesByUsingCompanyId($row->company_id)->pluck('id')->toArray();
-        } else if ($row->all_branch == 0) {
-          $branchIds = $row->companyBranches()->pluck('company_branch_id')->toArray();
-        }
-
-        // check for department 
-        if ($row->all_department == 1) {
-          $departmentIds = $departments->pluck('id')->toArray();
-        } else if ($row->all_department == 0) {
-          $departmentIds = $row->departments()->pluck('department_id')->toArray();
-        }
-
-        // check for designation 
-        if ($row->all_designation == 1) {
-          $designationIds = $this->designationServices->getAllDesignationUsingDepartmentID($departmentIds)->pluck('id')->toArray();
-        } else if ($row->all_designation == 0) {
-          $designationIds = $row->designations()->pluck('designation_id')->toArray();
-        }
-        // check user is exists or not in assigned branches & departments & designations 
-        if (in_array($userDetails->company_branch_id, $branchIds) && in_array($userDetails->department_id, $departmentIds) &&  in_array($userDetails->designation_id, $designationIds)) {
-          array_push($policyIds, $row->id);
-        }
+      if (in_array($userDetails->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
+        $allAssignedPolicy[] = $policyDetails;
       }
-      $finalPolicy = $policies->whereIn('id', $policyIds)->makeHidden([
-        "all_company_branch",
-        "all_department",
-        "all_designation",
-        "company_id",
-        "company_branch_id",
-        "policy_category_id",
-        "created_at",
-        "updated_at"
-      ]);
-      return $finalPolicy;
-    } catch (Throwable $th) {
-      return errorMessage('null', $th->getMessage());
     }
+    return $allAssignedPolicy;
   }
 }

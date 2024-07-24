@@ -35,14 +35,27 @@
                             <!--begin:Menu item-->
                             <div class="menu-item">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.daily.attendance') }}">
+                                <a class="menu-link" href="{{ route('employee.attendance.service') }}">
                                     <span class="menu-icon">
                                         <span class="svg-icon svg-icon-5">
                                             <i class="fa fa-calendar-days"></i>
                                         </span>
                                         <!--end::Svg Icon-->
                                     </span>
-                                    <span class="menu-title"> Daily Attendance</span>
+                                    <span class="menu-title">Attendance Details</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('employee.announcement') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-newspaper"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Announcement</span>
                                 </a>
                                 <!--end:Menu link-->
                             </div>
@@ -74,7 +87,7 @@
                             </div>
 
                             <!--begin:Menu item-->
-                            <div class="menu-item">
+                            {{-- <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.hr.service') }}">
                                     <span class="menu-icon">
@@ -86,9 +99,9 @@
                                     <span class="menu-title"> HR Service</span>
                                 </a>
                                 <!--end:Menu link-->
-                            </div>
+                            </div> --}}
                             <!--begin:Menu item-->
-                            <div class="menu-item ">
+                            {{-- <div class="menu-item ">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.support') }}">
                                     <span class="menu-icon">
@@ -100,7 +113,7 @@
                                     <span class="menu-title">Support</span>
                                 </a>
                                 <!--end:Menu link-->
-                            </div>
+                            </div> --}}
                             <div class="menu-item ">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('hr_complain.index') }}">
@@ -128,8 +141,21 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            <!--begin:Menu item-->
                             <div class="menu-item ">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('employee.holidays') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-bell"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Holidays</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--begin:Menu item-->
+                            {{-- <div class="menu-item ">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.account') }}">
                                     <span class="menu-icon">
@@ -141,7 +167,7 @@
                                     <span class="menu-title">Account</span>
                                 </a>
                                 <!--end:Menu link-->
-                            </div>
+                            </div> --}}
                             <div class="menu-item ">
                                 <a class="menu-link" href="{{ route('employee.leave') }}">
                                     <span class="menu-icon">
@@ -275,13 +301,7 @@
                             </div>
                             <!--end::User panel-->
                         </div>
-
-
                     </div>
-
-
-
-
                 </div>
                 <!--end::Menu-->
             </div>

@@ -23,7 +23,7 @@ class DepartmentServices
 
   public function getAllDepartmentsByCompanyId()
   {
-    return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', auth()->guard('admin')->user()->id)->get();
+    return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', auth()->guard('admin')->user()->company_id)->get();
   }
 
   public function updateDetails(array $data, $id)
@@ -62,11 +62,12 @@ class DepartmentServices
   {
     return $this->departmentRepository->where('company_id', $companyId)->orwhere('company_id', NUll)->where('status', '1')->get();
   }
-
-
-  // if for this use already have created then let me know
-  public function getAllDepartmentByDepartmentId($ids)
+  public function getAllAssignedDepartment($data)
   {
-    return $this->departmentRepository->whereIn('id', $ids)->get();
+    if ($data->all_department == 1) {
+      return $this->getAllActiveDepartmentsByCompanyId($data->company_id)->pluck('id')->toArray();
+    } else {
+      return $data->departments->pluck('id')->toArray();
+    }
   }
 }

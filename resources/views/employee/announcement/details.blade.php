@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-    News Details
+    Announcement Details
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -17,28 +17,28 @@
                             <!--begin::Feature post-->
                             <div class="card-xl-stretch">
                                 <!--begin::Image-->
-                                <img src="{{ $newsDetails->image }}" class="card-rounded img-fluid mb-5">
+                                <img src="{{ $announcementDetails->image }}" class="card-rounded img-fluid mb-5">
 
                                 <!--end::Image-->
                                 <!--begin::Body-->
                                 <div class="m-0">
                                     <!--begin::Title-->
                                     <a href="#"
-                                        class="fs-6 text-dark fw-bold text-hover-primary text-dark lh-base cat-links">{{ $newsDetails->title }}</a>
+                                        class="fs-6 text-dark fw-bold text-hover-primary text-dark lh-base cat-links">{{ $announcementDetails->title }}</a>
                                     <!--end::Title-->
                                     <!--begin::Text-->
                                     <div class="fw-semibold fs-5 text-gray-900 text-dark my-4">
                                         <i class="fa fa-calendar-days"></i>
-                                        {{ date('j F,Y', strtotime($newsDetails->created_at)) }}
+                                        {{ date('j F,Y', strtotime($announcementDetails->created_at)) }}
                                     </div>
                                     <!--end::Text-->
                                     <div class="fw-semibold fs-5 text-gray-900 text-dark my-4">
-                                        {!! $newsDetails->description !!} </div>
+                                        {!! $announcementDetails->description !!} </div>
 
                                 </div>
                                 <!--end::Body-->
 
-                                <object data="{{ $newsDetails->file }}" type="application/pdf" width="100%"
+                                <object data="{{ $announcementDetails->file }}" type="application/pdf" width="100%"
                                     height="200">
                                 </object>
                             </div>
@@ -52,24 +52,17 @@
             <div class="col-md-3">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5> Category</h5>
-                        <button class="btn btn-sm btn-primary">{{ $newsDetails->newsCategories->name }}</button>
-
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <div class="card-body">
                         <table class="table m-0">
                             <tr>
                                 <th>Start Date: </th>
                                 <td><button
-                                        class="btn btn-sm btn-success">{{ date('j F,Y', strtotime($newsDetails->start_date)) }}</button>
+                                        class="btn btn-sm btn-success">{{ date('j F,Y', strtotime($announcementDetails->start_date)) }}</button>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Expiry Date: </th>
                                 <td><button
-                                        class="btn btn-sm btn-danger">{{ date('j F,Y', strtotime($newsDetails->end_date)) }}</button>
+                                        class="btn btn-sm btn-danger">{{ date('j F,Y', strtotime($announcementDetails->end_date)) }}</button>
                                 </td>
                             </tr>
                         </table>

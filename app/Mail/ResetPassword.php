@@ -27,7 +27,7 @@ class ResetPassword extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Password',
+            subject: 'Login Otp Verification',
         );
     }
 
@@ -37,7 +37,7 @@ class ResetPassword extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'email.reset-password',
+            markdown: 'email.otp.template',
             with: [
                 'resetPassword' => $this->resetPassword
             ],

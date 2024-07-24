@@ -2,7 +2,9 @@
 <!--begin::Javascript-->
 <x-notify::notify />
 @notifyJs
-<script>var hostUrl = "{{ asset('assets/index.html') }}";</script>
+<script>
+    var hostUrl = "{{ asset('assets/index.html') }}";
+</script>
 <!--begin::Global Javascript Bundle(mandatory for all pages)-->
 <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
 <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
@@ -14,9 +16,18 @@
 <!--begin::Custom Javascript(used for this page only)-->
 <script src="{{ asset('assets/js/widgets.bundle.js') }}"></script>
 <script src="{{ asset('assets/js/create-account.js') }}"></script>
-
-<style>html { font-size: 14px; font-family: Arial, Helvetica, sans-serif; }</style>
-<title></title>
+<script>
+    ClassicEditor.create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+<style>
+    html {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+</style>
 <link href="https://kendo.cdn.telerik.com/themes/7.2.1/default/default-main.css" rel="stylesheet" />
 <script src="https://kendo.cdn.telerik.com/2024.1.319/js/kendo.all.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -24,7 +35,8 @@
 <script src="https://kendo.cdn.telerik.com/2024.2.514/js/kendo.all.min.js"></script>
 <script src="{{ asset('assets/js/custom-script.js') }}"></script>
 <script src="{{ asset('assets/js/add-employee-validation.js') }}"></script>
-<script>setTimeout(function() {
-    $('.alert').fadeOut('fast');
-  }, 4000);
-  </script>
+<script>
+    setTimeout(function() {
+        $('.alert').fadeOut('fast');
+    }, 4000);
+</script>
