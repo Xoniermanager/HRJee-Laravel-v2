@@ -121,5 +121,7 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
         Route::post('/store', 'store')->name('hr_complain.store');
         Route::get('/chat/{employee_complains:id}', 'getComplainDetails')->name('employee.getComplainDetails');
     });
+
+    //Ashraf committed
 });
 /**----------------- End Employee Pannel Route ----------------------*/
