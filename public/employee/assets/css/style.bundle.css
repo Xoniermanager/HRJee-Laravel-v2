@@ -40019,3 +40019,6 @@ a:hover {
   border: 1px solid #888;
   background-color: #ddd;
 }
+.calendar td .btn {
+  padding: 4px 0 !important;
+}

@@ -95,6 +95,7 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     Route::controller(HolidaysMangementController::class)->group(function () {
         Route::get('/holidays', 'index')->name('employee.holidays');
         Route::get('/update/calendar', 'updateCalendar')->name('update.calendar');
+        Route::get('/holiday_by_daate', 'holidayByDate')->name('holiday.by.date');
     });
     // Payslips Management
     Route::get('/payslips', [PayslipsMangementController::class, 'index'])->name('employee.payslips');
