@@ -33,6 +33,14 @@ class HolidayServices
 
   public function getListByCompanyId($companyID)
   {
-    return $this->holidayRepository->where('company_id',$companyID)->where('year',date('Y'))->where('status','1')->get();
+    return $this->holidayRepository->where('company_id', $companyID)->where('year', date('Y'))->where('status', '1')->get();
+  }
+  public function getHolidayByDate($companyID, $date)
+  {
+    return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('year', date('Y'))->where('status', '1')->first();
+  }
+  public function getAllHolidayByDate($companyID, $date)
+  {
+    return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1')->get();
   }
 }

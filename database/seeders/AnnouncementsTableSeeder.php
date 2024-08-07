@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class AnnouncementsTableSeeder extends Seeder
 {
@@ -16,9 +17,9 @@ class AnnouncementsTableSeeder extends Seeder
     {
         
 
-        \DB::table('announcements')->delete();
+        DB::table('announcements')->delete();
         
-        \DB::table('announcements')->insert(array (
+        DB::table('announcements')->insert(array (
             0 => 
             array (
                 'id' => 1,
