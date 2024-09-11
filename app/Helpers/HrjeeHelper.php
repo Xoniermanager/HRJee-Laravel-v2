@@ -138,3 +138,9 @@ function getTotalHour($startTime, $endTime)
     // echo $time_diff->s . ' seconds';
     return  $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
 }
+
+
+function getFormattedDate($date)
+{
+    return date('jS M Y', strtotime($date));
+}

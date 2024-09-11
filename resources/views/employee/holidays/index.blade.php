@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-Holidays Management
+    Holidays Management
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -18,7 +18,22 @@ Holidays Management
                         </div>
                     </div>
                     <div class="col-md-6">
-                       @include('employee.holidays.allholiday_list')
+                        @include('employee.holidays.allholiday_list')
+                    </div>
+                    <div class="col-md-6 pt-4">
+                        <div class="card p-5 pt-4" id="highlight_holiday">
+                            <h4 class="holiday_header">{{ date('F') }} Holiday List</h4>
+                            <div class="row">
+                                @foreach ($monthHolidayDetails as $holdaysDetails)
+                                    <div class="col-md-4">
+                                        <div class="holiday_list">
+                                            <h2>{{ $holdaysDetails->name }}</h2>
+                                            <span>{{ getFormattedDate($holdaysDetails->date) }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -26,7 +41,6 @@ Holidays Management
 
         </div>
         <!--end::Col-->
-
     </div>
     <!--end::Container-->
 </div>
@@ -49,7 +63,8 @@ Holidays Management
             },
         });
     }
-    function ajax_get_holiday_by_date(date){
+
+    function ajax_get_holiday_by_date(date) {
         jQuery.ajax({
             type: "get",
             url: "{{ route('holiday.by.date') }}",
@@ -57,9 +72,8 @@ Holidays Management
                 date: date,
             },
             success: function(response) {
-                console.log(response.data);
                 if (response.status == true) {
-                    $('#holiday_list').replaceWith(response.data);
+                    $('#highlight_holiday').replaceWith(response.data);
                 }
             },
             error: function(error_data) {
