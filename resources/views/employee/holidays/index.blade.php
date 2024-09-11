@@ -20,8 +20,8 @@
                     <div class="col-md-6">
                         @include('employee.holidays.allholiday_list')
                     </div>
-                    <div class="col-md-6 pt-4">
-                        <div class="card p-5 pt-4" id="highlight_holiday">
+                    <div class="col-md-6 pt-4" id="highlight_holiday">
+                        <div class="card p-5">
                             <h4 class="holiday_header">{{ date('F') }} Holiday List</h4>
                             <div class="row">
                                 @foreach ($monthHolidayDetails as $holdaysDetails)
@@ -65,6 +65,7 @@
     }
 
     function ajax_get_holiday_by_date(date) {
+        $('#highlight_holiday').html("");
         jQuery.ajax({
             type: "get",
             url: "{{ route('holiday.by.date') }}",
@@ -73,7 +74,7 @@
             },
             success: function(response) {
                 if (response.status == true) {
-                    $('#highlight_holiday').replaceWith(response.data);
+                    $('#highlight_holiday').html(response.data);
                 }
             },
             error: function(error_data) {

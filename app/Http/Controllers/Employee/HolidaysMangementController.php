@@ -85,9 +85,13 @@ class HolidaysMangementController extends Controller
             $todayClasses = array();
             $todayClasses[] = "btn";
             $todayClasses[] = ($date == $today_date) ? "today" : "";
-            $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->guard('employee')->user()->company_id, $date);
             $todayId = '';
             $tittle = '';
+            if($date == $today_date)
+            {
+                $tittle = "Today";
+            }
+            $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->guard('employee')->user()->company_id, $date);
             if (isset($allHolidayDetails)) {
                 $todayClasses[] = "holiday addMore";
                 $todayId = $date;
