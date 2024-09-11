@@ -27,8 +27,8 @@ class HolidaysMangementController extends Controller
         // First of all, lets create an array containing the names of all days in a week
         $days_of_week = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 
-        $month = (!empty($month)) ? (int)$month : 7; // let
-        $year  = (!empty($year)) ? (int)$year : 2024; // let
+        $month = (!empty($month)) ? (int)$month : date('m'); // let
+        $year  = (!empty($year)) ? (int)$year : date('Y'); // let
 
         // Create a Carbon instance for the first day of the month
         $firstDayOfMonth = Carbon::create($year, $month, 1, 0, 0, 0);
@@ -94,7 +94,7 @@ class HolidaysMangementController extends Controller
                 $tittle = $allHolidayDetails->name;
             }
             $todayClasses = implode(' ', $todayClasses);
-            $calendar .= "<td><button id='$todayId' class='$todayClasses' title='$tittle'><h4>$current_day</h4></button></td>";
+            $calendar .= "<td><button id='$todayId' class='$todayClasses' title='$tittle' onclick=ajax_get_holiday_by_date('$todayId')><h4>$current_day</h4></button></td>";
 
             $current_day++;
             $start_day_of_week++;
@@ -109,6 +109,19 @@ class HolidaysMangementController extends Controller
         $calendar .= "</tr>";
         $calendar .= "</table></div>";
         return $calendar;
+    }
+
+    public function holidayByDate(Request $request){
+        $date = $request->date;
+        $allHolidayDetails = $this->holidayService->getAllHolidayByDate(Auth()->guard('employee')->user()->company_id,$date);
+        if ($allHolidayDetails) {
+            return response()->json([
+                'status' => true,
+                'data'    =>  view('employee.holidays.allholiday_list',compact('allHolidayDetails'))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
     }
 
     public function updateCalendar(Request $request)
