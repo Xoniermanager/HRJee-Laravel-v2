@@ -91,4 +91,12 @@
             },
         });
     });
+
+    jQuery(document).ready(function(){
+        console.log('Tester');
+        window.Echo.private('chat.1')
+        .listen('MessageSent', (data)   =>  {
+            console.log(data);
+        });
+    });
 </script>

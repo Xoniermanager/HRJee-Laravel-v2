@@ -91,7 +91,6 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     });
 
     // Holidays Management
-    //Announcement Module
     Route::controller(HolidaysMangementController::class)->group(function () {
         Route::get('/holidays', 'index')->name('employee.holidays');
         Route::get('/update/calendar', 'updateCalendar')->name('update.calendar');
@@ -126,6 +125,5 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
         Route::get('/chat/{employee_complains:id}', 'getComplainDetails')->name('employee.getComplainDetails');
     });
 
-    //Ashraf committed
 });
 /**----------------- End Employee Pannel Route ----------------------*/

@@ -33,7 +33,8 @@ class EmployeeComplainController extends Controller
             $data['employee_complain_id'] =  $complainId;
             $toId = $request->to_id;
             $fromId = $request->from_id;
-            if ($this->employeeComplainLogService->sendMessage($data)) {
+            if ($this->employeeComplainLogService->sendMessage($data))
+            {
                 $complainDetails = $this->employeeComplainLogService->findDetailsByComplainId($complainId);
                 return response()->json([
                     'message' => 'Message Send successful!',

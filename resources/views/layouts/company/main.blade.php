@@ -45,6 +45,7 @@
         window.admin_ajax_base_url = '{{ env('ADMIN_BASE_URL') }}';
         window.employee_ajax_base_url = '{{ env('EMPLOYEE_BASE_URL') }}';
     </script>
+    {{-- @vite(['resources/css/app.css', 'resources/css/app.js']); --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link
         rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
