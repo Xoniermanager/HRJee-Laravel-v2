@@ -289,6 +289,17 @@
                                         </a>
                                         <!--end:Menu link-->
                                     </div>
+                                    <div class="menu-item" data-url="{{ route('asset.dashboard') }}">
+                                        <!--begin:Menu link-->
+                                        <a class="menu-link" href="{{ route('asset.dashboard') }}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">
+                                                Asset Dashboard</span>
+                                        </a>
+                                        <!--end:Menu link-->
+                                    </div>
                                 </div>
                                 <!--end:Menu sub-->
                             </div>
@@ -509,6 +520,19 @@
                                         <!--end::Svg Icon-->
                                     </span>
                                     <span class="menu-title">Break Type</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item " data-url="{{ route('resignation.status.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('resignation.status.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-file"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Resignation Status</span>
                                 </a>
                                 <!--end:Menu link-->
                             </div>

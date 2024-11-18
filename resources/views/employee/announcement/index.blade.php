@@ -26,8 +26,8 @@
                             <div class="info">
                                 <div class="date">
                                     <span>{{ date('d', strtotime($announcementsDetails->created_at)) }}<br>{{ date('M', strtotime($announcementsDetails->created_at)) }}</span>
-                                </div> 
-                                    <h5>{{ $announcementsDetails->title }}</h5> 
+                                </div>
+                                    <h5>{{ $announcementsDetails->title }}</h5>
                                 <a href="{{ route('employee.announcement.details', $announcementsDetails->id) }}"
                                     class="user"><i class="fas fa-eye"></i>Read More</a>
                                 <a href="{{ route('employee.announcement.details', $announcementsDetails->id) }}"
@@ -47,5 +47,5 @@
     </section>
 </div>
 </div>
-<!--end::Content--> 
+<!--end::Content-->
 @endsection

@@ -44,6 +44,7 @@
         window.company_ajax_base_url = '{{ env('COMPANY_BASE_URL') }}';
         window.admin_ajax_base_url = '{{ env('ADMIN_BASE_URL') }}';
         window.employee_ajax_base_url = '{{ env('EMPLOYEE_BASE_URL') }}';
+        window.project_ajax_base_url = '{{ env('PROJECT_BASE_URL') }}';
     </script>
     {{-- @vite(['resources/css/app.css', 'resources/css/app.js']); --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -104,9 +105,18 @@
             processData: false,
             contentType: false,
             beforeSend: () => {
+            type: method,
+            dataType: 'json',
+            url: url,
+            data: new FormData($('#' + formId)[0]),
+            processData: false,
+            contentType: false,
+            beforeSend: () => {
                 btn.attr('disabled', true);
                 loader.html(`{!! transLang('loader_message') !!}`).removeClass(
                     'd-none alert-danger alert-success').addClass('alert-info');
+            },
+            error: (jqXHR, exception) => {
             },
             error: (jqXHR, exception) => {
                 let data = JSON.parse(jqXHR.responseText);
@@ -125,6 +135,8 @@
 
                 btn.attr('disabled', false);
                 loader.html(``).removeClass('alert alert-info');
+            },
+            success: response => {
             },
             success: response => {
                 btn.attr('disabled', false);

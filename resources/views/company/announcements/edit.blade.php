@@ -4,10 +4,12 @@
     Edit Announcement
 @endsection
 
+
 @php
     if ($editAnnouncementDetails->all_company_branch == 0) {
         $selectedCompanyBranchId = $editAnnouncementDetails->companyBranches->pluck('id');
     }
+
     if ($editAnnouncementDetails->all_department == 0) {
         $selectedDepartmentId = $editAnnouncementDetails->departments->pluck('id');
     }
@@ -230,6 +232,7 @@
 </div>
 <script>
     $(document).ready(function() {
+
         var check_condition = {{ $editAnnouncementDetails->all_department }}
         var check_all_company_branch = {{ $editAnnouncementDetails->all_company_branch }}
         var check_all_designaion = {{ $editAnnouncementDetails->all_designation }}

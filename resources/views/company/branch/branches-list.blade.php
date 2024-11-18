@@ -36,7 +36,8 @@
                         <td data-order="Invalid date">
                             <label class="switch">
                                 <input type="checkbox" <?= $branch->status == '1' ? 'checked' : '' ?>
-                                    onchange="handleStatus({{ $branch->id }})" id="checked_value_{{ $branch->id }}">
+                                    onchange="handleStatus({{ $branch->id }})"
+                                    id="checked_value_{{ $branch->id }}">
                                 <span class="slider round"></span>
                             </label>
                         </td>
@@ -50,7 +51,7 @@
                                     <!--end::Svg Icon-->
                                 </a>
                                 <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                    onclick='deleteFunction({{ $branch->id }},`company_branch_list`,`{{route("company.branch.delete")}}`)'>
+                                    onclick='deleteFunction(`{{ $branch->id }}`)'>
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

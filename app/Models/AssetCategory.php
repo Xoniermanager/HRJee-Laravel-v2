@@ -8,5 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class AssetCategory extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'company_id','status','parent_id'];
+    protected $fillable = ['name', 'company_id', 'status', 'parent_id'];
+
+    public function assets()
+    {
+        return $this->hasMany(Asset::class, 'asset_category_id', 'id');
+    }
 }

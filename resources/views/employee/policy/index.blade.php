@@ -3,6 +3,9 @@
 @section('title')
     Policy
 @endsection
+<!--begin::Header-->
+<!--end::Header-->
+<!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
@@ -23,10 +26,10 @@
                                 <div class="info">
                                     <div class="date">
                                         <span>{{ date('d', strtotime($policyDetails->created_at)) }}<br>{{ date('M', strtotime($policyDetails->created_at)) }}</span>
-                                    </div> 
+                                    </div>
                                         <h5>
                                             <span class="category">{{ $policyDetails->policyCategories->name }}</span>
-                                            {{ $policyDetails->title }}</h5> 
+                                            {{ $policyDetails->title }}</h5>
                                     <a href="{{ route('employee.policy.details', $policyDetails->id) }}"
                                         class="user"><i class="fas fa-eye"></i>Read More</a>
                                     <a href="{{ route('employee.policy.details', $policyDetails->id) }}"
@@ -47,3 +50,4 @@
     </div>
 </div>
 @endsection
+
