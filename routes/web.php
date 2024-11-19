@@ -66,13 +66,6 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     //     Route::get('/resignation', 'index')->name('employee.resignation');
     //     Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
     // });
-
-    //News Module
-    Route::controller(AnnouncementController::class)->group(function () {
-        Route::get('/announcement', 'index')->name('employee.announcement.index');
-        Route::get('/announcement/details/{id}', 'viewDetails')->name('employee.announcement.details');
-    });
-
     //Policy Module
     Route::controller(PolicyController::class)->group(function () {
         Route::get('/policy', 'index')->name('employee.policy');
