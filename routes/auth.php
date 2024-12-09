@@ -69,11 +69,11 @@ Route::prefix('company')->controller(AdminController::class)->group(function () 
 
 /** ----------------- Super Admin Started -------------------- **/
 Route::prefix('/admin')->controller(SuperAdminController::class)->group(function () {
-    Route::get('/login', 'login')->name('super_admin.login.form');
-    Route::get('/verify/otp', 'verifyOtp')->name('super_admin.verifyOtp');
-    Route::get('/resend/otp', 'resendOtp')->name('super_admin.resendOtp');
-    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('super_admin.verifyOtpCheck');
-    Route::post('/super_admin_login', 'super_admin_login')->name('super.admin.login');
+    Route::get('/login', 'login')->name('admin.login.form');
+    Route::get('/verify/otp', 'verifyOtp')->name('admin.verifyOtp');
+    Route::get('/resend/otp', 'resendOtp')->name('admin.resendOtp');
+    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('admin.verifyOtpCheck');
+    Route::post('/admin_login', 'admin_login')->name('super.admin.login');
 });
 /**---------------End Super Admin Auth Route----------------*/
 

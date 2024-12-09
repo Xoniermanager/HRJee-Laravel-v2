@@ -33,7 +33,7 @@ class AdminCompanyBranchesController extends Controller
         $branches  = $this->branch_services->get_branches();
         $countries = $this->countryService->all()->where('status', '1');
         $states    = $this->stateService->all()->where('status', '1');
-        return view('super_admin.company_branch.index',[
+        return view('admin.company_branch.index',[
                 'allCompanyBranchDetails' => $branches,
                 'countries' => $countries,
                 'states' => $states,
@@ -55,7 +55,7 @@ class AdminCompanyBranchesController extends Controller
             return response()->json(
                 [
                     'message' => 'Created Successfully!',
-                    'data'   =>  view('super_admin.company_branch.company_branch_list', [
+                    'data'   =>  view('admin.company_branch.company_branch_list', [
                         'allCompanyBranchDetails' => $this->branch_services->get_branches()
                     ])->render()
                 ]
@@ -81,14 +81,14 @@ class AdminCompanyBranchesController extends Controller
             return response()->json(
                 [
                     'message' => 'Updated Successfully!',
-                    'data'   =>  view('super_admin.company_branch.company_branch_list', [
+                    'data'   =>  view('admin.company_branch.company_branch_list', [
                         'allCompanyBranchDetails' => $this->branch_services->get_branches()
                     ])->render()
                 ]
             );
         }
      }
-     
+
     /**
      * Remove the specified resource from storage.
      */
@@ -99,7 +99,7 @@ class AdminCompanyBranchesController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Country Deleted Successfully',
-                'data'    =>  view('super_admin.company_branch.company_branch_list', [
+                'data'    =>  view('admin.company_branch.company_branch_list', [
                     'allCompanyBranchDetails' => $this->branch_services->get_branches()
                 ])->render()
             ]);
@@ -116,7 +116,7 @@ class AdminCompanyBranchesController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Country Status Updated Successfully',
-                'data'    =>  view('super_admin.company_branch.company_branch_list', [
+                'data'    =>  view('admin.company_branch.company_branch_list', [
                     'allCompanyBranchDetails' => $this->branch_services->get_branches()
                 ])->render()
             ]);
@@ -126,19 +126,19 @@ class AdminCompanyBranchesController extends Controller
     }
 
     public function search(Request $request)
-    {   
+    {
         $searchedItems = $this->branch_services->searchInCompanyBranch($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'    =>  view('super_admin.company_branch.company_branch_list', [
+                'data'    =>  view('admin.company_branch.company_branch_list', [
                     'allCompanyBranchDetails' => $searchedItems
                 ])->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
-        
+
     }
 
 }

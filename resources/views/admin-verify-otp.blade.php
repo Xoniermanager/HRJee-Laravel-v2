@@ -320,7 +320,7 @@
                     <div class="error">{{ $errors->first('otp') }}</div>
                 @endif
                 <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden" id="kt_sign_in_form"
-                    action="{{ route('super_admin.verifyOtpCheck') }}" method="POST">
+                    action="{{ route('admin.verifyOtpCheck') }}" method="POST">
 
                     @csrf
                     <input type="hidden" name='otp' id='otp'>
@@ -371,7 +371,7 @@
 
                 </form>
 
-                <a href="{{ route('super_admin.resendOtp') }}">resendOtp</a>
+                <a href="{{ route('admin.resendOtp') }}">resendOtp</a>
 
 
             </div><!-- endof col -->
@@ -400,7 +400,7 @@
 
                             <!--begin::Form-->
                             <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden"
-                                id="kt_sign_in_form" action="{{ route('super_admin.verifyOtpCheck') }}" method="POST">
+                                id="kt_sign_in_form" action="{{ route('admin.verifyOtpCheck') }}" method="POST">
                                 @csrf
                                 <div class="fv-row mb-8 fv-plugins-icon-container">
                                     <h2>Check your email!</h2>
@@ -457,7 +457,7 @@
                                     </button>
                                 </div>
                                 <!--end::Submit button-->
-                                <a href="{{ route('super_admin.resendOtp') }}" class="text-primary">
+                                <a href="{{ route('admin.resendOtp') }}" class="text-primary">
                                     Resend Code</a>
                             </form>
                             <!--end::Form-->

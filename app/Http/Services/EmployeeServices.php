@@ -118,7 +118,7 @@ class EmployeeServices
           }
         );
     }
-    // added relationship data 
+    // added relationship data
     return $allEmployeeDetails->with(['userDetails', 'addressDetails', 'addressDetails.country', 'addressDetails.state', 'bankDetails'])->orderBy('id', 'DESC')->paginate(10);
   }
   public function create($data)
@@ -133,7 +133,7 @@ class EmployeeServices
     if (!isset($data['password']) && empty($data['password'])) {
       $data['password'] = Hash::make(($data['password'] ?? 'password'));
     }
-    $data['company_id'] = Auth::guard('admin')->user()->company_id;
+    $data['company_id'] = Auth::guard('company')->user()->company_id;
     $data['last_login_ip'] = request()->ip();
     if ($data['id'] != null) {
       $existingDetails = $this->employeeRepository->find($data['id']);
@@ -160,7 +160,7 @@ class EmployeeServices
   {
     return $this->employeeRepository->find($id);
   }
-  
+
   public function forgetPassword($request, $code)
   {
     try {
@@ -190,5 +190,5 @@ class EmployeeServices
     return $this->employeeRepository->where('company_id', $id)->get();
   }
 
- 
+
 }

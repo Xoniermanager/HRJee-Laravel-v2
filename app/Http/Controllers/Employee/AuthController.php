@@ -33,7 +33,7 @@ class AuthController extends Controller
 
     /**
      * Process user login attempt.
-     *      
+     *
      * This method handles the submission of the login form, validates the user input,
      * and attempts to authenticate the user using Laravel's built-in authentication system.
      *
@@ -62,7 +62,7 @@ class AuthController extends Controller
 
 
 
-            // if (!Auth::guard('admin')->attempt($credentials)) {
+            // if (!Auth::guard('company')->attempt($credentials)) {
             //  return redirect(route('employee.dashboard'));
             //     return redirect('/dashboard');
             // } else {

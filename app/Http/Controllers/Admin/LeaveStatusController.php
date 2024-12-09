@@ -21,7 +21,7 @@ class LeaveStatusController extends Controller
      */
     public function index()
     {
-        return view('super_admin.leave_status.index', [
+        return view('admin.leave_status.index', [
             'allLeaveStatusDetails' => $this->leaveStatusService->all()
         ]);
     }
@@ -43,7 +43,7 @@ class LeaveStatusController extends Controller
             if ($this->leaveStatusService->create($data)) {
                 return response()->json([
                     'message' => 'Leave Type Created Successfully!',
-                    'data'   =>  view('super_admin.leave_status.leave_status_list', [
+                    'data'   =>  view('admin.leave_status.leave_status_list', [
                         'allLeaveStatusDetails' => $this->leaveStatusService->all()
                     ])->render()
                 ]);
@@ -70,7 +70,7 @@ class LeaveStatusController extends Controller
         if ($leaveStatusDetails) {
             return response()->json([
                 'message' => 'Leave Type Updated Successfully!',
-                'data'   =>  view('super_admin.leave_status.leave_status_list', [
+                'data'   =>  view('admin.leave_status.leave_status_list', [
                     'allLeaveStatusDetails' => $this->leaveStatusService->all()
                 ])->render()
             ]);
@@ -87,7 +87,7 @@ class LeaveStatusController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Leave Type Deleted Successfully!',
-                'data'   =>  view('super_admin.leave_status.leave_status_list', [
+                'data'   =>  view('admin.leave_status.leave_status_list', [
                     'allLeaveStatusDetails' => $this->leaveStatusService->all()
                 ])->render()
             ]);

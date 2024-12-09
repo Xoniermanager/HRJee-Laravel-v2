@@ -43,8 +43,8 @@ class PolicyService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('admin')->user()->company_id;
-    // $finalPayload['company_branch_id'] = Auth::guard('admin')->user()->branch_id ?? '';
+    $finalPayload['company_id'] = Auth::guard('company')->user()->company_id;
+    // $finalPayload['company_branch_id'] = Auth::guard('company')->user()->branch_id ?? '';
     $policyCreatedDetails =  $this->policyRepository->create($finalPayload);
     if ($policyCreatedDetails) {
       $policyDetails = Policy::find($policyCreatedDetails->id);

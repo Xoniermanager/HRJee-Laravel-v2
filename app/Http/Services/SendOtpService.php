@@ -33,7 +33,6 @@ class SendOtpService
         'otp_code' => $code,
         'expire_at' => Carbon::now()->addMinutes(2)->format("H:i A")
       ];
-
       $checkValid = Mail::to($email)->send(new ResetPassword($mailData));
       $checkValid = true;
       if ($checkValid)

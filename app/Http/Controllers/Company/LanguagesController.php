@@ -17,10 +17,10 @@ class LanguagesController extends Controller
     ) {
         $this->languageServices  = $languageServices;
     }
-    
+
     public function index()
     {
-        return view('super_admin.languages.index', [
+        return view('admin.languages.index', [
             'allLanguagesDetails' => $this->languageServices->all()
         ]);
     }

@@ -128,7 +128,7 @@ class PreviousCompanyController extends Controller
         try {
             $dataTest = $request->all()['models'];
             $data = collect(json_decode($dataTest, true))->first();
-            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $data['company_id'] = isset(Auth::guard('company')->user()->id)?Auth::guard('company')->user()->id:'';
             $validatePreviousCompany  = Validator::make($data, [
                 'name'        => ['required', 'string', new UniqueForAdminOnly('previous_companies')],
                 'description' => ['string']
@@ -137,7 +137,7 @@ class PreviousCompanyController extends Controller
             if ($validatePreviousCompany->fails()) {
                 return response()->json(['error' => $validatePreviousCompany->messages()], 400);
             }
-        
+
             if ($this->previousCompanyService->create($data)){
                 return  $this->previousCompanyService->get_previous_company_ajax_call();
             }
@@ -147,7 +147,7 @@ class PreviousCompanyController extends Controller
     }
 
     public function searchPreviousCompanyFilter(Request $request)
-    {   
+    {
         $searchedItems = $this->previousCompanyService->searchPreviousCompanyFilter($request);
         if ($searchedItems) {
             return response()->json([
