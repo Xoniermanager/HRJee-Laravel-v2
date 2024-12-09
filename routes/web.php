@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Employee\NewsController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
+use App\Http\Controllers\Employee\AnnouncementController;
 use App\Http\Controllers\Employee\ApplyLeaveController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Employee\ContactUsController;
@@ -45,9 +46,26 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     //News Module
     Route::controller(NewsController::class)->group(function () {
         Route::get('/news', 'index')->name('employee.news');
-        Route::get('/news/details/{news:id}', 'viewDetails')->name('employee.news.details');
+        Route::get('/news/details/{id}/{news:id}', 'viewDetails')->name('employee.news.details');
     });
 
+    // Resignation Management
+    Route::prefix('resignation')->name('resignation.')->controller(ResignationController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        // Route::post('/change-status', 'changeStatus')->name('changeStatus');
+
+        Route::get('/delete/{id?}', 'destroy')->name('delete');
+        Route::post('/cancel', 'actionResignation')->name('actionResignation');
+        Route::post('/apply', 'applyResignation')->name('apply');
+        Route::post('/edit', 'editResignation')->name('edit');
+        Route::get('/view/{id?}', 'view')->name('view');
+    });
+
+    //   // Resignation Management
+    //   Route::controller(ResignationController::class)->group(function () {
+    //     Route::get('/resignation', 'index')->name('employee.resignation');
+    //     Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
+    // });
     //Policy Module
     Route::controller(PolicyController::class)->group(function () {
         Route::get('/policy', 'index')->name('employee.policy');
@@ -91,7 +109,6 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     });
 
     // Holidays Management
-    //Announcement Module
     Route::controller(HolidaysMangementController::class)->group(function () {
         Route::get('/holidays', 'index')->name('employee.holidays');
         Route::get('/update/calendar', 'updateCalendar')->name('update.calendar');
@@ -100,11 +117,7 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     // Payslips Management
     Route::get('/payslips', [PayslipsMangementController::class, 'index'])->name('employee.payslips');
 
-    // Resignation Management
-    Route::controller(ResignationController::class)->group(function () {
-        Route::get('/resignation', 'index')->name('employee.resignation');
-        Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
-    });
+
 
     //Employee Attendance Management]
     Route::post('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
@@ -126,6 +139,5 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
         Route::get('/chat/{employee_complains:id}', 'getComplainDetails')->name('employee.getComplainDetails');
     });
 
-    //Ashraf committed
 });
 /**----------------- End Employee Pannel Route ----------------------*/

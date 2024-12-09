@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Events\MessageSent;
 use App\Repositories\EmployeeComplainLogRepository;
 
 class EmployeeComplainLogService
@@ -13,7 +14,9 @@ class EmployeeComplainLogService
   }
   public function sendMessage(array $data)
   {
-    return $this->employeeComplainLogRepository->create($data);
+    $sentMessage = $this->employeeComplainLogRepository->create($data);
+    broadcast(new MessageSent($sentMessage));
+    return $sentMessage;
   }
 
   public function findDetailsByComplainId($id)

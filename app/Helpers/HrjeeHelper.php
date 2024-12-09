@@ -93,14 +93,14 @@ if (!function_exists('generateOtp')) {
 
 
 if (!function_exists('exceptionErrorMessage')) {
-    function exceptionErrorMessage($e, $throw_exception = false)
+    function exceptionErrorMessage($e, $throw_exception = false, $data = '')
     {
 
         Log::error($e);
         if (env('APP_DEBUG')) {
-            return errorMessage($e->getMessage(), true, $throw_exception);
+            return errorMessage($data, $e->getMessage(), true, $throw_exception);
         }
-        return errorMessage('session_expire', false, $throw_exception);
+        return errorMessage($data, 'session_expire', false, $throw_exception);
     }
 }
 
@@ -137,4 +137,10 @@ function getTotalHour($startTime, $endTime)
     // echo $time_diff->i . ' minutes';
     // echo $time_diff->s . ' seconds';
     return  $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
+}
+
+
+function getFormattedDate($date)
+{
+    return date('jS M Y', strtotime($date));
 }

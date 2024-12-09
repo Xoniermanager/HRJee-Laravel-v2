@@ -26,12 +26,12 @@
                                 <div class="info">
                                     <div class="date">
                                         <span>{{ date('d', strtotime($newsDetails->created_at)) }}<br>{{ date('M', strtotime($newsDetails->created_at)) }}</span>
-                                    </div> 
+                                    </div>
                                         <h5>
                                             <span class="category">{{$newsDetails->newsCategories->name}}</span>
                                             {{ $newsDetails->title }}
-                                        </h5> 
-                                   
+                                        </h5>
+
                                     <a href="{{ route('employee.news.details', $newsDetails->id) }}" class="user"><i
                                             class="fas fa-newspaper"></i>Read More</a>
                                     <a href="{{ route('employee.news.details', $newsDetails->id) }}" class="more"><i

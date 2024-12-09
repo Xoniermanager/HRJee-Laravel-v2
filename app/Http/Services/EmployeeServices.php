@@ -10,6 +10,8 @@ use App\Models\UserCode;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\EmployeeRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
@@ -23,17 +25,15 @@ class EmployeeServices
   public function all($request = null)
   {
     $allEmployeeDetails = $this->employeeRepository->load('userDetails');
-
     //List Selected by Gender
     if (isset($request->gender) && !empty($request->gender)) {
       $allEmployeeDetails = $allEmployeeDetails->where('gender', $request->gender);
     }
-
     //List Selected by Emp Status
     if (isset($request->emp_status_id) && !empty($request->emp_status_id)) {
       $allEmployeeDetails = $allEmployeeDetails->where('employee_status_id', $request->emp_status_id);
     }
-
+    // dd($request->marital_status);
     //List Selected by Marrital Status
     if (isset($request->marital_status) && !empty($request->marital_status)) {
       $allEmployeeDetails = $allEmployeeDetails->where('marital_status', $request->marital_status);
@@ -118,11 +118,12 @@ class EmployeeServices
           }
         );
     }
-    return $allEmployeeDetails->orderBy('id', 'DESC')->paginate(10);
+    // added relationship data 
+    return $allEmployeeDetails->with(['userDetails', 'addressDetails', 'addressDetails.country', 'addressDetails.state', 'bankDetails'])->orderBy('id', 'DESC')->paginate(10);
   }
   public function create($data)
   {
- 
+
     $nameForImage = removingSpaceMakingName($data['name']);
     if (isset($data['profile_image']) && !empty($data['profile_image'])) {
       $upload_path = "/user_profile_picture";
@@ -159,9 +160,7 @@ class EmployeeServices
   {
     return $this->employeeRepository->find($id);
   }
-
-
-
+  
   public function forgetPassword($request, $code)
   {
     try {
@@ -188,8 +187,7 @@ class EmployeeServices
 
   public function getAllEmployeeByCompanyId($id)
   {
-
-    return $this->employeeRepository->where('company_id',$id)->get();
+    return $this->employeeRepository->where('company_id', $id)->get();
   }
 
  

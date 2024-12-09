@@ -27,4 +27,9 @@ return [
     'announcement' => 'announcements',
     'otp_verified' => 'otp has been successfully verified.',
     'policies' => 'policies',
+    'resignation_sbmitted' => 'Resignation has been successfully send,please wait response!',
+    'resignation_status_lists' => 'Resignation status lists',
+    'resignation' => 'resignation details',
+    'executed' => 'Resignation status has been changed successfully!',
+    'resignation_updated' => 'Resignation has been updated successfully!',
 ];

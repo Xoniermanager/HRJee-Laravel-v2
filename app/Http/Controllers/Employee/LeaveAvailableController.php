@@ -16,6 +16,6 @@ class LeaveAvailableController extends Controller
     public function getAllLeaveAvailableByUserId()
     {
         $getEmployeeLeaveAvailableDetails = $this->employeeAvailableLeaveService->getAllLeaveAvailableByUserId(Auth()->guard('employee')->user()->id);
-        return view('employee.leave_available.index',compact('getEmployeeLeaveAvailableDetails'));
+        return view('employee.leave_available.index', compact('getEmployeeLeaveAvailableDetails'));
     }
 }

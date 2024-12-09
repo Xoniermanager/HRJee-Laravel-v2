@@ -2,7 +2,6 @@
 <html lang="en">
 <!--begin::Head-->
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-
 <head>
     <title> HRJEE </title>
     <meta charset="utf-8" />
@@ -35,28 +34,29 @@
     <!--end::Global Stylesheets Bundle-->
     <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <!-- Use Full jQuery (Not Slim) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- jQuery Validation Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
+    {{-- SweetAlert --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
         integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script>
         window.company_ajax_base_url = '{{ env('COMPANY_BASE_URL') }}';
         window.admin_ajax_base_url = '{{ env('ADMIN_BASE_URL') }}';
         window.employee_ajax_base_url = '{{ env('EMPLOYEE_BASE_URL') }}';
+        window.project_ajax_base_url = '{{ env('PROJECT_BASE_URL') }}';
     </script>
+
+    <!-- Select2 & DateTime Picker (If Needed) -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link
-        rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js">
-    </script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/23.0.0/classic/ckeditor.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
 </head>
-<!--end::Head-->
-<!--begin::Body-->
 
 <body id="kt_body" class="sidebar-enabled">
     <!--begin::Theme mode setup on page load-->
@@ -89,70 +89,6 @@
                     <!--end::Svg Icon-->
                 </div>
 </body>
-<script>
-    function addUpdateFormData(messageBox, method, url, formId, btnClose = "", reloadUrl = '', error_type = null,
-        dataTable = '') {
-        let btn = $(`.${formId}`);
-        let loader = $('.' + messageBox);
-
-        $.ajax({
-            type: method,
-            dataType: 'json',
-            url: url,
-            data: new FormData($('#' + formId)[0]),
-            processData: false,
-            contentType: false,
-            beforeSend: () => {
-                btn.attr('disabled', true);
-                loader.html(`{!! transLang('loader_message') !!}`).removeClass(
-                    'd-none alert-danger alert-success').addClass('alert-info');
-            },
-            error: (jqXHR, exception) => {
-                let data = JSON.parse(jqXHR.responseText);
-                $(".field_error").text('');
-                $.each(data.errors, function(key, value) {
-
-                    if (key.indexOf(".")) {
-                        key = key.replace(".", "_");
-                    }
-                    if (error_type == 'class') {
-                        $("." + key + "_error").text(value);
-                    } else {
-                        $("#" + key + "_error").text(value);
-                    }
-                });
-
-                btn.attr('disabled', false);
-                loader.html(``).removeClass('alert alert-info');
-            },
-            success: response => {
-                btn.attr('disabled', false);
-                if (btnClose != "") {
-                    $("." + btnClose).click();
-                }
-                if (response.status == false) {
-                    notifySuccess(response.errors[0], 'error');
-                } else {
-                    if (reloadUrl != '') {
-                        setInterval(function() {
-                            window.location.href = reloadUrl;
-                        }, 2000);
-                    } else {
-                        reloadTable(dataTable);
-                    }
-                    // notifySuccess(response.message, 'success');
-                }
-
-            }
-        });
-    }
-
-    function resetForm(id) {
-        $('#' + id)[0].reset();
-        $("textarea").text("");
-    }
-</script>
 <!--end::Body-->
 @include('layouts.company.footer')
-
 </html>

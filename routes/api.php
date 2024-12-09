@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AnnouncementController;
+use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HolidayApiController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\Api\LeaveManagementController;
 use App\Http\Controllers\Api\LeaveManagementApiController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\PolicyController;
+use App\Http\Controllers\Api\ResignationController;
+use App\Http\Controllers\Api\ResignationStatusController;
 use Illuminate\Support\Facades\Route;
 
 /*

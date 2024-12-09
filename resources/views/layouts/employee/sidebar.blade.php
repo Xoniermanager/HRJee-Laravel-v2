@@ -194,6 +194,19 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item ">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('resignation.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-file-contract"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title">Resignation</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <!--begin:Menu item-->
                             <div class="menu-item ">
                                 <!--begin:Menu link-->

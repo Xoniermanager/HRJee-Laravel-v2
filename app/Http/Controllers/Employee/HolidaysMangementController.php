@@ -18,9 +18,10 @@ class HolidaysMangementController extends Controller
     }
     public function index()
     {
+        $monthHolidayDetails = $this->holidayService->getHolidayByMonth(Auth()->guard('employee')->user()->company_id, date('Y-m'));
         $allHolidayDetails = $this->holidayService->getListByCompanyId(Auth()->guard('employee')->user()->company_id);
         $calender = $this->showCalendar();
-        return view('employee.holidays.index', compact('allHolidayDetails', 'calender'));
+        return view('employee.holidays.index', compact('allHolidayDetails', 'calender', 'monthHolidayDetails'));
     }
     public function showCalendar($month = '', $year = '')
     {
@@ -84,10 +85,13 @@ class HolidaysMangementController extends Controller
             $todayClasses = array();
             $todayClasses[] = "btn";
             $todayClasses[] = ($date == $today_date) ? "today" : "";
-            $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->guard('employee')->user()->company_id, $date);
-
             $todayId = '';
             $tittle = '';
+            if($date == $today_date)
+            {
+                $tittle = "Today";
+            }
+            $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->guard('employee')->user()->company_id, $date);
             if (isset($allHolidayDetails)) {
                 $todayClasses[] = "holiday addMore";
                 $todayId = $date;
@@ -95,7 +99,6 @@ class HolidaysMangementController extends Controller
             }
             $todayClasses = implode(' ', $todayClasses);
             $calendar .= "<td><button id='$todayId' class='$todayClasses' title='$tittle' onclick=ajax_get_holiday_by_date('$todayId')><h4>$current_day</h4></button></td>";
-
             $current_day++;
             $start_day_of_week++;
         }
@@ -111,13 +114,14 @@ class HolidaysMangementController extends Controller
         return $calendar;
     }
 
-    public function holidayByDate(Request $request){
+    public function holidayByDate(Request $request)
+    {
         $date = $request->date;
-        $allHolidayDetails = $this->holidayService->getAllHolidayByDate(Auth()->guard('employee')->user()->company_id,$date);
+        $allHolidayDetails = $this->holidayService->getAllHolidayByDate(Auth()->guard('employee')->user()->company_id, $date);
         if ($allHolidayDetails) {
             return response()->json([
                 'status' => true,
-                'data'    =>  view('employee.holidays.allholiday_list',compact('allHolidayDetails'))->render()
+                'data'    =>  view('employee.holidays.allholiday_list', compact('allHolidayDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
@@ -131,6 +135,19 @@ class HolidaysMangementController extends Controller
             return response()->json([
                 'status' => true,
                 'data'    =>  view('employee.holidays.calendar', with(['calender' => $updateCalenderDetails]))->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+    public function holidayByMonth(Request $request)
+    {
+        $date = $request->date;
+        $allHolidayDetails = $this->holidayService->getAllHolidayByDate(Auth()->guard('employee')->user()->company_id, date('Y-m'));
+        if ($allHolidayDetails) {
+            return response()->json([
+                'status' => true,
+                'data'    =>  view('employee.holidays.allholiday_list', compact('allHolidayDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

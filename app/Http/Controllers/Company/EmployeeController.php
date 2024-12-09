@@ -21,6 +21,7 @@ use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
 use App\Http\Services\SkillsService;
+use App\Http\Services\SpreadsheetService;
 
 class EmployeeController extends Controller
 {
@@ -38,10 +39,12 @@ class EmployeeController extends Controller
     private $languagesServices;
     private $skillServices;
     private $assetCategoryServices;
+    protected $spreadsheetService;
 
+     
 
     public function __construct(
-
+        SpreadsheetService $spreadsheetService,
         CountryServices $countryService,
         PreviousCompanyService $previousCompanyService,
         QualificationService $qualificationService,
@@ -56,6 +59,7 @@ class EmployeeController extends Controller
         LanguagesServices $languagesServices,
         SkillsService $skillServices,
         AssetCategoryService $assetCategoryServices
+        
 
     ) {
         $this->countryService = $countryService;
@@ -72,6 +76,7 @@ class EmployeeController extends Controller
         $this->languagesServices = $languagesServices;
         $this->skillServices = $skillServices;
         $this->assetCategoryServices = $assetCategoryServices;
+        $this->spreadsheetService = $spreadsheetService;
     }
     /**
      * Display a listing of the resource.
@@ -204,4 +209,7 @@ class EmployeeController extends Controller
         $singleViewEmployeeDetails = $user->load('assetDetails','familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
+
+
+  
 }
