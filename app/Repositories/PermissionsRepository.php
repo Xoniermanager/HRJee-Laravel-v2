@@ -25,5 +25,5 @@ class PermissionsRepository extends BaseRepository
     {
        return $this->where('id',$id);
     }
-    
+
 }

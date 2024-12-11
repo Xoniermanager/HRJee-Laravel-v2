@@ -275,10 +275,8 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     //TODO assign permission
     Route::prefix('/assign_permissions')->controller(AssignPermissionController::class)->group(function () {
         Route::get('/', 'index')->name('assign_permission');
-        Route::post('/create', 'store')->name('assign_permissions.store');
-        Route::post('/update', 'update')->name('assign_permissions.update');
+        Route::post('/create', 'store')->name('assign_permission.store');
         Route::get('/delete', 'destroy')->name('assign_permissions.delete');
-        Route::get('/status/update', 'statusUpdate')->name('assign_permissions.statusUpdate');
     });
 
     Route::get('permissions', [PermissionsController::class, 'index'])->name('permissions');

@@ -200,7 +200,7 @@
                                         <!--end:Menu link-->
                                     </div>
                                     <!--begin:Menu item-->
-                                    <div class="menu-item" data-url="{{ route('permissions') }}">
+                                    {{-- <div class="menu-item" data-url="{{ route('permissions') }}">
                                         <!--begin:Menu link-->
                                         <a class="menu-link" href="{{ route('permissions') }}">
                                             <span class="menu-bullet">
@@ -210,7 +210,7 @@
                                                 Permission</span>
                                         </a>
                                         <!--end:Menu link-->
-                                    </div>
+                                    </div> --}}
                                     <!--begin:Menu item-->
                                     <div class="menu-item">
                                         <!--begin:Menu link-->
