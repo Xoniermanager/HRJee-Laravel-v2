@@ -60,7 +60,8 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            {{-- @can('news') --}}
+                            {{-- @if(Auth()->guard('employee')->user()->userDetails->roles->hasAnyPermission('news')) --}}
+                            {{-- @can(['news']) --}}
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.news') }}">
@@ -75,6 +76,7 @@
                                 <!--end:Menu link-->
                             </div>
                             {{-- @endcan --}}
+                            {{-- @endif --}}
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.policy') }}">
