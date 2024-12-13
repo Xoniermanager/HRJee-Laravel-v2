@@ -23,7 +23,7 @@ class CompanyBranchObserver
     {
 
         $data['branch_id'] = $companyBranch->id;
-        $data['company_id'] = auth()->guard('admin')->user()->id;
+        $data['company_id'] = auth()->guard('company')->user()->id;
         $data['name'] = $companyBranch->name;
         $data['email'] = $companyBranch->email;
         $data['password'] = Hash::make('password');

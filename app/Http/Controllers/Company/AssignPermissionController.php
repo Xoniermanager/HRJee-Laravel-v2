@@ -2,102 +2,54 @@
 
 namespace App\Http\Controllers\Company;
 
+use Exception;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Http\Services\PermissionsServices;
 use App\Http\Services\RolesServices;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\PermissionsServices;
 
 class AssignPermissionController extends Controller
 {
     private $rolesServices;
-    private $permissionServices ; 
-    public function __construct(RolesServices $rolesServices , PermissionsServices $permissionServices )
+    private $permissionServices;
+    public function __construct(RolesServices $rolesServices, PermissionsServices $permissionServices)
     {
-            $this->rolesServices = $rolesServices;
-            $this->permissionServices = $permissionServices;
+        $this->rolesServices = $rolesServices;
+        $this->permissionServices = $permissionServices;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('company.roles_and_permission.assign_permission.index',[
-            'roles' => $this->rolesServices->all() ,
-            'permissions' => $this->permissionServices->all()
-        ]);
+        $roles = Role::with('permissions')->orderBy('id', 'DESC')->get();
+        $permissions = $this->permissionServices->all();
+        return view('company.roles_and_permission.assign_permission.index', compact('roles', 'permissions'));
     }
 
-//     public function role_form()
-//     {
-//         return view('company.roles_and_permission.create-roles-form');
-//     }
-//     public function store(Request $request)
-//     {
-
-//         try {
-//             $validator  = Validator::make($request->all(), [
-//                 'name' => ['required', 'string', 'unique:roles,name'],
-//             ]);
-//             if ($validator->fails()) {
-//                 return response()->json(['error' => $validator->messages()], 400);
-//             }
-//             $data = $request->all();
-//             if ($this->rolesServices->create($data)) {
-//                 return response()->json([
-//                     'message' => 'Role Created Successfully!',
-//                     'data'   =>  view('company/roles_and_permission/roles/roles_list', [
-//                         'roles' => $this->rolesServices->all()
-//                     ])->render()
-//                 ]);
-//             }
-//         } catch (Exception $e) {
-//             return response()->json(['error' =>  $e->getMessage()], 400);
-//         }
-//     }
-
-//     /**
-//      * Show the form for editing the specified resource.
-//      */
-//     public function update(Request $request)
-//     {
-//         $validator  = Validator::make($request->all(), [
-//             'name' => ['required', 'string', new OnlyString, 'unique:states,name,' . $request->id],
-//         ]);
-
-//         if ($validator->fails()) {
-//             return response()->json(['error' => $validator->messages()], 400);
-//         }
-//         $updateRole = $request->except(['_token', 'id']);
-//         $companyStatus = $this->rolesServices->updateDetails($updateRole, $request->id);
-//         if ($companyStatus) {
-//             return response()->json(
-//                 [
-//                     'message' => 'Role Updated Successfully!',
-//                     'data'   =>  view('company/roles_and_permission/roles/roles_list', [
-//                         'roles' => $this->rolesServices->all()
-//                     ])->render()
-//                 ]
-//             );
-//         }
-//     }
-
-//     /**
-//      * Remove the specified resource from storage.
-//      */
-//     public function destroy(Request $request)
-//     {
-//         $id = $request->id;
-//         $data = $this->rolesServices->deleteDetails($id);
-//         if ($data) {
-//             return response()->json([
-//                 'message' => 'Role Deleted Successfully!',
-//                 'data'   =>  view('company/roles_and_permission/roles/roles_list', [
-//                     'roles' => $this->rolesServices->all()
-//                 ])->render()
-//             ]);
-//         } else {
-//             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
-//         }
-//     }
-// }
+    public function store(Request $request)
+    {
+        $validateData  = Validator::make($request->all(), [
+            'role_id' => 'required|exits:roles,id',
+            'permission_id' => 'required|array',
+            'permission_id.*' => 'required|exists:permissions,id'
+        ]);
+        try {
+            $role = Role::find($request->role_id);
+            $permissions = Permission::whereIn('id', $request->permission_id)->get(['name'])->toArray();
+            if ($role->syncPermissions($permissions)) {
+                return response()->json([
+                    'message' => 'Assigned Permission Successfully!',
+                    'data'   =>  view('company.roles_and_permission.assign_permission.assign_permission_list', [
+                        'roles' => Role::with('permissions')->orderBy('id', 'DESC')->get()
+                    ])->render()
+                ]);
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }

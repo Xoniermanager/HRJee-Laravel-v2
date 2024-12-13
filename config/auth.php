@@ -42,7 +42,7 @@ return [
         ],
         'admin' => [
             'driver' => 'session',
-            'provider' => 'company_users',
+            'provider' => 'admin',
         ],
         'employee' => [
             'driver' => 'session',
@@ -52,34 +52,24 @@ return [
             'driver' => 'sanctum',
             'provider' => 'users',
         ],
-        'super_admin' => [
+        'company' => [
             'driver' => 'session',
-            'provider' => 'super_admin',
+            'provider' => 'company',
         ],
     ],
-
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        // 'employee' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Models\User::class,
-        // ],
-        // 'employee_api' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Models\User::class,
-        // ],
-        'company_users' => [
+        'company' => [
             'driver' => 'eloquent',
             'model' => App\Models\CompanyUser::class,
         ],
-        'super_admin' => [
+        'admin' => [
             'driver' => 'eloquent',
             'model' => App\Models\SuperAdminAuthentication::class,
         ]
-
     ],
 
     /*

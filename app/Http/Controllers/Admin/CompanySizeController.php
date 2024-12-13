@@ -21,7 +21,7 @@ class CompanySizeController extends Controller
      */
     public function index()
     {
-        return view('super_admin.company_size.index', [
+        return view('admin.company_size.index', [
             'allCompanySizesDetails' => $this->companySizeService->all()
         ]);
     }
@@ -44,7 +44,7 @@ class CompanySizeController extends Controller
             if ($this->companySizeService->create($data)) {
                 return response()->json([
                     'message' => 'Company Size Created Successfully!',
-                    'data'   =>  view('super_admin.company_size.company_size_list', [
+                    'data'   =>  view('admin.company_size.company_size_list', [
                         'allCompanySizesDetails' => $this->companySizeService->all()
                     ])->render()
                 ]);
@@ -72,7 +72,7 @@ class CompanySizeController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Company Size Updated Successfully!',
-                'data'   =>  view('super_admin.company_size.company_size_list', [
+                'data'   =>  view('admin.company_size.company_size_list', [
                     'allCompanySizesDetails' => $this->companySizeService->all()
                 ])->render()
             ]);
@@ -89,7 +89,7 @@ class CompanySizeController extends Controller
         if ($data) {
             return response()->json([
                 'message' => 'Company Size Deleted Successfully!',
-                'data'   =>  view('super_admin.company_size.company_size_list', [
+                'data'   =>  view('admin.company_size.company_size_list', [
                     'allCompanySizesDetails' => $this->companySizeService->all()
                 ])->render()
             ]);
@@ -105,7 +105,7 @@ class CompanySizeController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'message' => 'Company Size Updated Successfully!',
-                'data'   =>  view('super_admin.company_size.company_size_list', [
+                'data'   =>  view('admin.company_size.company_size_list', [
                     'allCompanySizesDetails' => $this->companySizeService->all()
                 ])->render()
             ]);
@@ -115,13 +115,13 @@ class CompanySizeController extends Controller
     }
 
     public function search(Request $request)
-    {   
+    {
 
         $searchedItems = $this->companySizeService->searchInCompanySize($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view('super_admin.company_size.company_size_list', [
+                'data'   =>  view('admin.company_size.company_size_list', [
                     'allCompanySizesDetails' => $searchedItems
                 ])->render()
             ]);

@@ -24,7 +24,7 @@ class AdminPreviousCompanyController extends Controller
      */
     public function index()
     {
-        return view('super_admin.previous_company.index', [
+        return view('admin.previous_company.index', [
             'allPreviousCompanyDetails' => $this->previousCompanyService->all()
         ]);
     }
@@ -45,7 +45,7 @@ class AdminPreviousCompanyController extends Controller
             if ($this->previousCompanyService->create($data)) {
                 return response()->json([
                     'message' => 'Added Successfully!',
-                    'data'   =>  view('super_admin.previous_company.previous_company_list', [
+                    'data'   =>  view('admin.previous_company.previous_company_list', [
                         'allPreviousCompanyDetails' => $this->previousCompanyService->all()
                     ])->render()
                 ]);
@@ -73,7 +73,7 @@ class AdminPreviousCompanyController extends Controller
             return response()->json(
                 [
                     'message' => 'Updated Successfully!',
-                    'data'   =>  view('super_admin.previous_company.previous_company_list', [
+                    'data'   =>  view('admin.previous_company.previous_company_list', [
                         'allPreviousCompanyDetails' => $this->previousCompanyService->all()
                     ])->render()
                 ]
@@ -91,7 +91,7 @@ class AdminPreviousCompanyController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Deleted Successfully',
-                'data'   =>  view('super_admin.previous_company.previous_company_list', [
+                'data'   =>  view('admin.previous_company.previous_company_list', [
                     'allPreviousCompanyDetails' => $this->previousCompanyService->all()
                 ])->render()
             ]);
@@ -107,7 +107,7 @@ class AdminPreviousCompanyController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Status Successfully',
-                'data'   =>  view('super_admin.previous_company.previous_company_list', [
+                'data'   =>  view('admin.previous_company.previous_company_list', [
                     'allPreviousCompanyDetails' => $this->previousCompanyService->all()
                 ])->render()
             ]);
@@ -127,7 +127,7 @@ class AdminPreviousCompanyController extends Controller
         try {
             $dataTest = $request->all()['models'];
             $data = collect(json_decode($dataTest, true))->first();
-            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $data['company_id'] = isset(Auth::guard('company')->user()->id)?Auth::guard('company')->user()->id:'';
             $validatePreviousCompany  = Validator::make($data, [
                 'name'        => ['required', 'string', new UniqueForAdminOnly('previous_companies')],
                 'description' => ['string']
@@ -136,7 +136,7 @@ class AdminPreviousCompanyController extends Controller
             if ($validatePreviousCompany->fails()) {
                 return response()->json(['error' => $validatePreviousCompany->messages()], 400);
             }
-        
+
             if ($this->previousCompanyService->create($data)){
                 return  $this->previousCompanyService->get_previous_company_ajax_call();
             }
@@ -147,12 +147,12 @@ class AdminPreviousCompanyController extends Controller
 
 
     public function search(Request $request)
-    {   
-        $searchedItems = $this->previousCompanyService->searchInPreviousCompany($request->all());
+    {
+        $searchedItems = $this->previousCompanyService->searchPreviousCompanyFilter($request);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view("super_admin.previous_company.previous_company_list", [
+                'data'   =>  view("admin.previous_company.previous_company_list", [
                     'allPreviousCompanyDetails' => $searchedItems
                 ])->render()
             ]);

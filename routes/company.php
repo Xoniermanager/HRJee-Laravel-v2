@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Company\ComplainCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AssetController;
 use App\Http\Controllers\Admin\SkillController;
@@ -8,32 +7,43 @@ use App\Http\Controllers\Company\NewsController;
 use App\Http\Controllers\Company\LeaveController;
 use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\StateController;
+use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Admin\AssetStatusController;
+use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
+use App\Http\Controllers\Company\BreakTypeController;
 use App\Http\Controllers\Company\LanguagesController;
+use App\Http\Controllers\Admin\DocumentTypeController;
+use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Admin\AssetCategoryController;
+use App\Http\Controllers\Admin\CompanyStatusController;
+use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\Company\SpreadsheetController;
 use App\Http\Controllers\Company\UserDetailsController;
+use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
+use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
+use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
-use App\Http\Controllers\Company\BreakTypeController;
-use App\Http\Controllers\Company\ComplainStatusController;
+use App\Http\Controllers\Company\ComplainCategoryController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
+use App\Http\Controllers\Company\ResignationStatusController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
 use App\Http\Controllers\Company\UserAdvanceDetailsController;
@@ -42,10 +52,6 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
-use App\Http\Controllers\Company\PolicyCategoryController;
-use App\Http\Controllers\Company\PolicyController;
-use App\Http\Controllers\Company\ResignationStatusController;
-use App\Http\Controllers\Company\SpreadsheetController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () {
@@ -143,7 +149,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/status/update', 'statusUpdate')->name('previous.company.statusUpdate');
         Route::get('/search', 'searchPreviousCompanyFilter');
 
-        // for ajax call 
+        // for ajax call
         Route::get('/previous_company_data', 'get_all_previous_company_ajax_call');
         Route::get('/ajax_store_previous_company', 'ajax_store_previous_company');
     });
@@ -269,10 +275,8 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     //TODO assign permission
     Route::prefix('/assign_permissions')->controller(AssignPermissionController::class)->group(function () {
         Route::get('/', 'index')->name('assign_permission');
-        Route::post('/create', 'store')->name('assign_permissions.store');
-        Route::post('/update', 'update')->name('assign_permissions.update');
+        Route::post('/create', 'store')->name('assign_permission.store');
         Route::get('/delete', 'destroy')->name('assign_permissions.delete');
-        Route::get('/status/update', 'statusUpdate')->name('assign_permissions.statusUpdate');
     });
 
     Route::get('permissions', [PermissionsController::class, 'index'])->name('permissions');
@@ -461,6 +465,86 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/delete/{id}', 'destroy')->name('complain.category.delete');
         Route::get('/status/update', 'statusUpdate')->name('complain.category.statusUpdate');
         Route::get('/search/filter', 'serachComplainCategoryFilterList');
+    });
+
+
+    //Company Status Module
+    Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('company.status.index');
+        Route::post('/create', 'store')->name('company.status.store');
+        Route::post('/update', 'update')->name('company.status.update');
+        Route::get('/delete', 'destroy')->name('company.status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
+    });
+    //Company Status Module
+    Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('company.status.index');
+        Route::post('/create', 'store')->name('company.status.store');
+        Route::post('/update', 'update')->name('company.status.update');
+        Route::get('/delete', 'destroy')->name('company.status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
+    });
+
+    //Company Size Module
+    Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
+        Route::get('/', 'index')->name('company.size.index');
+        Route::post('/create', 'store')->name('company.size.store');
+        Route::post('/update', 'update')->name('company.size.update');
+        Route::get('/delete', 'destroy')->name('company.size.delete');
+        Route::get('/status/update', 'statusUpdate')->name('company.size.statusUpdate');
+    });
+
+    //Skills Module
+    Route::prefix('/skills')->controller(SkillController::class)->group(function () {
+        Route::get('/', 'index')->name('skills.index');
+        Route::get('/create', 'store')->name('skills.store');
+        Route::post('/update', 'update')->name('skills.update');
+        Route::get('/delete', 'destroy')->name('skills.delete');
+        Route::get('/status/update', 'statusUpdate')->name('skills.statusUpdate');
+
+        // for ajax call
+        Route::get('/ajax_get_all', 'get_all_skills');
+        Route::get('/ajax_store_skills', 'ajax_store_skills');
+    });
+
+    //Qualification Module
+    Route::prefix('/qualifications')->controller(QualificationController::class)->group(function () {
+        Route::get('/', 'index')->name('qualification.index');
+        Route::post('/create', 'store')->name('qualification.store');
+        Route::post('/update', 'update')->name('qualification.update');
+        Route::get('/delete', 'destroy')->name('qualification.delete');
+        Route::get('/status/update', 'statusUpdate')->name('qualification.statusUpdate');
+
+        // for ajax call
+        Route::get('/qualification_data', 'get_all_qualification_ajax_call');
+        Route::get('/ajax_store_qualification', 'ajax_store_qualification');
+    });
+
+    //Employee Status Module
+    Route::prefix('/employee-status')->controller(EmployeeStatusController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.status.index');
+        Route::post('/create', 'store')->name('employee.status.store');
+        Route::post('/update', 'update')->name('employee.status.update');
+        Route::get('/delete', 'destroy')->name('employee.status.delete');
+        Route::get('/status/update', 'statusUpdate')->name('employee.status.statusUpdate');
+    });
+
+    //Employee Type Module
+    Route::prefix('/employee-type')->controller(EmployeeTypeController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.type.index');
+        Route::post('/create', 'store')->name('employee.type.store');
+        Route::post('/update', 'update')->name('employee.type.update');
+        Route::get('/delete', 'destroy')->name('employee.type.delete');
+        Route::get('/status/update', 'statusUpdate')->name('employee.type.statusUpdate');
+    });
+
+    //Document Type Module
+    Route::prefix('/document-type')->controller(DocumentTypeController::class)->group(function () {
+        Route::get('/', 'index')->name('document.type.index');
+        Route::post('/create', 'store')->name('document.type.store');
+        Route::post('/update', 'update')->name('document.type.update');
+        Route::get('/delete', 'destroy')->name('document.type.delete');
+        Route::get('/status/update', 'statusUpdate')->name('document.type.statusUpdate');
     });
 });
 /**---------------End Company Panel Route----------------*/

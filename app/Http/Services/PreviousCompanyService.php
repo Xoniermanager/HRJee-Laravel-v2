@@ -45,13 +45,8 @@ class PreviousCompanyService
       $previousCountryDetails = $previousCountryDetails->where('name', 'Like', '%' . $request->search . '%');
     }
     /**List By Status or Filter */
-    if (isset($request->status) && !empty($request->status)) {
-      if ($request->status == 2) {
-        $status = 0;
-      } else {
-        $status = $request->status;
-      }
-      $previousCountryDetails = $previousCountryDetails->where('status', $status);
+    if (isset($request->status)) {
+      $previousCountryDetails = $previousCountryDetails->where('status', $request->status);
     }
     return $previousCountryDetails->orderBy('id', 'DESC')->paginate(10);
   }

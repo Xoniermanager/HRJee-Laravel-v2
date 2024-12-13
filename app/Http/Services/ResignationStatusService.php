@@ -71,7 +71,7 @@ class ResignationStatusService
 
       $update = $resignation->update($updateData);
       if ($update) {
-        // create resignation log 
+        // create resignation log
         $data['resignation_status_id'] = $resignationStatusId;
         $createLog = $this->resignationLogRepository->create($data);
         if ($createLog)
@@ -93,7 +93,7 @@ class ResignationStatusService
   public function create($data)
   {
 
-    $data['company_id'] = Auth::guard('admin')->user()->company_id;
+    $data['company_id'] = Auth::guard('company')->user()->company_id;
     return $this->resignationStatusRepository->create($data);
   }
 

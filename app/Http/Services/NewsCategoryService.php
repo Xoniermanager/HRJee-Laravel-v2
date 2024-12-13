@@ -14,11 +14,11 @@ class NewsCategoryService
   }
   public function all()
   {
-    return $this->newsCategoryRepository->where('company_id',Auth::guard('admin')->user()->company_id)->orderBy('id', 'DESC')->paginate(10);
+    return $this->newsCategoryRepository->where('company_id',Auth::guard('company')->user()->company_id)->orderBy('id', 'DESC')->paginate(10);
   }
   public function create(array $data)
   {
-    $data['company_id'] = Auth::guard('admin')->user()->company_id ?? '';
+    $data['company_id'] = Auth::guard('company')->user()->company_id ?? '';
     return $this->newsCategoryRepository->create($data);
   }
 

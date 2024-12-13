@@ -22,7 +22,7 @@ class EmployeeTypeController extends Controller
      */
     public function index()
     {
-        return view('super_admin.employee_type.index', [
+        return view('admin.employee_type.index', [
             'allEmployeeTypeDetails' => $this->employeeTypeService->all()
         ]);
     }
@@ -44,7 +44,7 @@ class EmployeeTypeController extends Controller
             if ($this->employeeTypeService->create($data)) {
                 return response()->json([
                     'message' => 'Employee Type Created Successfully!',
-                    'data'   =>  view('super_admin.employee_type.employee_type_list', [
+                    'data'   =>  view('admin.employee_type.employee_type_list', [
                         'allEmployeeTypeDetails' => $this->employeeTypeService->all()
                     ])->render()
                 ]);
@@ -71,7 +71,7 @@ class EmployeeTypeController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Employee Type Updated Successfully!',
-                'data'   =>  view('super_admin.employee_type.employee_type_list', [
+                'data'   =>  view('admin.employee_type.employee_type_list', [
                     'allEmployeeTypeDetails' => $this->employeeTypeService->all()
                 ])->render()
             ]);
@@ -88,7 +88,7 @@ class EmployeeTypeController extends Controller
         if ($data) {
             return response()->json([
                 'message' => 'Employee Type Deleted Successfully!',
-                'data'   =>  view('super_admin.employee_type.employee_type_list', [
+                'data'   =>  view('admin.employee_type.employee_type_list', [
                     'allEmployeeTypeDetails' => $this->employeeTypeService->all()
                 ])->render()
             ]);
@@ -103,19 +103,19 @@ class EmployeeTypeController extends Controller
         $statusDetails = $this->employeeTypeService->updateDetails($data, $id);
         return response()->json([
             'message' => 'Employee Type Status Updated Successfully!',
-            'data'   =>  view('super_admin.employee_type.employee_type_list', [
+            'data'   =>  view('admin.employee_type.employee_type_list', [
                 'allEmployeeTypeDetails' => $this->employeeTypeService->all()
             ])->render()
         ]);
     }
 
     public function search(Request $request)
-    {   
+    {
         $searchedItems = $this->employeeTypeService->searchInEmployeeType($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view('super_admin.employee_type.employee_type_list', [
+                'data'   =>  view('admin.employee_type.employee_type_list', [
                     'allEmployeeTypeDetails' => $searchedItems
                 ])->render()
             ]);

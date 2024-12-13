@@ -22,7 +22,7 @@ class AdminCountryController extends Controller
      */
     public function index()
     {
-        return view('super_admin.country.index', [
+        return view('admin.country.index', [
             'allCountryDetails' => $this->countryService->all()
         ]);
     }
@@ -43,7 +43,7 @@ class AdminCountryController extends Controller
             if ($this->countryService->create($data)) {
                 return response()->json([
                     'message' => 'Country Created Successfully!',
-                    'data'   =>  view('super_admin.country.country_list', [
+                    'data'   =>  view('admin.country.country_list', [
                         'allCountryDetails' => $this->countryService->all()
                     ])->render()
                 ]);
@@ -71,7 +71,7 @@ class AdminCountryController extends Controller
             return response()->json(
                 [
                     'message' => 'Country Updated Successfully!',
-                    'data'   =>  view('super_admin.country.country_list', [
+                    'data'   =>  view('admin.country.country_list', [
                         'allCountryDetails' => $this->countryService->all()
                     ])->render()
                 ]
@@ -89,7 +89,7 @@ class AdminCountryController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Country Deleted Successfully',
-                'data'   =>  view('super_admin.country.country_list', [
+                'data'   =>  view('admin.country.country_list', [
                     'allCountryDetails' => $this->countryService->all()
                 ])->render()
             ]);
@@ -105,7 +105,7 @@ class AdminCountryController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Country Status Updated Successfully',
-                'data'   =>  view("super_admin.country.country_list", [
+                'data'   =>  view("admin.country.country_list", [
                     'allCountryDetails' => $this->countryService->all()
                 ])->render()
             ]);
@@ -115,12 +115,12 @@ class AdminCountryController extends Controller
     }
 
     public function search(Request $request)
-    {   
-        $searchedItems = $this->countryService->searchInCountry($request->all());
+    {
+        $searchedItems = $this->countryService->serachFilterList($request);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view("super_admin.country.country_list", [
+                'data'   =>  view("admin.country.country_list", [
                     'allCountryDetails' => $searchedItems
                 ])->render()
             ]);

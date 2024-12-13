@@ -33,12 +33,12 @@ class CompanyRepository extends BaseRepository
     {
        return $this->where('id',$id);
     }
-    
+
 
 
     public function updateCompany($data)
     {
-       $companyID = Auth::guard('admin')->user()->company_id;
+       $companyID = Auth::guard('company')->user()->company_id;
        return $this->find($companyID)->update($data);
     }
 
@@ -54,5 +54,5 @@ class CompanyRepository extends BaseRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

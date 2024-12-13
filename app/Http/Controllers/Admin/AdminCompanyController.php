@@ -18,20 +18,20 @@ class AdminCompanyController extends Controller
     }
     public function index()
     {
-        return view('super_admin.company.index', [
+        return view('admin.company.index', [
             'allCompaniesDetails' => $this->companyServices->all()
         ]);
     }
 
     public function add_company()
     {
-        return view('super_admin.company.add_company');
+        return view('admin.company.add_company');
     }
 
     public function edit_company(Request $request)
     {
         $companyDetails = $this->companyServices->get_company_by_id($request->query('id'));
-        return view('super_admin.company.edit_company', ['companyDetails' => $companyDetails]);
+        return view('admin.company.edit_company', ['companyDetails' => $companyDetails]);
     }
 
     public function store(ValidateCompany $request)
@@ -68,7 +68,7 @@ class AdminCompanyController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Company Deleted Successfully',
-                'data'   =>  view("super_admin.company.company_list", [
+                'data'   =>  view("admin.company.company_list", [
                     'allCompaniesDetails' => $this->companyServices->all()
                 ])->render()
             ]);
@@ -83,7 +83,7 @@ class AdminCompanyController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view("super_admin.company.company_list", [
+                'data'   =>  view("admin.company.company_list", [
                     'allCompaniesDetails' =>  $searchedItems
                 ])->render()
             ]);
@@ -99,7 +99,7 @@ class AdminCompanyController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Company Status Updated Successfully',
-                'data'   =>  view("super_admin.company.company_list", [
+                'data'   =>  view("admin.company.company_list", [
                     'allCompaniesDetails' => $this->companyServices->all()
                 ])->render()
             ]);

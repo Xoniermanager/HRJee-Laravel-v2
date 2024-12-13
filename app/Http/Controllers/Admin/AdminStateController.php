@@ -26,9 +26,9 @@ class AdminStateController extends Controller
      */
     public function index()
     {
-        return view('super_admin.state.index', [
+        return view('admin.state.index', [
             'allStateDetails' => $this->stateService->all(),
-            'allcountryDetails' => $this->countryService->all()->where('status', '1')
+            'allcountryDetails' => $this->countryService->getAllActiveCountry()
         ]);
     }
 
@@ -48,7 +48,7 @@ class AdminStateController extends Controller
             if ($this->stateService->create($data)) {
                 return response()->json([
                     'message' => 'State Created Successfully!',
-                    'data'   =>  view('super_admin.state.state_list', [
+                    'data'   =>  view('admin.state.state_list', [
                         'allStateDetails' => $this->stateService->all()
                     ])->render()
                 ]);
@@ -76,7 +76,7 @@ class AdminStateController extends Controller
             return response()->json(
                 [
                     'message' => 'State Updated Successfully!',
-                    'data'   =>  view('super_admin.state.state_list', [
+                    'data'   =>  view('admin.state.state_list', [
                         'allStateDetails' => $this->stateService->all()
                     ])->render()
                 ]
@@ -94,7 +94,7 @@ class AdminStateController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'State Deleted Successfully',
-                'data'   =>  view('super_admin.state.state_list', [
+                'data'   =>  view('admin.state.state_list', [
                     'allStateDetails' => $this->stateService->all()
                 ])->render()
             ]);
@@ -110,7 +110,7 @@ class AdminStateController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'State Status Updated Successfully',
-                'data'   =>  view("super_admin.state.state_list", [
+                'data'   =>  view("admin.state.state_list", [
                     'allStateDetails' => $this->stateService->all()
                 ])->render()
             ]);
@@ -137,13 +137,13 @@ class AdminStateController extends Controller
         return json_encode($response);
     }
     public function search(Request $request)
-    {   
+    {
 
-        $searchedItems = $this->stateService->searchInState($request->all());
+        $searchedItems = $this->stateService->searchStateFilter($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view("super_admin.state.state_list", [
+                'data'   =>  view("admin.state.state_list", [
                     'allStateDetails' => $searchedItems
                 ])->render()
             ]);

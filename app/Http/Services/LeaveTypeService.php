@@ -18,7 +18,7 @@ class LeaveTypeService
   }
   public function create(array $data)
   {
-    $data['company_id'] = Auth::guard('admin')->user()->company_id ?? '';
+    $data['company_id'] = Auth::guard('company')->user()->company_id ?? '';
     return $this->leaveTypeRepository->create($data);
   }
   public function updateDetails(array $data, $id)

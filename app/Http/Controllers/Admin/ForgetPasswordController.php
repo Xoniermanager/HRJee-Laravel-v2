@@ -16,7 +16,7 @@ class ForgetPasswordController extends Controller
 {
     public function index()
     {
-        return view('super_admin.account.forgetPassword');
+        return view('admin.account.forgetPassword');
     }
     public function submitForgetPasswordForm(Request $request)
     {
@@ -40,7 +40,7 @@ class ForgetPasswordController extends Controller
     }
     public function showResetPasswordForm($token)
     {
-        return view('super_admin.account.reset-password', ['token' => $token]);
+        return view('admin.account.reset-password', ['token' => $token]);
     }
 
     public function submitResetPasswordForm(Request $request)

@@ -37,7 +37,7 @@ class AssetService
       $data['invoice_file'] = $filePath;
     }
     $data['asset_status_id'] = AssetStatus::CREATED;
-    $data['company_id'] = Auth::guard('admin')->user()->company_id;
+    $data['company_id'] = Auth::guard('company')->user()->company_id;
     return $this->assetRepository->create($data);
   }
 

@@ -3,6 +3,7 @@
     <a href="{{ route('employee.dashboard') }}">
         <img src="{{ asset('employee/assets/media/logos/logo.png') }}" class="brand-logo">
     </a>
+    {{-- {{ dd(Auth::guard('employee')->user()->userDetails->roles->permissions) }} --}}
     <div id="kt_aside" class="aside py-5" data-kt-drawer="true" data-kt-drawer-name="aside"
         data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true"
         data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="start"
@@ -59,6 +60,8 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            {{-- @if(Auth()->guard('employee')->user()->userDetails->roles->hasAnyPermission('news')) --}}
+                            {{-- @can(['news']) --}}
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.news') }}">
@@ -72,6 +75,8 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            {{-- @endcan --}}
+                            {{-- @endif --}}
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.policy') }}">
