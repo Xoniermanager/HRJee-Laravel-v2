@@ -25,7 +25,7 @@ class SendOtpService
     $checkOTPExists = ['email' => $email, 'type' => $type];
     // Create OTP
     $code = "1234";
-    $userOtpDetails = ['code'  => $code];
+    $userOtpDetails = ['code'  => $code,'updated_at' => Carbon::now()];
     $update = $this->userOtpRepository->updateOrCreate($checkOTPExists, $userOtpDetails);
     if ($update) {
       $mailData = [

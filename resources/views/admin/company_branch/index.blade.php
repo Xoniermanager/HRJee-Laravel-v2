@@ -3,7 +3,6 @@
 @section('title', 'company_branch')
 
 @section('content')
-{{$allCompanyBranchDetails}}
     <div class="page-body">
         <!-- Container-fluid starts-->
         <div class="container-fluid">
@@ -31,7 +30,6 @@
                             </div>
                         </div>
                     @include('admin.company_branch.company_branch_list')
-                    {{ $allCompanyBranchDetails->links() }}
                     </div>
                 </div>
             </div>

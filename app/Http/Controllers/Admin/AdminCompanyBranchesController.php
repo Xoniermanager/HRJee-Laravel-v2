@@ -30,7 +30,7 @@ class AdminCompanyBranchesController extends Controller
      */
     public function index()
     {
-        $branches  = $this->branch_services->get_branches();
+        $branches  = $this->branch_services->allActiveBranches();
         $countries = $this->countryService->all()->where('status', '1');
         $states    = $this->stateService->all()->where('status', '1');
         return view('admin.company_branch.index',[
@@ -56,7 +56,7 @@ class AdminCompanyBranchesController extends Controller
                 [
                     'message' => 'Created Successfully!',
                     'data'   =>  view('admin.company_branch.company_branch_list', [
-                        'allCompanyBranchDetails' => $this->branch_services->get_branches()
+                        'allCompanyBranchDetails' => $this->branch_services->allActiveBranches()
                     ])->render()
                 ]
             );
@@ -82,7 +82,7 @@ class AdminCompanyBranchesController extends Controller
                 [
                     'message' => 'Updated Successfully!',
                     'data'   =>  view('admin.company_branch.company_branch_list', [
-                        'allCompanyBranchDetails' => $this->branch_services->get_branches()
+                        'allCompanyBranchDetails' => $this->branch_services->allActiveBranches()
                     ])->render()
                 ]
             );
@@ -100,7 +100,7 @@ class AdminCompanyBranchesController extends Controller
             return response()->json([
                 'success' => 'Country Deleted Successfully',
                 'data'    =>  view('admin.company_branch.company_branch_list', [
-                    'allCompanyBranchDetails' => $this->branch_services->get_branches()
+                    'allCompanyBranchDetails' => $this->branch_services->allActiveBranches()
                 ])->render()
             ]);
         } else {
@@ -117,7 +117,7 @@ class AdminCompanyBranchesController extends Controller
             return response()->json([
                 'success' => 'Country Status Updated Successfully',
                 'data'    =>  view('admin.company_branch.company_branch_list', [
-                    'allCompanyBranchDetails' => $this->branch_services->get_branches()
+                    'allCompanyBranchDetails' => $this->branch_services->allActiveBranches()
                 ])->render()
             ]);
         } else {
