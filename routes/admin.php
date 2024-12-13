@@ -131,14 +131,14 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
         Route::get('/search', 'search')->name('super_admin.company.search');
     });
 
-    //Company Status Module
-    Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
-        Route::get('/', 'index')->name('company.status.index');
-        Route::post('/create', 'store')->name('company.status.store');
-        Route::post('/update', 'update')->name('company.status.update');
-        Route::get('/delete', 'destroy')->name('company.status.delete');
-        Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
-    });
+    // //Company Status Module
+    // Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
+    //     Route::get('/', 'index')->name('company.status.index');
+    //     Route::post('/create', 'store')->name('company.status.store');
+    //     Route::post('/update', 'update')->name('company.status.update');
+    //     Route::get('/delete', 'destroy')->name('company.status.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
+    // });
 
     //Company Size Module
     Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
@@ -167,75 +167,75 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('super_admin.company.branch.statusUpdate');
         Route::get('/search', 'search')->name('super_admin.company.branch.search');
     });
-    //Company Status Module
-    Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
-        Route::get('/', 'index')->name('company.status.index');
-        Route::post('/create', 'store')->name('company.status.store');
-        Route::post('/update', 'update')->name('company.status.update');
-        Route::get('/delete', 'destroy')->name('company.status.delete');
-        Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
-    });
+    // //Company Status Module
+    // Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
+    //     Route::get('/', 'index')->name('company.status.index');
+    //     Route::post('/create', 'store')->name('company.status.store');
+    //     Route::post('/update', 'update')->name('company.status.update');
+    //     Route::get('/delete', 'destroy')->name('company.status.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
+    // });
 
     //Company Size Module
-    Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
-        Route::get('/', 'index')->name('company.size.index');
-        Route::post('/create', 'store')->name('company.size.store');
-        Route::post('/update', 'update')->name('company.size.update');
-        Route::get('/delete', 'destroy')->name('company.size.delete');
-        Route::get('/status/update', 'statusUpdate')->name('company.size.statusUpdate');
-    });
+    // Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
+    //     Route::get('/', 'index')->name('company.size.index');
+    //     Route::post('/create', 'store')->name('company.size.store');
+    //     Route::post('/update', 'update')->name('company.size.update');
+    //     Route::get('/delete', 'destroy')->name('company.size.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('company.size.statusUpdate');
+    // });
 
     //Skills Module
-    Route::prefix('/skills')->controller(SkillController::class)->group(function () {
-        Route::get('/', 'index')->name('skills.index');
-        Route::get('/create', 'store')->name('skills.store');
-        Route::post('/update', 'update')->name('skills.update');
-        Route::get('/delete', 'destroy')->name('skills.delete');
-        Route::get('/status/update', 'statusUpdate')->name('skills.statusUpdate');
+    // Route::prefix('/skills')->controller(SkillController::class)->group(function () {
+    //     Route::get('/', 'index')->name('skills.index');
+    //     Route::get('/create', 'store')->name('skills.store');
+    //     Route::post('/update', 'update')->name('skills.update');
+    //     Route::get('/delete', 'destroy')->name('skills.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('skills.statusUpdate');
 
-        // for ajax call 
-        Route::get('/ajax_get_all', 'get_all_skills');
-        Route::get('/ajax_store_skills', 'ajax_store_skills');
-    });
+    //     // for ajax call 
+    //     Route::get('/ajax_get_all', 'get_all_skills');
+    //     Route::get('/ajax_store_skills', 'ajax_store_skills');
+    // });
 
     //Qualification Module
-    Route::prefix('/qualifications')->controller(QualificationController::class)->group(function () {
-        Route::get('/', 'index')->name('qualification.index');
-        Route::post('/create', 'store')->name('qualification.store');
-        Route::post('/update', 'update')->name('qualification.update');
-        Route::get('/delete', 'destroy')->name('qualification.delete');
-        Route::get('/status/update', 'statusUpdate')->name('qualification.statusUpdate');
+    // Route::prefix('/qualifications')->controller(QualificationController::class)->group(function () {
+    //     Route::get('/', 'index')->name('qualification.index');
+    //     Route::post('/create', 'store')->name('qualification.store');
+    //     Route::post('/update', 'update')->name('qualification.update');
+    //     Route::get('/delete', 'destroy')->name('qualification.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('qualification.statusUpdate');
 
-        // for ajax call 
-        Route::get('/qualification_data', 'get_all_qualification_ajax_call');
-        Route::get('/ajax_store_qualification', 'ajax_store_qualification');
-    });
+    //     // for ajax call 
+    //     Route::get('/qualification_data', 'get_all_qualification_ajax_call');
+    //     Route::get('/ajax_store_qualification', 'ajax_store_qualification');
+    // });
 
     //Employee Status Module
-    Route::prefix('/employee-status')->controller(EmployeeStatusController::class)->group(function () {
-        Route::get('/', 'index')->name('employee.status.index');
-        Route::post('/create', 'store')->name('employee.status.store');
-        Route::post('/update', 'update')->name('employee.status.update');
-        Route::get('/delete', 'destroy')->name('employee.status.delete');
-        Route::get('/status/update', 'statusUpdate')->name('employee.status.statusUpdate');
-    });
+    // Route::prefix('/employee-status')->controller(EmployeeStatusController::class)->group(function () {
+    //     Route::get('/', 'index')->name('employee.status.index');
+    //     Route::post('/create', 'store')->name('employee.status.store');
+    //     Route::post('/update', 'update')->name('employee.status.update');
+    //     Route::get('/delete', 'destroy')->name('employee.status.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('employee.status.statusUpdate');
+    // });
 
-    //Employee Type Module
-    Route::prefix('/employee-type')->controller(EmployeeTypeController::class)->group(function () {
-        Route::get('/', 'index')->name('employee.type.index');
-        Route::post('/create', 'store')->name('employee.type.store');
-        Route::post('/update', 'update')->name('employee.type.update');
-        Route::get('/delete', 'destroy')->name('employee.type.delete');
-        Route::get('/status/update', 'statusUpdate')->name('employee.type.statusUpdate');
-    });
+    // //Employee Type Module
+    // Route::prefix('/employee-type')->controller(EmployeeTypeController::class)->group(function () {
+    //     Route::get('/', 'index')->name('employee.type.index');
+    //     Route::post('/create', 'store')->name('employee.type.store');
+    //     Route::post('/update', 'update')->name('employee.type.update');
+    //     Route::get('/delete', 'destroy')->name('employee.type.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('employee.type.statusUpdate');
+    // });
 
-    //Document Type Module
-    Route::prefix('/document-type')->controller(DocumentTypeController::class)->group(function () {
-        Route::get('/', 'index')->name('document.type.index');
-        Route::post('/create', 'store')->name('document.type.store');
-        Route::post('/update', 'update')->name('document.type.update');
-        Route::get('/delete', 'destroy')->name('document.type.delete');
-        Route::get('/status/update', 'statusUpdate')->name('document.type.statusUpdate');
-    });
+    // //Document Type Module
+    // Route::prefix('/document-type')->controller(DocumentTypeController::class)->group(function () {
+    //     Route::get('/', 'index')->name('document.type.index');
+    //     Route::post('/create', 'store')->name('document.type.store');
+    //     Route::post('/update', 'update')->name('document.type.update');
+    //     Route::get('/delete', 'destroy')->name('document.type.delete');
+    //     Route::get('/status/update', 'statusUpdate')->name('document.type.statusUpdate');
+    // });
 });
 /**----------------- End Super Admin Route ----------------------*/
