@@ -45,8 +45,8 @@ class NewsService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('admin')->user()->company_id;
-    // $finalPayload['company_branch_id'] = Auth::guard('admin')->user()->branch_id ?? 'NULL';
+    $finalPayload['company_id'] = Auth::guard('company')->user()->company_id;
+    // $finalPayload['company_branch_id'] = Auth::guard('company')->user()->branch_id ?? 'NULL';
     $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
     if ($newsCreatedDetails) {
       $newsDetails = News::find($newsCreatedDetails->id);

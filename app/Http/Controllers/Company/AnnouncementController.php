@@ -32,8 +32,8 @@ class AnnouncementController extends Controller
     public function index()
     {
         $allAnnouncementDetails = $this->announcementService->all();
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('admin')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
         return view('company.announcements.index', compact('allAnnouncementDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
     public function getAllUserByBranchIds(Request $request)
@@ -49,8 +49,8 @@ class AnnouncementController extends Controller
     }
     public function add()
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('admin')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
         return view('company.announcements.create', compact('allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
     public function store(AnnouncementStoreRequest $request)
@@ -67,8 +67,8 @@ class AnnouncementController extends Controller
 
     public function edit($id)
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('admin')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
         $editAnnouncementDetails = $this->announcementService->findById($id);
         return view('company.announcements.edit', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'editAnnouncementDetails'));
     }

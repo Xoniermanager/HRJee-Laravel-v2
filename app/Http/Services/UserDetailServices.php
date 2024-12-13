@@ -70,7 +70,7 @@ class UserDetailServices
     if (isset($companyBranchIds) && count($companyBranchIds) > 0) {
       $baseQuery->whereIn('company_branch_id', $companyBranchIds);
     } else {
-      $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('admin')->user()->company_id);
+      $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
       $allCompanyBranchIds = $allCompanyBranchDetails->pluck('id');
       $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
     }

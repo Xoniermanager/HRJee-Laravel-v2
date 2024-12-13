@@ -148,8 +148,8 @@ if (request()->hasCookie('password') != false) {
                     <div class="col-md-6 ">
                         <div class="text-center">
                             <a href="">
-                                <img class="logo-default" src="{{ asset('assets/images/logo/logo.png') }}"
-                                    alt="logo" width="150px">
+                                <img class="logo-default" src="{{ asset('assets/images/logo/logo.png') }}" alt="logo"
+                                    width="150px">
                             </a>
                         </div>
 
@@ -186,8 +186,7 @@ if (request()->hasCookie('password') != false) {
                                             <div class="swiper-slide">
                                                 <div class="sign_img">
                                                     <img class="logo-default"
-                                                        src="{{ asset('assets/images/features/4.png') }}"
-                                                        alt="logo">
+                                                        src="{{ asset('assets/images/features/4.png') }}" alt="logo">
                                                 </div>
                                                 <div class="author-info mt-3">
                                                     <h6 class="name">
@@ -210,7 +209,7 @@ if (request()->hasCookie('password') != false) {
                     <div class="col-md-6 col-xs-12 col-sm-12 ">
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-12 ">
+                                <div class="col-lg-12">
                                     <div class="main-form-wrapper mt-5">
                                         <form class="form" action="{{ route('company.login') }}" method="POST">
                                             @csrf
@@ -225,35 +224,44 @@ if (request()->hasCookie('password') != false) {
                                                                 class="text-color-secondary">Sign Up</a></p>
                                                     </div>
                                                 </div>
+                                                @if (session('error'))
+                                                <div class="alert alert-danger alert-dismissible">
+                                                    {{ session('error') }}
+                                                </div>
+                                                @endif
+                                                @if (session('success'))
+                                                <div class="alert alert-success alert-dismissible">
+                                                    {{ session('success') }}
+                                                </div>
+                                                @endif
                                                 <div class="form-item" data-form-item>
                                                     <div class="floating-label-group">
-                                                        <input type="email" id="email" name="email"
-                                                            class="form-input" data-form-input required
-                                                            value="{{ $username }}" />
+                                                        <input type="email" id="email" name="email" class="form-input"
+                                                            value="{{ $username }}" autocomplete="off" />
                                                         <label class="floating-label">Email Address/UserName </label>
                                                     </div>
                                                     @error('email')
-                                                        <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
 
                                                 <div class="form-item" data-form-item>
                                                     <div class="floating-label-group">
                                                         <input type="password" id="password" name="password"
-                                                            class="form-input" data-form-input required
-                                                            value="{{ $password }}" />
+                                                            class="form-input" value="{{ $password }}"
+                                                            autocomplete="off" />
                                                         <label class="floating-label">Password</label>
                                                     </div>
                                                     @error('password')
-                                                        <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="alert alert-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-
-
                                                 <div class="row">
                                                     <div class="col-lg-6">
-                                                        <p><input type="checkbox" id="vehicle1" name="vehicle1"
-                                                                {{ request()->hasCookie('user_name') != false && request()->hasCookie('password') != false ? 'checked' : '' }}>
+                                                        <p><input type="checkbox" id="vehicle1" name="vehicle1" {{
+                                                                request()->hasCookie('user_name') != false &&
+                                                            request()->hasCookie('password') != false ? 'checked' : ''
+                                                            }}>
                                                             Remember me</p>
                                                     </div>
                                                     <div class="col-lg-6 text-end">
@@ -261,18 +269,9 @@ if (request()->hasCookie('password') != false) {
                                                                 class="text-color-secondary ">Forgot Password?</a></p>
                                                     </div>
                                                 </div>
-
-
-                                                {{-- <div class="form-buttons">
-                          <button class="ht-btn ht-btn-md mt-3 ps-5 pe-5" type="button" >Sign In</button>
-                        </div> --}}
                                                 <div class="form-buttons">
-                                                    {{-- <button class="ht-btn ht-btn-md ht-btn--outline ps-5 pe-5 mt-3 mb-3" type="button"
-                            data-btn-previous="true">Return</button> --}}
                                                     <button class="ht-btn ht-btn-md mt-3 mb-3 ps-5 pe-5"
                                                         type="submit">Submit</button>
-                                                    <!-- <a href="../hrjee_admin/add_branch.html" class="ht-btn ht-btn-md mt-3 mb-3 ps-5 pe-5" type="button"
-                          data-btn-next="true">Submit</a> -->
                                                 </div>
                                             </div>
 
@@ -338,8 +337,7 @@ if (request()->hasCookie('password') != false) {
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
     {{-- <script>
-    
-      $("#js-contcheckbox").change(function () {
+        $("#js-contcheckbox").change(function () {
         if (this.checked) {
           $(".js-montlypricing").css("display", "none");
           $(".js-yearlypricing").css("display", "flex");

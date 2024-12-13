@@ -21,7 +21,7 @@ class CompanyStatusController extends Controller
      */
     public function index()
     {
-        return view('super_admin.company_status.index', [
+        return view('admin.company_status.index', [
             'allCompanyStatusDetails' => $this->companyStatusService->all()
         ]);
     }
@@ -44,7 +44,7 @@ class CompanyStatusController extends Controller
             if ($this->companyStatusService->create($data)) {
                 return response()->json([
                     'message' => 'Company Status Created Successfully!',
-                    'data'   =>  view('super_admin.company_status.company_status_list', [
+                    'data'   =>  view('admin.company_status.company_status_list', [
                         'allCompanyStatusDetails' => $this->companyStatusService->all()
                     ])->render()
                 ]);
@@ -72,7 +72,7 @@ class CompanyStatusController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Company Status Updated Successfully!',
-                'data'   =>  view('super_admin.company_status.company_status_list', [
+                'data'   =>  view('admin.company_status.company_status_list', [
                     'allCompanyStatusDetails' => $this->companyStatusService->all()
                 ])->render()
             ]);
@@ -89,7 +89,7 @@ class CompanyStatusController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Company Status Deleted Successfully!',
-                'data'   =>  view('super_admin.company_status.company_status_list', [
+                'data'   =>  view('admin.company_status.company_status_list', [
                     'allCompanyStatusDetails' => $this->companyStatusService->all()
                 ])->render()
             ]);
@@ -106,7 +106,7 @@ class CompanyStatusController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'message' => 'Company Status Updated Successfully!',
-                'data'   =>  view('super_admin.company_status.company_status_list', [
+                'data'   =>  view('admin.company_status.company_status_list', [
                     'allCompanyStatusDetails' => $this->companyStatusService->all()
                 ])->render()
             ]);

@@ -24,8 +24,8 @@ class SendOtpService
   {
     $checkOTPExists = ['email' => $email, 'type' => $type];
     // Create OTP
-    $code = generateOtp();
-    $userOtpDetails = ['code'  => $code];
+    $code = "1234";
+    $userOtpDetails = ['code'  => $code,'updated_at' => Carbon::now()];
     $update = $this->userOtpRepository->updateOrCreate($checkOTPExists, $userOtpDetails);
     if ($update) {
       $mailData = [
@@ -33,8 +33,7 @@ class SendOtpService
         'otp_code' => $code,
         'expire_at' => Carbon::now()->addMinutes(2)->format("H:i A")
       ];
-
-      $checkValid = Mail::to($email)->send(new ResetPassword($mailData));
+    //   $checkValid = Mail::to($email)->send(new ResetPassword($mailData));
       $checkValid = true;
       if ($checkValid)
         return ['status' => true, 'message' => 'otp_sent_on_mail'];

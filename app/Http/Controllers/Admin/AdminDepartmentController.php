@@ -17,13 +17,13 @@ class AdminDepartmentController extends Controller
     {
         $this->departmentService = $departmentService;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        return view("super_admin.department.index", [
+        return view("admin.department.index", [
             'allDepartmentDetails' => $this->departmentService->all()
         ]);
     }
@@ -45,7 +45,7 @@ class AdminDepartmentController extends Controller
             if ($this->departmentService->create($data)) {
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
-                    'data'   =>  view("super_admin.department.department_list", [
+                    'data'   =>  view("admin.department.department_list", [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]);
@@ -73,7 +73,7 @@ class AdminDepartmentController extends Controller
             return response()->json(
                 [
                     'message' => 'Departments Updated Successfully!',
-                    'data'   =>  view("super_admin.department.department_list", [
+                    'data'   =>  view("admin.department.department_list", [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]
@@ -91,7 +91,7 @@ class AdminDepartmentController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Departments Deleted Successfully',
-                'data'   =>  view("super_admin.department.department_list", [
+                'data'   =>  view("admin.department.department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -107,7 +107,7 @@ class AdminDepartmentController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Departments Status Updated Successfully',
-                'data'   =>  view("super_admin.department.department_list", [
+                'data'   =>  view("admin.department.department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -117,19 +117,19 @@ class AdminDepartmentController extends Controller
     }
 
     public function search(Request $request)
-    {   
-        $searchedItems = $this->departmentService->searchInDepartment($request->all());
+    {
+        $searchedItems = $this->departmentService->serachDepartmentFilterList($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view("super_admin.department.department_list", [
+                'data'   =>  view("admin.department.department_list", [
                     'allDepartmentDetails' =>  $searchedItems
                 ])->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
-        
+
     }
 }
 

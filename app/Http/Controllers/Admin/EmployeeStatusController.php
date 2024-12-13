@@ -22,7 +22,7 @@ class EmployeeStatusController extends Controller
      */
     public function index()
     {
-        return view('super_admin.employee_status.index', [
+        return view('admin.employee_status.index', [
             'allEmployeeStatusDetails' => $this->employeeStatusService->all()
         ]);
     }
@@ -44,7 +44,7 @@ class EmployeeStatusController extends Controller
             if ($this->employeeStatusService->create($data)) {
                 return response()->json([
                     'message' => 'Employee Status Created Successfully!',
-                    'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                    'data'   =>  view('admin.employee_status.employee_status_list', [
                         'allEmployeeStatusDetails' => $this->employeeStatusService->all()
                     ])->render()
                 ]);
@@ -71,7 +71,7 @@ class EmployeeStatusController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Employee Status Updated Successfully!',
-                'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                'data'   =>  view('admin.employee_status.employee_status_list', [
                     'allEmployeeStatusDetails' => $this->employeeStatusService->all()
                 ])->render()
             ]);
@@ -88,7 +88,7 @@ class EmployeeStatusController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Employee Status Deleted Successfully!',
-                'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                'data'   =>  view('admin.employee_status.employee_status_list', [
                     'allEmployeeStatusDetails' => $this->employeeStatusService->all()
                 ])->render()
             ]);
@@ -104,19 +104,19 @@ class EmployeeStatusController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'message' => 'Employee Status Updated Successfully!',
-                'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                'data'   =>  view('admin.employee_status.employee_status_list', [
                     'allEmployeeStatusDetails' => $this->employeeStatusService->all()
                 ])->render()
             ]);
         }
     }
     public function search(Request $request)
-    {   
+    {
         $searchedItems = $this->employeeStatusService->searchInEmployeeStatus($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view('super_admin.employee_status.employee_status_list', [
+                'data'   =>  view('admin.employee_status.employee_status_list', [
                     'allEmployeeStatusDetails' => $searchedItems
                 ])->render()
             ]);

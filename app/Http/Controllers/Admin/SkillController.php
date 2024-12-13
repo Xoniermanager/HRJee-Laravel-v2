@@ -25,7 +25,7 @@ class SkillController extends Controller
      */
     public function index()
     {
-        return view('super_admin.skills.index', [
+        return view('admin.skills.index', [
             'allSkillDetails' => $this->skillsService->all()
         ]);
     }
@@ -48,7 +48,7 @@ class SkillController extends Controller
             if ($this->skillsService->create($data)) {
                 return response()->json([
                     'message' => 'Skills Created Successfully!',
-                    'data'   =>  view('super_admin.skills.skill_list', [
+                    'data'   =>  view('admin.skills.skill_list', [
                         'allSkillDetails' => $this->skillsService->all()
                     ])->render()
                 ]);
@@ -75,7 +75,7 @@ class SkillController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Skills Updated Successfully!',
-                'data'   =>  view('super_admin.skills.skill_list', [
+                'data'   =>  view('admin.skills.skill_list', [
                     'allSkillDetails' => $this->skillsService->all()
                 ])->render()
             ]);
@@ -92,7 +92,7 @@ class SkillController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Skills Deleted Successfully!',
-                'data'   =>  view('super_admin.skills.skill_list', [
+                'data'   =>  view('admin.skills.skill_list', [
                     'allSkillDetails' => $this->skillsService->all()
                 ])->render()
             ]);
@@ -109,7 +109,7 @@ class SkillController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'message' => 'Skill Status Updated Successfully!',
-                'data'   =>  view('super_admin.skills.skill_list', [
+                'data'   =>  view('admin.skills.skill_list', [
                     'allSkillDetails' => $this->skillsService->all()
                 ])->render()
             ]);
@@ -117,12 +117,12 @@ class SkillController extends Controller
     }
 
     public function search(Request $request)
-    {   
+    {
         $searchedItems = $this->skillsService->searchInSkills($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view('super_admin.skills.skill_list', [
+                'data'   =>  view('admin.skills.skill_list', [
                     'allSkillDetails' => $searchedItems
                 ])->render()
             ]);
@@ -146,7 +146,7 @@ class SkillController extends Controller
         try {
             $dataTest = $request->all()['models'];
             $data     = collect(json_decode($dataTest, true))->first();
-            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $data['company_id'] = isset(Auth::guard('company')->user()->id)?Auth::guard('company')->user()->id:'';
             $validateSkills  = Validator::make($data, [
                 'name'        => ['required', 'string', new UniqueForAdminOnly('skills')],
                 'description' => ['string']
@@ -155,7 +155,7 @@ class SkillController extends Controller
             if ($validateSkills->fails()) {
                 return response()->json(['error' => $validateSkills->messages()], 400);
             }
-        
+
             if ($this->skillsService->create($data)) {
                 return  $this->skillsService->all();
             }

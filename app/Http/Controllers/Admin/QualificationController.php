@@ -23,7 +23,7 @@ class QualificationController extends Controller
      */
     public function index()
     {
-        return view('super_admin.qualification.index', [
+        return view('admin.qualification.index', [
             'allQualificationDetails' => $this->qualificationService->all()
         ]);
     }
@@ -47,7 +47,7 @@ class QualificationController extends Controller
             if ($this->qualificationService->create($data)) {
                 return response()->json([
                     'message' => 'Qualification Created Successfully!',
-                    'data'   =>  view('super_admin.qualification.qualification_list', [
+                    'data'   =>  view('admin.qualification.qualification_list', [
                         'allQualificationDetails' => $this->qualificationService->all()
                     ])->render()
                 ]);
@@ -75,7 +75,7 @@ class QualificationController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Qualification Updated Successfully!',
-                'data'   =>  view('super_admin.qualification.qualification_list', [
+                'data'   =>  view('admin.qualification.qualification_list', [
                     'allQualificationDetails' => $this->qualificationService->all()
                 ])->render()
             ]);
@@ -92,7 +92,7 @@ class QualificationController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Qualification Deleted Successfully! ',
-                'data'   =>  view('super_admin.qualification.qualification_list', [
+                'data'   =>  view('admin.qualification.qualification_list', [
                     'allQualificationDetails' => $this->qualificationService->all()
                 ])->render()
             ]);
@@ -109,7 +109,7 @@ class QualificationController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Qualification Status Updated Successfully! ',
-                'data'   =>  view('super_admin.qualification.qualification_list', [
+                'data'   =>  view('admin.qualification.qualification_list', [
                     'allQualificationDetails' => $this->qualificationService->all()
                 ])->render()
             ]);
@@ -119,12 +119,12 @@ class QualificationController extends Controller
     }
 
     public function search(Request $request)
-    {   
+    {
         $searchedItems = $this->qualificationService->searchInQualification($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view('super_admin.qualification.qualification_list', [
+                'data'   =>  view('admin.qualification.qualification_list', [
                     'allQualificationDetails' => $searchedItems
                 ])->render()
             ]);
@@ -145,7 +145,7 @@ class QualificationController extends Controller
         try {
             $dataTest = $request->all()['models'];
             $data = collect(json_decode($dataTest, true))->first();
-            $data['company_id'] = isset(Auth::guard('admin')->user()->id)?Auth::guard('admin')->user()->id:'';
+            $data['company_id'] = isset(Auth::guard('company')->user()->id)?Auth::guard('company')->user()->id:'';
             $validateQualification  = Validator::make($data, [
                 'name'        => ['required', 'string', new UniqueForAdminOnly('qualifications')],
                 'description' => ['string']
@@ -154,7 +154,7 @@ class QualificationController extends Controller
             if ($validateQualification->fails()) {
                 return response()->json(['error' => $validateQualification->messages()], 400);
             }
-        
+
             if ($this->qualificationService->create($data)){
                 return  $this->qualificationService->get_qualification_ajax_call();
             }

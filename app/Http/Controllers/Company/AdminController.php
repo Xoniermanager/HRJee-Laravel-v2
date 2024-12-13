@@ -27,7 +27,7 @@ class AdminController extends Controller
 
     /**
      * Process user login attempt.
-     *      
+     *
      * This method handles the submission of the login form, validates the user input,
      * and attempts to authenticate the user using Laravel's built-in authentication system.
      *
@@ -36,24 +36,22 @@ class AdminController extends Controller
     {
 
         try {
-
-
-            $validateUser = Validator::make($request->all(), [
-                'email' => 'required|exists:company_users,email',
-                'password' => 'required'
+            // Validate login form data
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required|min:6',
             ]);
-            if ($validateUser->fails()) {
-                return  Redirect::back()->withErrors($validateUser)->withInput();
+            // If validation fails, return the error messages
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
             }
-
-            $data = $request->only('email', 'password');
-            if (!Auth::guard('admin')->attempt($data)) {
-                return Redirect::back()->with('error', 'invalid_credentials');
+            // If authentication fails, redirect back with an error message
+            if (!Auth::guard('company')->attempt($request->only('email', 'password'))) {
+                return redirect()->back()->with(['error' => 'These credentials do not match our records.']);
             } else {
                 Cookie::queue(Cookie::make('user_name', $request->email, 360));
                 Cookie::queue(Cookie::make('password', $request->password, 360));
-                
-                $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, 'admin');
+                $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, 'company');
                 if ($genrateOtpresponse['status'] == true) {
                     return redirect('company/verify/otp');
                 } else
@@ -74,7 +72,7 @@ class AdminController extends Controller
      */
     public function companyLogout()
     {
-        Auth()->guard('admin')->logout();
+        Auth()->guard('company')->logout();
         return redirect(route('signin'));
     }
 
@@ -88,7 +86,7 @@ class AdminController extends Controller
     }
     public function verifyOtp()
     {
-        if (!auth()->guard('admin')->check()) {
+        if (!auth()->guard('company')->check()) {
             return  redirect('/company/signin');
         }
         return view('company-verify-otp');
@@ -99,8 +97,8 @@ class AdminController extends Controller
         try {
 
             $data = $request->all();
-            $data['email'] = auth()->guard('admin')->user()->email;
-            $data['type'] = 'admin';
+            $data['email'] = auth()->guard('company')->user()->email;
+            $data['type'] = 'company';
             $verifyOtpResponse = $this->sendOtpService->verifyOTP($data);
             if ($verifyOtpResponse)
                 return redirect('company/dashboard');
@@ -111,20 +109,20 @@ class AdminController extends Controller
         }
     }
 
-    public function super_admin_login_form()
+    public function admin_login_form()
     {
-        return view('super_admin.account.login');
+        return view('admin.account.login');
     }
 
 
     public function resendOtp(Request $request)
     {
         try {
-            if (!auth()->guard('admin')->check()) {
+            if (!auth()->guard('company')->check()) {
                 return   redirect('/company/signin');
             }
-            $email = auth()->guard('admin')->user()->email;
-            $otpResponse = $this->sendOtpService->generateOTP($email, 'admin');
+            $email = auth()->guard('company')->user()->email;
+            $otpResponse = $this->sendOtpService->generateOTP($email, 'company');
             if ($otpResponse['status'] == true)
                 return redirect('company/verify/otp')->with('success',  transLang($otpResponse['message']));
             else

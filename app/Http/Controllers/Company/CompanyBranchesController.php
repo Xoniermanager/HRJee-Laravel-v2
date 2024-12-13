@@ -30,7 +30,7 @@ class CompanyBranchesController extends Controller
      */
     public function index()
     {
-        $branches  = $this->branch_services->all(Auth::guard('admin')->user()->company_id);
+        $branches  = $this->branch_services->all(Auth::guard('company')->user()->company_id);
         $countries = $this->countryService->getAllActiveCountry();
         return view('company.branch.index', [
             'branches' => $branches,

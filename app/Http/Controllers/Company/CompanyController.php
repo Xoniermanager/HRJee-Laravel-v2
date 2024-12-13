@@ -33,10 +33,10 @@ class CompanyController extends Controller
      */
     public function company_profile()
     {
-        if (empty(Auth::guard('admin')->user()->branch_id))
-            $companyID = Auth::guard('admin')->user()->company_id;
+        if (empty(Auth::guard('company')->user()->branch_id))
+            $companyID = Auth::guard('company')->user()->company_id;
         else
-            $companyID = Auth::guard('admin')->user()->branch_id;
+            $companyID = Auth::guard('company')->user()->branch_id;
 
 
         $companyDetails =  $this->company_services->get_company_with_branch_details($companyID);
@@ -76,7 +76,7 @@ class CompanyController extends Controller
             'old_password' => 'required',
             'new_password' => 'required|min:6|confirmed', // Ensure new password matches the confirmation field
         ]);
-        $companyUser = Auth::guard('admin')->user();
+        $companyUser = Auth::guard('company')->user();
         if (!Hash::check($request->old_password, $companyUser->password)) {
             smilify('success', 'The old password is incorrect.');
             return false;
