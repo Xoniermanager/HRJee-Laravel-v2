@@ -26,7 +26,7 @@ class ValidateCompany extends FormRequest
             'name' => 'sometimes|required|string|max:255,',
             'username' => 'sometimes|required|string|max:255',
             'contact_no' => 'sometimes|required|string|max:20',
-            'email' => 'sometimes|required|string|email|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:companies,email',
             'password' => 'sometimes|required|confirmed',
             'password_confirmation' => 'sometimes|required',
             'company_size' => 'sometimes|required|string',
