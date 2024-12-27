@@ -27,11 +27,16 @@
     <!-- App css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/assets/css/style.css') }}">
     <link id="color" rel="stylesheet" href="{{ asset('admin/assets/css/color-1.css') }}" media="screen">
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin/assets/js/jquery.searchableSelect.css') }}">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/assets/css/responsive.css') }}">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+    
+
+
     <script>
         window.company_ajax_base_url = '{{ env('COMPANY_BASE_URL') }}';
         window.admin_ajax_base_url = '{{ env('ADMIN_BASE_URL') }}';

@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\AdminDepartmentController;
 use App\Http\Controllers\Admin\AdminDesignationsController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Admin\AdminPreviousCompanyController;
-
+use App\Http\Controllers\MenuController;
 
 Route::prefix('/admin')->middleware('Check2FA')->group(function ()
 {
@@ -127,9 +127,13 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function ()
         Route::get('/add-company', 'add_company')->name('admin.add_company');
         Route::get('/edit-company', 'edit_company')->name('admin.edit_company');
         Route::post('/create-or-update', 'store')->name('admin.company.store');
+        Route::post('/update', 'update_company')->name('admin.company.update');
         Route::get('/delete', 'destroy')->name('admin.company.delete');
         Route::get('/status/update', 'statusUpdate')->name('admin.company.statusUpdate');
         Route::get('/search', 'search')->name('admin.company.search');
+        Route::get('/assign-feature', 'assign_feature')->name('admin.company.assign.feature');
+        Route::post('/update-feature', 'update_feature')->name('admin.company.feature.save');
+        Route::get('/get-assign-feature', 'get_assign_feature')->name('admin.company.getPermission');
     });
     Route::prefix('/company-branch')->controller(AdminCompanyBranchesController::class)->group(function () {
         Route::get('/', 'index')->name('admin.branch');
@@ -158,5 +162,17 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function ()
         Route::get('/status/update', 'statusUpdate')->name('admin.company.status.statusUpdate');
         Route::get('/search', 'search')->name('admin.company.status.search');
     });
+
+    Route::prefix('/menu')->controller(MenuController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.menu');
+        Route::get('/add-menu', 'add_menu')->name('admin.add_menu');
+        Route::get('/edit-menu', 'edit_menu')->name('admin.edit_menu');
+        Route::post('/create-menu', 'save_menu')->name('admin.menu.save');
+        Route::post('/update-menu', 'update_menu')->name('admin.menu.update');
+        Route::get('/delete', 'destroy')->name('admin.menu.delete');
+        Route::get('/status/update', 'statusUpdate')->name('admin.menu.statusUpdate');
+        Route::get('/search', 'search')->name('admin.menu.search');
+    });
+
 });
 /**----------------- End Super Admin Route ----------------------*/

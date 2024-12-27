@@ -39,7 +39,7 @@
                             <svg>
                                 <use href="{{ asset('admin/assets/svg/icon-sprite.svg')}}"></use>
                             </svg></span></li>
-                    <li>
+                    {{-- <li>
                         <div class="form-group w-100">
                             <div class="Typeahead Typeahead--twitterUsers">
                                 <div class="u-posRelative d-flex align-items-center">
@@ -59,8 +59,8 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
-                    <li class="fullscreen-body">
+                    </li> --}}
+                    {{-- <li class="fullscreen-body">
                         <span>
                             <svg id="maximize-screen">
                                 <use href="{{ asset('admin/assets/images/svg/')}}"></use>
@@ -68,7 +68,7 @@
 
 
 
-                        </span></li>
+                        </span></li> --}}
                     {{-- <li class="onhover-dropdown">
                         <div class="notification-box">
                             <i class="fa fa-bell"></i><span class="badge rounded-pill badge-primary">4 </span>
@@ -148,7 +148,7 @@
                         </div>
                     </li> --}}
 
-                    {{-- <li>
+                    <li>
                         <div class="mode">
                             <svg height="200px" width="200px" version="1.1" id="Capa_1"
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -163,7 +163,7 @@
                                 </g>
                             </svg>
                         </div>
-                    </li> --}}
+                    </li>
                     {{-- <li class="onhover-dropdown">
                         <div class="notification-box">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -212,21 +212,21 @@
                                         href="letter-box.html">View all</a></li>
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
 
                     <li class="profile-nav onhover-dropdown px-0 py-0">
                         <div class="d-flex profile-media align-items-center"><img class="img-30 rounded-circle"
                                 src="{{ asset('admin/assets/images/avatar.png')}}" alt="">
-                            <div class="flex-grow-1"><span>xoniertechnologies</span>
+                            <div class="flex-grow-1"><span>{{ Auth()->guard('admin')->user()->name }}</span>
                                 <p class="mb-0 font-outfit">Profile<i class="fa fa-angle-down"></i></p>
                             </div>
                         </div>
                         <ul class="profile-dropdown onhover-show-div">
 
-                            <li><a href="profile.html"><i class="fa fa-user pr-10"></i><span>Profile</span></a></li>
-                            <li><a href="login.html"><i class="fa fa-arrow-circle-right pr-10"> </i><span>Log out</span></a></li>
+                            {{-- <li><a href="profile.html"><i class="fa fa-user pr-10"></i><span>Profile</span></a></li> --}}
+                            <li><a href="{{ route('admin.logout') }}"><i class="fa fa-arrow-circle-right pr-10"> </i><span>Log out</span></a></li>
                         </ul>
-                    </li> --}}
+                    </li>
                 </ul>
             </div>
             <script class="result-template" type="text/x-handlebars-template">

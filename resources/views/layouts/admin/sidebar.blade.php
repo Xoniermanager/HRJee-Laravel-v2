@@ -75,13 +75,14 @@
                             <span class="">Company</span></a>
                         <ul class="sidebar-submenu">
                             <li><a href="{{route('admin.company')}}">Companies</a></li>
-                            <li><a href="{{route('admin.company.size')}}">Company Size</a></li>
-                            <li><a href="{{route('admin.company.status')}}">Company Status</a></li>
+                            <li><a href="{{route('admin.company.assign.feature')}}">Companies Assign Features</a></li>
+                            {{-- <li><a href="{{route('admin.company.size')}}">Company Size</a></li>
+                            <li><a href="{{route('admin.company.status')}}">Company Status</a></li> --}}
                             <li><a href="{{route('admin.branch')}}">Company Branches</a></li>
                         </ul>
                     </li>
 
-                    <li class="sidebar-list "><a class="sidebar-link " href="manage_menu.html">
+                    <li class="sidebar-list "><a class="sidebar-link " href="{{ route('admin.menu') }}">
                             <svg fill="#ddd" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" stroke="#ddd">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
