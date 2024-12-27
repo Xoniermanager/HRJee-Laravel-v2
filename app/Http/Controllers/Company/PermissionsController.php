@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use App\Rules\OnlyString;
-use App\Models\permission;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
@@ -14,7 +13,7 @@ use App\Http\Services\PermissionsServices;
 
 class PermissionsController extends Controller
 {
-    private $permissionServices; 
+    private $permissionServices;
     public function __construct(PermissionsServices $permissionServices)
     {
             $this->permissionServices = $permissionServices;

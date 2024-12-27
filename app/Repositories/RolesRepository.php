@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
+use Spatie\Permission\Contracts\Role;
 use Prettus\Repository\Eloquent\BaseRepository;
-use App\Models\Role;
 
 /**
  * Class rolesRepositoryEloquent.
