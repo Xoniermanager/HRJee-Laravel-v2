@@ -45,12 +45,14 @@ class LeaveService
             $payload['to_half_day']      = $data['to_half_day'] ?? '';
         }
         $appliedLeaveDetails = $this->leaveRepository->create($payload);
-
+        //dd($appliedLeaveDetails);
+        $response = array('status'=>true,'message'=>'Leave Apply successfully','data'=>[]);
         if ($appliedLeaveDetails) {
             $startDate = Carbon::parse($data['from']);
             $endDate = Carbon::parse($data['to']);
             $days = $startDate->diffInDays($endDate);
-            $response = $this->employeeLeaveAvailableService->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days);
+            $data = $this->employeeLeaveAvailableService->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days);
+            $response = array('status'=>true,'message'=>'Leave Apply successfully','data'=>$data);
         }
         return $response;
     }
@@ -84,5 +86,50 @@ class LeaveService
     public function getDetailsById($id)
     {
         return $this->leaveRepository->find($id);
+    }
+    public function getUserConfirmLeaveByDate($id,$date){
+        return $this->leaveRepository->where('user_id',$id)->where('from', '<=', $date)
+        ->where('to', '>=', $date)
+        ->where('leave_status_id',2)
+        ->first();
+
+    }
+    public function checkTodayLeaveData($data){
+        if($data){
+            if($data->from==$data->to){
+                if($data->is_half_day){
+                    if($data->from_half_day==1){
+                        return $response = ['success'=>true,'message'=>'Today on half day','status'=>'1 Half'];
+                    }else if($data->from_half_day==2){
+                        return $response = ['success'=>true,'message'=>'Today on half day','status'=>'2 Half'];
+                    }
+                }else{
+                    return $response = ['success'=>true,'message'=>'Today on leave','status'=>'Full'];
+                }
+            }else{
+                if($data->is_half_day && date('Y-m-d')==$data->from){
+                    if($data->from_half_day==1){
+                        return $response = ['success'=>true,'message'=>'Today on half day','status'=>'1 Half'];
+                    }else if($data->from_half_day==2){
+                        return $response = ['success'=>true,'message'=>'Today on half day','status'=>'2 Half'];
+                    }else{
+                        return $response = ['success'=>true,'message'=>'Today on leave','status'=>'Full'];
+                    }
+                }else if( $data->is_half_day &&  date('Y-m-d')==$data->to ){
+                    if($data->to_half_day==1){
+                        return $response = ['success'=>true,'message'=>'Today on half day','status'=>'1 Half'];
+                    }else if($data->to_half_day==2){
+                        return $response = ['success'=>true,'message'=>'Today on half day','status'=>'2 Half'];
+                    }else{
+                        return $response = ['success'=>true,'message'=>'Today on leave','status'=>'Full'];
+                    }
+                }else{
+                    return $response = ['success'=>true,'message'=>'Today on leave','status'=>'Full'];
+                } 
+            }
+        }else{
+            return $response = ['success'=>false,'message'=>'Leave not available'];
+        }
+       
     }
 }

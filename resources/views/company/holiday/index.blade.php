@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    Holidays
+Holidays
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -100,7 +100,7 @@
                             //get the current year
                             $Startyear = date('Y');
                             $endYear = $Startyear + 2;
-                            
+
                             // set start and end year range i.e the start year
                             $yearArray = range($Startyear, $endYear);
                             ?>
@@ -183,11 +183,28 @@
                                 <input class="form-control mb-5 mt-3" type="date" name="date">
                                 <!--end::Switch-->
                             </div>
+                            {{-- allBranches --}}
+                            <div class="mt-3">
+                                <label>Branch</label>
+                                <select class="form-control mb-5 mt-3"
+                                    data-control="select2" data-close-on-select="false"
+                                    data-placeholder="Select the Company Branch" data-allow-clear="true"
+                                    multiple="multiple" name="company_branch_id[]" id="company_branch">
+                                    <option value="all">All</option>
+                                    @foreach ($allCompanyBranchesDetails as $compayBranches)
+                                    <option value="{{ $compayBranches->id }}" @if (old("company_branch_id")){{ (in_array($departmentsDetails->id, old("company_branch_id")) ? "selected":"") }}@endif>
+                                        {{ $compayBranches->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+
                             <?php
                             //get the current year
                             $Startyear = date('Y');
                             $endYear = $Startyear + 2;
-                            
+
                             // set start and end year range i.e the start year
                             $yearArray = range($Startyear, $endYear);
                             ?>
@@ -236,15 +253,25 @@
         }
         jQuery.noConflict();
         jQuery(document).ready(function($) {
+
+            jQuery("#company_branch").on("change",function(){
+                if($(this).val()=='all'){
+                    $("#company_branch > option").prop("selected", true);
+                    $("#company_branch").trigger("change"); 
+                }
+            });
+
             jQuery("#holidays_form").validate({
                 rules: {
                     name: "required",
                     date: "required",
+                    'company_branch_id[]':"required",
                     year: "required",
                 },
                 messages: {
                     name: "Please enter name",
                     date: "Please Select the Date",
+                    'company_branch_id[]':"Please Select atleast one Branch",
                     year: "Please Select the Year",
                 },
                 submitHandler: function(form) {
@@ -314,6 +341,7 @@
                 }
             });
         });
+
         function handleStatus(id) {
             var checked_value = $('#checked_value').prop('checked');
             let status;
@@ -372,4 +400,4 @@
             });
         }
     </script>
-@endsection
+    @endsection

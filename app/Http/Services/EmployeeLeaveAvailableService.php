@@ -48,11 +48,14 @@ class EmployeeLeaveAvailableService
   public function debitLeaveDetails($userId, $leaveTypeId, $debitValue)
   {
     $existingDetails = $this->employeeLeaveAvailableRepository->where('user_id', $userId)->where('leave_type_id', $leaveTypeId)->orderBy('id', 'Desc')->first();
+    $response = array('status'=>true,'message'=>'leave not available','data'=>[]);
+   
     if (isset($existingDetails) && !empty($existingDetails)) {
       $finalAvailableValue = $existingDetails->available - $debitValue;
       $updateDetails = $existingDetails->update(['available' => $finalAvailableValue]);
       if ($updateDetails) {
-        $response = $this->employeeLeaveManagementService->debitLeaveDetails($userId, $existingDetails->id, $debitValue);
+        $data = $this->employeeLeaveManagementService->debitLeaveDetails($userId, $existingDetails->id, $debitValue);
+        $response = array('status'=>true,'message'=>'leave not available','data'=>$data);
       }
     }
     return $response;

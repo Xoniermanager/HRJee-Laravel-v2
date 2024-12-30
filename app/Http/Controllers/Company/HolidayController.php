@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\BranchServices;
 use App\Http\Services\HolidayServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,9 +12,11 @@ use Exception;
 class HolidayController extends Controller
 {
     private $holidayService;
-    public function __construct(HolidayServices $holidayService)
+    private $branchService;
+    public function __construct(HolidayServices $holidayService, BranchServices $branchService)
     {
         $this->holidayService = $holidayService;
+        $this->branchService = $branchService;
     }
 
     /**
@@ -22,7 +25,8 @@ class HolidayController extends Controller
     public function index()
     {
         return view('company.holiday.index', [
-            'allHolidaysDetails' => $this->holidayService->all()
+            'allHolidaysDetails' => $this->holidayService->all(),
+            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->id)
         ]);
     }
 
@@ -35,6 +39,8 @@ class HolidayController extends Controller
             $validateHolidayData  = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:holidays,name'],
                 'date' => ['required', 'date'],
+                'company_branch_id'    =>   'required|array',
+                'company_branch_id.*'  =>   'required',
                 'year' => ['required'],
             ]);
             if ($validateHolidayData->fails()) {
