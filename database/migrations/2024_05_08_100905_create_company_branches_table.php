@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('type', ['primary', 'secondary']);
-            $table->string('contact_no')->unique();;
+            $table->string('contact_no')->unique();
             $table->string('email')->unique();
             $table->string('hr_email')->unique();
             $table->string('address')->unique();

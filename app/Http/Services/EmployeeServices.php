@@ -5,13 +5,10 @@ namespace App\Http\Services;
 use Illuminate\Support\Facades\Auth;
 
 use App\Mail\ResetPassword;
-use App\Models\User;
 use App\Models\UserCode;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\EmployeeRepository;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
