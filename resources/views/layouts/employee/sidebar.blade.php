@@ -47,6 +47,7 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            @if(Auth()->guard('employee')->user()->hasPermission('announcement'))
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.announcement') }}">
@@ -60,8 +61,8 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            {{-- @if(Auth()->guard('employee')->user()->userDetails->roles->hasAnyPermission('news')) --}}
-                            @canany('permission')
+                            @endif
+                            @if(Auth()->guard('employee')->user()->hasPermission('news'))
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.news') }}">
@@ -75,8 +76,7 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            @endcanany
-                            {{-- @endif --}}
+                            @endif
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.policy') }}">
@@ -270,8 +270,7 @@
                                             <div class="menu-content d-flex align-items-center px-3">
                                                 <!--begin::Avatar-->
                                                 <div class="symbol symbol-50px me-5">
-                                                    <img alt="Logo"
-                                                        src="{{ asset('employee/assets/media/user.jpg') }}">
+                                                    <img alt="Logo" src="{{ asset('employee/assets/media/user.jpg') }}">
                                                 </div>
                                                 <!--end::Avatar-->
 

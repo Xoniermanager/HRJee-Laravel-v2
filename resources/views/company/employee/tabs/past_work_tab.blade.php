@@ -2,9 +2,8 @@
     <!--begin::Wrapper-->
     <form id="past_work_details">
         @csrf
-        <input type="hidden" name="user_id" value="{{ $userpastWorkDetails[0]['user_id'] ?? (Request::segment(4) ?? '') }}">
+        <input type="hidden" name="user_id" value="{{ $singleUserDetails->id ?? ''}}">
         <div class="row">
-
             <div class="col-md-4 form-group">
                 <div class="k-w-300 old_company">
                     <label for="previous_company_id">Previous Company*</label>
@@ -87,7 +86,7 @@
     </form>
     <button onclick="show_next_tab('qualification_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
         Previous</button>
-    <button onclick="show_next_tab('permission_tab')" class="btn btn-primary float-right">Next <i
+    <button onclick="show_next_tab('family_details_tab')" class="btn btn-primary float-right">Next <i
             class="fa fa-arrow-right"></i> </button>
     <!--end::Wrapper-->
 </div>
@@ -200,7 +199,7 @@
                     showConfirmButton: false,
                     timer: 1500
                 });
-                jQuery('.nav-pills a[href="#permission_tab"]').tab('show');
+                jQuery('.nav-pills a[href="#family_details_tab"]').tab('show');
                 // This variable is used on save all records button
                 all_data_saved = true;
             },

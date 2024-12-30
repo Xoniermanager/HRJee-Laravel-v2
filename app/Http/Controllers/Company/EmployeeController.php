@@ -131,7 +131,6 @@ class EmployeeController extends Controller
 
     public function edit(User $user)
     {
-
         $allCountries = $this->countryService->getAllActiveCountry();
         $allPreviousCompany = $this->previousCompanyService->getAllActivePreviousCompany();
         $allQualification = $this->qualificationService->getAllActiveQualification();
@@ -144,9 +143,8 @@ class EmployeeController extends Controller
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages =   $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
-
         // Get employee details to update
-        $singleUserDetails = $user->load('assetDetails','familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+        $singleUserDetails = $user->load('officeShift', 'language', 'skill', 'assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
         return view(
             'company.employee.add_employee',
             compact(
@@ -206,10 +204,7 @@ class EmployeeController extends Controller
 
     public function view(User $user)
     {
-        $singleViewEmployeeDetails = $user->load('assetDetails','familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+        $singleViewEmployeeDetails = $user->load('assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
-
-
-
 }

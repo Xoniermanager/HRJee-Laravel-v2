@@ -2,8 +2,7 @@
     <!--begin::Wrapper-->
     <form id="qualification_details_form">
         @csrf
-        <input type="hidden" name="user_id" class="id"
-            value="{{ $userQualificationDetails[0]['user_id'] ?? (Request::segment(4) ?? '') }}">
+        <input type="hidden" name="user_id" class="id" value="{{$singleUserDetails->id ?? ''}}">
         <div class="row">
             <div class="col-md-4 form-group">
                 <label for="">Degree*</label>
@@ -11,59 +10,54 @@
                     id="qualification_id">
                     <option value="">Select The Qualification</option>
                     @forelse ($allQualification as $qualificationDetails)
-                        <option value="{{ $qualificationDetails->id }}">
-                            {{ $qualificationDetails->name }}</option>
+                    <option value="{{ $qualificationDetails->id }}">
+                        {{ $qualificationDetails->name }}</option>
                     @empty
-                        <option value="">No Qualification Found</option>
+                    <option value="">No Qualification Found</option>
                     @endforelse
                 </select>
             </div>
             <div class="col-md-12 form-group">
                 <div class="panel" id="qualification_html">
                     @php
-                        $i = 0;
+                    $i = 0;
                     @endphp
                     @foreach ($userQualificationDetails as $userQualificationDetail)
-                        <div class="row">
-                            <div class="panel-head">
-                                <h5 class="degree_name">{{ $userQualificationDetail->qualification->name }}</h5>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-md-3 form-group"><label for="">Institute/College
-                                            *</label><input class="form-control" type="text"
-                                            name="degree[{{ $i }}][institute]"
-                                            value="{{ $userQualificationDetail->institute }}"></div>
-                                    <div class="col-md-3 form-group"><label for="">University *</label><input
-                                            class="form-control" type="text"
-                                            name="degree[{{ $i }}][university]"
-                                            value="{{ $userQualificationDetail->university }}"></div>
-                                    <div class="col-md-3 form-group"><label for="">Course *</label><input
-                                            class="form-control" type="text"
-                                            name="degree[{{ $i }}][course]"
-                                            value="{{ $userQualificationDetail->course }}"></div>
-                                    <div class="col-md-1 form-group"><label for="">Year *</label><input
-                                            class="form-control" type="text"
-                                            name="degree[{{ $i }}][year]"
-                                            value="{{ $userQualificationDetail->year }}"></div>
-                                    <div class="col-md-1 form-group"><label for="">Percentage*</label><input
-                                            class="form-control" type="text"
-                                            name="degree[{{ $i }}][percentage]"
-                                            value="{{ $userQualificationDetail->percentage }}">
-                                        <input class="form-control" type="hidden"
-                                            name="degree[{{ $i }}][qualification_id]"
-                                            value="{{ $userQualificationDetail->qualification_id }}">
-                                    </div>
-                                    <div class="col-md-1 form-group text-center mt-5"><button
-                                            class="btn btn-danger btn-sm mt-3"
-                                            onclick="remove_qualification_html(this,'{{ $userQualificationDetail->qualification_id }}')">
-                                            <i class="fa fa-minus"></i></button></div>
+                    <div class="row">
+                        <div class="panel-head">
+                            <h5 class="degree_name">{{ $userQualificationDetail->qualification->name }}</h5>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-3 form-group"><label for="">Institute/College
+                                        *</label><input class="form-control" type="text"
+                                        name="degree[{{ $i }}][institute]"
+                                        value="{{ $userQualificationDetail->institute }}"></div>
+                                <div class="col-md-3 form-group"><label for="">University *</label><input
+                                        class="form-control" type="text" name="degree[{{ $i }}][university]"
+                                        value="{{ $userQualificationDetail->university }}"></div>
+                                <div class="col-md-3 form-group"><label for="">Course *</label><input
+                                        class="form-control" type="text" name="degree[{{ $i }}][course]"
+                                        value="{{ $userQualificationDetail->course }}"></div>
+                                <div class="col-md-1 form-group"><label for="">Year *</label><input class="form-control"
+                                        type="text" name="degree[{{ $i }}][year]"
+                                        value="{{ $userQualificationDetail->year }}"></div>
+                                <div class="col-md-1 form-group"><label for="">Percentage*</label><input
+                                        class="form-control" type="text" name="degree[{{ $i }}][percentage]"
+                                        value="{{ $userQualificationDetail->percentage }}">
+                                    <input class="form-control" type="hidden" name="degree[{{ $i }}][qualification_id]"
+                                        value="{{ $userQualificationDetail->qualification_id }}">
                                 </div>
+                                <div class="col-md-1 form-group text-center mt-5"><button
+                                        class="btn btn-danger btn-sm mt-3"
+                                        onclick="remove_qualification_html(this,'{{ $userQualificationDetail->qualification_id }}')">
+                                        <i class="fa fa-minus"></i></button></div>
                             </div>
                         </div>
-                        @php
-                            $i++;
-                        @endphp
+                    </div>
+                    @php
+                    $i++;
+                    @endphp
                     @endforeach
                 </div>
             </div>

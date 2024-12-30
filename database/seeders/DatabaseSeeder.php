@@ -54,6 +54,7 @@ class DatabaseSeeder extends Seeder
         $this->call(OfficeTimingConfigsTableSeeder::class);
         $this->call(ShiftsTableSeeder::class);
         $this->call(RolesTableSeeder::class);
+        $this->call(PermissionSeeder::class);
         $this->call(LeaveStatusesTableSeeder::class);
         $this->call(AssetManufacturersTableSeeder::class);
         $this->call(AssetStatusesTableSeeder::class);
@@ -63,7 +64,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserAddressesDetailsTableSeeder::class);
         $this->call(UserAdvanceDetailsTableSeeder::class);
         $this->call(UserBankDetailsTableSeeder::class);
-        $this->call(UserDetailsTableSeeder::class);
         $this->call(UserDocumentDetailsTableSeeder::class);
         $this->call(UserPastWorkDetailsTableSeeder::class);
         $this->call(UserQualificationDetailsTableSeeder::class);
@@ -80,5 +80,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ResignationStatusTableSeeder::class);
         $this->call(ComplainStatusesTableSeeder::class);
         $this->call(ComplainCategoriesTableSeeder::class);
+        $this->call(RoleHasPermissionsTableSeeder::class);
     }
 }

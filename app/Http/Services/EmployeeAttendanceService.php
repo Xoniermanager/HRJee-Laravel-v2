@@ -9,18 +9,15 @@ class EmployeeAttendanceService
 {
   private $employeeAttendanceRepository;
 
-  private $userDetailRepository;
 
-  public function __construct(EmployeeAttendanceRepository $employeeAttendanceRepository, UserDetailServices $userDetailRepository)
+  public function __construct(EmployeeAttendanceRepository $employeeAttendanceRepository)
   {
     $this->employeeAttendanceRepository = $employeeAttendanceRepository;
-    $this->userDetailRepository = $userDetailRepository;
   }
   public function create($data)
   {
-    $userId = Auth()->guard('employee')->user()->id ?? auth()->guard('employee_api')->user()->id;
+    $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
     $attendanceTime = date('Y/m/d H:i:s');
-    $userDetails =  $this->userDetailRepository->getDetailsByUserId($userId);
     $startingTime = Carbon::parse($userDetails->officeShift->start_time);
     $loginBeforeShiftTime = $startingTime->subMinutes($userDetails->officeShift->login_before_shift_time);
     // dd($userDetails->officeShift->officeTimingConfigs->half_day_hours);
@@ -28,11 +25,11 @@ class EmployeeAttendanceService
       $payload = [];
       $payload =
         [
-          'user_id' => $userId,
+          'user_id' => $userDetails->id,
           'punch_in_using' => $data['punch_in_using']
         ];
       /** If Data Exit in Table Soo we Implement for Puch Out  */
-      $existingDetails = $this->getExtistingDetailsByUserId($userId);
+      $existingDetails = $this->getExtistingDetailsByUserId($userDetails->id);
       if (isset($existingDetails) && !empty($existingDetails)) {
         $payload['punch_out'] = $attendanceTime;
         $puchOutDetail =  $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);

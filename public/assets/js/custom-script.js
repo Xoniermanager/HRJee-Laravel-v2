@@ -64,7 +64,7 @@ $(document).ready(function () {
     });
 });
 
-// for active menu script 
+// for active menu script
 $(document).ready(function () {
     var currentUrl = window.location.pathname;
     var fullUrl = window.location.origin + currentUrl;
@@ -100,11 +100,11 @@ jQuery(document).ready(function () {
         batch: true,
         transport: {
             read: {
-                url: admin_ajax_base_url + "/qualifications/qualification_data",
+                url: company_ajax_base_url + "/qualifications/qualification_data",
                 dataType: "json"
             },
             create: {
-                url: admin_ajax_base_url + "/qualifications/ajax_store_qualification",
+                url: company_ajax_base_url + "/qualifications/ajax_store_qualification",
                 dataType: "json"
             },
             parameterMap: function (options, operation) {

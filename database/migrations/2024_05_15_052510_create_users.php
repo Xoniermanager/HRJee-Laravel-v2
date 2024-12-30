@@ -32,6 +32,24 @@ return new class extends Migration
             $table->string('last_login_ip');
             $table->foreign('employee_status_id')->references('id')->on('employee_statuses')->nullable();
             $table->foreign('company_id')->references('id')->on('companies')->nullable();
+            $table->unsignedBigInteger('employee_type_id');
+            $table->foreign('employee_type_id')->references('id')->on('employee_types');
+            $table->unsignedBigInteger('department_id');
+            $table->foreign('department_id')->references('id')->on('departments');
+            $table->unsignedBigInteger('designation_id');
+            $table->foreign('designation_id')->references('id')->on('designations');
+            $table->unsignedBigInteger('role_id');
+            $table->foreign('role_id')->references('id')->on('roles');
+            $table->unsignedBigInteger('company_branch_id');
+            $table->foreign('company_branch_id')->references('id')->on('company_branches');
+            $table->unsignedBigInteger('qualification_id');
+            $table->foreign('qualification_id')->references('id')->on('qualifications');
+            $table->unsignedBigInteger('shift_id');
+            $table->foreign('shift_id')->references('id')->on('shifts');
+            $table->string('offer_letter_id')->unique()->nullable();
+            $table->boolean('work_from_office')->default(false);
+            $table->date('exit_date')->nullable();
+            $table->string('official_mobile_no')->unique()->nullable();
             $table->timestamps();
         });
     }
