@@ -27,7 +27,6 @@ use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
 use App\Http\Controllers\Company\SpreadsheetController;
-use App\Http\Controllers\Company\UserDetailsController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
@@ -217,8 +216,8 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     //Document Details for employee
     Route::post('/employee/document/details', [UserDocumentDetailsController::class, 'store'])->name('employee.document.details');
 
-    //User / Permission Details for employee
-    Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
+    // //User / Permission Details for employee
+    // Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
 
 
     //Asset Details for user
