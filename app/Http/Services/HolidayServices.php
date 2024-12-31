@@ -2,10 +2,11 @@
 
 namespace App\Http\Services;
 
-use App\Models\AssignHolidayBranches;
-use App\Repositories\HolidayRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\HolidayRepository;
 
 class HolidayServices
 {
@@ -16,42 +17,54 @@ class HolidayServices
     }
     public function all()
     {
-        return $this->holidayRepository->orderBy('id', 'DESC')->paginate(10);
+        return $this->holidayRepository->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
     {
-        $data['company_id'] = Auth::guard('company')->user()->company_id;
-        $response = $this->holidayRepository->create($data);
-        if ($response) {
-            $payload = [];
-
-            foreach ($data['company_branch_id'] as $branchID) {
-                if ($branchID !== 'all' && $branchID !== '') {
-                    $payload[] = [
-                        'company_branch_id' => $branchID,
-                        'holiday_id' => $response->id,
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
-                    ];
-                }
+        try {
+            $data['company_branch_id'] = array_filter($data['company_branch_id'], function ($value) {
+                return $value !== 'all';
+            });
+            $data['company_branch_id'] = array_values($data['company_branch_id']);
+            $data['company_id'] = Auth::guard('company')->user()->company_id;
+            $response = $this->holidayRepository->create(Arr::except($data, 'company_branch_id'));
+            if ($response) {
+                $response->companyBranch()->sync($data['company_branch_id']);
             }
-
-            if (!empty($payload)) {
-                AssignHolidayBranches::insert($payload); // Use insert for bulk insert
-            }
+            DB::commit();
+            return $response;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'An error occurred, please try again later.'], 400);
         }
-        return $response;
     }
-
-    public function createBranchHoliday() {}
-
     public function updateDetails(array $data, $id)
     {
-        return $this->holidayRepository->find($id)->update($data);
+        DB::beginTransaction();
+        try {
+            $holidayDetails = $this->holidayRepository->find($id);
+            $data['company_branch_id'] = array_filter($data['company_branch_id'], function ($value) {
+                return $value !== 'all';
+            });
+            $data['company_branch_id'] = array_values($data['company_branch_id']);
+            $data['company_id'] = Auth::guard('company')->user()->company_id;
+            $holidayDetails->update(Arr::except($data, 'company_branch_id'));
+            if ($holidayDetails) {
+                $holidayDetails->companyBranch()->sync($data['company_branch_id']);
+            }
+            DB::commit();
+            return $holidayDetails;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'An error occurred, please try again later.'], 400);
+        }
     }
     public function deleteDetails($id)
     {
-        return $this->holidayRepository->find($id)->delete();
+        $deletedData = $this->holidayRepository->find($id);
+        $deletedData->companyBranch()->detach();
+        $deletedData->delete();
+        return $deletedData;
     }
     public function getListByCompanyId($companyID)
     {

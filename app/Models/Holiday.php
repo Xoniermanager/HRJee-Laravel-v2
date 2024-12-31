@@ -9,11 +9,16 @@ class Holiday extends Model
 {
     use HasFactory;
 
-    protected $fillable = [ 
+    protected $fillable = [
+        'company_branch_id',
         'name',
         'date',
         'year',
         'company_id',
         'status'
     ];
+    public function companyBranch()
+    {
+        return $this->belongsToMany(CompanyBranch::class, 'company_branch_holiday', 'holiday_id', 'company_branch_id');
+    }
 }

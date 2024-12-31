@@ -37,11 +37,11 @@ class HolidayController extends Controller
     {
         try {
             $validateHolidayData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:holidays,name'],
-                'date' => ['required', 'date'],
+                'name' => 'required|string|unique:holidays,name,',
+                'date' => 'required|date',
+                'year' => 'required',
                 'company_branch_id'    =>   'required|array',
                 'company_branch_id.*'  =>   'required',
-                'year' => ['required'],
             ]);
             if ($validateHolidayData->fails()) {
                 return response()->json(['error' => $validateHolidayData->messages()], 400);
@@ -66,9 +66,11 @@ class HolidayController extends Controller
     public function update(Request $request)
     {
         $validateHolidayData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:holidays,name,' . $request->id],
-            'date' => ['required', 'date'],
-            'year' => ['required'],
+            'name' => 'required|string|unique:holidays,name,' . $request->id,
+            'date' => 'required|date',
+            'year' => 'required',
+            'company_branch_id'    =>   'required|array',
+            'company_branch_id.*'  =>   'required',
         ]);
 
         if ($validateHolidayData->fails()) {

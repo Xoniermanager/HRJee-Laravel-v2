@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assign_holiday_branches', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger("holiday_id");
-            $table->unsignedBigInteger("company_branch_id");
+        Schema::create('company_branch_holiday', function (Blueprint $table) {
+            $table->unsignedBigInteger('holiday_id');
             $table->foreign('holiday_id')->references('id')->on('holidays');
+            $table->unsignedBigInteger('company_branch_id');
             $table->foreign('company_branch_id')->references('id')->on('company_branches');
-            $table->timestamps();
         });
     }
 
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assign_holiday_branches');
+        Schema::dropIfExists('company_branch_holiday');
     }
 };
