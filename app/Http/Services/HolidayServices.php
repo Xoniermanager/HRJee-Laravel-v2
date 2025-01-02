@@ -82,4 +82,12 @@ class HolidayServices
     {
         return $this->holidayRepository->where('company_id', $companyID)->where('date', 'LIKE', '%' . $month . '%')->where('year', date('Y'))->where('status', '1')->get();
     }
+
+    public function getHolidayByCompanyBranchId($companyId, $date, $companyBranchId)
+    {
+        return $this->holidayRepository->where('company_id', $companyId)->where('date', $date)->where('status', '1')
+            ->whereHas('companyBranch', function ($query) use ($companyBranchId) {
+                $query->where('company_branch_id', $companyBranchId);
+            })->first();
+    }
 }

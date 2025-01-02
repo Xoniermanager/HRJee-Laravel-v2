@@ -20,7 +20,7 @@ class EmployeeServices
     private $departmentService;
     private $designationService;
 
-    public function __construct(EmployeeRepository $employeeRepository,BranchServices $companyBranchService, DepartmentServices $departmentService, DesignationServices $designationService)
+    public function __construct(EmployeeRepository $employeeRepository, BranchServices $companyBranchService, DepartmentServices $departmentService, DesignationServices $designationService)
     {
         $this->employeeRepository = $employeeRepository;
         $this->companyBranchService = $companyBranchService;
@@ -66,8 +66,15 @@ class EmployeeServices
         }
         //List Selected by Skill Id
         if (isset($request->skill_id) && !empty($request->skill_id)) {
-            $allEmployeeDetails = $allEmployeeDetails->where('skill_id', '=', $request->skill_id);
+            $skillId = $request->skill_id;
+            $allEmployeeDetails = $allEmployeeDetails->whereHas(
+                'skill',
+                function ($query) use ($skillId) {
+                    $query->where('skill_id', '=', $skillId);
+                }
+            );
         }
+
         //List Search Operation
         if (isset($request->search) && !empty($request->search)) {
             $searchKeyword = $request->search;
@@ -169,39 +176,39 @@ class EmployeeServices
     }
     public function getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds = null, $designationIds = null, $allCompanyBranches = null, $allDepartment = null, $allDesignation = null)
     {
-      $allCompanyDepartment = $this->departmentService->getAllDepartmentsByCompanyId();
-      $allDepartmentIds = $allCompanyDepartment->pluck('id');
-      $selectedDepartments = $allDepartmentIds;
-      $baseQuery =  $this->employeeRepository;
+        $allCompanyDepartment = $this->departmentService->getAllDepartmentsByCompanyId();
+        $allDepartmentIds = $allCompanyDepartment->pluck('id');
+        $selectedDepartments = $allDepartmentIds;
+        $baseQuery =  $this->employeeRepository;
 
-      /** Filter by Company Branch */
-      if (isset($companyBranchIds) && count($companyBranchIds) > 0) {
-        $baseQuery->whereIn('company_branch_id', $companyBranchIds);
-      } else {
-        $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allCompanyBranchIds = $allCompanyBranchDetails->pluck('id');
-        $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
-      }
+        /** Filter by Company Branch */
+        if (isset($companyBranchIds) && count($companyBranchIds) > 0) {
+            $baseQuery->whereIn('company_branch_id', $companyBranchIds);
+        } else {
+            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
+            $allCompanyBranchIds = $allCompanyBranchDetails->pluck('id');
+            $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
+        }
 
-      /** Filter by Departments */
-      if (isset($departmentIds) && count($departmentIds) > 0) {
-        $baseQuery = $baseQuery->whereIn('department_id', $departmentIds);
-        $selectedDepartments = $departmentIds;
-      } else if (isset($allDepartment) && $allDepartment == true) {
-        $baseQuery->whereIn('department_id', $allDepartmentIds);
-      }
+        /** Filter by Departments */
+        if (isset($departmentIds) && count($departmentIds) > 0) {
+            $baseQuery = $baseQuery->whereIn('department_id', $departmentIds);
+            $selectedDepartments = $departmentIds;
+        } else if (isset($allDepartment) && $allDepartment == true) {
+            $baseQuery->whereIn('department_id', $allDepartmentIds);
+        }
 
-      /** Filter by Designations */
-      if (isset($designationIds) && count($designationIds) > 0) {
-        $baseQuery = $baseQuery->whereIn('designation_id', $designationIds);
-      } else if (isset($allDesignation) && $allDesignation == true) {
-        $allCompanyDesignation = $this->designationService->getAllDesignationByDepartmentIds($selectedDepartments);
-        $allDesignationIds = $allCompanyDesignation->pluck('id');
-        $baseQuery->whereIn('designation_id', $allDesignationIds);
-      } else {
-        $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
-      }
-      $usersDetails = $baseQuery->get()->toArray();
-      return $usersDetails;
+        /** Filter by Designations */
+        if (isset($designationIds) && count($designationIds) > 0) {
+            $baseQuery = $baseQuery->whereIn('designation_id', $designationIds);
+        } else if (isset($allDesignation) && $allDesignation == true) {
+            $allCompanyDesignation = $this->designationService->getAllDesignationByDepartmentIds($selectedDepartments);
+            $allDesignationIds = $allCompanyDesignation->pluck('id');
+            $baseQuery->whereIn('designation_id', $allDesignationIds);
+        } else {
+            $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
+        }
+        $usersDetails = $baseQuery->get()->toArray();
+        return $usersDetails;
     }
 }
