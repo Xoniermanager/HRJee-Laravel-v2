@@ -235,7 +235,7 @@
                                 <div class="d-flex align-items-center">
                                     <!--begin::Avatar-->
                                     <div class="symbol symbol-circle symbol-40px">
-                                        <img src="{{ asset('employee/assets/media/user.jpg') }}" alt="photo">
+                                        <img src="{{ Auth::guard('employee')->user()->profile_image ?? asset('employee/assets/media/user.jpg') }}" alt="photo">
                                     </div>
                                     <!--end::Avatar-->
 
@@ -243,12 +243,12 @@
                                     <div class="ms-2">
                                         <!--begin::Name-->
                                         <a class="text-gray-800 text-hover-primary fs-6 fw-bold lh-1">
-                                            Shibli Sone</a>
+                                           {{Auth::guard('employee')->user()->name}}</a>
                                         <!--end::Name-->
 
                                         <!--begin::Major-->
                                         <span class="text-muted fw-semibold d-block fs-7 lh-1">
-                                            Project Manager</span>
+                                            {{Auth::guard('employee')->user()->designation->name}} </a></span>
                                         <!--end::Major-->
                                     </div>
                                     <!--end::User info-->
@@ -270,18 +270,18 @@
                                             <div class="menu-content d-flex align-items-center px-3">
                                                 <!--begin::Avatar-->
                                                 <div class="symbol symbol-50px me-5">
-                                                    <img alt="Logo" src="{{ asset('employee/assets/media/user.jpg') }}">
+                                                    <img alt="Logo" src="{{ Auth::guard('employee')->user()->profile_image ?? asset('employee/assets/media/user.jpg') }}">
                                                 </div>
                                                 <!--end::Avatar-->
 
                                                 <!--begin::Username-->
                                                 <div class="d-flex flex-column">
                                                     <div class="fw-bold d-flex align-items-center fs-5">
-                                                        Shibli Sone
+                                                       {{Auth::guard('employee')->user()->name}}
                                                     </div>
 
                                                     <a class="fw-semibold text-muted text-hover-primary fs-7">
-                                                        Project Manager </a>
+                                                       {{Auth::guard('employee')->user()->designation->name}} </a>
                                                 </div>
                                                 <!--end::Username-->
                                             </div>

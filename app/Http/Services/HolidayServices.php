@@ -72,11 +72,7 @@ class HolidayServices
     }
     public function getHolidayByDate($companyID, $date)
     {
-        return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1')->first();
-    }
-    public function getAllHolidayByDate($companyID, $date)
-    {
-        return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1')->get();
+        return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1');
     }
     public function getHolidayByMonth($companyID, $month)
     {
@@ -89,5 +85,13 @@ class HolidayServices
             ->whereHas('companyBranch', function ($query) use ($companyBranchId) {
                 $query->where('company_branch_id', $companyBranchId);
             })->first();
+    }
+    public function getHolidayByMonthByCompanyBranchId($companyId, $month,$year,$companyBranchId)
+    {
+        // dd($this->holidayRepository->where('company_id', $companyId)->whereMonth('date', $month)->where('year', $year)->where('status', '1')->toRawSql());
+        return $this->holidayRepository->where('company_id', $companyId)->whereMonth('date', $month)->where('year', $year)->where('status', '1')
+            ->whereHas('companyBranch', function ($query) use ($companyBranchId) {
+                $query->where('company_branch_id', $companyBranchId);
+            });
     }
 }

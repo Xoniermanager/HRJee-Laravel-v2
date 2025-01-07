@@ -335,6 +335,19 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item" data-url="{{ route('attendance.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('attendance.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-money-bill-wave-alt"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title"> Attendance</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                                 <!--begin:Menu link-->
                                 <span class="menu-link">
@@ -551,8 +564,7 @@
                                 </span>
                                 <!--end:Menu link-->
                                 <!--begin:Menu sub-->
-                                <div class="menu-sub menu-sub-accordion"
-                                    data-url="{{ route('news.category.index') }}">
+                                <div class="menu-sub menu-sub-accordion" data-url="{{ route('news.category.index') }}">
                                     <!--begin:Menu item-->
                                     <div class="menu-item">
                                         <!--begin:Menu link-->

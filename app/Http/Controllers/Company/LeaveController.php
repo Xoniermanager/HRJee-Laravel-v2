@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Company;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\EmployeeServices;
-use App\Http\Services\LeaveService;
-use App\Http\Services\LeaveTypeService;
 use Illuminate\Http\Request;
+use App\Http\Services\LeaveService;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Services\EmployeeServices;
+use App\Http\Services\LeaveTypeService;
 use Illuminate\Validation\ValidationException;
 
 class LeaveController extends Controller
@@ -30,7 +31,7 @@ class LeaveController extends Controller
     public function applyLeave()
     {
         $leaveTypes = $this->leaveTypeService->getAllActiveLeaveType();
-        $allEmployeeDetails = $this->employeeService->all();
+        $allEmployeeDetails = $this->employeeService->all('',Auth::guard('company')->user()->id);
         return view('company.leave.apply_leave', compact('leaveTypes', 'allEmployeeDetails'));
     }
 
@@ -48,7 +49,7 @@ class LeaveController extends Controller
                 'from_half_day'      => ['required_if:is_half_day,==,1', 'in:first_half,second_half'],
                 'to_half_day'        => ['required_if:from,>,to', 'in:first_half,second_half'],
                 'reason'             => ['required'],
-                
+
             ]);
             $data = $request->all();
 

@@ -20,6 +20,7 @@ use App\Http\Controllers\Company\BreakTypeController;
 use App\Http\Controllers\Company\LanguagesController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
+use App\Http\Controllers\Company\AttendanceController;
 use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\CompanyStatusController;
@@ -52,6 +53,10 @@ use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
+
+
+//Common Route Used in Employee and Company Panel
+Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
 Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
@@ -135,7 +140,6 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('/update', 'update')->name('state.update');
         Route::get('/delete', 'destroy')->name('state.delete');
         Route::get('/status/update', 'statusUpdate')->name('state.statusUpdate');
-        Route::get('/get/all/state', 'getAllStates')->name('get.all.country.state');
         Route::get('/search', 'searchStateFilter');
     });
 
@@ -544,6 +548,15 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('/update', 'update')->name('document.type.update');
         Route::get('/delete', 'destroy')->name('document.type.delete');
         Route::get('/status/update', 'statusUpdate')->name('document.type.statusUpdate');
+    });
+
+    //Employee Attendance Module
+    Route::prefix('/attendance')->controller(AttendanceController::class)->group(function () {
+        Route::get('/', 'index')->name('attendance.index');
+        Route::get('/search/filter', 'searchFilter');
+        Route::get('/view/{empId}', 'viewAttendanceDetails')->name('attendance.view.details');
+        Route::get('/view/search/filter/{empId}', 'searchFilterByEmployeeId');
+        Route::post('/edit', 'editAttendanceByEmployeeId');
     });
 });
 /**---------------End Company Panel Route----------------*/

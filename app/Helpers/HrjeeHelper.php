@@ -1,7 +1,10 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
+
 
 function removingSpaceMakingName($name)
 {
@@ -143,4 +146,51 @@ function getTotalHour($startTime, $endTime)
 function getFormattedDate($date)
 {
     return date('jS M Y', strtotime($date));
+}
+
+function getWorkDateFromate($joiningDate)
+{
+    $joiningDate = Carbon::createFromFormat('Y-m-d', $joiningDate);
+    $currentDate = Carbon::now();
+    $diff = $joiningDate->diff($currentDate);
+    return $diff->format(' %y Years, %m Months, %d Days');
+}
+
+function fullMonthList()
+{
+    return  [
+        '1' => 'January',
+        '2' => 'February',
+        '3' => 'March',
+        '4' => 'April',
+        '5' => 'May',
+        '6' => 'June',
+        '7' => 'July',
+        '8' => 'August',
+        '9' => 'September',
+        '10' => 'October',
+        '11' => 'November',
+        '12' => 'December'
+    ];
+}
+/**
+ * Encrypt the id and return the encrypted id
+ */
+function getEncryptId($id)
+{
+    if (!empty($id)) {
+        return Crypt::encrypt($id);
+    }
+    return false;
+}
+
+/**
+ * Decrypt the encrypted id and return the original id
+ */
+function getDecryptId($id)
+{
+    if (!empty($id)) {
+        return Crypt::decrypt($id);
+    }
+    return false;
 }

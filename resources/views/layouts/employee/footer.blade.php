@@ -15,6 +15,7 @@
 <script src="{{ asset('employee/assets/js/widgets.bundle.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script src="{{ asset('employee/assets/js/employee_custom.js') }}"></script>
+<script src="{{ asset('assets/js/add-employee-validation.js') }}"></script>
 
 <script>
     setTimeout(function() {

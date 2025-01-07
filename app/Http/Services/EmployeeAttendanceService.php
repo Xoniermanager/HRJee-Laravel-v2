@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use App\Repositories\EmployeeAttendanceRepository;
 
 class EmployeeAttendanceService
@@ -135,9 +136,8 @@ class EmployeeAttendanceService
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->orderBy('id', 'DESC')->paginate(10);
     }
-    public function getAttendanceByFromAndToDate($fromDate, $toDate)
+    public function getAttendanceByFromAndToDate($fromDate, $toDate, $userId)
     {
-        $userId = Auth()->guard('employee')->user()->id ?? auth()->guard('employee_api')->user()->id;
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('id', 'DESC')->paginate(10);
     }
     public function getLastTenDaysAttendance()
@@ -173,6 +173,35 @@ class EmployeeAttendanceService
             }
         } else {
             return '00:00:00';
+        }
+    }
+    public function getAllAttendanceByCompanyId($companyId)
+    {
+        return $this->employeeAttendanceRepository
+            ->whereHas('user', function ($query) use ($companyId) {
+                $query->where('company_id', $companyId);
+            })->orderBy('id', 'desc')->paginate(10);
+    }
+
+    public function getAllAttendanceByMonthByUserId($month, $userId, $year)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year);
+    }
+
+    public function getAttendanceByDateByUserId($userId, $date)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', '=', $date);
+    }
+
+    public function editAttendanceByUserId($data)
+    {
+        $data['punch_in'] = date('Y/m/d H:i:s', strtotime($data['date'] . ' ' . $data['punch_in']));
+        $data['punch_out'] = date('Y/m/d H:i:s', strtotime($data['date'] . ' ' . $data['punch_out']));
+        $payload = Arr::except($data, ['_token', 'date', 'attendance_id']);
+        if (isset($data['attendance_id']) && !empty($data['attendance_id'])) {
+            return $this->employeeAttendanceRepository->find($data['attendance_id'])->update($payload);
+        } else {
+            return $this->employeeAttendanceRepository->create($payload);
         }
     }
 }

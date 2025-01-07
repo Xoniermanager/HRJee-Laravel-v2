@@ -23,7 +23,7 @@ class AttendanceController extends Controller
 
     public function getAttendanceByFromAndToDate(Request $request)
     {
-        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date);
+        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date,Auth()->guard('employee')->user()->id);
         if ($allAttendanceDetails) {
             return response()->json([
                 'success' => 'Searching',

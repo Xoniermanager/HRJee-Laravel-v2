@@ -76,6 +76,16 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
         Route::get('/announcement', 'index')->name('employee.announcement');
         Route::get('/announcement/details/{news:id}', 'viewDetails')->name('employee.announcement.details');
     });
+    //Account Module
+    Route::controller(AccountController::class)->group(function () {
+        Route::get('/account', 'index')->name('employee.account');
+        Route::post('/update/basic/details', 'basicDetailsUpdate')->name('update.basicDetails.employee');
+        Route::post('/update/bank/details', 'bankDetailsUpdate')->name('update.bankDetails.employee');
+        Route::post('/update/address/details', 'addressDetailsUpdate')->name('update.addressDetails.employee');
+        Route::post('/update/change/password', 'updateChangePassword')->name('employee.update.password');
+    });
+
+
     //HR Service Module
     Route::get('/hr/service', [HRServiceController::class, 'index'])->name('employee.hr.service');
 
@@ -87,9 +97,6 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
 
     //Notification Module
     Route::get('/notification', [NotificationController::class, 'index'])->name('employee.notification');
-
-    //Account Module
-    Route::get('/account', [AccountController::class, 'index'])->name('employee.account');
 
     // Contact Module
     Route::get('/contact-us', [ContactUsController::class, 'index'])->name('employee.contact.us');
@@ -138,6 +145,5 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
         Route::post('/store', 'store')->name('hr_complain.store');
         Route::get('/chat/{employee_complains:id}', 'getComplainDetails')->name('employee.getComplainDetails');
     });
-
 });
 /**----------------- End Employee Pannel Route ----------------------*/

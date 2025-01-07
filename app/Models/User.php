@@ -106,15 +106,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-
-    public function getBranchAttribute()
-    {
-        if ($this->relationLoaded('userDetails')) {
-            return  isset($this->userDetails->companyBranches) && !empty($this->userDetails->companyBranches) ? $this->userDetails->companyBranches->name : null;
-        }
-        return null; // Or handle as needed
-    }
     // employee bank name
     public function getBankNameAttribute()
     {
@@ -147,37 +138,6 @@ class User extends Authenticatable
         }
         return 'default account number'; // Or handle as needed
     }
-    // public function getDesignationAttribute()
-    // {
-    //     if ($this->relationLoaded('userDetails')) {
-    //         return  isset($this->userDetails->designation) && !empty($this->userDetails->designation) ? $this->userDetails->designation->name : null;
-    //     }
-    //     return null; // Or handle as needed
-    // }
-    // public function getDepartmentAttribute()
-    // {
-    //     if ($this->relationLoaded('userDetails')) {
-    //         $userDepartment = $this->userDetails->department;
-    //         return  isset($userDepartment) && !empty($userDepartment) ? $userDepartment->name : null;
-    //     }
-    //     return null; // Or handle as needed
-    // }
-    // public function getOfficialMobileNoAttribute()
-    // {
-    //     if ($this->relationLoaded('userDetails')) {
-    //         $userDetails = $this->userDetails;
-    //         return  isset($userDetails) && !empty($userDetails) ? $userDetails->official_mobile_no : null;
-    //     }
-    //     return null; // Or handle as needed
-    // }
-    // public function getShiftAttribute()
-    // {
-    //     if ($this->relationLoaded('userDetails')) {
-    //         $shift = $this->userDetails->officeShift;
-    //         return  isset($shift) && !empty($shift) ? date('h:i A', strtotime($shift->start_time)) . " " . date('h:i A', strtotime($shift->end_time)) : null;
-    //     }
-    //     return null; // Or handle as needed
-    // }
     public function bankDetails()
     {
         return $this->hasOne(UserBankDetail::class, 'user_id');
