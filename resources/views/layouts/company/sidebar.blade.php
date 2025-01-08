@@ -659,12 +659,12 @@
                                     <div class="ms-2">
                                         <!--begin::Name-->
                                         <a class="text-gray-800 text-hover-primary fs-6 fw-bold lh-1">
-                                            Garima Kaushik</a>
+                                            {{Auth::guard('company')->user()->name}}</a>
                                         <!--end::Name-->
 
                                         <!--begin::Major-->
                                         <span class="text-muted fw-semibold d-block fs-7 lh-1">
-                                            HR Manager</span>
+                                        </span>
                                         <!--end::Major-->
                                     </div>
                                     <!--end::User info-->
@@ -693,11 +693,11 @@
                                                 <!--begin::Username-->
                                                 <div class="d-flex flex-column">
                                                     <div class="fw-bold d-flex align-items-center fs-5">
-                                                        Garima Kaushik
+                                                        {{Auth::guard('company')->user()->name}}
                                                     </div>
 
                                                     <a class="fw-semibold text-muted text-hover-primary fs-7">
-                                                        HR Manager </a>
+                                                    </a>
                                                 </div>
                                                 <!--end::Username-->
                                             </div>
@@ -715,10 +715,6 @@
                                             </a>
                                         </div>
                                     </div>
-
-                                    <!--begin::User account menu-->
-
-                                    <!--end::User account menu-->
                                 </div>
                                 <!--end::User menu-->
                             </div>

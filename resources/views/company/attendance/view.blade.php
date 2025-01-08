@@ -85,6 +85,10 @@ Attendance Management
                                 <label class="required">Punch Out</label>
                                 <input class="form-control mb-5 mt-3" type="time" name="punch_out" id="punch_out">
                             </div>
+                            <div class="col-md-12 selectpermission mt-4">
+                                <label class="required">Remark</label>
+                                <textarea class="form-control mb-5 mt-3" name="remark"></textarea>
+                            </div>
                         </div>
                         <!--end::Wrapper-->
                         <div class="d-flex flex-end flex-row-fluid pt-2 border-top">

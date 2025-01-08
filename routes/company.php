@@ -557,6 +557,8 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/view/{empId}', 'viewAttendanceDetails')->name('attendance.view.details');
         Route::get('/view/search/filter/{empId}', 'searchFilterByEmployeeId');
         Route::post('/edit', 'editAttendanceByEmployeeId');
+        Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
+        Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
     });
 });
 /**---------------End Company Panel Route----------------*/

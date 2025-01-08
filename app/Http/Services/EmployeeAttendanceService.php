@@ -11,13 +11,15 @@ class EmployeeAttendanceService
     private $employeeAttendanceRepository;
     private $leaveService;
     private $holidayService;
+    private $employeeService;
 
 
-    public function __construct(EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService)
+    public function __construct(EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService)
     {
         $this->employeeAttendanceRepository = $employeeAttendanceRepository;
         $this->leaveService = $leaveService;
         $this->holidayService = $holidayService;
+        $this->employeeService = $employeeService;
     }
     public function create($data)
     {
@@ -202,6 +204,38 @@ class EmployeeAttendanceService
             return $this->employeeAttendanceRepository->find($data['attendance_id'])->update($payload);
         } else {
             return $this->employeeAttendanceRepository->create($payload);
+        }
+    }
+
+    public function addBulkAttendance($data)
+    {
+        $startDate = Carbon::createFromFormat('Y-m-d', $data['from_date']);
+        $endDate = Carbon::createFromFormat('Y-m-d', $data['to_date']);
+        $payload = [];
+        for ($date = $startDate; $date <= $endDate; $date->addDay()) {
+            $mainDate = $date->toDateString();
+            foreach ($data['employee_id'] as $employeeId) {
+                $employeeDetails = $this->employeeService->getUserDetailById($employeeId);
+                $checkHoliday = $this->holidayService->getHolidayByCompanyBranchId($employeeDetails->company_id, $mainDate, $employeeDetails->company_branch_id);
+                $checkExistingAttendance = $this->getAttendanceByDateByUserId($employeeId, $mainDate)->first();
+                if ($checkHoliday == null && $checkExistingAttendance == null) {
+                    $payload[] = [
+                        'punch_in'          => date('Y/m/d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
+                        'punch_out'         => date('Y/m/d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),
+                        'user_id'           => $employeeId,
+                        'remark'            => $data['remark'],
+                        'punch_in_using'    => $data['punch_in_using'],
+                        'created_at'        => Carbon::now(),
+                        'updated_at'        => Carbon::now()
+                    ];
+                }
+            }
+        }
+        if (isset($payload) && !empty($payload)) {
+            $this->employeeAttendanceRepository->insert($payload);
+            return true;
+        } else {
+            return false;
         }
     }
 }

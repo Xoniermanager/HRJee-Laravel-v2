@@ -29,7 +29,7 @@ class LeaveCreditManagementController extends Controller
     public function index()
     {
         $allLeaveCreditDetails = $this->leaveCreditManagementService->all();
-        $allCompanyBranches = $this->companyBranchesService->all();
+        $allCompanyBranches = $this->companyBranchesService->all(Auth()->guard('company')->user()->id);
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $allLeaveType = $this->leaveTypeService->getAllActiveLeaveType();
         return view('company.leave_credit_management.index', compact('allCompanyBranches', 'allEmployeeType', 'allLeaveType', 'allLeaveCreditDetails'));

@@ -88,7 +88,6 @@ class HolidayServices
     }
     public function getHolidayByMonthByCompanyBranchId($companyId, $month,$year,$companyBranchId)
     {
-        // dd($this->holidayRepository->where('company_id', $companyId)->whereMonth('date', $month)->where('year', $year)->where('status', '1')->toRawSql());
         return $this->holidayRepository->where('company_id', $companyId)->whereMonth('date', $month)->where('year', $year)->where('status', '1')
             ->whereHas('companyBranch', function ($query) use ($companyBranchId) {
                 $query->where('company_branch_id', $companyBranchId);

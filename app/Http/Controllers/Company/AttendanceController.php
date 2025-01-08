@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Company;
 
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Services\EmployeeAttendanceService;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Services\EmployeeServices;
-use App\Http\Services\HolidayServices;
-use App\Http\Services\LeaveService;
 use App\Models\EmployeeAttendance;
+use Illuminate\Support\Facades\DB;
+use App\Http\Services\LeaveService;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Services\HolidayServices;
+use App\Http\Services\EmployeeServices;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\EmployeeAttendanceService;
 
 class AttendanceController extends Controller
 {
@@ -106,6 +109,41 @@ class AttendanceController extends Controller
             return response()->json(['status' => true, 'message' => 'Attendance Updated']);
         } else {
             return response()->json(['status' => false, 'message' => 'Please Try Again']);
+        }
+    }
+
+    public function addBulkAttendance()
+    {
+        $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth::guard('company')->user()->id)->paginate(10);
+        return view('company.attendance.add_bulk', compact('allEmployeeDetails'));
+    }
+
+    public function storeBulkAttendance(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'employee_id' => 'required|array|min:1',
+            'employee_id.*' => 'exists:users,id',
+            'from_date' => 'required|date|before_or_equal:to_date',
+            'to_date' => 'required|date|after_or_equal:from_date',
+            'punch_in' => 'required|date_format:H:i|before:punch_out',
+            'punch_out' => 'required|date_format:H:i|after:punch_in',
+            'remark' => 'required|string|max:255',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        DB::beginTransaction(); // Start the transaction
+        try {
+            $request['punch_in_using'] = 'Web';
+            $response = $this->employeeAttendanceService->addBulkAttendance($request->all());
+            DB::commit();
+            if ($response == true)
+                return redirect()->route('attendance.index')->with('success', 'Attendance created successfully!');
+            else
+                return back()->with(['error' => 'Attendance already exists for the respective dates or might be a company holiday.']);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with(['error' => 'An unexpected error occurred. Please try again.']);
         }
     }
 }

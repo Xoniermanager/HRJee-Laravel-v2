@@ -49,7 +49,19 @@ Attendance Management
                             @endforeach
                         </select>
                     </div>
+                    <a href="{{ route('attendance.add.bulk') }}" class="btn btn-sm btn-primary align-self-center">Add
+                        Bulk Attendance</a>
                 </div>
+                @if (session('error'))
+                <div class="alert alert-danger alert-dismissible">
+                    {{ session('error') }}
+                </div>
+                @endif
+                @if (session('success'))
+                <div class="alert alert-success alert-dismissible">
+                    {{ session('success') }}
+                </div>
+                @endif
                 <div class="mb-5 mb-xl-10">
                     @include('company.attendance.list')
                 </div>
