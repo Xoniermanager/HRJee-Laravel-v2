@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
+use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
@@ -559,6 +560,14 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('/edit', 'editAttendanceByEmployeeId');
         Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
         Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
+    });
+    //Weekend Module
+    Route::prefix('/weekend')->controller(WeekendController::class)->group(function () {
+        Route::get('/', 'index')->name('weekend.index');
+        Route::post('/create', 'store')->name('weekend.store');
+        Route::get('/delete', 'destroy')->name('weekend.delete');
+        Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
+        Route::get('/get/weekend/details/companyId','getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
     });
 });
 /**---------------End Company Panel Route----------------*/

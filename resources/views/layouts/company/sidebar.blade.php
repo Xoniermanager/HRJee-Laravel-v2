@@ -348,6 +348,19 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item" data-url="{{ route('weekend.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('weekend.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-money-bill-wave-alt"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title"> Weekend Management</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                                 <!--begin:Menu link-->
                                 <span class="menu-link">

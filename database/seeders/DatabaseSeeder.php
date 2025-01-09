@@ -81,5 +81,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ComplainStatusesTableSeeder::class);
         $this->call(ComplainCategoriesTableSeeder::class);
         $this->call(RoleHasPermissionsTableSeeder::class);
+        $this->call(WeekDaySeeder::class);
+        $this->call(WeekendsTableSeeder::class);
+        $this->call(WeekDayWeekendTableSeeder::class);
     }
 }
