@@ -17,8 +17,7 @@ class EmployeeAttendanceController extends Controller
     public function makeAttendance(Request $request)
     {
         $data['punch_in_using'] = 'Web';
-        //$response = $this->employeeAttendanceService->create($data);
-        $response = $this->employeeAttendanceService->create2($data);
+        $response = $this->employeeAttendanceService->create($data);
 
         if ($response['status'] == true && $response['data'] == 'Punch Out') {
 

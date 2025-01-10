@@ -14,6 +14,7 @@ use App\Http\Services\HolidayServices;
 use App\Http\Services\EmployeeServices;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\EmployeeAttendanceService;
+use App\Http\Services\WeekendService;
 
 class AttendanceController extends Controller
 {
@@ -21,13 +22,15 @@ class AttendanceController extends Controller
     public $employeeAttendanceService;
     public $holidayService;
     public $leaveService;
+    public $weekendService;
 
-    public function __construct(EmployeeServices $employeeService, EmployeeAttendanceService $employeeAttendanceService, HolidayServices $holidayService, LeaveService $leaveService)
+    public function __construct(EmployeeServices $employeeService, EmployeeAttendanceService $employeeAttendanceService, HolidayServices $holidayService, LeaveService $leaveService, WeekendService $weekendService)
     {
         $this->employeeService = $employeeService;
         $this->employeeAttendanceService = $employeeAttendanceService;
         $this->holidayService = $holidayService;
         $this->leaveService = $leaveService;
+        $this->weekendService = $weekendService;
     }
     public function index()
     {
@@ -76,7 +79,14 @@ class AttendanceController extends Controller
             $endDate = date('Y-m-d');
         $allAttendanceDetails = [];
         while (strtotime($startDate) <= strtotime($endDate)) {
-            $allAttendanceDetails[date('d F Y', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByDateByUserId($employeeDetails->id, $startDate)->first();
+            $weekendStatus = false;
+            $weekDayNumber = date('N', strtotime($startDate));
+            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->company_branch_id, $employeeDetails->department_id, $weekDayNumber);
+            if (isset($checkWeekend) && !empty($checkWeekend)) {
+                $weekendStatus = true;
+            }
+            $allAttendanceDetails[date('d F Y - l', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByDateByUserId($employeeDetails->id, $startDate)->first();
+            $allAttendanceDetails[date('d F Y - l', strtotime($startDate))]['weekend'] = $weekendStatus;
             $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
         }
         return

@@ -55,4 +55,11 @@ class WeekendService
     {
         return $this->weekendRepository->with('weekday')->where('company_id', $companyId)->where('company_branch_id', $companyBranchId)->where('department_id', $departmentId)->first();
     }
+    public function getWeekendDetailByWeekdayId($companyId, $companyBranchId, $departmentId, $weekDayId)
+    {
+        return $this->weekendRepository->where('company_id', $companyId)->where('company_branch_id', $companyBranchId)->where('department_id', $departmentId)->where('status', '1')
+            ->whereHas('weekday', function ($query) use ($weekDayId) {
+                $query->where('id', $weekDayId);
+            })->first();
+    }
 }

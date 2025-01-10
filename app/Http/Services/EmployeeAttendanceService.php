@@ -12,56 +12,58 @@ class EmployeeAttendanceService
     private $leaveService;
     private $holidayService;
     private $employeeService;
+    private $weekendService;
 
 
-    public function __construct(EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService)
+    public function __construct(EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService, WeekendService $weekendService)
     {
         $this->employeeAttendanceRepository = $employeeAttendanceRepository;
         $this->leaveService = $leaveService;
         $this->holidayService = $holidayService;
         $this->employeeService = $employeeService;
+        $this->weekendService = $weekendService;
     }
+    // public function create($data)
+    // {
+    //     $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+    //     $attendanceTime = date('Y/m/d H:i:s');
+    //     $startingTime = Carbon::parse($userDetails->officeShift->start_time);
+    //     $loginBeforeShiftTime = $startingTime->subMinutes($userDetails->officeShift->login_before_shift_time);
+    //     // dd($userDetails->officeShift->officeTimingConfigs->half_day_hours);
+
+    //     //dd($userDetails);
+    //     if ($attendanceTime >= $loginBeforeShiftTime) {
+    //         $payload = [];
+    //         $payload =
+    //             [
+    //                 'user_id' => $userDetails->id,
+    //                 'punch_in_using' => $data['punch_in_using']
+    //             ];
+    //         /** If Data Exit in Table Soo we Implement for Puch Out  */
+    //         $existingDetails = $this->getExtistingDetailsByUserId($userDetails->id);
+    //         if (isset($existingDetails) && !empty($existingDetails)) {
+    //             $payload['punch_out'] = $attendanceTime;
+    //             $puchOutDetail =  $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
+    //         }
+
+    //         /** If Data No Exit in Table Soo we Implement for Puch In  */
+    //         else {
+    //             $payload['punch_in'] = $attendanceTime;
+    //             $puchInDetail =  $this->employeeAttendanceRepository->create($payload);
+    //         }
+    //         if (isset($puchInDetail)) {
+    //             $message = 'Puch In';
+    //         }
+    //         if (isset($puchOutDetail)) {
+    //             $message = 'Puch Out';
+    //         }
+    //         return $response = ['data' => $message, 'status' => true];
+    //     } else {
+    //         return $response = ['status' => false];
+    //     }
+    // }
+
     public function create($data)
-    {
-        $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
-        $attendanceTime = date('Y/m/d H:i:s');
-        $startingTime = Carbon::parse($userDetails->officeShift->start_time);
-        $loginBeforeShiftTime = $startingTime->subMinutes($userDetails->officeShift->login_before_shift_time);
-        // dd($userDetails->officeShift->officeTimingConfigs->half_day_hours);
-
-        //dd($userDetails);
-        if ($attendanceTime >= $loginBeforeShiftTime) {
-            $payload = [];
-            $payload =
-                [
-                    'user_id' => $userDetails->id,
-                    'punch_in_using' => $data['punch_in_using']
-                ];
-            /** If Data Exit in Table Soo we Implement for Puch Out  */
-            $existingDetails = $this->getExtistingDetailsByUserId($userDetails->id);
-            if (isset($existingDetails) && !empty($existingDetails)) {
-                $payload['punch_out'] = $attendanceTime;
-                $puchOutDetail =  $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
-            }
-
-            /** If Data No Exit in Table Soo we Implement for Puch In  */
-            else {
-                $payload['punch_in'] = $attendanceTime;
-                $puchInDetail =  $this->employeeAttendanceRepository->create($payload);
-            }
-            if (isset($puchInDetail)) {
-                $message = 'Puch In';
-            }
-            if (isset($puchOutDetail)) {
-                $message = 'Puch Out';
-            }
-            return $response = ['data' => $message, 'status' => true];
-        } else {
-            return $response = ['status' => false];
-        }
-    }
-
-    public function create2($data)
     {
         $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
         $attendanceTime = date('Y/m/d H:i:s');
@@ -124,6 +126,10 @@ class EmployeeAttendanceService
             $todayHoliday =  $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, date('Y-m-d'), $userDetails->company_branch_id);
             if ($todayHoliday) {
                 return array('status' => false, 'message' => 'Today is ' . $todayHoliday->name . ' holiday');
+            }
+            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->company_branch_id, $userDetails->department_id, date('N'));
+            if ($checkWeekend) {
+                return array('status' => false, 'message' => 'Punch-in cannot be processed today as it is your weekend.');
             }
             $this->employeeAttendanceRepository->create($payload);
             return  ['status' => true, 'data' => 'Punch In'];
@@ -214,11 +220,25 @@ class EmployeeAttendanceService
         $payload = [];
         for ($date = $startDate; $date <= $endDate; $date->addDay()) {
             $mainDate = $date->toDateString();
+            $weekDayNumber = $date->dayOfWeekIso;
             foreach ($data['employee_id'] as $employeeId) {
+
+                //Get Employee Details By User Id
                 $employeeDetails = $this->employeeService->getUserDetailById($employeeId);
+
+                // Check Holiday for Particular date
                 $checkHoliday = $this->holidayService->getHolidayByCompanyBranchId($employeeDetails->company_id, $mainDate, $employeeDetails->company_branch_id);
+
+                // Check Attendance if employee existing
                 $checkExistingAttendance = $this->getAttendanceByDateByUserId($employeeId, $mainDate)->first();
-                if ($checkHoliday == null && $checkExistingAttendance == null) {
+
+                //Check Leave if employee applied and status was approved
+                $checkLeave =  $this->leaveService->getUserConfirmLeaveByDate($employeeId, $mainDate);
+
+                //Check Weekend if Existing
+                $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->company_branch_id, $employeeDetails->department_id, $weekDayNumber);
+
+                if ($checkHoliday == null && $checkExistingAttendance == null && $checkLeave == null && $checkWeekend == null) {
                     $payload[] = [
                         'punch_in'          => date('Y/m/d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
                         'punch_out'         => date('Y/m/d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),

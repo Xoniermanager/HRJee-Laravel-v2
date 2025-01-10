@@ -84,9 +84,14 @@
                     {
                     $workingHour = getTotalHour($item->punch_in,$item->punch_out);
                     $punchIn = date('h:i A',strtotime($item->punch_in));
-                    $punchOut = date('h:i A',strtotime($item->punch_out)) ;
+                    $punchOut = date('h:i A',strtotime($item->punch_out));
                     }
                     @endphp
+                    @if($item['weekend'] == true)
+                    <tr class="weekend-row mb-2">
+                        <td colspan="7" class="text-white bg-dark">Weekend</td>
+                    </tr>
+                    @else
                     <tr>
                         <td>{{ $i }}</td>
                         <td>{{ $key }}</td>
@@ -98,6 +103,7 @@
                                 onClick="edit_attendance('{{ isset($item->id) ? $item->id : '' }}', '{{ isset($item->punch_in) ? date('H:i', strtotime($item->punch_in)) : date('H:i') }}', '{{ isset($item->punch_out) ? date('H:i', strtotime($item->punch_out)) : date('H:i') }}', '{{ $key }}')"
                                 data-bs-target="#edit_attendance_modal"><i class="fa fa-edit"></i></a></td>
                     </tr>
+                    @endif
                     @php
                     $i++
                     @endphp

@@ -22,17 +22,13 @@
 
 
 $(document).ready(function() {
-   
+
     $("#start-timer").on("click", function() {
         $.ajax({
             url: employeeAttendanceUrl, // Ensure this route is correct
             type: 'GET',
             success: function(response) {
-
-                console.log(response);
                 if(response.success){
-                    // $("#start-timer").hide();
-                    // $("#current-time").hide();
                     Swal.fire("Success!", response.message, "success").then(() => {
                         location.reload();
                     });
