@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-    Attendance
+Attendance
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -16,13 +16,13 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <label for="">From date</label>
-                                <input type="date" class="form-control mb-3 date" id="from_date"
-                                    value="{{ old('from_date') }}">
+                                <input type="date" class="form-control mb-3 date" id="from_date" value="{{ date("
+                                    Y-m-01") ?? old('from_date') }}">
                             </div>
                             <div class="col-md-5">
                                 <label for="">To date</label>
-                                <input type="date" class="form-control mb-3 date" id="to_date"
-                                    value="{{ old('to_date') }}">
+                                <input type="date" class="form-control mb-3 date" id="to_date" value="{{ date(" Y-m-d")
+                                    ?? old('to_date') }}">
                             </div>
                         </div>
 
@@ -67,7 +67,7 @@
         }
     });
 
-    function search_filter_results(from_date, to_date) {
+    function search_filter_results(from_date,to_date) {
         $.ajax({
             type: 'GET',
             url: "<?= route('search.filter.attendance') ?>",

@@ -76,14 +76,13 @@ class EmployeeAttendanceService
                 'punch_in_using' => $data['punch_in_using']
             ];
         /** If Data Exit in Table Soo we Implement for Puch Out  */
-        $existingDetails = $this->getExtistingDetailsByUserId($userDetails->id);
-
+        $existingDetails = $this->getAttendanceByDateByUserId($userDetails->id, date('Y-m-d'))->first();
         if (isset($existingDetails) && !empty($existingDetails)) {
             $payload['punch_out'] = $attendanceTime;
             $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
             return ['data' => 'Punch Out', 'status' => true];
-        } else {
-
+        }
+        else {
             $payload['punch_in'] = $attendanceTime;
             if ($userDetails->officeShift->login_before_shift_time > 0) {
                 $beforTime = ' -' . $userDetails->officeShift->login_before_shift_time . ' minutes';
@@ -140,13 +139,9 @@ class EmployeeAttendanceService
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('created_at', Carbon::today())->first();
     }
-    public function getAllAttendanceDetails($userId)
-    {
-        return $this->employeeAttendanceRepository->where('user_id', $userId)->orderBy('id', 'DESC')->paginate(10);
-    }
     public function getAttendanceByFromAndToDate($fromDate, $toDate, $userId)
     {
-        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('id', 'DESC')->paginate(10);
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('punch_in', 'DESC')->paginate(10);
     }
     public function getLastTenDaysAttendance()
     {
