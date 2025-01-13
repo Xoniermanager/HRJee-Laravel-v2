@@ -1,18 +1,6 @@
 @extends('layouts.employee.main')
-
-@section('title', 'Hello Shibli Sone')
-
+@section('title', Auth()->guard('employee')->user()->name)
 @section('content')
-@if (session('error'))
-<div class="alert alert-danger alert-dismissible">
-    {{ session('error') }}
-</div>
-@endif
-@if (session('success'))
-<div class="alert alert-success alert-dismissible">
-    {{ session('success') }}
-</div>
-@endif
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
@@ -38,8 +26,7 @@
                                 </div>
                                 <!--end::Header-->
                                 <!--begin::Card footer-->
-                                <div class="card-footer"
-                                    style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
+                                <div class="card-footer" style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
 border-bottom-right-radius: 30px;">
                                     <!--begin::Progress-->
                                     <div class="fw-bold text-white py-2">
@@ -70,8 +57,7 @@ border-bottom-right-radius: 30px;">
                                 <!--end::Header-->
 
                                 <!--begin::Card footer-->
-                                <div class="card-footer"
-                                    style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
+                                <div class="card-footer" style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
                                     border-bottom-right-radius: 30px;">
                                     <!--begin::Progress-->
                                     <div class="fw-bold text-white py-2">
@@ -100,8 +86,7 @@ border-bottom-right-radius: 30px;">
                                 </div>
                                 <!--end::Header-->
                                 <!--begin::Card footer-->
-                                <div class="card-footer"
-                                    style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
+                                <div class="card-footer" style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
 border-bottom-right-radius: 30px;">
                                     <!--begin::Progress-->
                                     <div class="fw-bold text-white py-2">
@@ -131,8 +116,7 @@ border-bottom-right-radius: 30px;">
                                 <!--end::Header-->
 
                                 <!--begin::Card footer-->
-                                <div class="card-footer"
-                                    style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
+                                <div class="card-footer" style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
                                     border-bottom-right-radius: 30px;">
                                     <!--begin::Progress-->
                                     <div class="fw-bold text-white py-2">
@@ -147,7 +131,16 @@ border-bottom-right-radius: 30px;">
                             <!--end::Card widget 3-->
                         </div>
                     </div>
-
+                    @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible">
+                        {{ session('error') }}
+                    </div>
+                    @endif
+                    @if (session('success'))
+                    <div class="alert alert-success alert-dismissible">
+                        {{ session('success') }}
+                    </div>
+                    @endif
                     <div class="card card-body bg-light-info col-md-12 mb-3">
                         <div class="">
                             <div class="card-body py-3">
@@ -157,31 +150,44 @@ border-bottom-right-radius: 30px;">
                                         <span class="text-primary-400 fw-bold fs-7 d-block ">{{date('d-m-Y')}}</span>
                                     </div>
                                     <div class="col-md-2 text-center">
-                                        <span data-kt-element="bullet" class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary" style="width: 4px;height: 50px !important;"></span>
+                                        <span data-kt-element="bullet"
+                                            class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
+                                            style="width: 4px;height: 50px !important;"></span>
                                     </div>
                                     <div class="col-md-4 text-end">
 
-                                        @if($existingDetails==null)
+                                        @if($existingAttendanceDetail==null)
                                         <h5 id="current-time"></h5>
                                         <button class="btn btn-sm btn-primary align-self-center" id="start-timer">
                                             Punch In
                                         </button>
                                         @endif
-                                        @if($existingDetails && $existingDetails->punch_out=='')
+                                        @if($existingAttendanceDetail && $existingAttendanceDetail->punch_out=='')
                                         <h5 id="punchin-timer"></h5>
                                         <button class="btn btn-sm btn-primary align-self-center" id="stop-timer">
                                             Punch Out
                                         </button>
-                                        <button class="btn btn-sm btn-danger align-self-center" data-bs-toggle="modal" data-bs-target="#break">
-                                            Break
+                                        @if($takenBreakDetails && !empty($takenBreakDetails))
+                                        <a class="btn btn-sm btn-danger align-self-center"
+                                            href="{{ route('employee_break_out',$takenBreakDetails->id) }}">
+                                            Break Out
+                                        </a>
+                                        @else
+                                        <button class="btn btn-sm btn-danger align-self-center" data-bs-toggle="modal"
+                                            data-bs-target="#break" id="take_break">
+                                            Take Break
+                                        </button>
+                                        <button class="btn btn-sm btn-danger align-self-center" id="break_out"
+                                            style="display: none">
+                                            Break Out
                                         </button>
                                         @endif
-
-                                        @if($existingDetails && $existingDetails->punch_out!='')
-                                        <h5>Working hours</h5>
-                                        <p>{{$workingTime}}</p>
                                         @endif
-
+                                        @if($existingAttendanceDetail && $existingAttendanceDetail->punch_out!='')
+                                        <h5>Working hours</h5>
+                                        <p>{{getTotalWorkingHour($existingAttendanceDetail->punch_in,$existingAttendanceDetail->punch_out)}}
+                                        </p>
+                                        @endif
                                     </div>
                                 </div>
                                 <!--begin::Table container-->
@@ -190,84 +196,6 @@ border-bottom-right-radius: 30px;">
                             <!--begin::Body-->
                         </div>
                     </div>
-
-
-                    <!--begin::Row-->
-                    {{-- <div class="row gy-5 g-xl-10">
-                            <!--begin::Col-->
-                            <div class="card card-body col-md-12">
-                                <div class="card-header p-4">
-                                    <!--begin::Card title-->
-                                    <div class="card-title m-0">
-                                        <h3 class="fw-bold m-0"> All News</h3>
-                                    </div>
-                                    <!--end::Card title-->
-                                </div>
-                                <div class="separator  mb-9"></div>
-
-                                <div class="row g-10">
-                                    <!--begin::Col-->
-                                    <div class="col-md-4">
-                                        <!--begin::Feature post-->
-                                        <div class="card-xl-stretch me-md-6">
-                                            <!--begin::Image-->
-                                            <img src="/assets/media/news/1.png" class="card-rounded min-h-175px mb-5">
-
-                                            <!--end::Image-->
-                                            <!--begin::Body-->
-                                            <div class="m-0">
-                                                <!--begin::Title-->
-                                                <a href="news_details.html"
-                                                    class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">Scrum
-                                                    Meeting</a>
-                                                <!--end::Title-->
-                                                <!--begin::Text-->
-                                                <div class="fw-semibold fs-5 text-gray-600 text-dark my-4">
-                                                    <i class="fa fa-calendar-days"></i> March 27,2024
-                                                </div>
-                                                <!--end::Text-->
-
-                                            </div>
-                                            <!--end::Body-->
-                                        </div>
-                                        <!--end::Feature post-->
-                                    </div>
-                                    <!--end::Col-->
-                                    <!--begin::Col-->
-                                    <div class="col-md-4">
-                                        <!--begin::Feature post-->
-                                        <div class="card-xl-stretch me-md-6">
-                                            <!--begin::Image-->
-                                            <img src="/assets/media/news/2.jpg" class="card-rounded min-h-175px mb-5">
-
-                                            <!--end::Image-->
-                                            <!--begin::Body-->
-                                            <div class="m-0">
-                                                <!--begin::Title-->
-                                                <a href="news_details.html"
-                                                    class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">First
-                                                    news</a>
-                                                <!--end::Title-->
-                                                <!--begin::Text-->
-                                                <div class="fw-semibold fs-5 text-gray-600 text-dark my-4">
-                                                    <i class="fa fa-calendar-days"></i> March 27,2024
-                                                </div>
-                                                <!--end::Text-->
-
-                                            </div>
-                                            <!--end::Body-->
-                                        </div>
-                                        <!--end::Feature post-->
-                                    </div>
-                                    <!--end::Col-->
-
-                                </div>
-                            </div>
-                            <!--end::Col-->
-                        </div> --}}
-                    <!--end::Row-->
-
-                    <!--begin::Body-->
                 </div>
             </div>
             <!--end::Col-->
@@ -276,17 +204,69 @@ border-bottom-right-radius: 30px;">
     </div>
 </div>
 
+<!-------------Modal----------------->
+<div class="modal" id="break" tabindex="-1" aria-modal="true" role="dialog">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog p-9 w-550px">
+        <!--begin::Modal content-->
+        <div class="modal-content modal-rounded">
+            <!--begin::Modal header-->
+            <div class="modal-header border d-flex justify-content-between">
+                <!--begin::Modal title-->
+                <h2>Break Time</h2>
+                <!--end::Modal title-->
+                <!--begin::Close-->
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <i class="fa fa-times fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <!--end::Close-->
+            </div>
+            <!--begin::Modal header-->
+            <!--begin::Modal body-->
+            <div class="modal-body scroll-y m-1">
+                <form id="employee_break_history">
+                    @csrf
+                    <input type="hidden" name="employee_attendance_id"
+                        value="{{ $existingAttendanceDetail->id ?? '' }}">
+                    <div class="col-md-12 form-group">
+                        <label class="required">Select Break Type</label>
+                        <select class="form-control mb-3" name="break_type_id">
+                            <option value="">Select Break Type</option>
+                            @forelse ($allBreakTypeDetails as $breakTypeDetails)
+                            <option value="{{ $breakTypeDetails->id }}">{{ $breakTypeDetails->name }}
+                            </option>
+                            @empty
+                            <option value="">No Break Type Available</option>
+                            @endforelse
+                        </select>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <label class="required">Comment </label>
+                        <textarea type="text" class="form-control" name="comment"></textarea>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <button type="submit" class="btn btn-sm btn-primary align-self-center">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <!--begin::Modal body-->
+        </div>
+    </div>
+</div>
+
 <script>
     var employeeAttendanceUrl = "<?= route('employee.attendance') ?>";
 
-    @if(!is_null($existingDetails)) // Check if $existingDetails is not null
+    @if(!is_null($existingAttendanceDetail)) // Check if $existingAttendanceDetail is not null
     // Pass PHP values to JavaScript and ensure proper JSON encoding
-    var punchIn = @json($existingDetails->punch_in);
-    var punchOut = @json($existingDetails->punch_out);
+    var punchIn = @json($existingAttendanceDetail->punch_in);
+    var punchOut = @json($existingAttendanceDetail->punch_out);
     get_timer_clock(punchIn, punchOut);
     @endif
     var setCurrentInterval = '';
-    @if(is_null($existingDetails))
+    @if(is_null($existingAttendanceDetail))
         // Update the time every second
         setCurrentInterval = setInterval(updateCurrentTime, 1000);
         // Call the function immediately to avoid 1-second delay
@@ -347,57 +327,52 @@ border-bottom-right-radius: 30px;">
         // Update the element with the current time
         document.getElementById('current-time').innerText = currentTime;
     }
+
+     jQuery("#employee_break_history").validate({
+                rules: {
+                    break_type_id: "required",
+                    comment: "required",
+                },
+                messages: {
+                    break_type_id: "Please select the Break Type",
+                    comment: "Please enter the message",
+                },
+                submitHandler: function(form) {
+                    var break_data = $(form).serialize();
+                    $.ajax({
+                        url: "<?= route('employee_break_in') ?>",
+                        type: 'post',
+                        data: break_data,
+                        success: function(response) {
+                            if(response.status)
+                            {
+                                jQuery('#take_break').hide();
+                                jQuery('#break_out').show();
+                                jQuery('#break').modal('hide');
+                                swal.fire("Done!", response.message, "success");
+                                jQuery('#employee_break_history')[0].reset();
+                            }
+                            else
+                            {
+                                jQuery('#break').modal('hide');
+                                Swal.fire('Error!',response.message,'error','Cool')
+                                jQuery('#employee_break_history')[0].reset();
+                            }
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.error;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span id="' + error_key +
+                                    '_error" class="text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("#" + error_key + "_error").remove();
+                                }, 5000);
+                            }
+                        }
+                    });
+                }
+            });
 </script>
-
-<!-------------Modal----------------->
-<div class="modal" id="break" tabindex="-1" aria-modal="true" role="dialog">
-    <!--begin::Modal dialog-->
-    <div class="modal-dialog p-9 w-550px">
-        <!--begin::Modal content-->
-        <div class="modal-content modal-rounded">
-            <!--begin::Modal header-->
-            <div class="modal-header border d-flex justify-content-between">
-                <!--begin::Modal title-->
-                <h2>Break Time</h2>
-                <!--end::Modal title-->
-                <!--begin::Close-->
-                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                    <i class="fa fa-times fs-1"><span class="path1"></span><span class="path2"></span></i>
-                </div>
-                <!--end::Close-->
-            </div>
-            <!--begin::Modal header-->
-            <!--begin::Modal body-->
-            <div class="modal-body scroll-y m-1">
-                <form id="employee_break_history">
-                    @csrf
-                    <input type="hidden" name="employee_attendance_id" value="{{ $existingDetails->id ?? '' }}">
-                    <div class="col-md-12 form-group">
-                        <label for="">Select Break Type</label>
-                        <select class="form-control mb-3" name="break_type_id">
-                            <option value="">Select Break Type</option>
-                            @forelse ($allBreakTypeDetails as $breakTypeDetails)
-                            <option value="{{ $breakTypeDetails->id }}">{{ $breakTypeDetails->name }}
-                            </option>
-                            @empty
-                            <option value="">No Break Type Available</option>
-                            @endforelse
-                        </select>
-                    </div>
-                    <div class="col-md-12 form-group">
-                        <label for="">Comment </label>
-                        <textarea type="text" class="form-control" name="comment"></textarea>
-                    </div>
-                    <div class="col-md-12 form-group">
-                        <button type="submit" class="btn btn-sm btn-primary align-self-center">
-                            Submit
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <!--begin::Modal body-->
-        </div>
-    </div>
-</div>
-
 @endsection

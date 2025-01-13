@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-    Leave Tracking
+Leave Tracking
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -36,8 +36,8 @@
                                             </span>
                                             <!--begin::Label-->
                                             <!--begin::Title-->
-                                            <a href="#"
-                                                class="fs-7 text-gray-800 d-block text-hover-primary">{{ $leaveDetails->created_at->todatestring() }}</a>
+                                            <a href="#" class="fs-7 text-gray-800 d-block text-hover-primary">{{
+                                                getFormattedDate($leaveLogStatusDetails->created_at ?? '') }}</a>
                                             <!--end::Title-->
 
                                         </div>
@@ -46,100 +46,102 @@
                                     <!--end::Timeline item-->
                                     <!--begin::Timeline item-->
                                     @if (isset($leaveLogStatusDetails))
-                                        @if ($leaveLogStatusDetails->leaveStatus->id == 2)
-                                            <!--end::Timeline item-->
-                                            <!--begin::Timeline item-->
-                                            <div class="timeline-item pb-3rem">
-                                                <!--begin::Timeline line-->
-                                                <div class="timeline-line"></div>
-                                                <!--end::Timeline line-->
+                                    @if ($leaveLogStatusDetails->leaveStatus->id == 2)
+                                    <!--end::Timeline item-->
+                                    <!--begin::Timeline item-->
+                                    <div class="timeline-item pb-3rem">
+                                        <!--begin::Timeline line-->
+                                        <div class="timeline-line"></div>
+                                        <!--end::Timeline line-->
 
-                                                <!--begin::Timeline icon-->
-                                                <div class="timeline-icon">
-                                                    <i class="fa fa-circle fs-2 text-success"><span
-                                                            class="path1"></span><span class="path2"></span></i>
-                                                </div>
-                                                <!--end::Timeline icon-->
-
-                                                <!--begin::Timeline content-->
-                                                <div class="timeline-content m-0">
-                                                    <!--begin::Label-->
-                                                    <span class="fs-8 fw-bolder text-success text-uppercase">{{$leaveLogStatusDetails->leaveStatus->name}}
-                                                    </span>
-                                                    <!--begin::Label-->
-
-                                                    <!--begin::Title-->
-                                                    <a href="#"
-                                                        class="fs-7 text-gray-800 d-block text-hover-primary">{{$leaveLogStatusDetails->created_at->todatestring()  }}</a>
-                                                    <span
-                                                        class="fw-semibold text-gray-500">{{ $leaveLogStatusDetails->remarks }}
-                                                    </span>
-                                                    <!--end::Title-->
-
-                                                </div>
-                                                <!--end::Timeline content-->
-                                            </div>
-                                            <!--end::Timeline item-->
-                                            <!--begin::Timeline item-->
-                                            <!--end::Timeline item-->
-                                        @else
-                                            <div class="timeline-item">
-                                                <!--begin::Timeline line-->
-                                                <div class="timeline-line"></div>
-                                                <!--end::Timeline line-->
-
-                                                <!--begin::Timeline icon-->
-                                                <div class="timeline-icon">
-                                                    <i class="fa fa-circle fs-2 text-danger"><span
-                                                            class="path1"></span><span class="path2"></span></i>
-                                                </div>
-                                                <!--end::Timeline icon-->
-
-                                                <!--begin::Timeline content-->
-                                                <div class="timeline-content m-0">
-                                                    <!--begin::Label-->
-                                                    <span
-                                                        class="fs-8 fw-bolder text-danger text-uppercase">{{ $leaveLogStatusDetails->leaveStatus->name }}</span>
-                                                    <!--begin::Label-->
-
-                                                    <!--begin::Title-->
-                                                    <a href="#"
-                                                        class="fs-7 text-gray-800 d-block text-hover-primary">{{ $leaveLogStatusDetails->created_at->todatestring() }}</a>
-                                                    <!--end::Title-->
-                                                    <span
-                                                        class="fw-semibold text-gray-500">{{ $leaveLogStatusDetails->remarks }}
-                                                        </span>
-                                                </div>
-                                                <!--end::Timeline content-->
-                                            </div>
-                                        @endif
-                                    @else
-                                        <div class="timeline-item pb-3rem">
-                                            <!--begin::Timeline line-->
-                                            <div class="timeline-line"></div>
-                                            <!--end::Timeline line-->
-
-                                            <!--begin::Timeline icon-->
-                                            <div class="timeline-icon">
-                                                <i class="fa fa-circle fs-2 text-warning"><span
-                                                        class="path1"></span><span class="path2"></span></i>
-                                            </div>
-                                            <!--end::Timeline icon-->
-
-                                            <!--begin::Timeline content-->
-                                            <div class="timeline-content m-0">
-                                                <!--begin::Label-->
-                                                <span class="fs-8 fw-bolder text-warning text-uppercase">Pending</span>
-                                                <!--begin::Label-->
-
-                                                <!--begin::Title-->
-                                                <a href="#"
-                                                    class="fs-7 text-gray-800 d-block text-hover-primary">{{ $leaveDetails->created_at->todatestring() }}</a>
-                                                <!--end::Title-->
-
-                                            </div>
-                                            <!--end::Timeline content-->
+                                        <!--begin::Timeline icon-->
+                                        <div class="timeline-icon">
+                                            <i class="fa fa-circle fs-2 text-success"><span class="path1"></span><span
+                                                    class="path2"></span></i>
                                         </div>
+                                        <!--end::Timeline icon-->
+
+                                        <!--begin::Timeline content-->
+                                        <div class="timeline-content m-0">
+                                            <!--begin::Label-->
+                                            <span
+                                                class="fs-8 fw-bolder text-success text-uppercase">{{$leaveLogStatusDetails->leaveStatus->name}}
+                                            </span>
+                                            <!--begin::Label-->
+
+                                            <!--begin::Title-->
+                                            <a href="#"
+                                                class="fs-7 text-gray-800 d-block text-hover-primary">{{getFormattedDate($leaveLogStatusDetails->created_at
+                                                ?? '') }}</a>
+                                            <span class="fw-semibold text-gray-500">{{ $leaveLogStatusDetails->remarks
+                                                }}
+                                            </span>
+                                            <!--end::Title-->
+
+                                        </div>
+                                        <!--end::Timeline content-->
+                                    </div>
+                                    <!--end::Timeline item-->
+                                    <!--begin::Timeline item-->
+                                    <!--end::Timeline item-->
+                                    @else
+                                    <div class="timeline-item">
+                                        <!--begin::Timeline line-->
+                                        <div class="timeline-line"></div>
+                                        <!--end::Timeline line-->
+
+                                        <!--begin::Timeline icon-->
+                                        <div class="timeline-icon">
+                                            <i class="fa fa-circle fs-2 text-danger"><span class="path1"></span><span
+                                                    class="path2"></span></i>
+                                        </div>
+                                        <!--end::Timeline icon-->
+
+                                        <!--begin::Timeline content-->
+                                        <div class="timeline-content m-0">
+                                            <!--begin::Label-->
+                                            <span class="fs-8 fw-bolder text-danger text-uppercase">{{
+                                                $leaveLogStatusDetails->leaveStatus->name }}</span>
+                                            <!--begin::Label-->
+
+                                            <!--begin::Title-->
+                                            <a href="#" class="fs-7 text-gray-800 d-block text-hover-primary">{{
+                                                getFormattedDate($leaveLogStatusDetails->created_at ?? '') }}</a>
+                                            <!--end::Title-->
+                                            <span class="fw-semibold text-gray-500">{{ $leaveLogStatusDetails->remarks
+                                                }}
+                                            </span>
+                                        </div>
+                                        <!--end::Timeline content-->
+                                    </div>
+                                    @endif
+                                    @else
+                                    <div class="timeline-item pb-3rem">
+                                        <!--begin::Timeline line-->
+                                        <div class="timeline-line"></div>
+                                        <!--end::Timeline line-->
+
+                                        <!--begin::Timeline icon-->
+                                        <div class="timeline-icon">
+                                            <i class="fa fa-circle fs-2 text-warning"><span class="path1"></span><span
+                                                    class="path2"></span></i>
+                                        </div>
+                                        <!--end::Timeline icon-->
+
+                                        <!--begin::Timeline content-->
+                                        <div class="timeline-content m-0">
+                                            <!--begin::Label-->
+                                            <span class="fs-8 fw-bolder text-warning text-uppercase">Pending</span>
+                                            <!--begin::Label-->
+
+                                            <!--begin::Title-->
+                                            <a href="#" class="fs-7 text-gray-800 d-block text-hover-primary">{{
+                                                getFormattedDate($leaveDetails->created_at ?? '') }}</a>
+                                            <!--end::Title-->
+
+                                        </div>
+                                        <!--end::Timeline content-->
+                                    </div>
                                     @endif
                                 </div>
                                 <!--end::Timeline-->

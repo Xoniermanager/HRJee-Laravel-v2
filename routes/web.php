@@ -46,7 +46,7 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     //News Module
     Route::controller(NewsController::class)->group(function () {
         Route::get('/news', 'index')->name('employee.news');
-        Route::get('/news/details/{id}/{news:id}', 'viewDetails')->name('employee.news.details');
+        Route::get('/news/details/{news:id}', 'viewDetails')->name('employee.news.details');
     });
 
     // Resignation Management
@@ -69,7 +69,7 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     //Policy Module
     Route::controller(PolicyController::class)->group(function () {
         Route::get('/policy', 'index')->name('employee.policy');
-        Route::get('/policy/details/{news:id}', 'viewDetails')->name('employee.policy.details');
+        Route::get('/policy/details/{policies:id}', 'viewDetails')->name('employee.policy.details');
     });
     //Announcement Module
     Route::controller(AnnouncementsController::class)->group(function () {
@@ -136,7 +136,10 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     Route::get('/leave-tracking/{id}', [LeaveTrackingController::class, 'index'])->name('employee.leave.tracking');
 
     //Employee Break History
-    Route::post('/break-history', [EmployeeBreakHistoryController::class, 'store'])->name('employee_break_history');
+    Route::controller(EmployeeBreakHistoryController::class)->group(function () {
+        Route::post('/break-in', 'breakIn')->name('employee_break_in');
+        Route::get('/break-out/{id}', 'breakOut')->name('employee_break_out');
+    });
 
     //Employee Complain
     Route::prefix('/hr-complain')->controller(HrComplainController::class)->group(function () {

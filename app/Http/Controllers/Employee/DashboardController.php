@@ -23,10 +23,12 @@ class DashboardController extends Controller
     }
     public function index()
     {
-        $existingDetails = $this->employeeAttendanceService->getExtistingDetailsByUserId(Auth()->guard('employee')->user()->id);
-        $workingTime = $this->employeeAttendanceService->getWorkingHours($existingDetails);
+        $existingAttendanceDetail = $this->employeeAttendanceService->getExtistingDetailsByUserId(Auth()->guard('employee')->user()->id);
         $allBreakTypeDetails =  $this->breakTypeService->getAllBreakTypeByCompanyId(Auth()->guard('employee')->user()->company_id);
-        return view('employee.dashboard.dashboard', compact('existingDetails', 'allBreakTypeDetails','workingTime'));
+        $takenBreakDetails = '';
+        if (isset($existingAttendanceDetail) && !empty($existingAttendanceDetail)) {
+            $takenBreakDetails = $this->employeeBreakHistoryService->getBreakHistoryByAttendanceId($existingAttendanceDetail->id);
+        }
+        return view('employee.dashboard.dashboard', compact('existingAttendanceDetail', 'allBreakTypeDetails', 'takenBreakDetails'));
     }
-    
 }

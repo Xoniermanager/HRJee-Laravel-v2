@@ -24,7 +24,7 @@ class ResignationController extends Controller
     public function index()
     {
         $resignationStatus =  $this->resignationStatusService->all('all');
-        $userType = auth()->guard('employee')->user()->userDetails->roles->name;
+        $userType = auth()->guard('employee')->user()->role->name;
         $userId = $userType == 'Employee' ? auth()->guard('employee')->user()->id : '';
         $resignations =   $this->resignationService->all($userId);
         $checkResignations =   $this->resignationService->getResignationByResigtionStatusIds([1, 3, 5], $userId);

@@ -82,7 +82,7 @@
                     $punchOut = '';
                     if(!empty($item->punch_in) && !empty($item->punch_out))
                     {
-                    $workingHour = getTotalHour($item->punch_in,$item->punch_out);
+                    $workingHour = getTotalWorkingHour($item->punch_in,$item->punch_out);
                     $punchIn = date('h:i A',strtotime($item->punch_in));
                     $punchOut = date('h:i A',strtotime($item->punch_out));
                     }

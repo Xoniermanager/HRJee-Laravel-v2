@@ -141,43 +141,43 @@ class EmployeeAttendanceService
     }
     public function getAttendanceByFromAndToDate($fromDate, $toDate, $userId)
     {
-        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('punch_in', 'DESC')->paginate(10);
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('punch_in', 'DESC')->paginate(20);
     }
     public function getLastTenDaysAttendance()
     {
         $userId = Auth()->guard('employee')->user()->id ?? auth()->guard('employee_api')->user()->id;
         return $this->employeeAttendanceRepository->where('user_id', $userId)->where('punch_in', '>', now()->subDays(10)->endOfDay())->orderBy('id', 'DESC')->get();
     }
-    public function getWorkingHours($attendanceDetails)
-    {
-        if ($attendanceDetails) {
-            $punch_in = $attendanceDetails->punch_in;
-            $punch_out = $attendanceDetails->punch_out;
-            if ($punch_in != '' && $punch_out != '') {
-                $startTime = strtotime($punch_in);
-                $endTime = strtotime($punch_out);
+    // public function getWorkingHours($attendanceDetails)
+    // {
+    //     if ($attendanceDetails) {
+    //         $punch_in = $attendanceDetails->punch_in;
+    //         $punch_out = $attendanceDetails->punch_out;
+    //         if ($punch_in != '' && $punch_out != '') {
+    //             $startTime = strtotime($punch_in);
+    //             $endTime = strtotime($punch_out);
 
-                // Calculate the difference in seconds
-                $timeDiff = $endTime - $startTime;
+    //             // Calculate the difference in seconds
+    //             $timeDiff = $endTime - $startTime;
 
-                // Calculate hours, minutes, and seconds
-                $hours = floor($timeDiff / 3600);
-                $minutes = floor(($timeDiff % 3600) / 60);
-                $seconds = $timeDiff % 60;
+    //             // Calculate hours, minutes, and seconds
+    //             $hours = floor($timeDiff / 3600);
+    //             $minutes = floor(($timeDiff % 3600) / 60);
+    //             $seconds = $timeDiff % 60;
 
-                // Display the result
-                $hours = $hours > 9 ? $hours : '0' . $hours;
-                $minutes = $minutes > 9 ? $minutes : '0' . $minutes;
-                $seconds = $seconds > 9 ? $seconds : '0' . $seconds;
-                $time = $hours . ':' . $minutes . ':' . $seconds;
-                return $time;
-            } else {
-                return '00:00:00';
-            }
-        } else {
-            return '00:00:00';
-        }
-    }
+    //             // Display the result
+    //             $hours = $hours > 9 ? $hours : '0' . $hours;
+    //             $minutes = $minutes > 9 ? $minutes : '0' . $minutes;
+    //             $seconds = $seconds > 9 ? $seconds : '0' . $seconds;
+    //             $time = $hours . ':' . $minutes . ':' . $seconds;
+    //             return $time;
+    //         } else {
+    //             return '00:00:00';
+    //         }
+    //     } else {
+    //         return '00:00:00';
+    //     }
+    // }
     public function getAllAttendanceByCompanyId($companyId)
     {
         return $this->employeeAttendanceRepository

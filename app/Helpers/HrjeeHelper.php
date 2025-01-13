@@ -131,14 +131,11 @@ if (!function_exists('apiResponse')) {
         return response()->json($output, $httpCode);
     }
 }
-function getTotalHour($startTime, $endTime)
+function getTotalWorkingHour($startTime, $endTime)
 {
     $time1 = new DateTime($startTime);
     $time2 = new DateTime($endTime);
     $time_diff = $time1->diff($time2);
-    // echo $time_diff->h . ' hours';
-    // echo $time_diff->i . ' minutes';
-    // echo $time_diff->s . ' seconds';
     return  $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
 }
 

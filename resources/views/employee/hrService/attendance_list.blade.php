@@ -19,7 +19,7 @@
                     <td>{{ date('j F, Y', strtotime($attendanceDetails->punch_in)) }}</td>
                     <td>{{ date('h:i A', strtotime($attendanceDetails->punch_in)) }}</td>
                     <td>{{ isset($attendanceDetails->punch_out) ?  date('h:i A', strtotime($attendanceDetails->punch_out)) : 'N A' }}</td>
-                    <td>{{ (isset($attendanceDetails->punch_in) && isset($attendanceDetails->punch_out)) ? getTotalHour($attendanceDetails->punch_in, $attendanceDetails->punch_out) : 'N A'}}</td>
+                    <td>{{ (isset($attendanceDetails->punch_in) && isset($attendanceDetails->punch_out)) ? getTotalWorkingHour($attendanceDetails->punch_in, $attendanceDetails->punch_out) : 'N A'}}</td>
                 </tr>
                 @empty
                 <tr>

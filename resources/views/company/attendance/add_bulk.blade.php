@@ -123,23 +123,6 @@ Add Bulk Attendance
                 $("#FeaturesSelect_listbox > li > input").prop("checked", false);
             }
         });
-        //     // Custom rule for ensuring "to_date" is greater than "from_date"
-        //     $.validator.addMethod("greaterThan", function(value, element, param) {
-        //         var fromDate = $(param).val();
-        //         if (fromDate && value) {
-        //             return new Date(value) > new Date(fromDate);
-        //         }
-        //         return true;
-        //     }, "The to date must be later than the from date.");
-
-        //     // Custom rule for ensuring punch-out time is greater than punch-in time
-        //     $.validator.addMethod("greaterThan", function(value, element, param) {
-        //         var punchInTime = $(param).val();
-        //         if (punchInTime && value) {
-        //             return value > punchInTime;
-        //         }
-        //         return true;
-        //     }, "Punch-out time must be later than punch-in time.");
     });
 
     function selectAll() {
