@@ -13,32 +13,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-
-    protected $appends = [
-        'branch',
-        'designation',
-        'department',
-        'official_mobile_no',
-        'bank_name',
-        'account_name',
-        'account_number',
-        'ifsc_code',
-        'permanent_address',
-        'permanent_city',
-        'local_address',
-        'local_city',
-        'permanent_country',
-        'local_country',
-        'permanent_state',
-        'local_state',
-    ];
-    protected $guarded = ['id'];
     protected $fillable = [
         'emp_id',
         'name',
@@ -70,33 +44,6 @@ class User extends Authenticatable
         'shift_id',
         'start_time'
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'branch',
-        'designation',
-        'department',
-        // 'official_mobile_no',
-        'bank_name',
-        'account_name',
-        'account_number',
-        'ifsc_code',
-        'permanent_address',
-        'permanent_city',
-        'local_address',
-        'local_city',
-        'permanent_country',
-        'local_country',
-        'permanent_state',
-        'local_state',
-    ];
-
     /**
      * The attributes that should be cast.
      *

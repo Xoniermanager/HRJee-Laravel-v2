@@ -102,8 +102,11 @@ class EmployeeServices
                 unlinkFileOrImage($existingDetails->profile_image);
             }
             $existingDetails->update($data);
-            $existingDetails->skill()->sync($data['skill_id']);
-            $this->syncEmployeeLanguages($existingDetails, $data['language']);
+            if(isset($data['skill_id']) && !empty($data['skill_id']))
+            {
+                $existingDetails->skill()->sync($data['skill_id']);
+                $this->syncEmployeeLanguages($existingDetails, $data['language']);
+            }
         } else {
             $data['company_id'] = Auth::guard('company')->user()->company_id;
             $data['password'] = Hash::make($data['password'] ?? 'password');

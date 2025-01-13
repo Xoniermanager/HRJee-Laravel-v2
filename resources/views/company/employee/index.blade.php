@@ -18,18 +18,6 @@
         <div class="card mb-4">
             <div class="card-header d-block cursor-pointer border-0">
                 <div class="row align-items-center mt-4">
-                    <a href="#" class="col-md-3 btn btn-sm btn-primary ms-3 align-self-center wt-space"
-                        data-bs-toggle="modal" data-bs-target="#kt_modal_bulk_permission">
-                        <i class="fa fa-upload"></i> Bulk Attendance Permission</a>
-                    <a href="#" class="col-md-2 btn btn-sm btn-primary ms-3 align-self-center " data-bs-toggle="modal"
-                        data-bs-target="#kt_modal_employee">
-                        <i class="fa fa-upload"></i> Employee</a>
-                    <!--begin::Menu toggle-->
-                    <a href="{{ route('employee.add') }}"
-                        class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
-                        Add Employee</a>
-                    <!--begin::Menu toggle-->
-
                     <div class="col-md-4">
                         <div class="d-flex align-items-center position-relative">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
@@ -50,20 +38,9 @@
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
                         </div>
                     </div>
-
-                    <div class="col-md-6 me-0 d-flex">
-                        <div class="mb-1   " data-bs-toggle="modal" data-bs-target="#export_popup">
-                            <a href="#" class=" btn btn-sm btn-danger ms-3 align-self-center">Export Employee</a>
-                        </div>
-                        <div class="mb-1 " data-bs-toggle="modal" data-bs-target="#export_bank_details">
-                            <a href="#" class="btn btn-sm btn-danger ms-3 align-self-center">Export Bank
-                                Details</a>
-                        </div>
-                        <div class="mb-1 " data-bs-toggle="modal" data-bs-target="#export_address_details">
-                            <a href="#" class="btn btn-sm btn-danger ms-3 align-self-center">Export Address
-                                Details</a>
-                        </div>
-                    </div>
+                    <a href="{{ route('employee.add') }}"
+                    class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
+                    Add Employee</a>
                 </div>
             </div>
         </div>
