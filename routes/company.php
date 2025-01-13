@@ -53,6 +53,7 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
+use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
 
@@ -569,5 +570,8 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
         Route::get('/get/weekend/details/companyId','getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
     });
+});
+Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
+    Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
 /**---------------End Company Panel Route----------------*/

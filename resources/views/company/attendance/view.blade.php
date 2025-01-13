@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-Attendance Management
+    Attendance Management
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -15,24 +15,25 @@ Attendance Management
                     <div class="card-title m-0">
                         <select name="year" class="form-control min-w-250px" id="year">
                             <option value="">Select Year</option>
-                            @for ($i = date('Y', strtotime('-5 year')); $i <= date('Y'); $i++) <option value="{{ $i }}"
-                                {{ $i==date('Y') ? 'selected' : '' }}>
-                                {{ $i }}</option>
-                                @endfor
+                            @for ($i = date('Y', strtotime('-5 year')); $i <= date('Y'); $i++)
+                                <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>
+                                    {{ $i }}</option>
+                            @endfor
                         </select>
                         <select name="month" class="form-control min-w-250px ml-10" id="month">
                             <option value="">Select Month</option>
                             @php
-                            $currentMonth = date('m');
-                            $months = fullMonthList();
+                                $currentMonth = date('m');
+                                $months = fullMonthList();
                             @endphp
                             @foreach (range(1, $currentMonth) as $month)
-                            <option value="{{ $month }}" {{ $month==$currentMonth ? 'selected' : '' }}>
-                                {{ $months[$month] }}
-                            </option>
+                                <option value="{{ $month }}" {{ $month == $currentMonth ? 'selected' : '' }}>
+                                    {{ $months[$month] }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
+                    <button class="btn btn-sm btn-primary align-self-center" id="export_button" onclick="exportAttendanceByUserId('{{ $employeeDetail['emp_id'] }}')" >Export Attendance</button>
                 </div>
                 @include('company.attendance.view_list')
             </div>
@@ -56,8 +57,8 @@ Attendance Management
                                 xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                     transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
-                                    fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
+                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
                             </svg>
                         </span>
                         <!--end::Svg Icon-->
@@ -75,7 +76,8 @@ Attendance Management
                         <div class="mw-lg-600px mx-auto p-4">
                             <div class="col-md-12">
                                 <label class="required">Date</label>
-                                <input class="form-control mb-5 mt-3" type="text" name="date" id="date" readonly>
+                                <input class="form-control mb-5 mt-3" type="text" name="date" id="date"
+                                    readonly>
                             </div>
                             <div class="col-md-12 selectpermission mt-4">
                                 <label class="required">Punch In</label>
@@ -203,4 +205,4 @@ Attendance Management
             });
         })
     </script>
-    @endsection
+@endsection

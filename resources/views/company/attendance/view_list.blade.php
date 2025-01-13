@@ -89,7 +89,7 @@
                     @endphp
                     @if($item['weekend'] == true)
                     <tr class="weekend-row mb-2">
-                        <td colspan="7" class="text-white bg-dark">Weekend</td>
+                        <td colspan="7" class="text-white bg-dark">{{ $key }} - Weekend </td>
                     </tr>
                     @else
                     <tr>
@@ -99,7 +99,8 @@
                         <td>{{$punchOut}}</td>
                         <td>{{$workingHour}}</td>
                         <td>N/A</td>
-                        <td><a href="" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        <td>
+                            <a href="" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 onClick="edit_attendance('{{ isset($item->id) ? $item->id : '' }}', '{{ isset($item->punch_in) ? date('H:i', strtotime($item->punch_in)) : date('H:i') }}', '{{ isset($item->punch_out) ? date('H:i', strtotime($item->punch_out)) : date('H:i') }}', '{{ $key }}')"
                                 data-bs-target="#edit_attendance_modal"><i class="fa fa-edit"></i></a></td>
                     </tr>
