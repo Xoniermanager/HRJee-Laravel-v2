@@ -74,6 +74,7 @@ Route::prefix('/admin')->controller(SuperAdminController::class)->group(function
     Route::get('/resend/otp', 'resendOtp')->name('admin.resendOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('admin.verifyOtpCheck');
     Route::post('/admin_login', 'admin_login')->name('super.admin.login');
+    Route::get('/logout', 'adminLogout')->name('admin.logout');
 });
 /**---------------End Super Admin Auth Route----------------*/
 

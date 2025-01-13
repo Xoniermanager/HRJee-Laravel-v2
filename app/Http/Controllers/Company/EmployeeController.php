@@ -8,20 +8,21 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\RolesServices;
 use App\Http\Services\ShiftServices;
+use App\Http\Services\SkillsService;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
 use App\Http\Services\LanguagesServices;
 use App\Http\Requests\EmployeeAddRequest;
-use App\Http\Services\AssetCategoryService;
 use App\Http\Services\DepartmentServices;
+use App\Http\Services\SpreadsheetService;
 use App\Http\Services\DocumentTypeService;
 use App\Http\Services\EmployeeTypeService;
+use App\Http\Services\AssetCategoryService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
-use App\Http\Services\SkillsService;
-use App\Http\Services\SpreadsheetService;
 
 class EmployeeController extends Controller
 {
@@ -83,7 +84,7 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->employeeService->all($request == null);
+        $allUserDetails = $this->employeeService->all($request == null,Auth::guard('company')->user()->id);
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
@@ -131,7 +132,6 @@ class EmployeeController extends Controller
 
     public function edit(User $user)
     {
-
         $allCountries = $this->countryService->getAllActiveCountry();
         $allPreviousCompany = $this->previousCompanyService->getAllActivePreviousCompany();
         $allQualification = $this->qualificationService->getAllActiveQualification();
@@ -144,9 +144,8 @@ class EmployeeController extends Controller
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages =   $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
-
         // Get employee details to update
-        $singleUserDetails = $user->load('assetDetails','familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+        $singleUserDetails = $user->load('officeShift', 'language', 'skill', 'assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
         return view(
             'company.employee.add_employee',
             compact(
@@ -176,7 +175,7 @@ class EmployeeController extends Controller
                     'message' => 'Basic Details Added Successfully! Please Continue',
                     'data' => $userDetails,
                     'allUserDetails' => view('company.employee.list', [
-                        'allUserDetails' => $this->employeeService->all()
+                        'allUserDetails' => $this->employeeService->all('',Auth::guard('company')->user()->id)
                     ])->render()
                 ]);
             }
@@ -193,7 +192,7 @@ class EmployeeController extends Controller
     public function getfilterlist(Request $request)
     {
         try {
-            $allUserDetails = $this->employeeService->all($request);
+            $allUserDetails = $this->employeeService->all($request,Auth::guard('company')->user()->id);
             if ($allUserDetails) {
                 return response()->json([
                     'data' => view('company.employee.list', compact('allUserDetails'))->render()
@@ -206,10 +205,7 @@ class EmployeeController extends Controller
 
     public function view(User $user)
     {
-        $singleViewEmployeeDetails = $user->load('assetDetails','familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails', 'userDetails');
+        $singleViewEmployeeDetails = $user->load('assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
-
-
-
 }

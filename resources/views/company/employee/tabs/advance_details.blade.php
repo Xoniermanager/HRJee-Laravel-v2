@@ -3,7 +3,7 @@
     <!--begin::Wrapper-->
     <form id="advance_details_form">
         @csrf
-        <input type="hidden" name="user_id" value="{{ $userAdvanceDetails->user_id ?? (Request::segment(4) ?? '') }}">
+        <input type="hidden" name="user_id" value="{{ $singleUserDetails->id ?? '' }}">
         <input type="hidden" name="id" value="{{ $userAdvanceDetails->id ?? ''}}">
         <div class="row">
             <div class="col-md-4 form-group">
@@ -88,7 +88,7 @@
             error: function(error_messages) {
                 // This variable is used on save all records button
                 all_data_saved = false;
-                
+
                 jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
                 let errors = error_messages.responseJSON.error;
                 for (var error_key in errors) {

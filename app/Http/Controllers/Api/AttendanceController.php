@@ -62,11 +62,11 @@ class AttendanceController extends Controller
                 ], 422);
             }
             $finalData = [];
-            $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date);
+            $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date,Auth()->guard('employee_api')->user()->id);
             if (isset($allAttendanceDetails) && count($allAttendanceDetails) > 0) {
                 foreach ($allAttendanceDetails as $attendanceDetails) {
                     if (isset($attendanceDetails->punch_in) && isset($attendanceDetails->punch_out)) {
-                        $totalHours = getTotalHour($attendanceDetails->punch_in, $attendanceDetails->punch_out);
+                        $totalHours = getTotalWorkingHour($attendanceDetails->punch_in, $attendanceDetails->punch_out);
                     } else {
                         $totalHours = 'N A';
                     }
@@ -129,7 +129,7 @@ class AttendanceController extends Controller
                         [
                             'date'     => date('j F,Y', strtotime($attendanceDetails->punch_in)),
                             'day'     => date('l', strtotime($attendanceDetails->punch_in)),
-                            'total_hours' => getTotalHour($attendanceDetails->punch_in, $attendanceDetails->punch_out)
+                            'total_hours' => getTotalWorkingHour($attendanceDetails->punch_in, $attendanceDetails->punch_out)
                         ];
                 }
             } else {

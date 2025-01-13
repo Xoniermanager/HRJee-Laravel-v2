@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    Holidays
+Holidays
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -16,10 +16,10 @@
                         <div class="d-flex align-items-center position-relative my-1">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                             <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none">
-                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
-                                        rx="1" transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none">
+                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1"
+                                        transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
                                     <path
                                         d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
                                         fill="black"></path>
@@ -66,8 +66,8 @@
                                 xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                     transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                    fill="currentColor"></rect>
                             </svg>
                         </span>
                         <!--end::Svg Icon-->
@@ -87,25 +87,41 @@
                             <!--begin::Input group-->
 
                             <div class="mt-3">
-                                <label>Name</label>
+                                <label class="required">Name</label>
                                 <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
                                 <!--end::Switch-->
                             </div>
                             <div class="mt-3">
-                                <label>Date</label>
+                                <label class="required">Date</label>
                                 <input class="form-control mb-5 mt-3" type="date" name="date" id="date">
                                 <!--end::Switch-->
+                            </div>
+                            <div class="mt-3">
+                                <label class="required">Branch</label>
+                                <select class="form-control mb-5 mt-3" data-control="select2"
+                                    data-close-on-select="false" data-placeholder="Select the Company Branch"
+                                    data-allow-clear="true" multiple="multiple" name="company_branch_id[]"
+                                    id="edit_company_branch">
+                                    <option value="all">All</option>
+                                    @foreach ($allCompanyBranchesDetails as $compayBranches)
+                                    <option value="{{ $compayBranches->id }}" @if (old('company_branch_id')) {{
+                                        in_array($departmentsDetails->id, old('company_branch_id')) ? 'selected' : '' }}
+                                        @endif>
+                                        {{ $compayBranches->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
                             <?php
                             //get the current year
                             $Startyear = date('Y');
                             $endYear = $Startyear + 2;
-                            
+
                             // set start and end year range i.e the start year
                             $yearArray = range($Startyear, $endYear);
                             ?>
                             <div class="mt-3">
-                                <label>Year</label>
+                                <label class="required">Year</label>
                                 <select name="year" class="form-control mb-3" name="year" id="year">
                                     <option value="">Select Year</option>
                                     <?php
@@ -156,8 +172,8 @@
                                 xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                     transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                    fill="currentColor"></rect>
                             </svg>
                         </span>
                         <!--end::Svg Icon-->
@@ -174,25 +190,44 @@
                             <!--begin::Input group-->
 
                             <div class="mt-3">
-                                <label>Name</label>
+                                <label class="required">Name</label>
                                 <input class="form-control mb-5 mt-3" type="text" name="name">
                                 <!--end::Switch-->
                             </div>
                             <div class="mt-3">
-                                <label>Date</label>
+                                <label class="required">Date</label>
                                 <input class="form-control mb-5 mt-3" type="date" name="date">
                                 <!--end::Switch-->
                             </div>
+                            {{-- allBranches --}}
+                            <div class="mt-3">
+                                <label class="required">Branch</label>
+                                <select class="form-control mb-5 mt-3" data-control="select2"
+                                    data-close-on-select="false" data-placeholder="Select the Company Branch"
+                                    data-allow-clear="true" multiple="multiple" name="company_branch_id[]"
+                                    id="company_branch">
+                                    <option value="all">All</option>
+                                    @foreach ($allCompanyBranchesDetails as $compayBranches)
+                                    <option value="{{ $compayBranches->id }}" @if (old('company_branch_id')) {{
+                                        in_array($departmentsDetails->id, old('company_branch_id')) ? 'selected' : '' }}
+                                        @endif>
+                                        {{ $compayBranches->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+
                             <?php
                             //get the current year
                             $Startyear = date('Y');
                             $endYear = $Startyear + 2;
-                            
+
                             // set start and end year range i.e the start year
                             $yearArray = range($Startyear, $endYear);
                             ?>
                             <div class="mt-3">
-                                <label>Year</label>
+                                <label class="required">Year</label>
                                 <select name="year" class="form-control mb-3" name="year">
                                     <option value="">Select Year</option>
                                     <?php
@@ -227,25 +262,55 @@
         <!--end::Modal dialog-->
     </div>
     <script>
-        function edit_holiday_details(id, name, date, year) {
+        function edit_holiday_details(id, name, date, year, companyBranchesId) {
+            if (typeof companyBranchesId === 'string') {
+                companyBranchesId = JSON.parse(companyBranchesId);
+            }
             $('#id').val(id);
             $('#name').val(name);
             $('#date').val(date);
             $('#year').val(year);
+            $('#edit_company_branch').val(companyBranchesId).trigger('change');
             jQuery('#edit_holidays').modal('show');
         }
         jQuery.noConflict();
         jQuery(document).ready(function($) {
+
+            jQuery("#company_branch").on("change", function() {
+                if ($(this).val() == 'all') {
+                    $("#company_branch > option").prop("selected", true);
+                    $("#company_branch").trigger("change");
+                }
+            });
+            jQuery("#edit_company_branch").on("change", function() {
+                if ($(this).val() == 'all') {
+                    $("#edit_company_branch > option").prop("selected", true);
+                    $("#edit_company_branch").trigger("change");
+                }
+            });
+
             jQuery("#holidays_form").validate({
                 rules: {
-                    name: "required",
-                    date: "required",
-                    year: "required",
+                    name: {
+                        required: true
+                    },
+                    date: {
+                        required: true,
+                        date: true // Ensures it's a valid date format
+                    },
+                    'company_branch_id[]': {
+                        required: true,
+                        minlength: 1 // Requires at least one branch to be selected
+                    },
+                    year: {
+                        required: true
+                    }
                 },
                 messages: {
-                    name: "Please enter name",
-                    date: "Please Select the Date",
-                    year: "Please Select the Year",
+                    name: "Please enter a name",
+                    date: "Please select a date",
+                    'company_branch_id[]': "Please select at least one branch",
+                    year: "Please select a year"
                 },
                 submitHandler: function(form) {
                     var holiday_data = $(form).serialize();
@@ -277,15 +342,26 @@
             });
             jQuery("#holidays_update_form").validate({
                 rules: {
-                    name: "required",
-                    date: "required",
-                    year: "required",
+                    name: {
+                        required: true
+                    },
+                    date: {
+                        required: true,
+                        date: true // Ensures it's a valid date format
+                    },
+                    'company_branch_id[]': {
+                        required: true,
+                        minlength: 1 // Requires at least one branch to be selected
+                    },
+                    year: {
+                        required: true
+                    }
                 },
                 messages: {
-                    name: "Please enter name",
-                    date: "Please Select the Date",
-                    year: "Please Select the Year",
-
+                    name: "Please enter a name",
+                    date: "Please select a date",
+                    'company_branch_id[]': "Please select at least one branch",
+                    year: "Please select a year"
                 },
                 submitHandler: function(form) {
                     var holiday_data = $(form).serialize();
@@ -314,6 +390,7 @@
                 }
             });
         });
+
         function handleStatus(id) {
             var checked_value = $('#checked_value').prop('checked');
             let status;
@@ -372,4 +449,4 @@
             });
         }
     </script>
-@endsection
+    @endsection

@@ -2,6 +2,9 @@
 
 namespace App\Http\Services;
 
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\HolidayRepository;
 
@@ -14,21 +17,54 @@ class HolidayServices
     }
     public function all()
     {
-        return $this->holidayRepository->orderBy('id', 'DESC')->paginate(10);
+        return $this->holidayRepository->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
     {
-        $data['company_id'] = Auth::guard('company')->user()->company_id;
-        return $this->holidayRepository->create($data);
+        try {
+            $data['company_branch_id'] = array_filter($data['company_branch_id'], function ($value) {
+                return $value !== 'all';
+            });
+            $data['company_branch_id'] = array_values($data['company_branch_id']);
+            $data['company_id'] = Auth::guard('company')->user()->company_id;
+            $response = $this->holidayRepository->create(Arr::except($data, 'company_branch_id'));
+            if ($response) {
+                $response->companyBranch()->sync($data['company_branch_id']);
+            }
+            DB::commit();
+            return $response;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'An error occurred, please try again later.'], 400);
+        }
     }
-
     public function updateDetails(array $data, $id)
     {
-        return $this->holidayRepository->find($id)->update($data);
+        DB::beginTransaction();
+        try {
+            $holidayDetails = $this->holidayRepository->find($id);
+            $data['company_branch_id'] = array_filter($data['company_branch_id'], function ($value) {
+                return $value !== 'all';
+            });
+            $data['company_branch_id'] = array_values($data['company_branch_id']);
+            $data['company_id'] = Auth::guard('company')->user()->company_id;
+            $holidayDetails->update(Arr::except($data, 'company_branch_id'));
+            if ($holidayDetails) {
+                $holidayDetails->companyBranch()->sync($data['company_branch_id']);
+            }
+            DB::commit();
+            return $holidayDetails;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'An error occurred, please try again later.'], 400);
+        }
     }
     public function deleteDetails($id)
     {
-        return $this->holidayRepository->find($id)->delete();
+        $deletedData = $this->holidayRepository->find($id);
+        $deletedData->companyBranch()->detach();
+        $deletedData->delete();
+        return $deletedData;
     }
     public function getListByCompanyId($companyID)
     {
@@ -36,14 +72,25 @@ class HolidayServices
     }
     public function getHolidayByDate($companyID, $date)
     {
-        return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1')->first();
-    }
-    public function getAllHolidayByDate($companyID, $date)
-    {
-        return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1')->get();
+        return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1');
     }
     public function getHolidayByMonth($companyID, $month)
     {
         return $this->holidayRepository->where('company_id', $companyID)->where('date', 'LIKE', '%' . $month . '%')->where('year', date('Y'))->where('status', '1')->get();
+    }
+
+    public function getHolidayByCompanyBranchId($companyId, $date, $companyBranchId)
+    {
+        return $this->holidayRepository->where('company_id', $companyId)->where('date', $date)->where('status', '1')
+            ->whereHas('companyBranch', function ($query) use ($companyBranchId) {
+                $query->where('company_branch_id', $companyBranchId);
+            })->first();
+    }
+    public function getHolidayByMonthByCompanyBranchId($companyId, $month,$year,$companyBranchId)
+    {
+        return $this->holidayRepository->where('company_id', $companyId)->whereMonth('date', $month)->where('year', $year)->where('status', '1')
+            ->whereHas('companyBranch', function ($query) use ($companyBranchId) {
+                $query->where('company_branch_id', $companyBranchId);
+            });
     }
 }

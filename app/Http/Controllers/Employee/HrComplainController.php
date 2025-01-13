@@ -27,8 +27,7 @@ class HrComplainController extends Controller
     }
     public function index()
     {
-        $user = Auth()->guard('employee')->user()->load('userDetails');
-        if ($user->userDetails->role_id == 4) {
+        if (Auth()->guard('employee')->user()->role_id == 4) {
             $allComplainDetails = $this->employeeComplainService->all();
             return view('employee.complain.index', compact('allComplainDetails'));
         } else {
@@ -55,7 +54,7 @@ class HrComplainController extends Controller
             }
             $data = $request->all();
             if ($this->employeeComplainService->create($data)) {
-                return redirect(route('employee.hr_complain.index'))->with('success', 'Added successfully');
+                return redirect(route('hr_complain.index'))->with('success', 'Added successfully');
             }
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -64,8 +63,7 @@ class HrComplainController extends Controller
     public function getComplainDetails($id)
     {
         $employeeComplainDetails = $this->employeeComplainService->findById($id);
-        $user = Auth()->guard('employee')->user()->load('userDetails');
-        if ($user->userDetails->role_id == 4) {
+        if (Auth()->guard('employee')->user()->role_id == 4) {
             $toId = $employeeComplainDetails->user_id;
             $fromId = 0;
         } else {

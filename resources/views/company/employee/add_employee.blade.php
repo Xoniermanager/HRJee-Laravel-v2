@@ -26,19 +26,18 @@
             $userfamilyDetails = $singleUserDetails['familyDetails'];
             $userAssetsDetails = $singleUserDetails['assetDetails'];
             $userdocumentDetails = $singleUserDetails['documentDetails'];
-            $userDetails = $singleUserDetails['userDetails'];
-            $userSkills = $singleUserDetails['skills']->pluck('id');
-            $userLanguages = $singleUserDetails['languages'];
+            $userSkills = $singleUserDetails['skill']->pluck('id');
+            $userLanguages = $singleUserDetails['language'];
         }
     @endphp
     {{-- <div class="loading_item" id="loading_item">
     <div class="loading-wave">
-    <div class="loading-bar"></div>
-    <div class="loading-bar"></div>
-    <div class="loading-bar"></div>
-    <div class="loading-bar"></div>
-  </div>
-  </div> --}}
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+    </div>
+</div> --}}
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
@@ -125,14 +124,14 @@
                             </li>
                             <!--end::Nav item-->
                             <!--begin::Nav item-->
-                            <li class="nav-item p-0 ms-0">
-                                <!--begin::Date-->
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
-                                    data-bs-toggle="tab" href="#permission_tab">
-                                    <span class="fs-7 fw-semibold">Permissions</span>
-                                </a>
-                                <!--end::Date-->
-                            </li>
+                            {{-- <li class="nav-item p-0 ms-0">
+                            <!--begin::Date-->
+                            <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
+                                data-bs-toggle="tab" href="#permission_tab">
+                                <span class="fs-7 fw-semibold">Permissions</span>
+                            </a>
+                            <!--end::Date-->
+                        </li> --}}
                             <!--end::Nav item-->
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
@@ -198,7 +197,7 @@
                             <!--end::Tap pane-->
 
                             <!--begin::Tap pane Permission-->
-                            @include('company.employee.tabs.permission_tab')
+                            {{-- @include('company.employee.tabs.permission_tab') --}}
                             <!--end::Tap pane-->
 
                             <!--begin::Tap pane Family Details-->
@@ -304,18 +303,6 @@
                     }
                 }
             }, 12000);
-
-            //Permission Details
-            setTimeout(function() {
-                if (all_data_saved) {
-                    if (jQuery("#user_details_form").valid()) {
-                        createPermissionDetails(jQuery('#user_details_form'));
-                    } else {
-                        jQuery('.nav-pills a[href="#permission_tab"]').tab('show');
-                    }
-                }
-            }, 14000);
-
             //Fmaily Details  Details
             setTimeout(function() {
                 if (all_data_saved) {

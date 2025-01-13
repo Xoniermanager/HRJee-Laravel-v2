@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
+use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Company\BreakTypeController;
 use App\Http\Controllers\Company\LanguagesController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
+use App\Http\Controllers\Company\AttendanceController;
 use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\CompanyStatusController;
@@ -27,7 +29,6 @@ use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
 use App\Http\Controllers\Company\SpreadsheetController;
-use App\Http\Controllers\Company\UserDetailsController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
@@ -52,7 +53,12 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
+use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
+
+
+//Common Route Used in Employee and Company Panel
+Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
 Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
@@ -136,7 +142,6 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('/update', 'update')->name('state.update');
         Route::get('/delete', 'destroy')->name('state.delete');
         Route::get('/status/update', 'statusUpdate')->name('state.statusUpdate');
-        Route::get('/get/all/state', 'getAllStates')->name('get.all.country.state');
         Route::get('/search', 'searchStateFilter');
     });
 
@@ -217,8 +222,8 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     //Document Details for employee
     Route::post('/employee/document/details', [UserDocumentDetailsController::class, 'store'])->name('employee.document.details');
 
-    //User / Permission Details for employee
-    Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
+    // //User / Permission Details for employee
+    // Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
 
 
     //Asset Details for user
@@ -546,5 +551,27 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/delete', 'destroy')->name('document.type.delete');
         Route::get('/status/update', 'statusUpdate')->name('document.type.statusUpdate');
     });
+
+    //Employee Attendance Module
+    Route::prefix('/attendance')->controller(AttendanceController::class)->group(function () {
+        Route::get('/', 'index')->name('attendance.index');
+        Route::get('/search/filter', 'searchFilter');
+        Route::get('/view/{empId}', 'viewAttendanceDetails')->name('attendance.view.details');
+        Route::get('/view/search/filter/{empId}', 'searchFilterByEmployeeId');
+        Route::post('/edit', 'editAttendanceByEmployeeId');
+        Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
+        Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
+    });
+    //Weekend Module
+    Route::prefix('/weekend')->controller(WeekendController::class)->group(function () {
+        Route::get('/', 'index')->name('weekend.index');
+        Route::post('/create', 'store')->name('weekend.store');
+        Route::get('/delete', 'destroy')->name('weekend.delete');
+        Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
+        Route::get('/get/weekend/details/companyId','getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
+    });
+});
+Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
+    Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
 /**---------------End Company Panel Route----------------*/

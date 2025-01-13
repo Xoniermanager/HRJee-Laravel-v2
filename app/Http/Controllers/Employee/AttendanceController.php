@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Employee;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -17,17 +18,16 @@ class AttendanceController extends Controller
     }
     public function index()
     {
-        $allAttendanceDetails = $this->employeeAttendanceService->getAllAttendanceDetails(Auth::guard('employee')->user()->id);
+        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate(Carbon::now()->startOfMonth(), Carbon::now(), Auth::guard('employee')->user()->id);
         return view('employee.hrService.attendance_service', compact('allAttendanceDetails'));
     }
 
     public function getAttendanceByFromAndToDate(Request $request)
     {
-        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date);
+        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date, Auth()->guard('employee')->user()->id);
         if ($allAttendanceDetails) {
             return response()->json([
-                'success' => 'Searching',
-                'data'    =>  view('employee.hrService.attendance_list', compact('allAttendanceDetails'))->render()
+                'data' => view('employee.hrService.attendance_list', compact('allAttendanceDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

@@ -335,6 +335,32 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
+                            <div class="menu-item" data-url="{{ route('attendance.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('attendance.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-money-bill-wave-alt"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title"> Attendance</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <div class="menu-item" data-url="{{ route('weekend.index') }}">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="{{ route('weekend.index') }}">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-5">
+                                            <i class="fa fa-money-bill-wave-alt"></i>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <span class="menu-title"> Weekend Management</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
                             <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                                 <!--begin:Menu link-->
                                 <span class="menu-link">
@@ -551,8 +577,7 @@
                                 </span>
                                 <!--end:Menu link-->
                                 <!--begin:Menu sub-->
-                                <div class="menu-sub menu-sub-accordion"
-                                    data-url="{{ route('news.category.index') }}">
+                                <div class="menu-sub menu-sub-accordion" data-url="{{ route('news.category.index') }}">
                                     <!--begin:Menu item-->
                                     <div class="menu-item">
                                         <!--begin:Menu link-->
@@ -647,12 +672,12 @@
                                     <div class="ms-2">
                                         <!--begin::Name-->
                                         <a class="text-gray-800 text-hover-primary fs-6 fw-bold lh-1">
-                                            Garima Kaushik</a>
+                                            {{Auth::guard('company')->user()->name}}</a>
                                         <!--end::Name-->
 
                                         <!--begin::Major-->
                                         <span class="text-muted fw-semibold d-block fs-7 lh-1">
-                                            HR Manager</span>
+                                        </span>
                                         <!--end::Major-->
                                     </div>
                                     <!--end::User info-->
@@ -681,11 +706,11 @@
                                                 <!--begin::Username-->
                                                 <div class="d-flex flex-column">
                                                     <div class="fw-bold d-flex align-items-center fs-5">
-                                                        Garima Kaushik
+                                                        {{Auth::guard('company')->user()->name}}
                                                     </div>
 
                                                     <a class="fw-semibold text-muted text-hover-primary fs-7">
-                                                        HR Manager </a>
+                                                    </a>
                                                 </div>
                                                 <!--end::Username-->
                                             </div>
@@ -703,10 +728,6 @@
                                             </a>
                                         </div>
                                     </div>
-
-                                    <!--begin::User account menu-->
-
-                                    <!--end::User account menu-->
                                 </div>
                                 <!--end::User menu-->
                             </div>

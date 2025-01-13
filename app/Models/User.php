@@ -3,42 +3,16 @@
 namespace App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-
-    protected $appends = [
-        'branch',
-        'designation',
-        'department',
-        'official_mobile_no',
-        'bank_name',
-        'account_name',
-        'account_number',
-        'ifsc_code',
-        'permanent_address',
-        'permanent_city',
-        'local_address',
-        'local_city',
-        'permanent_country',
-        'local_country',
-        'permanent_state',
-        'local_state',
-    ];
-    protected $guarded = ['id'];
     protected $fillable = [
         'emp_id',
         'name',
@@ -56,35 +30,20 @@ class User extends Authenticatable
         'phone',
         'profile_image',
         'company_id',
-        'last_login_ip'
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'branch',
-        'designation',
-        'department',
+        'last_login_ip',
+        'employee_type_id',
+        'department_id',
+        'designation_id',
+        'role_id',
+        'company_branch_id',
+        'qualification_id',
+        'offer_letter_id',
+        'work_from_office',
+        'exit_date',
         'official_mobile_no',
-        'bank_name',
-        'account_name',
-        'account_number',
-        'ifsc_code',
-        'permanent_address',
-        'permanent_city',
-        'local_address',
-        'local_city',
-        'permanent_country',
-        'local_country',
-        'permanent_state',
-        'local_state',
+        'shift_id',
+        'start_time'
     ];
-
     /**
      * The attributes that should be cast.
      *
@@ -94,15 +53,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-
-    public function getBranchAttribute()
-    {
-        if ($this->relationLoaded('userDetails')) {
-            return  isset($this->userDetails->companyBranches) && !empty($this->userDetails->companyBranches) ? $this->userDetails->companyBranches->name : null;
-        }
-        return null; // Or handle as needed
-    }
     // employee bank name
     public function getBankNameAttribute()
     {
@@ -134,37 +84,6 @@ class User extends Authenticatable
             return  isset($this->bankDetails) && !empty($this->bankDetails) ? $this->bankDetails->account_number : null;
         }
         return 'default account number'; // Or handle as needed
-    }
-    public function getDesignationAttribute()
-    {
-        if ($this->relationLoaded('userDetails')) {
-            return  isset($this->userDetails->designation) && !empty($this->userDetails->designation) ? $this->userDetails->designation->name : null;
-        }
-        return null; // Or handle as needed
-    }
-    public function getDepartmentAttribute()
-    {
-        if ($this->relationLoaded('userDetails')) {
-            $userDepartment = $this->userDetails->department;
-            return  isset($userDepartment) && !empty($userDepartment) ? $userDepartment->name : null;
-        }
-        return null; // Or handle as needed
-    }
-    public function getOfficialMobileNoAttribute()
-    {
-        if ($this->relationLoaded('userDetails')) {
-            $userDetails = $this->userDetails;
-            return  isset($userDetails) && !empty($userDetails) ? $userDetails->official_mobile_no : null;
-        }
-        return null; // Or handle as needed
-    }
-    public function getShiftAttribute()
-    {
-        if ($this->relationLoaded('userDetails')) {
-            $shift = $this->userDetails->officeShift;
-            return  isset($shift) && !empty($shift) ? date('h:i A', strtotime($shift->start_time)) . " " . date('h:i A', strtotime($shift->end_time)) : null;
-        }
-        return null; // Or handle as needed
     }
     public function bankDetails()
     {
@@ -198,25 +117,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserRelativeDetail::class, 'user_id', 'id');
     }
-
-    public function userDetails()
-    {
-        return $this->hasOne(UserDetail::class, 'user_id', 'id');
-    }
-
     protected function profileImage(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => url("storage/" .  $value)
+            get: fn($value) => url("storage" .  $value)
         );
     }
 
-    public function skills()
+    public function skill()
     {
         return $this->belongsToMany(Skill::class, 'user_skill', 'user_id', 'skill_id');
     }
 
-    public function languages()
+    public function language()
     {
         return $this->belongsToMany(Languages::class, 'langauge_user', 'user_id', 'language_id')->withPivot('read', 'write', 'speak');
     }
@@ -232,7 +145,7 @@ class User extends Authenticatable
     public function getPermanentAddressAttribute()
     {
         if ($this->relationLoaded('addressDetails') && $this->addressDetails->isNotEmpty()) {
-            $address = $this->addressDetails->whereIn('address_type', ['permanent','both_same'])->first();
+            $address = $this->addressDetails->whereIn('address_type', ['permanent', 'both_same'])->first();
             return  isset($address) && !empty($address) ? $address->city : null;
         }
         return 'Default City'; // Default value if relation is not loaded or does not exist
@@ -242,7 +155,7 @@ class User extends Authenticatable
     public function getPermanentCityAttribute()
     {
         if ($this->relationLoaded('addressDetails') && $this->addressDetails->isNotEmpty()) {
-            $address = $this->addressDetails->whereIn('address_type', ['permanent','both_same'])->first();
+            $address = $this->addressDetails->whereIn('address_type', ['permanent', 'both_same'])->first();
             return  isset($address) && !empty($address) ? $address->city : null;
             // return  isset($this->addressDetails) && !empty($this->addressDetails) ? $this->addressDetails->city : null;
         }
@@ -252,7 +165,7 @@ class User extends Authenticatable
     public function getLocalAddressAttribute()
     {
         if ($this->relationLoaded('addressDetails') && $this->addressDetails->isNotEmpty()) {
-            $address = $this->addressDetails->whereIn('address_type', ['local','both_same'])->first();
+            $address = $this->addressDetails->whereIn('address_type', ['local', 'both_same'])->first();
             return  isset($address) && !empty($address) ? $address->address : null;
         }
         return 'Default City';
@@ -263,7 +176,7 @@ class User extends Authenticatable
     {
         if ($this->relationLoaded('addressDetails') && $this->addressDetails->isNotEmpty()) {
 
-            $address = $this->addressDetails->whereIn('address_type', ['local','both_same'])->first();
+            $address = $this->addressDetails->whereIn('address_type', ['local', 'both_same'])->first();
             return  isset($address) && !empty($address) ? $address->city : null;
         }
         return 'Default City';
@@ -272,7 +185,7 @@ class User extends Authenticatable
     public function getPermanentCountryAttribute()
     {
         if ($this->relationLoaded('addressDetails') && $this->addressDetails->isNotEmpty()) {
-            $address = $this->addressDetails->whereIn('address_type', ['permanent','both_same'])->first();
+            $address = $this->addressDetails->whereIn('address_type', ['permanent', 'both_same'])->first();
             return  isset($address->country) && !empty($address->country) ? $address->country->name : null;
         }
         return 'Default City';
@@ -281,7 +194,7 @@ class User extends Authenticatable
     public function getLocalCountryAttribute()
     {
         if ($this->relationLoaded('addressDetails') && $this->addressDetails->isNotEmpty()) {
-            $address = $this->addressDetails->whereIn('address_type', ['local','both_same'])->first();
+            $address = $this->addressDetails->whereIn('address_type', ['local', 'both_same'])->first();
             return  isset($address->country) && !empty($address->country) ? $address->country->name : null;
         }
         return 'Default City';
@@ -289,7 +202,7 @@ class User extends Authenticatable
     public function getPermanentStateAttribute()
     {
         if ($this->relationLoaded('addressDetails') && $this->addressDetails->isNotEmpty()) {
-            $address = $this->addressDetails->whereIn('address_type', ['permanent','both_same'])->first();
+            $address = $this->addressDetails->whereIn('address_type', ['permanent', 'both_same'])->first();
             return  isset($address->state) && !empty($address->state) ? $address->state->name : null;
         }
         return 'Default City';
@@ -298,9 +211,41 @@ class User extends Authenticatable
     public function  getLocalStateAttribute()
     {
         if ($this->relationLoaded('addressDetails') && $this->addressDetails->isNotEmpty()) {
-            $address = $this->addressDetails->whereIn('address_type', ['local','both_same'])->first();
+            $address = $this->addressDetails->whereIn('address_type', ['local', 'both_same'])->first();
             return  isset($address->state) && !empty($address->state) ? $address->state->name : null;
         }
         return 'Default state';
+    }
+    public function designation()
+    {
+        return $this->belongsTo(Designations::class, 'designation_id', 'id');
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id');
+    }
+    public function employeeType()
+    {
+        return $this->belongsTo(EmployeeType::class, 'employee_type_id', 'id');
+    }
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+    public function officeShift()
+    {
+        return $this->belongsTo(OfficeShift::class, 'shift_id', 'id');
+    }
+    public function companyBranch()
+    {
+        return $this->belongsTo(CompanyBranch::class, 'company_branch_id', 'id');
+    }
+    public function qualification()
+    {
+        return $this->belongsTo(Qualification::class, 'qualification_id');
+    }
+    public function hasPermission($permissionName)
+    {
+        return $this->role->permissions()->where('name', $permissionName)->exists();
     }
 }

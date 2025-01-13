@@ -2,19 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ValidateCompany;
+use App\Http\Services\CompanyFeatureService;
 use App\Http\Services\CompanyServices;
+use App\Http\Services\CompanyUserService;
+use App\Http\Services\MenuService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 
 class AdminCompanyController extends Controller
 {
 
     private $companyServices;
-    public function __construct(CompanyServices $companyServices)
+    private $companyUserService;
+    private $menuServices;
+    private $companyFeatureServices;
+    public function __construct(CompanyServices $companyServices,CompanyUserService $companyUserService,MenuService $menuServices,CompanyFeatureService $companyFeatureServices)
     {
         $this->companyServices = $companyServices;
+        $this->companyUserService = $companyUserService;
+        $this->menuServices = $menuServices;
+        $this->companyFeatureServices = $companyFeatureServices;
     }
     public function index()
     {
@@ -22,6 +33,7 @@ class AdminCompanyController extends Controller
             'allCompaniesDetails' => $this->companyServices->all()
         ]);
     }
+   
 
     public function add_company()
     {
@@ -36,6 +48,7 @@ class AdminCompanyController extends Controller
 
     public function store(ValidateCompany $request)
     {
+        // dd($request->all());    
         $validated = $request->validated();
         if ($request->hasFile('logo')) {
             $nameForImage = removingSpaceMakingName($request->name);
@@ -43,36 +56,88 @@ class AdminCompanyController extends Controller
             $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
             $request->merge(['logo' => $filePath]);
         }
-        $request->merge([
+        $request->merge( [
             'joining_date' => Carbon::today()->toDateString(),
         ]);
+        $createdCompany = $this->companyServices->create($request->except('_token','password','password_confirmation'));
 
-        if (isset($request->company_id)) {
-            $this->companyServices->updateDetails($request->all(), $request->company_id);
-            return response()->json([
-                'success' => 'Company Updated Successfully',
-                'id'     =>  $request->company_id,
-            ]);
-        } else {
-            $createdCompany = $this->companyServices->create($request->all());
+        if(isset($createdCompany) && $createdCompany->id!=''){
+            $data['company_id'] = $createdCompany->id;
+            $data['name'] = $request->name;
+            $data['password'] = Hash::make($request->password);
+            $data['email'] = $request->email;
+
+            $this->companyUserService->create($data);
             return response()->json([
                 'success' => 'Company Created Successfully',
-                'id'     =>  $createdCompany->id,
+            ]);
+        }else{
+            return response()->json([
+                'error' => 'Please try again after sometime!',
+            ]);
+        }
+    }
+
+    public function update_company(Request $request)
+    {
+        // dd($request->all());    
+        
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255,',
+            'username' => 'sometimes|required|string|max:255',
+            'contact_no' => 'sometimes|required|string|max:20',
+            'email' => 'sometimes|required|string|email|max:255|unique:companies,email,' . $request->company_id . '',
+            'password' => 'sometimes|required|confirmed',
+            'password_confirmation' => 'sometimes|required',
+            'company_size' => 'sometimes|required|string',
+            'company_url' => 'sometimes|required|string|url|max:100',
+            'company_address' => 'sometimes|sometimes|required|string|max:255',
+            'industry_type' => 'sometimes|required|string|max:255',
+            'logo' => 'sometimes|max:2048', 
+        ]);
+        if ($request->hasFile('logo')) {
+            $nameForImage = removingSpaceMakingName($request->name);
+            $upload_path = "/company_profile";
+            $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
+            $request->merge(['logo' => $filePath]);
+        }
+        $request->merge( [
+            'joining_date' => Carbon::today()->toDateString(),
+        ]);
+        $createdCompany = $this->companyServices->updateDetails($request->except('_token','password','password_confirmation'),$request->company_id);
+
+        if($createdCompany){
+            $data['name'] = $request->name;
+            $data['email'] = $request->email;
+
+            $this->companyUserService->updateDetailsByCompanyId($data,$request->company_id);
+            return response()->json([
+                'success' => 'Company Updated Successfully',
+            ]);
+        }else{
+            return response()->json([
+                'error' => 'Please try again after sometime!',
             ]);
         }
     }
     public function destroy(Request $request)
     {
         $id = $request->id;
-        $data = $this->companyServices->deleteDetails($id);
-        if ($data) {
-            return response()->json([
-                'success' => 'Company Deleted Successfully',
-                'data'   =>  view("admin.company.company_list", [
-                    'allCompaniesDetails' => $this->companyServices->all()
-                ])->render()
-            ]);
-        } else {
+        $deleted = $this->companyUserService->deleteCompanyUserByCompanyId($id);
+        if($deleted)
+        {
+            $data = $this->companyServices->deleteDetails($id);
+            if ($data) {
+                return response()->json([
+                    'success' => 'Company Deleted Successfully',
+                    'data'   =>  view("admin.company.company_list", [
+                        'allCompaniesDetails' => $this->companyServices->all()
+                    ])->render()
+                ]);
+            } 
+        }
+        else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
@@ -107,4 +172,47 @@ class AdminCompanyController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
+    public function assign_feature(){
+
+        return view('admin.company.assign-feature', [
+            'allMenus' => $this->menuServices->getFeatures(),
+            'allCompaniesDetails' => $this->companyServices->all()
+        ]);
+    }
+    public function update_feature(Request $request){
+
+        $validated = $request->validate([
+            'company_id' => 'required',
+        ]);
+        $company_id = $request->company_id;
+
+        $deleted = $this->companyFeatureServices->deleteDetails($company_id);
+        $data = [];
+        $i = 0;
+        foreach($request->menu_ids as $menu){
+            if($menu!=''){
+                $data[$i]['menu_id'] = $menu;
+                $data[$i]['company_id'] = $company_id;
+                $data[$i]['created_at'] = Carbon::now();
+                $data[$i]['updated_at'] = Carbon::now();
+                $i++;
+            }
+            
+        }
+
+        //dd($data);
+
+        $data = $this->companyFeatureServices->create($data);
+        if ($data) {
+            return redirect(route('admin.company.assign.feature'))->with('success','Feature Updated Successfully');
+        } 
+
+    }  
+    public function get_assign_feature(Request $request){
+        $company_id = $request->company_id;
+        return response()->json([
+            'success' => true,
+            'data'   =>  $this->companyFeatureServices->getPermissionByCompanyId($company_id)
+        ]);
+    } 
 }

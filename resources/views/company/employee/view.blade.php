@@ -180,7 +180,7 @@
 
                                     <div class="card-body p-9">
                                         <!--begin::Row-->
-                                        
+
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="row">
@@ -395,7 +395,7 @@
 
                                             <div class="col-md-6">
 
-                                               
+
                                                 <div class="row mb-2">
                                                     <!--begin::Label-->
                                                     <label class="col-md-6 fw-bold">Employee Status
@@ -418,7 +418,7 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->employeeTypes->name ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->employeeType->name ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
@@ -430,7 +430,7 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->department->name ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->department->name ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
@@ -442,7 +442,7 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->designation->name ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->designation->name ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
@@ -454,7 +454,7 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->companyBranches->name ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->companyBranch->name ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
@@ -466,7 +466,7 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->roles->name ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->role->name ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
@@ -478,7 +478,7 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->qualification->name ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->qualification->name ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
@@ -490,11 +490,11 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->offer_letter_id ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->offer_letter_id ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
-                                                <div class="row mb-2">
+                                                {{-- <div class="row mb-2">
                                                     <!--begin::Label-->
                                                     <label class="col-md-6 fw-bold">Work From Office</label>
                                                     <!--end::Label-->
@@ -515,7 +515,7 @@
                                                             @endphp</span>
                                                     </div>
                                                     <!--end::Col-->
-                                                </div>
+                                                </div> --}}
                                                 <div class="row mb-2">
                                                     <!--begin::Label-->
                                                     <label class="col-md-6 fw-bold">Exit Date</label>
@@ -524,7 +524,7 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->exit_date ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->exit_date ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
@@ -536,7 +536,7 @@
                                                     <!--begin::Col-->
                                                     <div class="col-md-6">
                                                         <span
-                                                            class="">{{ $singleViewEmployeeDetails['userDetails']->official_mobile_no ?? '' }}</span>
+                                                            class="">{{ $singleViewEmployeeDetails->official_mobile_no ?? '' }}</span>
                                                     </div>
                                                     <!--end::Col-->
                                                 </div>
@@ -1043,7 +1043,7 @@
                                             <!--begin::Card body-->
                                             <div class="card-body p-4">
                                                 <ul>
-                                                    @foreach ($singleViewEmployeeDetails['skills'] as $user_skills)
+                                                    @foreach ($singleViewEmployeeDetails->skill as $user_skills)
                                                         <li>{{ $user_skills->name }}</li>
                                                     @endforeach
                                                 </ul>
@@ -1069,7 +1069,7 @@
                                             <div class="card-body p-4">
                                                 <div class="card-body p-4">
                                                     <ul>
-                                                        @foreach ($singleViewEmployeeDetails['languages'] as $user_languages)
+                                                        @foreach ($singleViewEmployeeDetails->language as $user_languages)
                                                             <li>{{ $user_languages->name }}</li>
                                                         @endforeach
                                                     </ul>

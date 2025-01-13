@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-    Attendance
+Attendance
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -16,13 +16,11 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <label for="">From date</label>
-                                <input type="date" class="form-control mb-3 date" id="from_date"
-                                    value="{{ old('from_date') }}">
+                                <input type="date" class="form-control mb-3 date" id="from_date" value="{{ date("Y-m-01") ?? old('from_date') }}">
                             </div>
                             <div class="col-md-5">
                                 <label for="">To date</label>
-                                <input type="date" class="form-control mb-3 date" id="to_date"
-                                    value="{{ old('to_date') }}">
+                                <input type="date" class="form-control mb-3 date" id="to_date" value="{{ date("Y-m-d") ?? old('to_date')}}">
                             </div>
                         </div>
 
@@ -61,19 +59,23 @@
         var from_date = $('#from_date').val();
         var to_date = $('#to_date').val();
         if (from_date && to_date) {
-            search_filter_results(from_date, to_date)
+            search_filter_results()
         } else {
             return false;
         }
     });
-
-    function search_filter_results(from_date, to_date) {
+    $(document).on('click', '#attendance_list a', function(e) {
+        e.preventDefault();
+        var page_no = $(this).attr('href').split('page=')[1];
+        search_filter_results(page_no);
+    });
+    function search_filter_results(page_no = 1) {
         $.ajax({
             type: 'GET',
-            url: "<?= route('search.filter.attendance') ?>",
+            url: employee_ajax_base_url + "/search/filter/date?page=" + page_no,
             data: {
-                'from_date': from_date,
-                'to_date': to_date
+                'from_date': $('#from_date').val(),
+                'to_date':$('#to_date').val()
             },
             success: function(response) {
                 $('#attendance_list').replaceWith(response.data);

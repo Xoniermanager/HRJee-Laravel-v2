@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\BranchServices;
 use App\Http\Services\HolidayServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,9 +12,11 @@ use Exception;
 class HolidayController extends Controller
 {
     private $holidayService;
-    public function __construct(HolidayServices $holidayService)
+    private $branchService;
+    public function __construct(HolidayServices $holidayService, BranchServices $branchService)
     {
         $this->holidayService = $holidayService;
+        $this->branchService = $branchService;
     }
 
     /**
@@ -22,7 +25,8 @@ class HolidayController extends Controller
     public function index()
     {
         return view('company.holiday.index', [
-            'allHolidaysDetails' => $this->holidayService->all()
+            'allHolidaysDetails' => $this->holidayService->all(),
+            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->id)
         ]);
     }
 
@@ -33,9 +37,11 @@ class HolidayController extends Controller
     {
         try {
             $validateHolidayData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:holidays,name'],
-                'date' => ['required', 'date'],
-                'year' => ['required'],
+                'name' => 'required|string|unique:holidays,name,',
+                'date' => 'required|date',
+                'year' => 'required',
+                'company_branch_id'    =>   'required|array',
+                'company_branch_id.*'  =>   'required',
             ]);
             if ($validateHolidayData->fails()) {
                 return response()->json(['error' => $validateHolidayData->messages()], 400);
@@ -60,9 +66,11 @@ class HolidayController extends Controller
     public function update(Request $request)
     {
         $validateHolidayData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:holidays,name,' . $request->id],
-            'date' => ['required', 'date'],
-            'year' => ['required'],
+            'name' => 'required|string|unique:holidays,name,' . $request->id,
+            'date' => 'required|date',
+            'year' => 'required',
+            'company_branch_id'    =>   'required|array',
+            'company_branch_id.*'  =>   'required',
         ]);
 
         if ($validateHolidayData->fails()) {

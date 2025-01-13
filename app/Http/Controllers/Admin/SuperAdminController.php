@@ -94,4 +94,8 @@ class SuperAdminController extends Controller
             return exceptionErrorMessage($th);
         }
     }
+    public function adminLogout(){
+        Auth()->guard('admin')->logout();
+        return redirect(route('admin.login.form'));
+    }
 }

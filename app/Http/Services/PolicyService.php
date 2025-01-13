@@ -13,14 +13,12 @@ class PolicyService
   private $policyRepository;
   private $departmentServices;
   private $companyBranchServices;
-  private $userDetailServices;
   private $designationServices;
-  public function __construct(DesignationServices $designationServices, UserDetailServices $userDetailServices, BranchServices $companyBranchServices, DepartmentServices $departmentServices, PolicyRepository $policyRepository)
+  public function __construct(DesignationServices $designationServices,BranchServices $companyBranchServices, DepartmentServices $departmentServices, PolicyRepository $policyRepository)
   {
     $this->policyRepository = $policyRepository;
     $this->departmentServices = $departmentServices;
     $this->companyBranchServices = $companyBranchServices;
-    $this->userDetailServices = $userDetailServices;
     $this->designationServices = $designationServices;
   }
   public function all()
@@ -173,10 +171,9 @@ class PolicyService
   }
   public function getAllAssignedPolicyForEmployee()
   {
-    $user = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
-    $allPolicyDetails = $this->policyRepository->where('company_id', $user->company_id)->where('status', 1)->where('start_date', '<=', date('Y-m-d'))
+    $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+    $allPolicyDetails = $this->policyRepository->where('company_id', $userDetails->company_id)->where('status', 1)->where('start_date', '<=', date('Y-m-d'))
       ->where('end_date', '>=', date('Y-m-d'))->get();
-    $userDetails = $this->userDetailServices->getDetailsByUserId($user->id);
     $allAssignedPolicy = [];
     foreach ($allPolicyDetails as $policyDetails) {
       $assignedCompanyBranchesIds = $this->companyBranchServices->getAllAssignedCompanyBranches($policyDetails);
