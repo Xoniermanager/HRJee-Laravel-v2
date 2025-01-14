@@ -155,7 +155,6 @@ border-bottom-right-radius: 30px;">
                                             style="width: 4px;height: 50px !important;"></span>
                                     </div>
                                     <div class="col-md-4 text-end">
-
                                         @if($existingAttendanceDetail==null)
                                         <h5 id="current-time"></h5>
                                         <button class="btn btn-sm btn-primary align-self-center" id="start-timer">

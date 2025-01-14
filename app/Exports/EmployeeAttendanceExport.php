@@ -10,21 +10,17 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 
 class EmployeeAttendanceExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
-    protected $year;
-    protected $month;
-    protected $empId;
-    public function __construct($year, $month, $empId)
+    protected $attendanceDetails;
+    public function __construct($attendanceDetails)
     {
-        $this->year = $year;
-        $this->month = $month;
-        $this->empId = $empId;
+        $this->attendanceDetails = $attendanceDetails;
     }
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function collection()
+    public function collection(): mixed
     {
-        return EmployeeAttendance::with('user')->where('user_id', $this->empId)->whereYear('punch_in', $this->year)->whereMonth('punch_in', $this->month)->get();
+        return $this->attendanceDetails;
     }
     /**
      * Add headers for the export.

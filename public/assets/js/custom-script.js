@@ -324,15 +324,54 @@ function assignAnnouncement(value) {
         $('.notification_schedule_time').show();
     }
 }
-function exportAttendanceByUserId(empId) {
+function exportAttendanceByUserId(empId, year, month) {
     $("#export_button").prop("disabled", true);
     $.ajax({
         type: 'get',
         url: '/export/employee/attendance',
         data: {
-            'year': $('#year').val(),
-            'month': $('#month').val(),
+            'year': year,
+            'month': month,
             'empId': empId
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (response, status, xhr) {
+            var blob = response;
+            var link = document.createElement('a');
+            var filename = xhr.getResponseHeader('Content-Disposition').split(
+                'filename=')[1].replace(/"/g, '');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            // SweetAlert notification after download is triggered
+            Swal.fire({
+                title: 'Download Complete',
+                text: 'Your file has been successfully downloaded!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+            $("#export_button").prop("disabled", false);
+        },
+        error: function () {
+            console.log("Export failed");
+            $("#export_button").prop("disabled", false);
+        }
+    });
+}
+function exportAttendanceByUserIdByToDateFromDate(empId,toDate,fromDate) {
+    $("#export_button").prop("disabled", true);
+    $.ajax({
+        type: 'get',
+        url: '/export/employee/attendance',
+        data: {
+            'to_date': toDate,
+            'from_date': fromDate,
+            'empId': empId,
+            'type' : "ByTwoDates"
         },
         xhrFields: {
             responseType: 'blob'
