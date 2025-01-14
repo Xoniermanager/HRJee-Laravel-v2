@@ -34,7 +34,7 @@
                             <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
                                 value="1">Active</option>
                             <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
-                                value="2">Inactive</option>
+                                value="0">Inactive</option>
                         </select>
                     </div>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#add_country"
@@ -316,11 +316,15 @@
         jQuery("#status").on('change', function() {
             search_filter_results();
         });
-
-        function search_filter_results() {
+        jQuery(document).on('click', '#contact_list a', function(e) {
+        e.preventDefault();
+        var page_no = $(this).attr('href').split('page=')[1];
+        search_filter_results(page_no);
+        });
+        function search_filter_results(page_no = 1) {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/country/search/filter',
+                url: company_ajax_base_url + '/country/search/filter?page=' + page_no,
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val()

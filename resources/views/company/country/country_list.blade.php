@@ -55,7 +55,6 @@
         </table>
         <!--end::Table-->
     </div>
-    <!--end::Table container-->
-
-</div>
 {{ $allCountryDetails->links() }}
+    <!--end::Table container-->
+</div>

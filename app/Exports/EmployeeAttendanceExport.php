@@ -41,6 +41,8 @@ class EmployeeAttendanceExport implements FromCollection, WithHeadings, WithMapp
             'Punch IN',
             'Punch Out',
             'Total Working Hours',
+            'Attendance Using By',
+            'Attendance Marked By',
             'Remark',
         ];
     }
@@ -56,8 +58,8 @@ class EmployeeAttendanceExport implements FromCollection, WithHeadings, WithMapp
         static $serialNumber = 1;
         $workingHours = getTotalWorkingHour($attendance->punch_in, $attendance->punch_out);
         $date = getFormattedDate($attendance->punch_in);
-        $punchInTime = date('h:i A',strtotime($attendance->punch_in));
-        $punchOutTime = date('h:i A',strtotime($attendance->punch_in));
+        $punchInTime = date('h:i A', strtotime($attendance->punch_in));
+        $punchOutTime = date('h:i A', strtotime($attendance->punch_in));
         return [
             $serialNumber++,
             $date,
@@ -66,6 +68,8 @@ class EmployeeAttendanceExport implements FromCollection, WithHeadings, WithMapp
             $punchInTime,
             $punchOutTime,
             $workingHours,
+            $attendance->punch_in_using,
+            $attendance->punch_in_by,
             $attendance->remark,
         ];
     }
