@@ -102,7 +102,8 @@
                         <td>
                             <a href="" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 onClick="edit_attendance('{{ isset($item->id) ? $item->id : '' }}', '{{ isset($item->punch_in) ? date('H:i', strtotime($item->punch_in)) : date('H:i') }}', '{{ isset($item->punch_out) ? date('H:i', strtotime($item->punch_out)) : date('H:i') }}', '{{ $key }}')"
-                                data-bs-target="#edit_attendance_modal"><i class="fa fa-edit"></i></a></td>
+                                data-bs-target="#edit_attendance_modal"><i class="fa fa-edit"></i></a>
+                        </td>
                     </tr>
                     @endif
                     @php

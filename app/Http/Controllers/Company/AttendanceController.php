@@ -85,8 +85,8 @@ class AttendanceController extends Controller
             if (isset($checkWeekend) && !empty($checkWeekend)) {
                 $weekendStatus = true;
             }
-            $allAttendanceDetails[date('d F Y - l', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByDateByUserId($employeeDetails->id, $startDate)->first();
-            $allAttendanceDetails[date('d F Y - l', strtotime($startDate))]['weekend'] = $weekendStatus;
+            $allAttendanceDetails[date('d F Y', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByDateByUserId($employeeDetails->id, $startDate)->first();
+            $allAttendanceDetails[date('d F Y', strtotime($startDate))]['weekend'] = $weekendStatus;
             $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
         }
         return
@@ -114,6 +114,7 @@ class AttendanceController extends Controller
     public function editAttendanceByEmployeeId(Request $request)
     {
         $request['punch_in_using'] = 'Web';
+        $request['punch_in_by'] = 'Company';
         $attendance = $this->employeeAttendanceService->editAttendanceByUserId($request->all());
         if ($attendance) {
             return response()->json(['status' => true, 'message' => 'Attendance Updated']);
@@ -145,6 +146,7 @@ class AttendanceController extends Controller
         DB::beginTransaction(); // Start the transaction
         try {
             $request['punch_in_using'] = 'Web';
+            $request['punch_in_by'] = 'Company';
             $response = $this->employeeAttendanceService->addBulkAttendance($request->all());
             DB::commit();
             if ($response == true)
