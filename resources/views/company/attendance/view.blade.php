@@ -33,7 +33,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <button class="btn btn-sm btn-primary align-self-center" id="export_button" onclick="exportAttendanceByUserId('{{ $employeeDetail['emp_id'] }}')" >Export Attendance</button>
+                    <button class="btn btn-sm btn-primary align-self-center" id="export_button">Export Attendance</button>
                 </div>
                 @include('company.attendance.view_list')
             </div>
@@ -150,7 +150,9 @@
             $('#search').on('input', function() {
                 searchFilter(this.value);
             });
-
+            $('#export_button').on('click', function() {
+                exportAttendanceByUserId({{ $employeeDetail['emp_id'] }},$('#year').val(),$('#month').val())
+            });
             function searchFilter() {
                 $.ajax({
                     method: 'GET',

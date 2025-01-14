@@ -324,14 +324,14 @@ function assignAnnouncement(value) {
         $('.notification_schedule_time').show();
     }
 }
-function exportAttendanceByUserId(empId) {
+function exportAttendanceByUserId(empId,year,month) {
     $("#export_button").prop("disabled", true);
     $.ajax({
         type: 'get',
         url: '/export/employee/attendance',
         data: {
-            'year': $('#year').val(),
-            'month': $('#month').val(),
+            'year': year,
+            'month':month,
             'empId': empId
         },
         xhrFields: {

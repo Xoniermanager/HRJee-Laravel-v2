@@ -98,7 +98,10 @@ Attendance Management
         $('#search').on('input', function() {
             searchFilter(this.value);
         });
-
+        $('.export_button').on('click', function() {
+            let empId = this.getAttribute('data-emp-id');
+             exportAttendanceByUserId(empId,$('#year').val(),$('#month').val())
+        });
         function searchFilter() {
             $.ajax({
                 method: 'GET',
