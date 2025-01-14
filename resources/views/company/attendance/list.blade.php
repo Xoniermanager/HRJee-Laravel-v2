@@ -30,15 +30,13 @@
                                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <i class="fa fa-eye"></i>
                             </a>
-                            <button
-                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 export_button"
-                               data-emp-id="{{ $employee->id }}"
+                            <button class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                                 @if($employee->totalPresent > 0)
                                 class="btn"
                                 @else
                                 class="btn disabled"
                                 disabled
-                                @endif>
+                                @endif onclick="getExportData({{ $employee->id }})">
                                 <i class="fa fa-download"></i>
                             </button>
                         </div>
@@ -54,5 +52,5 @@
             @endforelse
         </table>
     </div>
-{{ $allEmployeeDetails->links() }}
+    {{ $allEmployeeDetails->links() }}
 </div>

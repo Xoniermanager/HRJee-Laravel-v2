@@ -14,18 +14,19 @@ Attendance
                     <!--begin::Card title-->
                     <div class="card-title m-0">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label for="">From date</label>
-                                <input type="date" class="form-control mb-3 date" id="from_date" value="{{ date("Y-m-01") ?? old('from_date') }}">
+                                <input type="date" value="{{ date("Y-m-01") ?? old('from_date') }}" class="form-control mb-3 date" id="from_date">
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label for="">To date</label>
-                                <input type="date" class="form-control mb-3 date" id="to_date" value="{{ date("Y-m-d") ?? old('to_date')}}">
+                                <input type="date"  value="{{ date("Y-m-d") ?? old('to_date')}}" class="form-control mb-3 date" id="to_date">
+                            </div>
+                            <div class="col-md-4 mt-5">
+                                <button class="btn btn-sm btn-primary" id="export_button"> Export Attendance</button>
                             </div>
                         </div>
-
                     </div>
-                    <!--end::Card title-->
                 </div>
                 <div class="separator  mb-9"></div>
 
@@ -63,6 +64,10 @@ Attendance
         } else {
             return false;
         }
+    });
+    $('#export_button').on('click', function() {
+        let empId = {{ Auth()->guard('employee')->user()->id }};
+        exportAttendanceByUserIdByToDateFromDate(empId,$('#to_date').val(),$('#from_date').val())
     });
     $(document).on('click', '#attendance_list a', function(e) {
         e.preventDefault();

@@ -81,8 +81,7 @@ class EmployeeAttendanceService
             $payload['punch_out'] = $attendanceTime;
             $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
             return ['data' => 'Punch Out', 'status' => true];
-        }
-        else {
+        } else {
             $payload['punch_in'] = $attendanceTime;
             if ($userDetails->officeShift->login_before_shift_time > 0) {
                 $beforTime = ' -' . $userDetails->officeShift->login_before_shift_time . ' minutes';
@@ -137,11 +136,15 @@ class EmployeeAttendanceService
 
     public function getExtistingDetailsByUserId($userId)
     {
-        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('created_at', Carbon::today())->first();
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', Carbon::today())->first();
     }
     public function getAttendanceByFromAndToDate($fromDate, $toDate, $userId)
     {
-        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereBetween('punch_in', [$fromDate, $toDate . ' 23:59:59'])->orderBy('punch_in', 'DESC')->paginate(20);
+        $fromDate = Carbon::parse($fromDate)->startOfDay();
+        $toDate = Carbon::parse($toDate)->endOfDay();
+        return $this->employeeAttendanceRepository
+            ->where('user_id', $userId)
+            ->whereBetween('punch_in', [$fromDate, $toDate]);
     }
     public function getLastTenDaysAttendance()
     {
