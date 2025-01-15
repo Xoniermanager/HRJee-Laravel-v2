@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
 
-class SuperAdminController extends Controller
+class AdminAuthController extends Controller
 {
     private  $authService, $sendOtpService;
 
@@ -52,6 +52,13 @@ class SuperAdminController extends Controller
     }
     public function login()
     {
+        // \App\Models\Admin::create([
+        //     'name' => 'Admin',
+        //     'username' => 'admin',
+        //     'email' => 'admin@gmail.com',
+        //     'password' => \Illuminate\Support\Facades\Hash::make('password'),
+        //     'contact_no' => '1234567890'
+        // ]);
         return view('admin.account.login');
     }
 
