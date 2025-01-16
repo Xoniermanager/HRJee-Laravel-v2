@@ -326,7 +326,7 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/news-category/search/filter',
+                url: company_ajax_base_url + '/news/news-category/search/filter',
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val()

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string("icon");
             $table->unsignedBigInteger("parent_id")->nullable();
             $table->boolean('status')->default(true);
-            $table->unsignedBigInteger('order_no');
+            $table->integer('order_no');
             $table->timestamps();
         });
     }

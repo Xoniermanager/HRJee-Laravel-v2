@@ -18,7 +18,7 @@ class CompanyServices
   }
   public function create($data)
   {
-    
+
     return $this->company_repository->create($data);
   }
 
@@ -50,16 +50,6 @@ class CompanyServices
       }
     })->get();
   }
-
-
-
-
-
-
-
-
-
-  // old methods
   public function delete_company_by_id($id)
   {
     return $this->company_repository->getCompanyById($id)->delete();

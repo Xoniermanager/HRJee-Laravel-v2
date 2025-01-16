@@ -168,7 +168,7 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function ()
         Route::get('/add-menu', 'add_menu')->name('admin.add_menu');
         Route::get('/edit-menu', 'edit_menu')->name('admin.edit_menu');
         Route::post('/create-menu', 'save_menu')->name('admin.menu.save');
-        Route::post('/update-menu', 'update_menu')->name('admin.menu.update');
+        Route::post('/update-menu/{id}', 'update_menu')->name('admin.menu.update');
         Route::get('/delete', 'destroy')->name('admin.menu.delete');
         Route::get('/status/update', 'statusUpdate')->name('admin.menu.statusUpdate');
         Route::get('/search', 'search')->name('admin.menu.search');

@@ -24,7 +24,10 @@ class ValidateMenu extends FormRequest
     {
         return [
             'title' => 'required|unique:menus,title|max:255',
-            'slug' => 'required|string|max:255'
+            'slug' => 'required|string|max:255',
+            'order_no' => 'required|integer',
+            'parent_id' => 'nullable|sometimes|exists:menus,id',
+            'icon'     => 'required'
         ];
     }
 }

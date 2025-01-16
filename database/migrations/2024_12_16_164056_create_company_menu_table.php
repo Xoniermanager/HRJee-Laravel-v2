@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('company_menu_permissions', function (Blueprint $table) {
-            $table->id();
+        Schema::create('company_menu', function (Blueprint $table) {
             $table->unsignedBigInteger("menu_id");
             $table->unsignedBigInteger("company_id");
-            $table->timestamps();
+            $table->foreign('menu_id')->references('id')->on('menus');
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

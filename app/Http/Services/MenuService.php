@@ -13,7 +13,7 @@ class MenuService
   }
   public function all()
   {
-    return $this->menuRepository->with('parent')->all();
+    return $this->menuRepository->with('parent')->paginate(10);
   }
   public function allParentMenu(){
     return $this->menuRepository->whereNull('parent_id')->where('status',1)->get();
@@ -21,7 +21,7 @@ class MenuService
   public function getFeatures(){
     return $this->menuRepository->whereNull('parent_id')->with('children')->get();
 }
-  
+
   public function create($data)
   {
     return $this->menuRepository->create($data);

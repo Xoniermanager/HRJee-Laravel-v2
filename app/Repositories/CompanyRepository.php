@@ -24,29 +24,19 @@ class CompanyRepository extends BaseRepository
     {
         return Company::class;
     }
-
-    // public function deleteDepartmentById($id)
-    // {
-    //    return $this->where('id',$id);
-    // }
     public function getCompanyById($id)
     {
        return $this->where('id',$id);
     }
-
-
-
     public function updateCompany($data)
     {
        $companyID = Auth::guard('company')->user()->company_id;
        return $this->find($companyID)->update($data);
     }
-
     public function getPrimaryBranchForCompany($id)
     {
          return $this->with('branches')->findOrFail($id);
     }
-
     /**
      * Boot up the repository, pushing criteria
      */

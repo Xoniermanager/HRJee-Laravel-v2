@@ -24,9 +24,6 @@
                             <span class="f-light f-w-600">Status</span>
                         </th>
                         <th>
-                            <span class="f-light f-w-600">Created Date</span>
-                        </th>
-                        <th>
                             <span class="f-light f-w-600">Action</span>
                         </th>
                     </tr>
@@ -54,47 +51,39 @@
                     </td>
 
                     <td>
-                    <p class="f-light">{{ $menuDetails->order_no }}</p>
+                        <p class="f-light">{{ $menuDetails->order_no }}</p>
                     </td>
 
                     <td>
                         <div class="form-check form-switch form-check-inline">
-                            <input type="checkbox"
-                                <?= $menuDetails->status == '1' ? 'checked' : '' ?>
-
-                                onchange="handleStatus({{ $menuDetails->id }})"
-
-                                id="checked_value_{{ $menuDetails->id }}"
-
-                                class="form-check-input switch-info check-size">
+                            <input type="checkbox" <?=$menuDetails->status == '1' ? 'checked' : '' ?>
+                            onchange="handleStatus({{ $menuDetails->id }})"
+                            id="checked_value_{{ $menuDetails->id }}"
+                            class="form-check-input switch-info check-size">
                             <span class="slider round"></span>
                         </div>
                     </td>
-
-                    <td>
-                        <p class="f-light">{{ $menuDetails->created_at }}</p>
-                    </td>
-
                     <td>
                         <div class="product-action">
                             <a href="{{ route('admin.edit_menu', ['id' => $menuDetails->id]) }}">
-                            <i class="fa fa-edit"></i>
+                                <i class="fa fa-edit"></i>
                             </a>
-                            <a href="#" onclick="deleteFunction('{{ $menuDetails->id }}')">
+                            {{-- <a href="#" onclick="deleteFunction('{{ $menuDetails->id }}')">
                                 <i class="fa fa-trash"></i>
-                            </a>
+                            </a> --}}
                         </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7">Menu Not Found</td>
+                    <td colspan="6" class="text-danger text-center">No Menu Available</td>
                 </tr>
                 @endforelse
-
                 </tbody>
             </table>
         </div>
-
+    </div>
+    <div class="mt-3">
+        {{ $allMenuDetails->links('paginate') }}
     </div>
 </div>

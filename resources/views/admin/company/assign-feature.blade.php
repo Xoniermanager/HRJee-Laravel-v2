@@ -1,9 +1,5 @@
 @extends('layouts.admin.main')
-
-@section('title', 'Departments')
-
 @section('content')
-
 <div class="page-body">
     <!-- Container-fluid starts-->
     <div class="container-fluid">
@@ -14,11 +10,20 @@
                         <h4>Assign Company Features</h4>
                     </div>
                     <div class="card-body">
+                        @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible">
+                            {{ session('error') }}
+                        </div>
+                        @endif
+                        @if (session('success'))
+                        <div class="alert alert-success alert-dismissible">
+                            {{ session('success') }}
+                        </div>
+                        @endif
                         <div class="row g-xl-5 g-3 gy-5">
-
                             <div class="col-xxl-12 col-xl-12 box-col-12 position-relative">
-
-                                <form method="POST" class="feature-form" action="{{ route('admin.company.feature.save') }}">
+                                <form method="POST" class="feature-form"
+                                    action="{{ route('admin.company.feature.save') }}">
                                     @csrf
                                     <div class="row mb-3">
                                         <div class="col-md-6">
@@ -47,11 +52,14 @@
                                             <ul>
                                                 @foreach ($allMenus as $menu)
                                                 <li>
-                                                    <input type="checkbox" name="menu_ids[]" value="{{ $menu->id }}" id="parentCheck_{{ $menu->id }}" onclick="selectChild('{{ $menu->id }}')">
+                                                    <input type="checkbox" name="menu_id[]" value="{{ $menu->id }}"
+                                                        id="parentCheck_{{ $menu->id }}"
+                                                        onclick="selectChild('{{ $menu->id }}')">
                                                     {{ $menu->title }}
-                                                    @if ($menu->children->isNotEmpty())
-                                                    @include('admin.company.child_menu', ['children' => $menu->children])
-                                                    @endif
+                                                    {{-- @if ($menu->children->isNotEmpty())
+                                                    @include('admin.company.child_menu', ['children' =>
+                                                    $menu->children])
+                                                    @endif --}}
                                                 </li>
                                                 @endforeach
                                             </ul>
@@ -62,15 +70,13 @@
                                             <button type="submit"
                                                 class="companyDetailbtn float-right btn btn-primary d-flex align-items-center gap-sm-2 gap-1 text-white">
                                                 Submit
-                                                <svg viewBox="0 0 24 24" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
+                                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
                                                         stroke-linejoin="round"></g>
                                                     <g id="SVGRepo_iconCarrier">
-                                                        <path d="M5 12H19M19 12L13 6M19 12L13 18"
-                                                            stroke="#ffffff" stroke-width="2"
-                                                            stroke-linecap="round"
+                                                        <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="#ffffff"
+                                                            stroke-width="2" stroke-linecap="round"
                                                             stroke-linejoin="round"></path>
                                                     </g>
                                                 </svg>
@@ -116,18 +122,15 @@
             success: function(response) {
                 $('input[name="menu_ids[]"]').prop('checked', false);
                 const permissions = response.data;
-                for(let i =0;i<permissions.length;i++){
-                    console.log('response', permissions[i].menu_id);
-
-                    $('input[name="menu_ids[]"][value="'+permissions[i].menu_id+'"]').prop('checked', true);
-                }
+                permissions.forEach(element => {
+                    $('#parentCheck_' + element).prop('checked', true);
+                });
             }
         });
     }
     $(document).ready(function() {
         $("#allCheck").on('click', function() {
             // Toggle all checkboxes based on the state of the #checkAll checkbox
-
             $("input:checkbox").prop('checked', $(this).prop('checked'));
         });
     })
@@ -154,15 +157,12 @@
                 const selectedValue = $('select').val();
 
                 if (selectedValue) {
-                    // Call your custom function
                     getPermission(selectedValue);
                 } else {
                     console.error('No value selected.');
                 }
             }
         });
-
-
     });
 </script>
 @endsection

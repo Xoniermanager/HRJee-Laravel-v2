@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+
 class Company extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -50,7 +51,7 @@ class Company extends Authenticatable
     {
         return $this->password;
     }
-    // protected function logo(): Attribute   
+    // protected function logo(): Attribute
     // {
     //     return Attribute::make(
     //         get: fn(string $value) =>  url("storage/" . $value),
@@ -60,8 +61,9 @@ class Company extends Authenticatable
     public function branches()
     {
         return $this->hasMany(CompanyBranch::class);
-        
     }
-  
+    public function menu()
+    {
+        return $this->belongsToMany(Menu::class);
+    }
 }
-
