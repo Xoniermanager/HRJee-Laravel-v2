@@ -111,6 +111,9 @@
 
         </div>
     </div>
+    <div class="mt-3">
+{{ $allStateDetails->links('paginate') }}
+
+    </div>
 </div>
-{{ $allStateDetails->links() }}
 

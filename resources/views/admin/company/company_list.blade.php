@@ -127,7 +127,9 @@
                     </td>
                 </tr>
                 @empty
-                <tr>Company Not Found</tr>
+                <tr>
+                    <td class="text-danger text-center" colspan="7">No Company Available</td>
+                </tr>
                 @endforelse
                 </tbody>
             </table>

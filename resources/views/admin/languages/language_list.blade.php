@@ -115,5 +115,7 @@
 
         </div>
     </div>
+    <div class="mt-3">
     {{ $allLanguagesDetails->links('paginate') }}
+</div>
 </div>

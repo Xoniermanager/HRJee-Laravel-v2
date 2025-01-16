@@ -30,7 +30,7 @@
                             </th>
                         </tr>
                     </thead>
-       
+
                         @forelse ($allDocumentTypes as $key => $allDocumentType)
                             <tr>
                                 <td>
@@ -48,11 +48,11 @@
                                 <?php
                                 $is_mandatory = '';
                                 if ($allDocumentType->is_mandatory == '1') { ?>
-                                    <span class="badge py-3 px-4 fs-7 badge-light-primary" style="background:rgba(0, 128, 0, 0.3);">Yes</span> <?php } 
+                                    <span class="badge py-3 px-4 fs-7 badge-light-primary" style="background:rgba(0, 128, 0, 0.3);">Yes</span> <?php }
                                 if($allDocumentType->is_mandatory == '0'){ ?>
                                     <span class="badge py-3 px-4 fs-7 badge-light-primary" style="background-color: #FF7878">No</span>
                                <?php  } ?>
-               
+
                             </td>
                                 <td>
                                     <div class="form-check form-switch form-check-inline">
@@ -93,7 +93,7 @@
                                                     </g>
                                                 </g>
                                             </svg></a>
-                                         <a href="#" onclick="deleteFunction('{{ $allDocumentType->id }}')">   
+                                         <a href="#" onclick="deleteFunction('{{ $allDocumentType->id }}')">
                                         <svg viewBox="0 0 1024 1024" class="icon" version="1.1"
                                             xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -122,7 +122,7 @@
                                     </div>
                                 </td>
                             </tr>
-           
+
                 @empty
                     <td colspan="3">
                         <span class="text-danger">
@@ -134,5 +134,8 @@
             </div>
 
         </div>
+    </div>
+    <div class="mt-3">
+        {{ $allDocumentTypes->links('paginate') }}
     </div>
 </div>

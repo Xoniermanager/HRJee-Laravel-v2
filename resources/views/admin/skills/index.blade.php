@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     @include('admin.skills.skill_list')
-                    {{ $allSkillDetails->links() }}
                     </div>
                 </div>
             </div>

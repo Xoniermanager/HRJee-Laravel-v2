@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     @include('admin.document_type.document_type_list')
-                    {{ $allDocumentTypes->links() }}
                     </div>
                 </div>
             </div>
