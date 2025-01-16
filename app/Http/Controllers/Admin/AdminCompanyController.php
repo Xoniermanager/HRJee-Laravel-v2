@@ -170,31 +170,4 @@ class AdminCompanyController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-    public function assign_feature()
-    {
-
-        return view('admin.company.assign-feature', [
-            'allMenus' => $this->menuServices->getFeatures(),
-            'allCompaniesDetails' => $this->companyServices->all()
-        ]);
-    }
-    public function update_feature(Request $request)
-    {
-        $validated = $request->validate([
-            'company_id' => 'required',
-            'menu_id'    => 'required|array',
-            'menu_id.*'    => 'required|exists:menus,id',
-        ]);
-        $company = $this->companyRepository->getCompanyById($validated['company_id'])->first();
-        $company->menu()->sync($validated['menu_id']);
-        return back()->with('success', 'Feature Updated Successfully');
-    }
-    public function get_assign_feature(Request $request)
-    {
-        $menuIds = $this->companyRepository->getCompanyById($request->company_id)->with('menu')->first();
-        return response()->json([
-            'success' => true,
-            'data'   => $menuIds->menu->pluck('id')->toArray()
-        ]);
-    }
 }

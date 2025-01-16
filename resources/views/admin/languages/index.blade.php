@@ -1,9 +1,8 @@
 @extends('layouts.admin.main')
 
-@section('title', 'languages')
+@section('title', 'Languages')
 
 @section('content')
-{{$allLanguagesDetails}}
     <div class="page-body">
         <!-- Container-fluid starts-->
         <div class="container-fluid">
@@ -31,7 +30,6 @@
                             </div>
                         </div>
                     @include('admin.languages.language_list')
-                    {{ $allLanguagesDetails->links() }}
                     </div>
                 </div>
             </div>

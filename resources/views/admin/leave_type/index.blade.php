@@ -1,8 +1,6 @@
 @extends('layouts.company.main')
+@section('title',' Leaves Type')
 @section('content')
-@section('title')
-   Leaves Type
-@endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">

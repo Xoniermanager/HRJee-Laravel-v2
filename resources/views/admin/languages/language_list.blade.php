@@ -16,13 +16,13 @@
                             <th>
                                 <span class="f-light f-w-600">Active/InActive</span>
                             </th>
- 
+
                             <th>
                                 <span class="f-light f-w-600">Action</span>
                             </th>
                         </tr>
                     </thead>
-       
+
                         @forelse ($allLanguagesDetails as $key => $languagesDetails)
                             <tr>
                                 <td>
@@ -33,7 +33,7 @@
                                         <p class="f-light">{{ $languagesDetails->name }}</p>
                                 </td>
 
-                
+
                                 <td>
                                     <div class="form-check form-switch form-check-inline">
                                             <input type="checkbox" <?= $languagesDetails->status == '1' ? 'checked' : '' ?>
@@ -73,7 +73,7 @@
                                                     </g>
                                                 </g>
                                             </svg></a>
-                                         <a href="#" onclick="deleteFunction('{{ $languagesDetails->id }}')">   
+                                         <a href="#" onclick="deleteFunction('{{ $languagesDetails->id }}')">
                                         <svg viewBox="0 0 1024 1024" class="icon" version="1.1"
                                             xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -102,7 +102,7 @@
                                     </div>
                                 </td>
                             </tr>
-           
+
                 @empty
                     <td colspan="3">
                         <span class="text-danger">
@@ -115,4 +115,5 @@
 
         </div>
     </div>
+    {{ $allLanguagesDetails->links('paginate') }}
 </div>
