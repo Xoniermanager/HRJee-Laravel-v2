@@ -24,7 +24,7 @@ class DesignationServices
   public function getDesignationsAdminOrCompany($department_id = '')
   {
     if (empty($department_id))
-      return  $this->designationRepository->whereNull('company_id')->orWhere('company_id', auth()->guard('company')->user()->id)->get();
+      return  $this->designationRepository->whereNull('company_id')->orWhere('company_id', Auth()->guard('company')->user()->company_id)->get();
     else
       return  $this->designationRepository->where('department_id', $department_id)->get();
   }

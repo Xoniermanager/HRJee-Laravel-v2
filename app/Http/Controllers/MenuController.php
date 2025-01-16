@@ -26,7 +26,7 @@ class MenuController extends Controller
 
     public function add_menu()
     {
-        
+
         return view('admin.menu.add-menu',data:['allParentMenu'=>$this->menuServices->allParentMenu()]);
     }
 
@@ -36,32 +36,27 @@ class MenuController extends Controller
         return view('admin.menu.edit-menu', ['menuDetails' => $menuDetails,'allParentMenu'=>$this->menuServices->allParentMenu()]);
     }
 
-    public function save_menu(Request $request, ValidateMenu $validateMenu){
+    public function save_menu(ValidateMenu $validateMenu){
         $validated = $validateMenu->validated();
-
-        $validated['icon'] =  $request->icon;
-        $validated['order_no'] =  $request->order_no;
-        $validated['parent_id'] =  $request->parent_id;
-
+        $validated['slug'] = '/company/' . ltrim($validated["slug"], '/');
         $this->menuServices->create($validated);
         return redirect(route('admin.menu'))->with('success','Menu Created Succesfully');
     }
-    public function update_menu(Request $request){
-       
+    public function update_menu(Request $request,$menuId)
+    {
         $validated = $request->validate([
             'title' => 'required|unique:menus,title,' . $request->id . '|max:255',
-            'slug' => 'required|string|max:255'
+            'slug' => 'required|string|max:255',
+            'order_no' => 'required|integer',
+            'parent_id' => 'nullable|sometimes|exists:menus,id',
+            'icon'     => 'required'
         ]);
-
-        $validated['icon'] =  $request->icon;
-        $validated['order_no'] =  $request->order_no;
-        $validated['parent_id'] =  $request->parent_id??NULL;
-
-        $this->menuServices->updateDetails($validated,$request->id);
+        $validated['slug'] = '/company/' . ltrim($validated["slug"], '/');
+        $this->menuServices->updateDetails($validated,$menuId);
         return redirect(route('admin.menu'))->with('success','Menu Updated Succesfully');
     }
 
-   
+
     public function destroy(Request $request)
     {
         $id = $request->id;

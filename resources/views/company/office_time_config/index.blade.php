@@ -457,7 +457,7 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/office-time/search/filter',
+                url: company_ajax_base_url + '/shifts/office-time/search/filter',
                 data: {
                     'branch': $('#branch').val(),
                     'search': $('#search').val(),

@@ -3,9 +3,10 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
+use App\Models\Admin;
 use App\Models\Company;
-use App\Models\CompanyUser;
 use App\Models\Country;
+use App\Models\CompanyUser;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,6 +19,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
+        Admin::create([
+            'name' => 'Admin',
+            'username' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('password'),
+            'contact_no' => '1234567890'
+        ]);
         Company::create([
             'name' => 'Xonier',
             'username' => 'Xonier',
@@ -84,5 +92,7 @@ class DatabaseSeeder extends Seeder
         $this->call(WeekDaySeeder::class);
         $this->call(WeekendsTableSeeder::class);
         $this->call(WeekDayWeekendTableSeeder::class);
+        $this->call(MenusTableSeeder::class);
+        $this->call(CompanyMenuTableSeeder::class);
     }
 }

@@ -63,7 +63,6 @@ class AttendanceController extends Controller
             }
             $finalData = [];
             $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date,Auth()->guard('employee_api')->user()->id)->orderBy('punch_in', 'DESC')->paginate(20);
-;
             if (isset($allAttendanceDetails) && count($allAttendanceDetails) > 0) {
                 foreach ($allAttendanceDetails as $attendanceDetails) {
                     if (isset($attendanceDetails->punch_in) && isset($attendanceDetails->punch_out)) {

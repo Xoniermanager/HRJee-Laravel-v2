@@ -1,6 +1,6 @@
 @extends('layouts.admin.main')
 
-@section('title', 'document_type')
+@section('title', 'Document Type')
 
 @section('content')
 

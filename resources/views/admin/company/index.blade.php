@@ -1,9 +1,6 @@
 @extends('layouts.admin.main')
-
-@section('title', 'Departments')
-
+@section('title', 'Company Management')
 @section('content')
-
 <div class="page-body">
     <!-- Container-fluid starts-->
     <div class="container-fluid">

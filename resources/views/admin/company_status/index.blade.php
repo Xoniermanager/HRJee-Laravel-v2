@@ -1,9 +1,6 @@
 @extends('layouts.admin.main')
-
-@section('title', 'company_status')
-
+@section('title', 'Company Status')
 @section('content')
-
     <div class="page-body">
         <!-- Container-fluid starts-->
         <div class="container-fluid">
@@ -31,7 +28,6 @@
                             </div>
                         </div>
                     @include('admin.company_status.company_status_list')
-                    {{ $allCompanyStatusDetails->links() }}
                     </div>
                 </div>
             </div>

@@ -639,7 +639,7 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/office-shifts/search/filter',
+                url: company_ajax_base_url + '/shifts/office-shifts/search/filter',
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val(),

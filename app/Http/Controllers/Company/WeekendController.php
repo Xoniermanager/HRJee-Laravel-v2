@@ -30,8 +30,8 @@ class WeekendController extends Controller
     {
         // dd($this->weekendService->all());
         return view('company.weekend.index', [
-            'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->id),
-            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->id),
+            'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->company_id),
+            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id),
             'allWeekDay' => WeekDay::get(),
             'allDepartments' => $this->departmentService->getAllDepartmentsByCompanyId()
         ]);
@@ -57,7 +57,7 @@ class WeekendController extends Controller
                 return response()->json([
                     'message' => 'Weekend Added Successfully!',
                     'data'   =>  view('company.weekend.weekend_list', [
-                        'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->id)
+                        'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->company_id)
                     ])->render()
                 ]);
             }
@@ -76,7 +76,7 @@ class WeekendController extends Controller
             return response()->json([
                 'success' => 'Holiday Deleted Successfully',
                 'data'   =>  view('company.weekend.weekend_list', [
-                    'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->id)
+                    'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->company_id)
                 ])->render()
             ]);
         } else {
@@ -95,7 +95,7 @@ class WeekendController extends Controller
 
     public function getWeekEndDetailByCompanyId(Request $request)
     {
-        $data = $this->weekendService->getWeekendDetailsByCompanyBranchIdByCompanyId(Auth()->guard('company')->user()->id, $request->company_branch_id, $request->department_id);
+        $data = $this->weekendService->getWeekendDetailsByCompanyBranchIdByCompanyId(Auth()->guard('company')->user()->company_id, $request->company_branch_id, $request->department_id);
         if (isset($data) && !empty($data)) {
             return response()->json([
                 'status' => true,

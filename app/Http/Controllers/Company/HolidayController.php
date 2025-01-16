@@ -26,7 +26,7 @@ class HolidayController extends Controller
     {
         return view('company.holiday.index', [
             'allHolidaysDetails' => $this->holidayService->all(),
-            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->id)
+            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id)
         ]);
     }
 

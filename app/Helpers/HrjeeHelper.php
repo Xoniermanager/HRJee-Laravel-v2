@@ -1,9 +1,10 @@
 <?php
 
 use Carbon\Carbon;
+use App\Models\Company;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 
 function removingSpaceMakingName($name)
@@ -190,4 +191,59 @@ function getDecryptId($id)
         return Crypt::decrypt($id);
     }
     return false;
+}
+
+function getCompanyMenuHtml($companyId)
+{
+    $company = Company::with(['menu' => function ($query) {
+        $query->orderBy('order_no', 'ASC');
+    }, 'menu.parent'])->find($companyId);
+    $html = '';
+    if ($company && $company->menu) {
+        foreach ($company->menu as $menu) {
+            // Check if the menu has children
+            if ($menu->children && $menu->children->isNotEmpty()) {
+                $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+                            <span class="menu-link">
+                                <span class="menu-icon">
+                                    <span class="svg-icon svg-icon-5">
+                                        ' . $menu->icon . '
+                                    </span>
+                                </span>
+                                <span class="menu-title">' . $menu->title . '</span>
+                                <span class="menu-arrow"></span>
+                            </span>';
+
+                // Iterate over the children
+                foreach ($menu->children as $children) {
+                    $html .= '<div class="menu-sub menu-sub-accordion">
+                                <div class="menu-item" data-url="' . $children->slug . '">
+                                    <a class="menu-link" href="' . $children->slug . '">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">' . $children->title . '</span>
+                                    </a>
+                                </div>
+                              </div>';
+                }
+
+                $html .= '</div>';  // Close the menu-item (accordion)
+            }
+            if ($menu->parent_id == null && $menu->children->isEmpty()) {
+                // If no children, just a simple menu item
+                $html .= '<div class="menu-item" data-url="' . $menu->slug . '">
+                            <a class="menu-link" href="' . $menu->slug . '">
+                                <span class="menu-icon">
+                                    <span class="svg-icon svg-icon-5">
+                                        ' . $menu->icon . '
+                                    </span>
+                                </span>
+                                <span class="menu-title">' . $menu->title . '</span>
+                            </a>
+                          </div>';
+            }
+        }
+    }
+    return $html;
 }

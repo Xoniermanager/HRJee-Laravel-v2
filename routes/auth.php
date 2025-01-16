@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\ForgetPasswordController as AdminForgetPasswordCo
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Employee\AuthController;
-use App\Http\Controllers\Admin\SuperAdminController;
+use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Company\ForgetPasswordController as CompanyForgetPasswordController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\EmployeeComplainController;
@@ -68,7 +68,7 @@ Route::prefix('company')->controller(AdminController::class)->group(function () 
 /**---------------End Company Auth Route----------------*/
 
 /** ----------------- Super Admin Started -------------------- **/
-Route::prefix('/admin')->controller(SuperAdminController::class)->group(function () {
+Route::prefix('/admin')->controller(AdminAuthController::class)->group(function () {
     Route::get('/login', 'login')->name('admin.login.form');
     Route::get('/verify/otp', 'verifyOtp')->name('admin.verifyOtp');
     Route::get('/resend/otp', 'resendOtp')->name('admin.resendOtp');

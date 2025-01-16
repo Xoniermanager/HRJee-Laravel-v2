@@ -75,7 +75,7 @@
                             <span class="">Company</span></a>
                         <ul class="sidebar-submenu">
                             <li><a href="{{route('admin.company')}}">Companies</a></li>
-                            <li><a href="{{route('admin.company.assign.feature')}}">Companies Assign Features</a></li>
+                            <li><a href="{{route('admin.assign_menu.index')}}">Companies Assign Features</a></li>
                             {{-- <li><a href="{{route('admin.company.size')}}">Company Size</a></li>
                             <li><a href="{{route('admin.company.status')}}">Company Status</a></li> --}}
                             <li><a href="{{route('admin.branch')}}">Company Branches</a></li>
