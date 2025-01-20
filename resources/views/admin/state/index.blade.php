@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     @include('admin.state.state_list')
-                    {{ $allStateDetails->links() }}
+                    {{ $allStateDetails->links('paginate') }}
                 </div>
             </div>
         </div>

@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Controllers\Employee\AnnouncementsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Employee\NewsController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
-use App\Http\Controllers\Employee\AnnouncementController;
+use App\Http\Controllers\Employee\AnnouncementsController;
 use App\Http\Controllers\Employee\ApplyLeaveController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Employee\ContactUsController;
@@ -74,7 +73,7 @@ Route::prefix('employee')->middleware('Check2FA')->group(function () {
     //Announcement Module
     Route::controller(AnnouncementsController::class)->group(function () {
         Route::get('/announcement', 'index')->name('employee.announcement');
-        Route::get('/announcement/details/{news:id}', 'viewDetails')->name('employee.announcement.details');
+        Route::get('/announcement/details/{announcements:id}', 'viewDetails')->name('employee.announcement.details');
     });
     //Account Module
     Route::controller(AccountController::class)->group(function () {

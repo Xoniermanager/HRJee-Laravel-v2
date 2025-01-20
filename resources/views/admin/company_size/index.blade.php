@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     @include('admin.company_size.company_size_list')
-                    {{ $allCompanySizesDetails->links() }}
                     </div>
                 </div>
             </div>

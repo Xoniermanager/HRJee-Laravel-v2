@@ -43,7 +43,6 @@
                         </div>
                     </div>
                     @include('admin.designation.designation_list')
-                    {{ $allDesignationDetails->links() }}
                 </div>
             </div>
         </div>

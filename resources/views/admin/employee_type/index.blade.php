@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     @include('admin.employee_type.employee_type_list')
-                    {{ $allEmployeeTypeDetails->links() }}
                     </div>
                 </div>
             </div>

@@ -27,7 +27,7 @@
                             </th>
                         </tr>
                     </thead>
-       
+
                         @forelse ($allEmployeeStatusDetails as $key => $employeeStatusDetails)
                             <tr>
                                 <td>
@@ -80,7 +80,7 @@
                                                     </g>
                                                 </g>
                                             </svg></a>
-                                         <a href="#" onclick="deleteFunction('{{ $employeeStatusDetails->id }}')">   
+                                         <a href="#" onclick="deleteFunction('{{ $employeeStatusDetails->id }}')">
                                         <svg viewBox="0 0 1024 1024" class="icon" version="1.1"
                                             xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -109,7 +109,7 @@
                                     </div>
                                 </td>
                             </tr>
-           
+
                 @empty
                     <td colspan="3">
                         <span class="text-danger">
@@ -121,5 +121,9 @@
             </div>
 
         </div>
+    </div>
+    <div class="mt-3">
+        {{ $allEmployeeStatusDetails->links('paginate') }}
+
     </div>
 </div>

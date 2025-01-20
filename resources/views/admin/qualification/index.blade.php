@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     @include('admin.qualification.qualification_list')
-                    {{ $allQualificationDetails->links() }}
                     </div>
                 </div>
             </div>

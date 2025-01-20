@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'employee'  => \App\Http\Middleware\IsEmployee::class,
         'Check2FA' => \App\Http\Middleware\Check2FA::class,
+        'checkUrlAcess' => \App\Http\Middleware\CheckUrlAccess::class,
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,

@@ -119,4 +119,7 @@
 
         </div>
     </div>
+    <div class="mt-3">
+        {{ $allDesignationDetails->links('paginate') }}
+    </div>
 </div>

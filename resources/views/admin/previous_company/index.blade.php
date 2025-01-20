@@ -30,7 +30,6 @@
                             </div>
                         </div>
                     @include('admin.previous_company.previous_company_list')
-                    {{ $allPreviousCompanyDetails->links() }}
                     </div>
                 </div>
             </div>

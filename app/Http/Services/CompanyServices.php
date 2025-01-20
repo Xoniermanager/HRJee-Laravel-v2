@@ -52,7 +52,7 @@ class CompanyServices
             if (isset($data['status'])) {
                 $query->where('status', $data['status']);
             }
-        })->get();
+        })->paginate(10);
     }
     public function delete_company_by_id($id)
     {
