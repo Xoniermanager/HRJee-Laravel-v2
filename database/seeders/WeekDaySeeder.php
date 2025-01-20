@@ -9,7 +9,6 @@ class WeekDaySeeder extends Seeder
 {
     public function run()
     {
-        WeekDay::truncate();
         $weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         foreach ($weekdays as $day) {
             WeekDay::create([
