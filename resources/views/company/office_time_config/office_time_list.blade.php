@@ -57,7 +57,5 @@
         </table>
         <!--end::Table-->
     </div>
-    <!--end::Table container-->
-
-</div>
 {{ $allOfficeTimeDetails->links() }}
+</div>

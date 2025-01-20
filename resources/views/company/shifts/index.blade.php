@@ -3,7 +3,6 @@
 @section('title')
     Office Shift
 @endsection
-{{ $allConfigTimes }}
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
@@ -74,7 +73,7 @@
                 <!--begin::Modal header-->
                 <div class="modal-header">
                     <!--begin::Close-->
-                    <h2>Edit Department</h2>
+                    <h2>Edit Office Shift</h2>
                     <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                         <span class="svg-icon svg-icon-1">
