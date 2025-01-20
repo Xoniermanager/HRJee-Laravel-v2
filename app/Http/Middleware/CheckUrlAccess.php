@@ -27,16 +27,6 @@ class CheckUrlAccess
                     throw UnauthorizedException::notAcessRoute();
             }
         }
-        if (Auth::guard('employee')->check()) {
-            $currentUrl = '/' . str_replace('employee', 'company', $request->path());
-            if ($currentUrl != '/employee/dashboard') {
-                $accessReponse = $this->checkMenuDetails($currentUrl, Auth::guard('employee')->user()->company_id);
-                if ($accessReponse)
-                    return $next($request);
-                else
-                    throw UnauthorizedException::notAcessRoute();
-            }
-        }
         return $next($request);
     }
 
