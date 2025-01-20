@@ -226,8 +226,8 @@
                         </div>
                         <ul class="profile-dropdown onhover-show-div">
 
-                            {{-- <li><a href="profile.html"><i class="fa fa-user pr-10"></i><span>Profile</span></a>
-                            </li> --}}
+                            <li><a href="{{ route('admin.getProfile') }}"><i class="fa fa-user pr-10"></i><span>Profile</span></a>
+                            </li>
                             <li><a href="{{ route('admin.logout') }}"><i class="fa fa-arrow-circle-right pr-10">
                                     </i><span>Log out</span></a></li>
                         </ul>

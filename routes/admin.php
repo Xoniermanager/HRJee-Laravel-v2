@@ -18,9 +18,11 @@ use App\Http\Controllers\Admin\AdminDesignationsController;
 use App\Http\Controllers\Admin\AssignMenuCompanyController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Admin\AdminPreviousCompanyController;
+use App\Http\Controllers\Admin\ProfileController;
 
 Route::prefix('/admin')->middleware('Check2FA')->group(function () {
     Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
+    Route::get('/profile/details',[ ProfileController::class,'getProfile'])->name('admin.getProfile');
 
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
         Route::get('/', 'index')->name('admin.departments');

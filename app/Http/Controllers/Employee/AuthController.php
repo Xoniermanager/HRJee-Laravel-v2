@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Employee;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\SendOtpRequest;
-use App\Http\Requests\VerifyOtpRequest;
+use Throwable;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Services\AuthService;
-use App\Http\Services\SendOtpService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\SendOtpRequest;
+use App\Http\Services\SendOtpService;
+use App\Http\Requests\VerifyOtpRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Throwable;
+use App\Http\Requests\ChangePasswordRequest;
 
 class AuthController extends Controller
 {
@@ -134,6 +137,16 @@ class AuthController extends Controller
                 return redirect('employee/verify/otp')->with('error',  transLang($otpResponse['message']));
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
+        }
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $updatePassword = Admin::find(Auth()->guard('admin')->user()->id)->update(['password' => Hash::make($request['new_password'])]);
+        if ($updatePassword) {
+            return back()->with(['success' => 'Password Updated Successfully']);
+        } else {
+            return back()->with(['error' => 'Something Went Wrong! Please try Again']);
         }
     }
 }
