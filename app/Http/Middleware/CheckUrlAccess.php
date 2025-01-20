@@ -21,7 +21,7 @@ class CheckUrlAccess
             $currentUrl = '/' . $request->path();
             if ($currentUrl != '/company/dashboard') {
                 $accessReponse = $this->checkMenuDetails($currentUrl, Auth::guard('company')->user()->company_id);
-                if ($accessReponse || $currentUrl . '/*')
+                if ($accessReponse)
                     return $next($request);
                 else
                     throw UnauthorizedException::notAcessRoute();
