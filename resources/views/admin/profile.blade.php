@@ -62,44 +62,71 @@
                         {{ session('success') }}
                     </div>
                     @endif
-                    <form action="{{ route('change.passowrd') }}" method="post">
+                    <form action="{{ route('change.password') }}" method="post">
                         @csrf
                         <div class="row mb-2">
                             <div class="col-6 text-left">
                                 <strong class="required">Old Password:</strong>
                             </div>
                             <div class="col-6 text-right">
-                                <input type="text" name="old_password" id="" class="form-control"
-                                    placeholder="Enter the Old Password" value="{{ old('old_password') }}">
+                                <div class="input-group">
+                                    <input type="password" name="old_password" class="form-control"
+                                        placeholder="Enter the Old Password" value="{{ old('old_password') }}"
+                                        autocomplete="on">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                    </div>
+                                </div>
                                 @error('old_password')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
+
                         <div class="row mb-2">
                             <div class="col-6 text-left">
                                 <strong class="required">New Password:</strong>
                             </div>
                             <div class="col-6 text-right">
-                                <input type="text" name="new_password" id="" class="form-control"
-                                    placeholder="Enter the New Password" value="{{ old('new_password') }}">
+                                <div class="input-group">
+                                    <input type="password" name="new_password" class="form-control"
+                                        placeholder="Enter the New Password" value="{{ old('new_password') }}"
+                                        autocomplete="on" id="new_password">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="togglePasswordVisibility('new_password')">
+                                            <i id="new_password_eye" class="fa fa-eye-slash"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 @error('new_password')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
+
                         <div class="row mb-2">
                             <div class="col-6 text-left">
                                 <strong class="required">Confirm Password:</strong>
                             </div>
                             <div class="col-6 text-right">
-                                <input type="text" name="confirm_password" id="" class="form-control"
-                                    placeholder="Enter the Confirm Password" value="{{ old('confirm_password') }}">
+                                <div class="input-group">
+                                    <input type="password" name="confirm_password" class="form-control"
+                                        placeholder="Enter the Confirm Password" value="{{ old('confirm_password') }}"
+                                        autocomplete="on" id="confirm_password">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="togglePasswordVisibility('confirm_password')">
+                                            <i id="confirm_password_eye" class="fa fa-eye-slash"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 @error('confirm_password')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
+
                         <div class="row mb-2">
                             <div class="col-6 text-left">
 
@@ -114,4 +141,20 @@
         </div>
     </div>
 </div>
+<script>
+    function togglePasswordVisibility(fieldId) {
+        var passwordField = document.getElementById(fieldId);
+        var eyeIcon = document.getElementById(fieldId + '_eye');
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            eyeIcon.classList.add("fa-eye");
+            eyeIcon.classList.remove("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            eyeIcon.classList.add("fa-eye");
+            eyeIcon.classList.remove("fa-eye-slash");
+        }
+    }
+</script>
 @endsection
