@@ -31,7 +31,7 @@
                                 <span class="slider round"></span>
                             </label>
                         </td>
-                        
+
                         <td data-order="Invalid date">
                             <label class="switch">
                                 <input type="checkbox"
@@ -69,6 +69,5 @@
         <!--end::Table-->
     </div>
     <!--end::Table container-->
-
+    {{ $allshifts->links() }}
 </div>
-{{ $allshifts->links() }}

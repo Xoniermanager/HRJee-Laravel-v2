@@ -36,7 +36,7 @@
                             @forelse ($allBranch as $branch)
                                 <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                             @empty
-                                <p>No branches Available</p>
+                                <p>No Branches Available</p>
                             @endforelse
                         </select>
                     </div>
@@ -66,7 +66,7 @@
                 <!--begin::Modal header-->
                 <div class="modal-header">
                     <!--begin::Close-->
-                    <h2>Edit Department</h2>
+                    <h2>Edit Timing Config</h2>
                     <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                         <span class="svg-icon svg-icon-1">
