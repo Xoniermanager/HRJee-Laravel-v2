@@ -19,7 +19,6 @@ class CheckUrlAccess
     {
         if (Auth::guard('company')->check()) {
             //$currentUrl = '/' . $request->path();
-
             $segments = request()->segments();
             $baseSegments = array_slice($segments, 0, 2);
             $currentUrl = '/'.implode('/', $baseSegments);
