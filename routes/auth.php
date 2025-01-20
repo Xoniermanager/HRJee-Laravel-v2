@@ -47,6 +47,7 @@ Route::prefix('employee')->controller(AuthController::class)->group(function () 
     Route::get('/verify/otp', 'verifyOtp')->name('employee.verifyOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('employee.verifyOtpCheck');
     Route::get('/resend/otp', 'resendOtp')->name('employee.resendOtp');
+    Route::post('/change/password','changePassword')->name('change.passowrd');
 });
 /**---------------End Employee Auth Route----------------*/
 

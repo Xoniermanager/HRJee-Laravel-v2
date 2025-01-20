@@ -43,8 +43,7 @@
                                     <title>home [#1393]</title>
                                     <desc>Created with Sketch.</desc>
                                     <defs> </defs>
-                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none"
-                                        fill-rule="evenodd">
+                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                         <g id="Dribbble-Light-Preview" transform="translate(-341.000000, -720.000000)"
                                             fill="#ffffff">
                                             <g id="icons" transform="translate(56.000000, 160.000000)">
@@ -121,8 +120,18 @@
                             <li><a href="{{route('admin.languages')}}">Languages</a></li>
                         </ul>
                     </li>
-
-
+                    <li class="sidebar-list "><a class="sidebar-link " href="{{ route('admin.getProfile') }}">
+                            <svg fill="#ddd" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" stroke="#ddd">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path
+                                        d="M0 0h7v7H0V0zm2 2v3h3V2H2zM0 9h7v7H0V9zm9-9h7v7H9V0zm2 2v3h3V2h-3zM9 9h7v7H9V9zm2 2v3h3v-3h-3zm-9 0v3h3v-3H2z"
+                                        fill-rule="evenodd"></path>
+                                </g>
+                            </svg>
+                            <span class="">Profile</span></a>
+                    </li>
                 </ul>
             </div>
             <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
