@@ -107,6 +107,7 @@
                             </svg>
                             <span class="">Master</span></a>
                         <ul class="sidebar-submenu">
+                            <li><a href="{{route('admin.company_type')}}">Company Type</a></li>
                             <li><a href="{{route('admin.departments')}}">Departments</a></li>
                             <li><a href="{{route('admin.designations')}}">Designations</a></li>
                             <li><a href="{{route('admin.country')}}">Countries</a></li>

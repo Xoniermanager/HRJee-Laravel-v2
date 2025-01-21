@@ -210,16 +210,16 @@
                                                                     placeholder="Company Website">
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
-                                                                <select class="form-select" id="industry_type"
-                                                                    name="industry_type">
-                                                                    <option value="">industry type</option>
-                                                                    <option>IT</option>
-                                                                    <option>Medical</option>
-                                                                    <option>Raw Supplies</option>
-
+                                                                <select class="form-select" id="company_type_id"
+                                                                    name="company_type_id">
+                                                                    <option value="">Company type</option>
+                                                                    @forelse ($allCompanyTypeDetails as $item)
+                                                                    <option value="{{ $item->id }}">{{ $item->id }}</option>
+                                                                    @empty
+                                                                    <option value="">No Company Type</option>
+                                                                    @endforelse
                                                                 </select>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                     <div class="col-12">
@@ -386,7 +386,7 @@
                         digits: true,
                         maxlength: 6
                     },
-                    industry_type: "required",
+                    company_type_id: "required",
                     company_address: "required",
                 },
                 messages: {
@@ -399,7 +399,7 @@
                         digits: "Please enter only digits",
                         maxlength: "Company size must not exceed 6 digits"
                     },
-                    industry_type: "Please Enter Industry Type",
+                    company_type_id: "Please Enter Industry Type",
                     company_address: "Please Enter Company Address",
                 },
             });

@@ -34,28 +34,29 @@ class AdminController extends Controller
      */
     public function companyLogin(Request $request)
     {
-
         try {
-            // Validate login form data
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required|min:6',
             ]);
-            // If validation fails, return the error messages
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-            // If authentication fails, redirect back with an error message
             if (!Auth::guard('company')->attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with(['error' => 'These credentials do not match our records.']);
             } else {
+                $user = Auth::guard('company')->user();
+                if ($user->status !== '1') {
+                    return redirect()->back()->with(['error' => 'Your account is not Active.Please Contact to Admin']);
+                }
                 Cookie::queue(Cookie::make('user_name', $request->email, 360));
                 Cookie::queue(Cookie::make('password', $request->password, 360));
-                $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, 'company');
-                if ($genrateOtpresponse['status'] == true) {
+                $generateOtpResponse = $this->sendOtpService->generateOTP($request->email, 'company');
+                if ($generateOtpResponse['status'] == true) {
                     return redirect('company/verify/otp');
-                } else
-                    return redirect('company/signin')->with('error', $genrateOtpresponse['message']);
+                } else {
+                    return redirect('company/signin')->with('error', $generateOtpResponse['message']);
+                }
             }
         } catch (Throwable $th) {
             return response()->json([

@@ -26,13 +26,14 @@
                             <span class="f-light f-w-600">Address</span>
                         </th>
                         <th>
-                            <span class="f-light f-w-600">company size</span>
+                            <span class="f-light f-w-600">Company size</span>
+                        </th>
+                        <th>
+                            <span class="f-light f-w-600">Company Type</span>
                         </th>
                         <th>
                             <span class="f-light f-w-600">Status</span>
                         </th>
-
-
                         <th>
                             <span class="f-light f-w-600">Action</span>
                         </th>
@@ -51,10 +52,9 @@
                         <a href="company_detail.html">
                             <p class="f-light">{{$companiesDetails->name}}</p>
                         </a>
-
                     </td>
                     <td>
-                        <p class="f-light">{{$companiesDetails->joining_date}}</p>
+                        <p class="f-light">{{ getFormattedDate($companiesDetails->joining_date)}}</p>
                     </td>
                     <td>
                         <p class="f-light">{{$companiesDetails->email}}</p>
@@ -68,6 +68,9 @@
                     <td>
                         <a href="branch_detail.html"><span
                                 class="badge badge-primary p-2">{{$companiesDetails->company_size}}</span></a>
+                    </td>
+                    <td>
+                        {{$companiesDetails->companyType->name}}
                     </td>
                     <td>
                         <div class="form-check form-switch form-check-inline">

@@ -53,10 +53,6 @@ Route::prefix('employee')->controller(AuthController::class)->group(function () 
 
 /**---------------Company Panel Route----------------*/
 Route::prefix('company')->controller(AdminController::class)->group(function () {
-    Route::get('/clear-cache', function () {
-        Artisan::call('optimize:clear');
-        return '<h1>Cache cleared</h1>';
-    });
     Route::post('/login', 'companyLogin')->name('company.login');
     Route::get('/logout', 'companyLogout')->name('company.logout');
     Route::get('/signin', 'signin')->name('signin');
