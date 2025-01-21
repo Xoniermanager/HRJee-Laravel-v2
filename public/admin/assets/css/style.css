@@ -56490,3 +56490,11 @@
     padding-left: 0.25rem;
     font-weight: 600;
 }
+.chart1 {
+        text-align: center;
+    }
+.employee_chart {
+        width: 100% !important;
+        max-width: 400px;
+        margin: 0 auto;
+    }
