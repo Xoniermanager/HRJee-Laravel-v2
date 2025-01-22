@@ -147,7 +147,7 @@
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
                                                                 <input class="form-control" id="email" name="email" value="{{$companyDetails->email}}"
-                                                                    type="email" placeholder="Company Email">
+                                                                    type="email" placeholder="Company Email" disabled>
                                                             </div>
 
                                                         </div>
@@ -229,15 +229,8 @@
                                                                     type="url" placeholder="Company Website">
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
-                                                                <select class="form-select" id="industry_type" name="industry_type" value="{{$companyDetails->industry_type}}">
-                                                                    <option value="">industry type</option>
-                                                                    <option value="IT" {{ $companyDetails->industry_type == 'IT' ? 'selected' : '' }}>IT</option>
-                                                                    <option value="Medical" {{ $companyDetails->industry_type == 'Medical' ? 'selected' : '' }}>Medical</option>
-                                                                    <option value="Raw Supplies" {{ $companyDetails->industry_type == 'Raw Supplies' ? 'selected' : '' }}>Raw Supplies</option>
-                                                                </select>
-
+                                                                <input class="form-control" value="{{$companyDetails->company_url}}" type="text" disabled>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                     <div class="col-12">
@@ -323,10 +316,10 @@
                 rules: {
                     name: "required",
                     username: "required",
-                    email: {
-                        required: true,
-                        email: true
-                    },
+                    // email: {
+                    //     required: true,
+                    //     email: true
+                    // },
                     password: {
                         required: true,
                         minlength: 8,
@@ -347,7 +340,7 @@
                 messages: {
                     name: "Please enter your name",
                     username: "Please enter your username",
-                    email: "Please enter a valid email address",
+                    // email: "Please enter a valid email address",
                     password: {
                         required: "Please enter your password",
                         minlength: "Password must be at least 8 characters long",
@@ -402,7 +395,7 @@
                         digits: true,
                         maxlength: 6
                     },
-                    industry_type: "required",
+                    // industry_type: "required",
                     company_address: "required",
                 },
                 messages: {
@@ -415,7 +408,7 @@
                         digits: "Please enter only digits",
                         maxlength: "Company size must not exceed 6 digits"
                     },
-                    industry_type: "Please Enter Industry Type",
+                    // industry_type: "Please Enter Industry Type",
                     company_address: "Please Enter Company Address",
                 },
             });

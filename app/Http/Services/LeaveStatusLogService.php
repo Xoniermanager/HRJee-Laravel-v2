@@ -19,7 +19,7 @@ class LeaveStatusLogService
   }
   public function create(array $data)
   {
-    $data['action_taken_by'] = '1'; //Auth::guard('company')->user()->id;
+    $data['action_taken_by'] = '1'; //Auth::guard('company')->user()->company_id;
     if ($this->leaveStatusLogRepository->create($data)) {
       $payload = [
         'leave_status_id' => $data['leave_status_id']

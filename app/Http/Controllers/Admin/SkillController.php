@@ -146,7 +146,7 @@ class SkillController extends Controller
         try {
             $dataTest = $request->all()['models'];
             $data     = collect(json_decode($dataTest, true))->first();
-            $data['company_id'] = isset(Auth::guard('company')->user()->id)?Auth::guard('company')->user()->id:'';
+            $data['company_id'] = isset(Auth::guard('company')->user()->company_id)?Auth::guard('company')->user()->company_id:'';
             $validateSkills  = Validator::make($data, [
                 'name'        => ['required', 'string', new UniqueForAdminOnly('skills')],
                 'description' => ['string']

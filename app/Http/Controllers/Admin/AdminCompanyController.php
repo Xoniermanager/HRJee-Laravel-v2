@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ValidateCompany;
 use App\Http\Services\CompanyServices;
+use App\Http\Services\CompanyTypeService;
 use App\Repositories\CompanyRepository;
 use App\Http\Services\CompanyUserService;
 
@@ -20,24 +21,28 @@ class AdminCompanyController extends Controller
     private $companyUserService;
     private $menuServices;
     private $companyRepository;
-    public function __construct(CompanyServices $companyServices, CompanyUserService $companyUserService, MenuService $menuServices, CompanyRepository $companyRepository)
+    private $companyTypeService;
+    public function __construct(CompanyServices $companyServices, CompanyUserService $companyUserService, MenuService $menuServices, CompanyRepository $companyRepository, CompanyTypeService $companyTypeService)
     {
         $this->companyServices = $companyServices;
         $this->companyUserService = $companyUserService;
         $this->menuServices = $menuServices;
         $this->companyRepository = $companyRepository;
+        $this->companyTypeService = $companyTypeService;
     }
     public function index()
     {
         return view('admin.company.index', [
-            'allCompaniesDetails' => $this->companyServices->all()
+            'allCompaniesDetails' => $this->companyServices->all(),
+            'allCompanyTypeDetails' => $this->companyTypeService->getAllActiveCompanyType()
         ]);
     }
 
 
     public function add_company()
     {
-        return view('admin.company.add_company');
+        $allCompanyTypeDetails = $this->companyTypeService->getAllActiveCompanyType();
+        return view('admin.company.add_company', compact('allCompanyTypeDetails'));
     }
 
     public function edit_company(Request $request)
@@ -48,7 +53,6 @@ class AdminCompanyController extends Controller
 
     public function store(ValidateCompany $request)
     {
-        // dd($request->all());
         $validated = $request->validated();
         if ($request->hasFile('logo')) {
             $nameForImage = removingSpaceMakingName($request->name);
@@ -80,20 +84,15 @@ class AdminCompanyController extends Controller
 
     public function update_company(Request $request)
     {
-        // dd($request->all());
-
-
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255,',
             'username' => 'sometimes|required|string|max:255',
             'contact_no' => 'sometimes|required|string|max:20',
-            'email' => 'sometimes|required|string|email|max:255|unique:companies,email,' . $request->company_id . '',
             'password' => 'sometimes|required|confirmed',
             'password_confirmation' => 'sometimes|required',
             'company_size' => 'sometimes|required|string',
             'company_url' => 'sometimes|required|string|url|max:100',
             'company_address' => 'sometimes|sometimes|required|string|max:255',
-            'industry_type' => 'sometimes|required|string|max:255',
             'logo' => 'sometimes|max:2048',
         ]);
         if ($request->hasFile('logo')) {
@@ -109,8 +108,6 @@ class AdminCompanyController extends Controller
 
         if ($createdCompany) {
             $data['name'] = $request->name;
-            $data['email'] = $request->email;
-
             $this->companyUserService->updateDetailsByCompanyId($data, $request->company_id);
             return response()->json([
                 'success' => 'Company Updated Successfully',
@@ -123,10 +120,10 @@ class AdminCompanyController extends Controller
     }
     public function destroy(Request $request)
     {
-        $id = $request->id;
-        $deleted = $this->companyUserService->deleteCompanyUserByCompanyId($id);
+        $companyId = $request->id;
+        $deleted = $this->companyUserService->deleteCompanyUserByCompanyId($companyId);
         if ($deleted) {
-            $data = $this->companyServices->deleteDetails($id);
+            $data = $this->companyServices->deleteDetails($companyId);
             if ($data) {
                 return response()->json([
                     'success' => 'Company Deleted Successfully',
@@ -156,9 +153,7 @@ class AdminCompanyController extends Controller
     }
     public function statusUpdate(Request $request)
     {
-        $id = $request->id;
-        $data['status'] = $request->status;
-        $statusDetails = $this->companyServices->updateDetails($data, $id);
+        $statusDetails = $this->companyServices->updateStatus($request->id, $request->status);
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Company Status Updated Successfully',

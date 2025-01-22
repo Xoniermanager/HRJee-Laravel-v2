@@ -22,7 +22,7 @@ class ValidateUpdateCompanyRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = Auth::guard('company')->user()->id; // Assuming the route parameter is 'user'
+        $userId = Auth::guard('company')->user()->company_id; // Assuming the route parameter is 'user'
         return [
 
            // 'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',

@@ -2,79 +2,84 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\CompanyRepository;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Session;
+use App\Repositories\CompanyUserRepository;
 
 class CompanyServices
 {
-    private $company_repository;
-    public function __construct(CompanyRepository $company_repository)
+    private $companyRepository;
+    private $companyUserRepository;
+    public function __construct(CompanyRepository $companyRepository, CompanyUserRepository $companyUserRepository)
     {
-        $this->company_repository = $company_repository;
+        $this->companyRepository = $companyRepository;
+        $this->companyUserRepository = $companyUserRepository;
     }
     public function all()
     {
-        return $this->company_repository->with('menu')->paginate(10);
+        return $this->companyRepository->with('menu')->paginate(10);
     }
     public function allCompanyDetails()
     {
-        return $this->company_repository->all();
+        return $this->companyRepository->all();
     }
     public function create($data)
     {
-
-        return $this->company_repository->create($data);
+        return $this->companyRepository->create($data);
     }
 
     public function updateDetails(array $data, $id)
     {
-        return $this->company_repository->find($id)->update($data);
+        return $this->companyRepository->find($id)->update($data);
     }
     public function deleteDetails($id)
     {
-        return $this->company_repository->find($id)->delete();
+        return $this->companyRepository->find($id)->delete();
     }
 
     public function searchInCompany($searchKey)
     {
-        $data['key']     =  array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
-        $data['status']  =  array_key_exists('status', $searchKey) ? $searchKey['status'] : '';
-
-        return $this->company_repository->where(function ($query) use ($data) {
-            if (!empty($data['key'])) {
-                $query->where('name', 'like', "%{$data['key']}%")
-                    ->orWhere('username', 'like', "%{$data['key']}%")
-                    ->orWhere('email', 'like', "%{$data['key']}%")
-                    ->orWhere('contact_no', 'like', "%{$data['key']}%")
-                    ->orWhere('company_address', 'like', "%{$data['key']}%");
+        return $this->companyRepository->where(function ($query) use ($searchKey) {
+            if (!empty($searchKey['key'])) {
+                $query->where('name', 'like', "%{$searchKey['key']}%")
+                    ->orWhere('username', 'like', "%{$searchKey['key']}%")
+                    ->orWhere('email', 'like', "%{$searchKey['key']}%")
+                    ->orWhere('contact_no', 'like', "%{$searchKey['key']}%")
+                    ->orWhere('company_address', 'like', "%{$searchKey['key']}%");
             }
-
-            if (isset($data['status'])) {
-                $query->where('status', $data['status']);
+            if (isset($searchKey['status'])) {
+                $query->where('status', $searchKey['status']);
+            }
+            if (isset($searchKey['deletedAt'])) {
+                $query->where('deleted_at', $searchKey['deletedAt']);
+            }
+            if (isset($searchKey['companyTypeId'])) {
+                $query->where('company_type_id', $searchKey['companyTypeId']);
             }
         })->paginate(10);
     }
     public function delete_company_by_id($id)
     {
-        return $this->company_repository->getCompanyById($id)->delete();
+        return $this->companyRepository->getCompanyById($id)->delete();
     }
     public function get_company_by_id($id)
     {
-        return $this->company_repository->getCompanyById($id)->first();
+        return $this->companyRepository->getCompanyById($id)->first();
     }
     public function update_company($data)
     {
-        return $this->company_repository->updateCompany($data);
+        return $this->companyRepository->updateCompany($data);
     }
 
     public function get_company_with_branch_details($id)
     {
-        return $this->company_repository->getPrimaryBranchForCompany($id);
+        return $this->companyRepository->getPrimaryBranchForCompany($id);
     }
 
     public function searchCompanyMenu($searchKey)
     {
-        return $this->company_repository->where(function ($query) use ($searchKey) {
+        return $this->companyRepository->where(function ($query) use ($searchKey) {
             if (!empty($searchKey)) {
                 $query->where('name', 'like', "%{$searchKey}%")
                     ->orWhereHas('menu', function ($menuQuery) use ($searchKey) {
@@ -82,5 +87,14 @@ class CompanyServices
                     });
             }
         })->with('menu')->paginate(10);
+    }
+
+    public function updateStatus($companyId, $statusValue)
+    {
+        $companyStatusUpdate =  $this->companyRepository->find($companyId)->update(['status' => $statusValue]);
+        if ($companyStatusUpdate) {
+            $this->companyUserRepository->where('company_id', $companyId)->update(['status' => $statusValue]);
+        }
+        return $companyStatusUpdate;
     }
 }

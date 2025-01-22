@@ -2,9 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\Admin\AdminDashboard;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\AdminStateController;
 use App\Http\Controllers\Admin\CompanySizeController;
+use App\Http\Controllers\Admin\CompanyTypeController;
 use App\Http\Controllers\Admin\AdminCompanyController;
 use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DocumentTypeController;
@@ -17,14 +20,13 @@ use App\Http\Controllers\Admin\AdminDepartmentController;
 use App\Http\Controllers\Admin\AdminDesignationsController;
 use App\Http\Controllers\Admin\AssignMenuCompanyController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
-use App\Http\Controllers\Admin\AdminDashboard;
 use App\Http\Controllers\Admin\AdminPreviousCompanyController;
-use App\Http\Controllers\Admin\ProfileController;
 
 Route::prefix('/admin')->middleware('Check2FA')->group(function () {
-    Route::get('/profile/details',[ ProfileController::class,'getProfile'])->name('admin.getProfile');
+    Route::get('/profile/details', [ProfileController::class, 'getProfile'])->name('admin.getProfile');
 
-    Route::get('/dashboard',[ AdminDashboard::class,'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('admin.dashboard');
+    Route::get('/attendance-details', [AdminDashboard::class, 'attendanceDetails'])->name('admin.attendance.details');
 
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
         Route::get('/', 'index')->name('admin.departments');
@@ -180,6 +182,14 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
         Route::post('/update-feature', 'update_feature')->name('admin.company.feature.save');
         Route::get('/get-assign-feature', 'get_assign_feature')->name('admin.company.getPermission');
         Route::get('/search-filter-company', 'searchFilterMenu')->name('admin.filter.company_menu');
+    });
+    Route::prefix('/company-type')->controller(CompanyTypeController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.company_type');
+        Route::post('/create', 'store')->name('admin.company_type.store');
+        Route::post('/update', 'update')->name('admin.company_type.update');
+        Route::get('/delete', 'destroy')->name('admin.company_type.delete');
+        Route::get('/status/update', 'statusUpdate')->name('admin.company_type.statusUpdate');
+        Route::get('/search', 'search')->name('admin.company_type.search');
     });
 });
 /**----------------- End Super Admin Route ----------------------*/

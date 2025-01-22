@@ -221,7 +221,7 @@
             }
         });
 
-        const attendanceData = @json($attendanceData); // This will give an array of objects with 'date' and 'total_punch_in'
+        const attendanceData = @json($allAttendanceDetails); // This will give an array of objects with 'date' and 'total_punch_in'
         const dates = attendanceData.map(item => item.date); // Extract the formatted dates (e.g., '11 Jan')
         const punches = attendanceData.map(item => item.total_punch_in); // Extract the punch counts
         // Create the chart
