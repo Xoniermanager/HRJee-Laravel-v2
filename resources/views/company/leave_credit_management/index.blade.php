@@ -523,7 +523,7 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/leave-credit-management/search/filter',
+                url: company_ajax_base_url + '/company/leave-credit-management/search/filter',
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val(),
