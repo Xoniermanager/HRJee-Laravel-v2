@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Exception;
+use DateTimeZone;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CountryServices;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Exception;
 
 class AdminCountryController extends Controller
 {
@@ -23,7 +24,8 @@ class AdminCountryController extends Controller
     public function index()
     {
         return view('admin.country.index', [
-            'allCountryDetails' => $this->countryService->all()
+            'allCountryDetails' => $this->countryService->all(),
+            'timezones' => DateTimeZone::listIdentifiers()
         ]);
     }
 
@@ -34,7 +36,8 @@ class AdminCountryController extends Controller
     {
         try {
             $validateCountryData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:countries,name'],
+                'name' => 'required|string|unique:countries,name',
+                'timezone' => 'required|timezone',
             ]);
             if ($validateCountryData->fails()) {
                 return response()->json(['error' => $validateCountryData->messages()], 400);
@@ -59,7 +62,8 @@ class AdminCountryController extends Controller
     public function update(Request $request)
     {
         $validateCountryData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:countries,name,' . $request->company_id],
+            'name' => 'required|string|unique:countries,name,' . $request->company_id,
+            'timezone' => 'required|timezone',
         ]);
 
         if ($validateCountryData->fails()) {

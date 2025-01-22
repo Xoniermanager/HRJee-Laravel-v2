@@ -96,17 +96,17 @@ class EmployeeServices
             $data['profile_image'] = uploadingImageorFile($data['profile_image'], '/user_profile', removingSpaceMakingName($data['name']));
         }
         $data['last_login_ip'] = request()->ip();
-        if ($data['id'] != null) {
+        if ($data['id'] !== null) {
             $existingDetails = $this->employeeRepository->find($data['id']);
             if ($existingDetails->profile_image != null) {
                 unlinkFileOrImage($existingDetails->profile_image);
             }
-            $existingDetails->update($data);
             if(isset($data['skill_id']) && !empty($data['skill_id']))
             {
                 $existingDetails->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($existingDetails, $data['language']);
             }
+            $existingDetails->update($data);
         } else {
             $data['company_id'] = Auth::guard('company')->user()->company_id;
             $data['password'] = Hash::make($data['password'] ?? 'password');
