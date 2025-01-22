@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    Country
+Country
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -16,10 +16,10 @@
                         <div class="d-flex align-items-center position-relative my-1  min-w-250px me-2">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                             <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none">
-                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
-                                        rx="1" transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none">
+                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1"
+                                        transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
                                     <path
                                         d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
                                         fill="black"></path>
@@ -31,9 +31,9 @@
                         </div>
                         <select name="status" class="form-control min-w-250px" id="status">
                             <option value="">Status</option>
-                            <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
+                            <option {{ old('status')=='1' || request()->get('status') == '1' ? 'selected' : '' }}
                                 value="1">Active</option>
-                            <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
+                            <option {{ old('status')=='0' || request()->get('status') == '0' ? 'selected' : '' }}
                                 value="0">Inactive</option>
                         </select>
                     </div>
@@ -67,8 +67,8 @@
                                 xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                     transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                    fill="currentColor"></rect>
                             </svg>
                         </span>
                         <!--end::Svg Icon-->
@@ -86,10 +86,21 @@
 
                             <!--begin::Input group-->
                             <div class="mt-3">
-                                <label>Country Name</label>
+                                <label class="required">Country Name</label>
                                 <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
                             </div>
-                            <!--end::Input group-->
+                            <div class="mt-3">
+
+                                <label class="required">Timezone</label>
+                                <select name="timezone" id="timezone" class="form-control">
+                                    <option value="">Select the Timezone</option>
+                                    @foreach ($timezones as $timezone)
+                                    <option value="{{ $timezone }}" {{ old('timezone')==$timezone ? 'selected' : '' }}>
+                                        {{ $timezone }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <!--end::Wrapper-->
                         <div class="d-flex flex-end flex-row-fluid pt-2 border-top">
@@ -129,8 +140,8 @@
                                 xmlns="http://www.w3.org/2000/svg">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                     transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                    fill="currentColor"></rect>
                             </svg>
                         </span>
                         <!--end::Svg Icon-->
@@ -147,8 +158,20 @@
                             <!--begin::Input group-->
 
                             <div class="mt-3">
-                                <label>Country Name</label>
+                                <label class="required">Country Name</label>
                                 <input class="form-control mb-5 mt-3" type="text" name="name">
+                                <!--end::Switch-->
+                            </div>
+                            <div class="mt-3">
+                                <label class="required">Timezone</label>
+                                <select name="timezone" class="form-control">
+                                    <option value="">Select the Timezone</option>
+                                    @foreach ($timezones as $timezone)
+                                    <option value="{{ $timezone }}" {{ old('timezone')==$timezone ? 'selected' : '' }}>
+                                        {{ $timezone }}
+                                    </option>
+                                    @endforeach
+                                </select>
                                 <!--end::Switch-->
                             </div>
                             <!--end::Input group-->
@@ -175,9 +198,10 @@
         <!--end::Modal dialog-->
     </div>
     <script>
-        function edit_country_details(id, name) {
+        function edit_country_details(id, name,timezone) {
             $('#id').val(id);
             $('#name').val(name);
+            $('#timezone').val(timezone);
             jQuery('#edit_country').modal('show');
         }
         jQuery.noConflict();
@@ -185,9 +209,11 @@
             jQuery("#country_form").validate({
                 rules: {
                     name: "required",
+                    timezone : "required"
                 },
                 messages: {
                     name: "Please enter name",
+                    timezone : "Please Select the TimeZone"
                 },
                 submitHandler: function(form) {
                     var country_data = $(form).serialize();
@@ -219,11 +245,12 @@
             });
             jQuery("#country_update_form").validate({
                 rules: {
-                    name: "required"
+                    name: "required",
+                    timezone : "required"
                 },
                 messages: {
-                    name: "Please enter name",
-
+                    name: "Please Enter Country Name",
+                    timezone : "Please Select the TimeZone"
                 },
                 submitHandler: function(form) {
                     var country_data = $(form).serialize();
@@ -317,10 +344,11 @@
             search_filter_results();
         });
         jQuery(document).on('click', '#contact_list a', function(e) {
-        e.preventDefault();
-        var page_no = $(this).attr('href').split('page=')[1];
-        search_filter_results(page_no);
+            e.preventDefault();
+            var page_no = $(this).attr('href').split('page=')[1];
+            search_filter_results(page_no);
         });
+
         function search_filter_results(page_no = 1) {
             $.ajax({
                 type: 'GET',
@@ -335,4 +363,4 @@
             });
         }
     </script>
-@endsection
+    @endsection
