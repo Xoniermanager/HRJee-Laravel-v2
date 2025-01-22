@@ -45,6 +45,7 @@ class CreditLeaveJob implements ShouldQueue
 
         //Get Data of Leave Credit Details
         $leaveCreditDetails = $this->leaveCreditDetailsBasedOnCurrentDay();
+        
         foreach ($leaveCreditDetails as $leaveCredit)
         {
             $companyBranchId = $leaveCredit->company_branch_id;
@@ -61,13 +62,12 @@ class CreditLeaveJob implements ShouldQueue
                 {
                     $baseLeaveCreditDate = Carbon::parse($leaveCreditHistory->created_at);
                 } else {
-                    $baseLeaveCreditDate = Carbon::parse($userDetail->user->joining_date);
+                    $baseLeaveCreditDate = Carbon::parse($userDetail->joining_date);
                 }
                 $startDate = Carbon::parse($baseLeaveCreditDate);
                 $endDate = Carbon::parse();
                 $months = $startDate->diffInMonths($endDate);
                 $days = $startDate->diffInDays($endDate);
-
                 if ($leaveCredit->repeat_in_months = '1') {
                     if ($days > $leaveCredit->minimum_working_days_if_month) {
                         $mode =  "Every Month Leave Credited";
