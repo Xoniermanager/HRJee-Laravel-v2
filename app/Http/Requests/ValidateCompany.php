@@ -32,8 +32,8 @@ class ValidateCompany extends FormRequest
             'company_size' => 'sometimes|required|string',
             'company_url' => 'sometimes|required|string|url|max:100',
             'company_address' => 'sometimes|sometimes|required|string|max:255',
-            'industry_type' => 'sometimes|required|string|max:255',
-             'logo' => 'sometimes|max:2048', 
+            'company_type_id' => 'sometimes|required|exists:company_types,id',
+             'logo' => 'sometimes|max:2048',
         ];
     }
 }

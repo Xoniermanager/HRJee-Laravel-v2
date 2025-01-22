@@ -3,17 +3,15 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
 <div class="page-body">
     <!-- Container-fluid starts-->
     <div class="container-fluid dashboard-3 default-dashboard dashboard-4">
         <div class="row">
-            <div class="col-xl-3 col-sm-6">
+            <div class="col-xl-4 col-sm-6">
                 <div class="card">
-                    <div class="card-header card-no-border bg-blue ">
+                    <div class="card-header card-no-border bg-dark">
                         <div class="header-top daily-revenue-card">
                             <h4>Total Companies</h4>
-
                         </div>
                     </div>
                     <div class="card-body pb-0 total-sells">
@@ -21,22 +19,62 @@
                             <div class="flex-shrink-0"><i class="fa fa-building text-white"></i></div>
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center gap-2">
-                                    <h2>12,463</h2>
-
+                                    <h2>{{ $dashboardData['all_company'] }}</h2>
                                 </div>
                                 <p class="text-truncate">Company</p>
                             </div>
                         </div>
-                        <div id="admissionRatio"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card">
-                    <div class="card-header card-no-border bg-blue">
-                        <div class="header-top daily-revenue-card">
-                            <h4>Total Users</h4>
 
+            <div class="col-xl-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header card-no-border bg-secondary">
+                        <div class="header-top daily-revenue-card">
+                            <h4>Total Active Companies</h4>
+                        </div>
+                    </div>
+                    <div class="card-body pb-0 total-sells">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flex-shrink-0"><i class="fa fa-building text-white"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <h2>{{ $dashboardData['total_active_company'] }}</h2>
+                                </div>
+                                <p class="text-truncate">Company</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header card-no-border bg-danger">
+                        <div class="header-top daily-revenue-card">
+                            <h4>Total Inactive Companies</h4>
+                        </div>
+                    </div>
+                    <div class="card-body pb-0 total-sells">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flex-shrink-0"><i class="fa fa-building text-white"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <h2>{{ $dashboardData['total_inactive_company'] }}</h2>
+                                </div>
+                                <p class="text-truncate">Company</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header card-no-border bg-dark">
+                        <div class="header-top daily-revenue-card">
+                            <h4>Total Employee</h4>
                         </div>
                     </div>
                     <div class="card-body pb-0 total-sells-2">
@@ -44,242 +82,182 @@
                             <div class="flex-shrink-0"><i class="fa fa-users text-white"></i></div>
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center gap-2">
-                                    <h2>78,596</h2>
-
+                                    <h2>{{ $dashboardData['all_employee'] }}</h2>
                                 </div>
-                                <p class="text-truncate">Users</p>
+                                <p class="text-truncate">Employee</p>
                             </div>
                         </div>
-                        <div id="order-value"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card">
-                    <div class="card-header card-no-border bg-blue">
-                        <div class="header-top daily-revenue-card">
-                            <h4>Monthly Revenue </h4>
 
+            <div class="col-xl-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header card-no-border bg-secondary">
+                        <div class="header-top daily-revenue-card">
+                            <h4>Total Active Employee</h4>
                         </div>
                     </div>
                     <div class="card-body pb-0 total-sells-3">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="flex-shrink-0"><i class="fa fa-money text-white"></i></div>
+                            <div class="flex-shrink-0"><i class="fa fa-users text-white"></i></div>
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center gap-2">
-                                    <h2>$95,789</h2>
-
+                                    <h2>{{ $dashboardData['total_active_employee'] }}</h2>
                                 </div>
-                                <p class="text-truncate">Revenue</p>
+                                <p class="text-truncate">Employee</p>
                             </div>
                         </div>
-                        <div id="daily-value"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6">
-                <div class="card">
-                    <div class="card-header card-no-border bg-blue">
-                        <div class="header-top daily-revenue-card">
-                            <h4>Total Revenue </h4>
 
+            <div class="col-xl-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header card-no-border bg-danger">
+                        <div class="header-top daily-revenue-card">
+                            <h4>Total Inactive Employee</h4>
                         </div>
                     </div>
                     <div class="card-body pb-0 total-sells-4">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="flex-shrink-0"><i class="fa fa-money text-white"></i></div>
+                            <div class="flex-shrink-0"><i class="fa fa-users text-white"></i></div>
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center gap-2">
-                                    <h2>$91,954</h2>
-
+                                    <h2>{{ $dashboardData['total_inactive_employee'] }}</h2>
                                 </div>
-                                <p class="text-truncate">Revenue</p>
+                                <p class="text-truncate">Employee</p>
                             </div>
-                        </div>
-                        <div id="daily-revenue"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-7 col-xl-6 col-sm-12">
-                <div class="card">
-                    <div class="card-header card-no-border pb-0">
-                      <div class="header-top">
-                        <h4>Notifications</h4>
-
-                      </div>
-                    </div>
-                    <div class="card-body">
-                      <ul class="notification-box">
-                        <li class="d-flex">
-                          <div class="flex-shrink-0 bg-light-primary"><img src="{{ asset('admin/assets/images/avatar.png')}}" alt="xonier" width="20px"></div>
-                          <div class="flex-grow-1"> <a href="#">
-                              <h5>xonier Technologies</h5></a>
-                            <p class="text-truncate">Subcription expire soon</p>
-                          </div><span>10 Sep,2024</span>
-                        </li>
-                        <li class="d-flex">
-                          <div class="flex-shrink-0 bg-light-info"><img src="{{ asset('admin/assets/images/favicon.png')}}" alt="paywho" width="20px"></div>
-                          <div class="flex-grow-1"> <a href="#">
-                              <h5>Paywho</h5></a>
-                            <p class="text-truncate">Subcription expire soon</p>
-                          </div><span>12 Oct,2024</span>
-                        </li>
-                        <li class="d-flex">
-                            <div class="flex-shrink-0 bg-light-warning"><img src="{{ asset('admin/assets/images/icon/profit.png')}}" alt="paywho" width="20px"></div>
-                            <div class="flex-grow-1"> <a href="#">
-                                <h5>Paywho</h5></a>
-                              <p class="text-truncate">Payment Due</p>
-                            </div><span>12 Oct,2024</span>
-                          </li>
-
-                      </ul>
-                    </div>
-                  </div>
-            </div>
-
-            <div class="col-xl-6 col-md-6 proorder-md-2">
-                <div class="card">
-                    <div class="card-header card-no-border pb-0">
-                        <div class="header-top">
-                            <h4>User Onboarding graph</h4>
-                            <div class="dropdown icon-dropdown">
-                                <button class="btn dropdown-toggle" id="userdropdown" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false"><i
-                                        class="fa fa-ellipsis-h"></i></button>
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userdropdown">
-                                    <a class="dropdown-item" href="#">Weekly</a><a class="dropdown-item"
-                                        href="#">Monthly</a><a class="dropdown-item" href="#">Yearly</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="studay-statistics">
-                            <ul class="d-flex align-item-center gap-2">
-                                <li> <span class="bg-primary"> </span>Revenue</li>
-                                <li> <span class="bg-secondary"> </span>Illustrations</li>
-                            </ul>
-                        </div>
-                        <div id="study-statistics" style="min-height: 205px;">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xxl-7 col-xl-12 box-col-12 proorder-md-8">
-                <div class="card">
-                    <div class="card-header card-no-border pb-0">
-                        <div class="header-top">
-                            <h4>Monthly Revenue Of the Organization(May)</h4>
-
-                        </div>
-                    </div>
-                    <div class="card-body pb-0">
-                        <div class="monthly-report">
-                            <ul class="d-flex align-item-center gap-2">
-                                <li> <span class="bg-primary"> </span>User</li>
-                                <li> <span class="bg-secondary"> </span>Company</li>
-                            </ul>
-                        </div>
-                        <div id="monthly-reportchart" style="min-height: 330px;">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-7 col-xl-12 box-col-12 proorder-xl-8 proorder-md-9">
-                <div class="card">
-                    <div class="card-header card-no-border pb-0">
-                        <div class="header-top">
-                            <h4>Total revenue of the organization.
-                            </h4>
-                            <div class="dropdown icon-dropdown">
-                                <button class="btn dropdown-toggle" id="userdropdown14" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false"><i
-                                        class="fa fa-ellipsis-h"></i></button>
-                                <div class="dropdown-menu dropdown-menu-end"
-                                    aria-labelledby="userdropdown14"><a class="dropdown-item"
-                                        href="#">Weekly</a><a class="dropdown-item" href="#">Monthly</a><a
-                                        class="dropdown-item" href="#">Yearly</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body sale-statistic">
-                        <div class="row">
-                            <div class="col-3 statistic-icon">
-                                <div class="light-card balance-card widget-hover">
-                                    <div class="icon-box"><img src="{{ asset('admin/assets/images/icon/customers.png')}}"
-                                            alt=""></div>
-                                    <div> <span class="f-w-500 f-light">Company</span>
-                                        <h5 class="mt-1 mb-0">1.736</h5>
-                                    </div>
-                                    <div class="ms-auto text-end">
-                                        <div class="dropdown icon-dropdown">
-                                            <button class="btn dropdown-toggle" id="incomedropdown"
-                                                type="button" data-bs-toggle="dropdown"
-                                                aria-expanded="false"><i class="icon-more-alt"></i></button>
-                                            <div class="dropdown-menu dropdown-menu-end"
-                                                aria-labelledby="incomedropdown"><a class="dropdown-item"
-                                                    href="#">Today</a><a class="dropdown-item"
-                                                    href="#">Tomorrow</a><a class="dropdown-item"
-                                                    href="#">Yesterday </a></div>
-                                        </div><span class="f-w-600 font-success">+3,7%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3 statistic-icon">
-                                <div class="light-card balance-card widget-hover">
-                                    <div class="icon-box"><img src="{{ asset('admin/assets/images/icon/revenue.png')}}" alt="">
-                                    </div>
-                                    <div> <span class="f-w-500 f-light">Revenue</span>
-                                        <h5 class="mt-1 mb-0">$9.247 </h5>
-                                    </div>
-                                    <div class="ms-auto text-end">
-                                        <div class="dropdown icon-dropdown">
-                                            <button class="btn dropdown-toggle" id="expensedropdown"
-                                                type="button" data-bs-toggle="dropdown"
-                                                aria-expanded="false"><i class="icon-more-alt"></i></button>
-                                            <div class="dropdown-menu dropdown-menu-end"
-                                                aria-labelledby="expensedropdown"><a class="dropdown-item"
-                                                    href="#">Today</a><a class="dropdown-item"
-                                                    href="#">Tomorrow</a><a class="dropdown-item"
-                                                    href="#">Yesterday </a></div>
-                                        </div><span class="f-w-600 font-danger">-0,10%</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3 statistic-icon">
-                                <div class="light-card balance-card widget-hover">
-                                    <div class="icon-box"><img src="{{ asset('admin/assets/images/icon/profit.png')}}" alt="">
-                                    </div>
-                                    <div> <span class="f-w-500 f-light">Profit</span>
-                                        <h5 class="mt-1 mb-0">80%</h5>
-                                    </div>
-                                    <div class="ms-auto text-end">
-                                        <div class="dropdown icon-dropdown">
-                                            <button class="btn dropdown-toggle" id="cashbackdropdown"
-                                                type="button" data-bs-toggle="dropdown"
-                                                aria-expanded="false"><i class="icon-more-alt"></i></button>
-                                            <div class="dropdown-menu dropdown-menu-end"
-                                                aria-labelledby="cashbackdropdown"><a class="dropdown-item"
-                                                    href="#">Today</a><a class="dropdown-item"
-                                                    href="#">Tomorrow</a><a class="dropdown-item"
-                                                    href="#">Yesterday </a></div>
-                                        </div><span class="f-w-600 font-success">+11,6%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="chart-dash-2-line" style="min-height: 285px;">
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="card mt-4 chart1">
+            <h2 class="mt-4">All Companies and Employees Overview</h2>
+            <div class="row mt-5">
+                <div class="col-xl-6 col-sm-6 mb-4">
+                    <h3>Total Companies</h3>
+                    <canvas id="companyChart" class="employee_chart"></canvas>
+                </div>
+                <div class="col-xl-6 col-sm-6 mb-4">
+                    <h3>Total Employees </h3>
+                    <canvas id="employeeChart" class="employee_chart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2 class="text-center mt-4">Active Punch-In Employee - {{ date('F Y') }}</h2>
+            <div class="mt-4 mb-4">
+                <canvas id="attendanceChart" width="400" height="200"></canvas>
+            </div>
+        </div>
     </div>
-    <!-- Container-fluid Ends-->
 </div>
+<script>
+    // Get the data from the server-side Laravel variables
+        var activeCompanies = @json($dashboardData['total_active_company']);
+        var inactiveCompanies = @json($dashboardData['total_inactive_company']);
+        var activeEmployees = @json($dashboardData['total_active_employee']);
+        var inactiveEmployees = @json($dashboardData['total_inactive_employee']);
 
+        // Create the Doughnut Chart for Companies
+        var ctx1 = document.getElementById('companyChart').getContext('2d');
+        var companyChart = new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active Companies', 'Inactive Companies'], // Labels for companies
+                datasets: [{
+                    label: 'Companies',
+                    data: [activeCompanies, inactiveCompanies], // Data for Active and Inactive Companies
+                    backgroundColor: ['#4CAF50', '#FF5733'], // Colors for Active and Inactive
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Create the Doughnut Chart for Employees
+        var ctx2 = document.getElementById('employeeChart').getContext('2d');
+        var employeeChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active Employees', 'Inactive Employees'], // Labels for employees
+                datasets: [{
+                    label: 'Employees',
+                    data: [activeEmployees, inactiveEmployees], // Data for Active and Inactive Employees
+                    backgroundColor: ['#4CAF50', '#FF5733'], // Colors for Active and Inactive
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const attendanceData = @json($allAttendanceDetails); // This will give an array of objects with 'date' and 'total_punch_in'
+        const dates = attendanceData.map(item => item.date); // Extract the formatted dates (e.g., '11 Jan')
+        const punches = attendanceData.map(item => item.total_punch_in); // Extract the punch counts
+        // Create the chart
+        const ctx = document.getElementById('attendanceChart').getContext('2d');
+        const attendanceChart = new Chart(ctx, {
+            type: 'line', // Line chart type
+            data: {
+                labels: dates, // X-axis: Dates
+                datasets: [{
+                    label: 'Active Punch-In',
+                    data: punches, // Y-axis: Punch counts
+                    borderColor: 'rgb(54, 162, 235)', // Line color
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Area color (under the line)
+                    fill: true, // Fill area under the line
+                    tension: 0.4 // Smooth the line (0 is a straight line)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Attendance Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Number of Punch In'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+</script>
 @endsection

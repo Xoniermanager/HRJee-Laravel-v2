@@ -49,7 +49,7 @@ class EmployeeLeaveAvailableService
   {
     $existingDetails = $this->employeeLeaveAvailableRepository->where('user_id', $userId)->where('leave_type_id', $leaveTypeId)->orderBy('id', 'Desc')->first();
     $response = array('status'=>true,'message'=>'leave not available','data'=>[]);
-   
+
     if (isset($existingDetails) && !empty($existingDetails)) {
       $finalAvailableValue = $existingDetails->available - $debitValue;
       $updateDetails = $existingDetails->update(['available' => $finalAvailableValue]);

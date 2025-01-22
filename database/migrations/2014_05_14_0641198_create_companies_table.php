@@ -12,29 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('companies', function (Blueprint $table) {
-            
+
             $table->id();
             $table->string('name');
             $table->string('username');
             $table->string('contact_no');
             $table->string('email');
-            $table->string('role_id')->nullable();
             $table->string('joining_date');
             $table->string('logo');
             $table->string('company_size');
             $table->string('company_url');
-            $table->string('industry_type');
             $table->string('company_address');
+            $table->unsignedBigInteger('company_type_id');
             $table->string('subscription_id')->nullable();
-            $table->string('status')->nullable();
+            $table->string('status')->default(true);
+            $table->foreign('company_type_id')->references('id')->on('company_types');
             $table->timestamps();
-            // $table->foreign('subscription_id')->references('id')->on('subscriptions');
-            // $table->foreign('status')->references('id')->on('company_statuses');
-            // $table->foreign('role_id')->references('id')->on('roles');
+            $table->softDeletes();
         });
-        
     }
-    
+
 
     /**
      * Reverse the migrations.
@@ -44,4 +41,3 @@ return new class extends Migration
         Schema::dropIfExists('companies');
     }
 };
-

@@ -84,7 +84,7 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->employeeService->all($request == null,Auth::guard('company')->user()->id);
+        $allUserDetails = $this->employeeService->all($request == null,Auth::guard('company')->user()->company_id);
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
@@ -175,7 +175,7 @@ class EmployeeController extends Controller
                     'message' => 'Basic Details Added Successfully! Please Continue',
                     'data' => $userDetails,
                     'allUserDetails' => view('company.employee.list', [
-                        'allUserDetails' => $this->employeeService->all('',Auth::guard('company')->user()->id)
+                        'allUserDetails' => $this->employeeService->all('',Auth::guard('company')->user()->company_id)
                     ])->render()
                 ]);
             }
@@ -192,7 +192,7 @@ class EmployeeController extends Controller
     public function getfilterlist(Request $request)
     {
         try {
-            $allUserDetails = $this->employeeService->all($request,Auth::guard('company')->user()->id);
+            $allUserDetails = $this->employeeService->all($request,Auth::guard('company')->user()->company_id);
             if ($allUserDetails) {
                 return response()->json([
                     'data' => view('company.employee.list', compact('allUserDetails'))->render()

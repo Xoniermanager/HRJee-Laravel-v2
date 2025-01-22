@@ -2,11 +2,7 @@
 
 namespace Database\Seeders;
 
-use Carbon\Carbon;
 use App\Models\Admin;
-use App\Models\Company;
-use App\Models\Country;
-use App\Models\CompanyUser;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,35 +14,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
-        Admin::create([
-            'name' => 'Admin',
-            'username' => 'admin',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('password'),
-            'contact_no' => '1234567890'
-        ]);
-        Company::create([
-            'name' => 'Xonier',
-            'username' => 'Xonier',
-            'contact_no' => '1234567890',
-            'email' => 'xonier@gmail.com',
-            'role_id' => null, // You might want to adjust this if you have a specific role ID
-            'joining_date' => Carbon::now(),
-            'logo' => 'https://ibb.co/YPHW7WK',
-            'company_size' => '100', // or any other size
-            'company_url' => 'https://yourcompany.com',
-            'subscription_id' => 1, // You might want to adjust this
-            'company_address' => 'XYZ',
-            'industry_type' => '5',
-            'status' => '1', // or any other status
-        ]);
-        CompanyUser::insert([
-            'company_id' => '1',
-            'email' => 'xonier@gmail.com',
-            'name' => 'Xonier',
-            'password' => Hash::make('password') // <---- check this
-        ]);
+        $this->call(AdminTableSeeder::class);
+        $this->call(CompanyTableSeeder::class);
+        $this->call(CompanyTypesTableSeeder::class);
         $this->call(CountryTableSeeder::class);
         $this->call(StatesTableSeeder::class);
         $this->call(DepartmentsTableSeeder::class);

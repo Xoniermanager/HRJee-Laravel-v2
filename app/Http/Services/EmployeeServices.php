@@ -174,7 +174,7 @@ class EmployeeServices
     }
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
     {
-        return $this->employeeRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('id', 'joining_date')->get();
+        return $this->employeeRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('id','joining_date')->get();
     }
     public function getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds = null, $designationIds = null, $allCompanyBranches = null, $allDepartment = null, $allDesignation = null)
     {

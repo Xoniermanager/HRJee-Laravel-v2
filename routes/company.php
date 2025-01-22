@@ -60,7 +60,7 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
-Route::prefix('company')->middleware(['dashboard.access', 'Check2FA','checkUrlAcess'])->group(function () {
+Route::prefix('company')->middleware(['check.company.status', 'Check2FA','checkUrlAcess'])->group(function () {
     Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
     Route::controller(CompanyController::class)->group(function () {
         Route::get('company/profile', 'company_profile')->name('company.profile');

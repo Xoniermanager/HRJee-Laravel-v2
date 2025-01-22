@@ -25,7 +25,6 @@
     <!-- ico-font-->
     <link rel="stylesheet" type="text/css" href="{{asset('/admin/assets/css/vendors/icofont.css')}}">
     <!-- Themify icon-->
-    <link rel="stylesheet" type="text/css" href="{{asset('/admin/assets/css/vendors/themify.css')}}">
     <!-- Flag icon-->
     <link rel="stylesheet" type="text/css" href="{{asset('admin/assets/css/vendors/flag-icon.css')}}">
     <!-- Feather icon-->

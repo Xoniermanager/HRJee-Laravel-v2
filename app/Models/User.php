@@ -42,7 +42,8 @@ class User extends Authenticatable
         'exit_date',
         'official_mobile_no',
         'shift_id',
-        'start_time'
+        'start_time',
+        'status'
     ];
     /**
      * The attributes that should be cast.
