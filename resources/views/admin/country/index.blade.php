@@ -56,6 +56,17 @@
                                     <span  class="text-denger">{{ $message}} </span>
                                 @enderror
                         </div>
+                        <div class="col-md-12">
+                            <label class="required">Timezone</label>
+                            <select name="timezone" id="timezone" class="form-control">
+                                <option value="">Select the Timezone</option>
+                                @foreach ($timezones as $timezone)
+                                <option value="{{ $timezone }}" {{ old('timezone')==$timezone ? 'selected' : '' }}>
+                                    {{ $timezone }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Update</button>
                         </div>
@@ -82,6 +93,17 @@
                                     @error('name')
                                         <span  class="text-denger">{{ $message}} </span>
                                     @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="required">Timezone</label>
+                                <select name="timezone" class="form-control">
+                                    <option value="">Select the Timezone</option>
+                                    @foreach ($timezones as $timezone)
+                                    <option value="{{ $timezone }}" {{ old('timezone')==$timezone ? 'selected' : '' }}>
+                                        {{ $timezone }}
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-12">
                                 <button class="btn btn-primary" type="submit" >Save</button>
@@ -120,9 +142,10 @@
                     }
                 })
         }
-        function edit_country_details(id, name) {
+        function edit_country_details(id,name,timezone) {
             $('#id').val(id);
             $('#name').val(name);
+            $('#timezone').val(timezone);
             jQuery('#edit_country').modal('show');
         }
 
@@ -131,9 +154,11 @@
             jQuery("#country_form").validate({
                 rules: {
                     name: "required",
+                    timezone: "required",
                 },
                 messages: {
                     name: "Please enter name",
+                    timezone: "Please Select the TimeZone",
                 },
                 submitHandler: function(form) {
                     var country_data = $(form).serialize();
@@ -197,12 +222,13 @@
 
         jQuery("#country_update_form").validate({
             rules: {
-                name: "required"
-            },
-            messages: {
-                name: "Please enter name",
-
-            },
+                    name: "required",
+                    timezone: "required",
+                },
+                messages: {
+                    name: "Please enter name",
+                    timezone: "Please Select the TimeZone",
+                },
             submitHandler: function(form) {
                 var country_data = $(form).serialize();
                 $.ajax({

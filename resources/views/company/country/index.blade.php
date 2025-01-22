@@ -90,7 +90,6 @@ Country
                                 <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
                             </div>
                             <div class="mt-3">
-
                                 <label class="required">Timezone</label>
                                 <select name="timezone" id="timezone" class="form-control">
                                     <option value="">Select the Timezone</option>
