@@ -21,20 +21,39 @@ class AdminDashboard extends Controller
             'total_active_employee' => User::where('status', '1')->count(),
             'total_inactive_employee' => User::where('status', '0')->count(),
         ];
-        // Get the current date and the start of the current month
-        $today = Carbon::today();
-        $startOfMonth = $today->copy()->startOfMonth();
-
-        // Query attendance records for the current month until today
-        $attendanceData = EmployeeAttendance::whereBetween('punch_in', [$startOfMonth, $today])
+        $startDate = Carbon::now()->startOfMonth();
+        $endDate = Carbon::today();
+        $dateRange = collect();
+        $currentDate = $startDate->copy();
+        while ($currentDate <= $endDate) {
+            $dateRange->push($currentDate->format('Y-m-d'));
+            $currentDate->addDay();
+        }
+        $attendanceData = EmployeeAttendance::whereBetween('punch_in', [$startDate, $endDate])
             ->selectRaw('DATE(punch_in) as date, COUNT(*) as total_punch_in')
             ->groupBy(DB::raw('DATE(punch_in)'))
-            ->orderBy('date', 'asc')
-            ->get()
-            ->map(function ($attendance) {
-                $attendance->date = date('dM', strtotime($attendance->date)); // Format date as '11 Jan'
-                return $attendance;
-            })->toArray();
-        return view('admin.dashboard', compact('dashboardData', 'attendanceData'));
+            ->pluck('total_punch_in', 'date');
+        $allAttendanceDetails = $dateRange->map(function ($date) use ($attendanceData) {
+            return [
+                'date' => Carbon::parse($date)->format('dM'),  // Format date as '11 Jan'
+                'total_punch_in' => $attendanceData->get($date, 0),  // Default to 0 if no attendance for that date
+            ];
+        });
+        return view('admin.dashboard', compact('dashboardData', 'allAttendanceDetails'));
+    }
+    public function attendanceDetails()
+    {
+        $allCompanyDetails = Company::select('id', 'name', 'email', 'contact_no', 'company_address')
+            ->withCount(['users as activeEmployee' => function ($query) {
+                $query->where('status', 1);
+            }])
+            ->withCount(['users as inactiveEmployee' => function ($query) {
+                $query->where('status', 0);
+            }])
+            ->withCount(['employeeAttendances as totalAttendance' => function ($query) {
+                $query->whereDate('punch_in', today());
+            }])
+            ->paginate(10);
+        return view('admin.attendance', compact('allCompanyDetails'));
     }
 }

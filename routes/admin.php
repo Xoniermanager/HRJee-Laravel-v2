@@ -26,6 +26,7 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
     Route::get('/profile/details', [ProfileController::class, 'getProfile'])->name('admin.getProfile');
 
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('admin.dashboard');
+    Route::get('/attendance-details', [AdminDashboard::class, 'attendanceDetails'])->name('admin.attendance.details');
 
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
         Route::get('/', 'index')->name('admin.departments');

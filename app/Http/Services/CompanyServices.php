@@ -2,7 +2,9 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\CompanyRepository;
+use Illuminate\Support\Facades\Session;
 use App\Repositories\CompanyUserRepository;
 
 class CompanyServices
@@ -48,6 +50,9 @@ class CompanyServices
             }
             if (isset($searchKey['status'])) {
                 $query->where('status', $searchKey['status']);
+            }
+            if (isset($searchKey['deletedAt'])) {
+                $query->where('deleted_at', $searchKey['deletedAt']);
             }
             if (isset($searchKey['companyTypeId'])) {
                 $query->where('company_type_id', $searchKey['companyTypeId']);

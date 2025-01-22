@@ -30,6 +30,10 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div style="margin: 12px">
+                                <input type="checkbox" id="filteredByDeletedAt" value="1">
+                                Deleted Company
+                            </div>
                             <div class="flex-grow-1 text-end">
                                 <a class="d-inline-flex" href="{{route('admin.add_company')}}">
                                     <div class="btn bg-blue text-white">
@@ -115,8 +119,6 @@
                 }
             });
         }
-
-
         $(document).on("input", "#search", function(e) {
             searchCompanyFilter()
         });
@@ -126,7 +128,16 @@
         $('#filterByCompanyType').change(function(){
             searchCompanyFilter()
         });
-        function searchCompanyFilter()
+        $('#filteredByDeletedAt').change(function(){
+            if ($(this).is(':checked')) {
+                searchCompanyFilter($(this).val())
+            }
+            else
+            {
+                searchCompanyFilter()
+            }
+        });
+        function searchCompanyFilter(deletedAt = null)
         {
             $.ajax({
                     url: "{{ route('admin.company.search') }}",
@@ -134,7 +145,8 @@
                     data: {
                         'key': $('#search').val(),
                         'status': $('#filterByStatus').val(),
-                        'companyTypeId' :$('#filterByCompanyType').val()
+                        'companyTypeId' :$('#filterByCompanyType').val(),
+                        'deletedAt' :deletedAt,
                     },
                     success: function(res) {
                         if (res) {

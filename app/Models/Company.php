@@ -70,4 +70,12 @@ class Company extends Authenticatable
     {
         return $this->belongsTo(CompanyType::class);
     }
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+    public function employeeAttendances()
+    {
+        return $this->hasManyThrough(EmployeeAttendance::class, User::class);
+    }
 }

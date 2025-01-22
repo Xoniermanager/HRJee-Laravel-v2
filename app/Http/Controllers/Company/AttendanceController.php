@@ -51,14 +51,14 @@ class AttendanceController extends Controller
     public function searchFilterDetails($month, $year, $searchKey = null)
     {
         if (isset($searchKey) && !empty($searchKey)) {
-            $allEmployeeDetails = $this->employeeService->getEmployeeByNameByEmpIdFilter(Auth::guard('company')->user()->id, $searchKey)->paginate(10);
+            $allEmployeeDetails = $this->employeeService->getEmployeeByNameByEmpIdFilter(Auth::guard('company')->user()->company_id, $searchKey)->paginate(10);
         } else {
-            $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth::guard('company')->user()->id)->paginate(10);
+            $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth::guard('company')->user()->company_id)->paginate(10);
         }
         foreach ($allEmployeeDetails as $employee) {
             $employee['totalPresent'] = $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employee->id, $year)->count();
             $employee['totalLeave'] = $this->leaveService->getTotalLeaveByUserIdByMonth($employee->id, $month, $year);
-            $employee['totalHoliday'] = $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::guard('company')->user()->id, $month, $year, $employee->company_branch_id)->count();
+            $employee['totalHoliday'] = $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::guard('company')->user()->company_id, $month, $year, $employee->company_branch_id)->count();
         }
         return $allEmployeeDetails;
     }
@@ -93,7 +93,7 @@ class AttendanceController extends Controller
             [
                 'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
                 'totalLeave'   => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
-                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::guard('company')->user()->id, $month, $year, $employeeDetails->company_branch_id)->count(),
+                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::guard('company')->user()->company_id, $month, $year, $employeeDetails->company_branch_id)->count(),
                 'shortAttendance' => '0',
                 'totalAbsent' => '0',
                 'emp_id'    => $employeeDetails->id,
@@ -125,7 +125,7 @@ class AttendanceController extends Controller
 
     public function addBulkAttendance()
     {
-        $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth::guard('company')->user()->id)->paginate(10);
+        $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth::guard('company')->user()->company_id)->paginate(10);
         return view('company.attendance.add_bulk', compact('allEmployeeDetails'));
     }
 
