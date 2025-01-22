@@ -12,6 +12,9 @@
                             <th>
                                 <span class="f-light f-w-600">Country Name</span>
                             </th>
+                            <th>
+                                <span class="f-light f-w-600">TimeZone</span>
+                            </th>
 
                             <th>
                                 <span class="f-light f-w-600">Status</span>
@@ -34,6 +37,9 @@
                             <p class="f-light">{{ $countryDetail->name }}</p>
                         </td>
                         <td>
+                            <p class="f-light">{{ $countryDetail->timezone }}</p>
+                        </td>
+                        <td>
                             <div class="form-check form-switch form-check-inline">
                                 <input type="checkbox" <?=$countryDetail->status == '1' ? 'checked' : '' ?>
                                 onchange="handleStatus({{ $countryDetail->id }})" id="checked_value_{{
@@ -45,7 +51,7 @@
                         <td>
                             <div class="product-action"><a href="#" data-bs-toggle="modal"
                                     data-bs-target="#edit_country"
-                                    onClick="edit_country_details('{{ $countryDetail->id }}', '{{ $countryDetail->name }}')">
+                                    onClick="edit_country_details('{{ $countryDetail->id }}', '{{ $countryDetail->name }}','{{ $countryDetail->timezone }}')">
                                     <svg viewBox="0 -0.5 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                         xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

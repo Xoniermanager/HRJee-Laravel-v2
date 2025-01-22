@@ -37,7 +37,7 @@ class CountryController extends Controller
         try {
             $validateCountryData  = Validator::make($request->all(), [
                 'name' => 'required|string|unique:countries,name',
-                'timezone' => 'required'
+                'timezone' => 'required|timezone',
             ]);
             if ($validateCountryData->fails()) {
                 return response()->json(['error' => $validateCountryData->messages()], 400);
@@ -63,7 +63,7 @@ class CountryController extends Controller
     {
         $validateCountryData  = Validator::make($request->all(), [
             'name' => ['required', 'string', 'unique:countries,name,' . $request->id],
-            'timezone' => 'required'
+            'timezone' => 'required|timezone',
         ]);
 
         if ($validateCountryData->fails()) {

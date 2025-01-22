@@ -42,6 +42,7 @@ use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
+use App\Http\Controllers\Company\CompanyDashboardController;
 use App\Http\Controllers\Company\ComplainCategoryController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\ResignationStatusController;
@@ -60,12 +61,15 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
-Route::prefix('company')->middleware(['check.company.status', 'Check2FA','checkUrlAcess'])->group(function () {
-    Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
+Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'checkUrlAcess'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('company/profile', 'company_profile')->name('company.profile');
         Route::post('company/update/{id}', 'update_company')->name('update.company');
         Route::post('company/change/password', 'company_change_password')->name('company.change.password');
+    });
+    Route::controller(CompanyDashboardController::class)->group(function () {
+        Route::get('/dashboard', 'index')->name('company.dashboard');
+        Route::get('/employee-search-filter', 'searchFilterEmployee')->name('company.employee_search.filter');
     });
 
     Route::controller(CompanyBranchesController::class)->group(function () {
@@ -463,7 +467,7 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA','checkU
         Route::get('/delete/{id}', 'destroy')->name('complain.category.delete');
         Route::get('/status/update', 'statusUpdate')->name('complain.category.statusUpdate');
         Route::get('/search/filter', 'serachComplainCategoryFilterList');
-        });
+    });
 
 
     //Company Size Module
