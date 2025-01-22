@@ -196,6 +196,7 @@ function getDecryptId($id)
 function getCompanyMenuHtml($companyId)
 {
     $company = Company::with(['menu' => function ($query) {
+        $query->where('status', 1);
         $query->orderBy('order_no', 'ASC');
     }, 'menu.parent'])->find($companyId);
     $html = '';
