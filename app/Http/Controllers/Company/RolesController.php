@@ -23,7 +23,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles = $this->rolesServices->all();
+        $roles = $this->rolesServices->getRolesByCompanyID(auth()->guard('company')->user()->id);
         return view('company.roles_and_permission.roles.index')->with(['roles'=> $roles]);
     }
 
@@ -42,6 +42,7 @@ class RolesController extends Controller
                 return response()->json(['error' => $validator->messages()], 400);
             }
             $data = $request->all();
+            $data['company_id'] = auth()->guard('company')->user()->id;
             if ($this->rolesServices->create($data)) {
                 return response()->json([
                     'message' => 'Role Created Successfully!',
