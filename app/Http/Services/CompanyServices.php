@@ -97,4 +97,21 @@ class CompanyServices
         }
         return $companyStatusUpdate;
     }
+
+    public function getCompanyMenus()
+    {
+        $menus = $this->companyRepository->with([
+            'menu' => function ($query) {
+                $query->where('status', 1)
+                    ->whereNull('parent_id') // Only fetch parent menus
+                    ->orderBy('order_no', 'ASC');
+            },
+            'menu.children' => function ($query) {
+                $query->where('status', 1) // Fetch only active children
+                    ->orderBy('order_no', 'ASC');
+            }
+        ])->find(auth()->guard('company')->user()->company_id);
+
+        return $menus->menu;
+    }
 }
