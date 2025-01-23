@@ -39,8 +39,8 @@
                         </div>
                     </div>
                     <a href="{{ route('employee.add') }}"
-                    class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
-                    Add Employee</a>
+                        class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
+                        Add Employee</a>
                 </div>
             </div>
         </div>
@@ -74,7 +74,9 @@
                                     <option value="">Employee Status</option>
                                     @foreach ($allEmployeeStatus as $employeeStatus)
                                     <option {{ request()->get('emp_status_id') == $employeeStatus->id ||
-                                        old('emp_status_id') == $employeeStatus->id ? 'selected' : '' }}
+                                        old('emp_status_id') == $employeeStatus->id
+                                        ? 'selected'
+                                        : '' }}
                                         value="{{ $employeeStatus->id }}">{{ $employeeStatus->name }}</option>
                                     @endforeach
                                 </select>
@@ -96,7 +98,9 @@
                                     <option value="">All Employee Type</option>
                                     @foreach ($allEmployeeType as $employeeType)
                                     <option {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id')
-                                        == $employeeType->id ? 'selected' : '' }}
+                                        == $employeeType->id
+                                        ? 'selected'
+                                        : '' }}
                                         value="{{ $employeeType->id }}">{{ $employeeType->name }}</option>
                                     @endforeach
                                 </select>
@@ -106,7 +110,9 @@
                                     <option value="">All Department</option>
                                     @foreach ($alldepartmentDetails as $departmentDetails)
                                     <option {{ request()->get('department_id') == $departmentDetails->id ||
-                                        old('department_id') == $departmentDetails->id ? 'selected' : '' }}
+                                        old('department_id') == $departmentDetails->id
+                                        ? 'selected'
+                                        : '' }}
                                         value="{{ $departmentDetails->id }}">{{ $departmentDetails->name }}
                                     </option>
                                     @endforeach
@@ -127,7 +133,9 @@
                                     <option value="">Branch</option>
                                     @foreach ($allBranches as $branchDetails)
                                     <option {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') ==
-                                        $branchDetails->id ? 'selected' : '' }}
+                                        $branchDetails->id
+                                        ? 'selected'
+                                        : '' }}
                                         value="{{ $branchDetails->id }}">{{ $branchDetails->name }}</option>
                                     @endforeach
                                 </select>
@@ -137,7 +145,9 @@
                                     <option value="">Qualification</option>
                                     @foreach ($allQualification as $qualificationDetails)
                                     <option {{ request()->get('qualification_id') == $qualificationDetails->id ||
-                                        old('qualification_id') == $qualificationDetails->id ? 'selected' : '' }}
+                                        old('qualification_id') == $qualificationDetails->id
+                                        ? 'selected'
+                                        : '' }}
                                         value="{{ $qualificationDetails->id }}">{{ $qualificationDetails->name }}
                                     </option>
                                     @endforeach
@@ -753,5 +763,59 @@
                     }
                 });
             });
+
+            function deleteFunction(id) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "Are you sure want to exit the employee?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Confirm!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: company_ajax_base_url + '/employee/delete/' + id,
+                            type: "get",
+                            success: function(res) {
+                                Swal.fire("Done!", "It was succesfully Exit!", "success");
+                                $('#employee_list').replaceWith(res.data);
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                Swal.fire("Error deleting!", "Please try again", "error");
+                            }
+                        });
+                    }
+                });
+            }
+
+            function handleStatus(id) {
+                var checked_value = $('#checked_value_'+ id).prop('checked');
+                let status;
+                let status_name;
+                if (checked_value == true) {
+                    status = 1;
+                    status_name = 'Active';
+                } else {
+                    status = 0;
+                    status_name = 'Inactive';
+                }
+                $.ajax({
+                    url: company_ajax_base_url + '/employee/status/update/' + id,
+                    type: 'get',
+                    data: {
+                        'status': status,
+                    },
+                    success: function(res) {
+                        if (res.status == true) {
+                            swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
+                        } else {
+                            swal.fire("Oops!", 'Something Went Wrong', "error");
+                        }
+                    }
+                })
+            }
     </script>
     @endsection

@@ -17,7 +17,7 @@ class HolidayServices
     }
     public function all()
     {
-        return $this->holidayRepository->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
+        return $this->holidayRepository->where('company_id', Auth()->guard('company')->user()->company_id)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
     {
@@ -86,11 +86,35 @@ class HolidayServices
                 $query->where('company_branch_id', $companyBranchId);
             })->first();
     }
-    public function getHolidayByMonthByCompanyBranchId($companyId, $month,$year,$companyBranchId)
+    public function getHolidayByMonthByCompanyBranchId($companyId, $month, $year, $companyBranchId)
     {
         return $this->holidayRepository->where('company_id', $companyId)->whereMonth('date', $month)->where('year', $year)->where('status', '1')
             ->whereHas('companyBranch', function ($query) use ($companyBranchId) {
                 $query->where('company_branch_id', $companyBranchId);
             });
+    }
+
+    public function searchFilterData($companyId, $request)
+    {
+        $holidayDetails = $this->holidayRepository->where('company_id', $companyId);
+
+        /** List By Search or Filter */
+        if (isset($request['search']) && !empty($request['search'])) {
+            $holidayDetails = $holidayDetails->where('name', 'like', '%' . $request['search'] . '%');
+        }
+
+        /** List By Status or Filter */
+        if (isset($request['status']) && $request['status'] !== null) {
+            $holidayDetails = $holidayDetails->where('status', $request['status']);
+        }
+
+        /** List By Company Branch Filter */
+        if (isset($request['companyBranchId']) && !empty($request['companyBranchId'])) {
+            $companyBranchId = $request['companyBranchId'];
+            $holidayDetails = $holidayDetails->whereHas('companyBranch', function ($query) use ($companyBranchId) {
+                $query->where('company_branch_id', $companyBranchId);
+            });
+        }
+        return $holidayDetails->paginate(10);
     }
 }

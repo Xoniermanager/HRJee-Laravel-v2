@@ -176,6 +176,10 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
         Route::get('/get/filter/list', 'getfilterlist');
         Route::get('/get/personal/details/{users:id}', 'getPersonalDetails')->name('employee.personal.details');
         Route::get('/view/{user:id}', 'view')->name('employee.view');
+        Route::get('/delete/{user:id}', 'deleteEmployee')->name('employee.delete');
+        Route::get('/status/update/{user:id}', 'statusUpdate')->name('employee.status_update');
+        Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
+        Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('employee.exit.employeelist');
     });
 
     Route::controller(SpreadsheetController::class)->group(function () {
@@ -240,6 +244,7 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
         Route::post('/update', 'update')->name('holiday.update');
         Route::get('/delete', 'destroy')->name('holiday.delete');
         Route::get('/status/update', 'statusUpdate')->name('holiday.statusUpdate');
+        Route::get('/search/filter', 'searchFilterData');
     });
 
 
