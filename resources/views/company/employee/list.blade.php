@@ -17,6 +17,7 @@
                 <th class="min-w-150px">Employee Type</th>
                 <th class="min-w-150px">Shift</th>
                 <th class="min-w-150px">Branch</th>
+                <th class="min-w-150px">Status</th>
                 <th class="">Action</th>
             </tr>
         </thead>
@@ -47,6 +48,13 @@
                 <td>{{ $singleUserDetails->employeeType->name }}</td>
                 <td>{{ $singleUserDetails->officeShift->name }}</td>
                 <td>{{ $singleUserDetails->companyBranch->name }}</td>
+                <td data-order="Invalid date">
+                    <label class="switch">
+                        <input type="checkbox" <?=$singleUserDetails->status == '1' ? 'checked' : '' ?>
+                        onchange="handleStatus({{ $singleUserDetails->id }})" id="checked_value">
+                        <span class="slider round"></span>
+                    </label>
+                </td>
                 <td>
                     <div class="d-flex justify-content-end flex-shrink-0">
                         <a href="{{ route('employee.view',$singleUserDetails->id) }}"
@@ -104,13 +112,12 @@
                             </div>
                             <!--end::Menu 3-->
                         </div>
-                        <!--end::Menu-->
-
-                        {{-- <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                        <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                            onclick="deleteFunction('{{ $singleUserDetails->id }}')">
                             <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                            <i class="fa fa-trash"></i>
+                            <i class="fa fa-sign-out-alt"></i>
                             <!--end::Svg Icon-->
-                        </a> --}}
+                        </a>
                     </div>
                 </td>
             </tr>

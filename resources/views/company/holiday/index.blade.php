@@ -27,10 +27,24 @@ Holidays
                             </span>
                             <!--end::Svg Icon-->
                             <input data-kt-patient-filter="search" class="form-control form-control-solid ps-14"
-                                placeholder="Search " type="text" id="SearchByPatientName" name="SearchByPatientName"
-                                value="">
+                                placeholder="Search " type="text" id="search" value="">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
                         </div>
+                        <select class="form-control ml-2" id="status">
+                            <option value="">Status</option>
+                            <option {{ old('status')=='1' || request()->get('status') == '1' ? 'selected' : '' }}
+                                value="1">Active</option>
+                            <option {{ old('status')=='0' || request()->get('status') == '0' ? 'selected' : '' }}
+                                value="0">Inactive</option>
+                        </select>
+                        <select class="form-control ml-2" id="searchbranchId">
+                            <option value="">Select Branch</option>
+                            @foreach ($allCompanyBranchesDetails as $compayBranches)
+                            <option value="{{ $compayBranches->id }}">
+                                {{ $compayBranches->name }}
+                            </option>
+                            @endforeach
+                        </select>
 
                     </div>
                     <!--end::Card title-->
@@ -445,6 +459,35 @@ Holidays
                             Swal.fire("Error deleting!", "Please try again", "error");
                         }
                     });
+                }
+            });
+        }
+
+        jQuery("#search").on('input', function() {
+            search_filter_results();
+        });
+        jQuery("#status").on('change', function() {
+            search_filter_results();
+        });
+        jQuery("#searchbranchId").on('change', function() {
+            search_filter_results();
+        });
+        jQuery(document).on('click', '#holidays_list a', function(e) {
+            e.preventDefault();
+            var page_no = $(this).attr('href').split('page=')[1];
+            search_filter_results(page_no);
+        });
+        function search_filter_results(page_no = 1) {
+            $.ajax({
+                type: 'GET',
+                url: company_ajax_base_url + '/holiday/search/filter?page=' + page_no,
+                data: {
+                    'status': $('#status').val(),
+                    'search': $('#search').val(),
+                    'companyBranchId': $('#searchbranchId').val()
+                },
+                success: function(response) {
+                    $('#holidays_list').replaceWith(response.data);
                 }
             });
         }

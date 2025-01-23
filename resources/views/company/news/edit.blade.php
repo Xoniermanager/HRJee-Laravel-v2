@@ -33,13 +33,78 @@
                             <input type="hidden" name="all_designation" value="0">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-6 form-group">
+                                    <div class="col-md-4 form-group">
                                         <label for="">Title *</label>
                                         <input class="form-control" name="title" type="text"
                                             value="{{ $editNewsDetails->title }}">
                                         @if ($errors->has('title'))
                                             <div class="text-danger">{{ $errors->first('title') }}</div>
                                         @endif
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <label for="">Start Date *</label>
+                                        <input class="form-control" name="start_date" type="date"
+                                            value="{{ $editNewsDetails->start_date }}">
+                                        @if ($errors->has('start_date'))
+                                            <div class="text-danger">{{ $errors->first('start_date') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <label for="">End Date *</label>
+                                        <input class="form-control" name="end_date" type="date"
+                                            value="{{ $editNewsDetails->end_date }}">
+                                        @if ($errors->has('end_date'))
+                                            <div class="text-danger">{{ $errors->first('end_date') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">News Category *</label>
+                                        <select class="form-control" name="news_category_id">
+                                            <option value="">Select the News Category</option>
+                                            @foreach ($allNewsCategoryDetails as $newsCategoryDetails)
+                                                <option value="{{ $newsCategoryDetails->id }}"
+                                                    {{ $editNewsDetails->news_category_id == $newsCategoryDetails->id ? 'selected' : '' }}>
+                                                    {{ $newsCategoryDetails->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('news_category_id'))
+                                            <div class="text-danger">{{ $errors->first('news_category_id') }}</div>
+                                        @endif
+                                    </div>
+                                     <div class="col-md-6 form-group">
+                                        <label for="">Attachment File </label>
+                                        <input class="form-control" name="file" type="file" accept="pdf">
+                                        @if ($errors->has('file'))
+                                            <div class="text-danger">{{ $errors->first('file') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">Description </label>
+                                        <textarea class="form-control" name="description">{{ $editNewsDetails->description }}</textarea>
+                                        @if ($errors->has('description'))
+                                            <div class="text-danger">{{ $errors->first('description') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">Image *</label>
+                                        <div class="image-input image-input-outline" data-kt-image-input="true">
+                                            <!--begin::Col-->
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <input type="file" class="form-control" name="image"
+                                                        accept=".png, .jpg, .jpeg">
+                                                    @if ($errors->has('image'))
+                                                        <div class="text-danger">{{ $errors->first('image') }}</div>
+                                                    @endif
+                                                    <!--end::Col-->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <!--begin::Preview existing avatar-->
+                                                    <div class="image-input-wrapper w-125px h-125px"></div>
+                                                    <!--end::Preview existing avatar-->
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <div class="row">
@@ -160,71 +225,6 @@
                                                 @endif
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">News Category *</label>
-                                        <select class="form-control" name="news_category_id">
-                                            <option value="">Select the News Category</option>
-                                            @foreach ($allNewsCategoryDetails as $newsCategoryDetails)
-                                                <option value="{{ $newsCategoryDetails->id }}"
-                                                    {{ $editNewsDetails->news_category_id == $newsCategoryDetails->id ? 'selected' : '' }}>
-                                                    {{ $newsCategoryDetails->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('news_category_id'))
-                                            <div class="text-danger">{{ $errors->first('news_category_id') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">Start Date *</label>
-                                        <input class="form-control" name="start_date" type="date"
-                                            value="{{ $editNewsDetails->start_date }}">
-                                        @if ($errors->has('start_date'))
-                                            <div class="text-danger">{{ $errors->first('start_date') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">End Date *</label>
-                                        <input class="form-control" name="end_date" type="date"
-                                            value="{{ $editNewsDetails->end_date }}">
-                                        @if ($errors->has('end_date'))
-                                            <div class="text-danger">{{ $errors->first('end_date') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">Image *</label>
-                                        <div class="image-input image-input-outline" data-kt-image-input="true">
-                                            <!--begin::Col-->
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    <input type="file" class="form-control" name="image"
-                                                        accept=".png, .jpg, .jpeg">
-                                                    @if ($errors->has('image'))
-                                                        <div class="text-danger">{{ $errors->first('image') }}</div>
-                                                    @endif
-                                                    <!--end::Col-->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <!--begin::Preview existing avatar-->
-                                                    <div class="image-input-wrapper w-125px h-125px"></div>
-                                                    <!--end::Preview existing avatar-->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">Attachment File </label>
-                                        <input class="form-control" name="file" type="file" accept="pdf">
-                                        @if ($errors->has('file'))
-                                            <div class="text-danger">{{ $errors->first('file') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-12 form-group">
-                                        <label for="">Description </label>
-                                        <textarea id="editor" name="description">{{ $editNewsDetails->description }}</textarea>
-                                        @if ($errors->has('description'))
-                                            <div class="text-danger">{{ $errors->first('description') }}</div>
-                                        @endif
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Submit</button>

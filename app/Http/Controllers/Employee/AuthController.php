@@ -56,6 +56,10 @@ class AuthController extends Controller
             if (!Auth::guard('employee')->attempt($credentials)) {
                 return Redirect::back()->with('error', 'invalid_credentials');
             } else {
+                $user = Auth::guard('employee')->user();
+                if ($user->status === '0') {
+                    return redirect()->back()->with(['error' => 'Your account is not Active.Please Contact to Admin']);
+                }
                 $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, 'employee');
                 if ($genrateOtpresponse['status'] == true)
                     return redirect('/employee/verify/otp');

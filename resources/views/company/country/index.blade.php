@@ -336,7 +336,7 @@ Country
                 }
             });
         }
-        jQuery("#search").on('blur', function() {
+        jQuery("#search").on('input', function() {
             search_filter_results();
         });
         jQuery("#status").on('change', function() {

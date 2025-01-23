@@ -63,9 +63,17 @@
                             <!--begin::Logo-->
                             <a href="#" class="mb-0 mb-lg-12 text-center">
                                 <img alt="Logo" src="assets/media/logos/logo.png" class="h-75px" />
-
                             </a>
-                            
+                            @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible">
+                                {{ session('error') }}
+                            </div>
+                            @endif
+                            @if (session('success'))
+                            <div class="alert alert-success alert-dismissible">
+                                {{ session('success') }}
+                            </div>
+                            @endif
                             <!--begin::Form-->
                             <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden"
                                 id="kt_sign_in_form" data-kt-redirect-url="/metronic8/demo3/../demo3/index.html"
@@ -78,7 +86,7 @@
                                     <input type="text" name="email" value="{{ old('email') }}" autocomplete="off"
                                         class="form-control-signin animate-left">
                                     @error('email')
-                                        <span class="text-red-500">{{ $message }}</span>
+                                    <span class="text-red-500">{{ $message }}</span>
                                     @enderror
                                     <!--end::Email-->
                                     <div class="fv-plugins-message-container invalid-feedback"></div>
@@ -92,7 +100,7 @@
                                     <input type="password" name="password" autocomplete="off"
                                         class="form-control-signin animate-left" value="{{ old('password') }}">
                                     @error('password')
-                                        <span class="text-red-500">{{ $message }}</span>
+                                    <span class="text-red-500">{{ $message }}</span>
                                     @enderror
                                     <div class="fv-plugins-message-container invalid-feedback"></div>
                                 </div>
@@ -140,7 +148,11 @@
     <script src="{{ asset('assets/js/widgets.bundle.js') }}"></script>
     <!--end::Custom Javascript-->
     <!--end::Custom Javascript-->
-
+    <script>
+        setTimeout(function() {
+            $('.alert').fadeOut('fast');
+        }, 4000);
+    </script>
 </body>
 <!--end::Body-->
 
