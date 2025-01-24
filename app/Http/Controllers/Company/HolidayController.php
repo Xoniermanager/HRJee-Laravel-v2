@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Company;
 
+use Exception;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Services\BranchServices;
 use App\Http\Services\HolidayServices;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Exception;
 
 class HolidayController extends Controller
 {
@@ -118,5 +119,14 @@ class HolidayController extends Controller
         } else {
             echo 0;
         }
+    }
+
+    public function searchFilterData(Request $request)
+    {
+        $allHolidaysDetails = $this->holidayService->searchFilterData(Auth::guard('company')->user()->company_id, $request->all());
+        return response()->json([
+            'success' => true,
+            'data'   =>  view('company.holiday.holiday_list', compact('allHolidaysDetails'))->render()
+        ]);
     }
 }

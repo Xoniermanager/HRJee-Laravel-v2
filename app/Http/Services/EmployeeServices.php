@@ -88,7 +88,7 @@ class EmployeeServices
                 ->orWhere('official_mobile_no', 'Like', '%' . $searchKeyword . '%');
         }
         // added relationship data
-        return $allEmployeeDetails->with(['addressDetails', 'addressDetails.country', 'addressDetails.state', 'bankDetails'])->orderBy('id', 'DESC')->paginate(10);
+        return $allEmployeeDetails->with(['addressDetails', 'addressDetails.country', 'addressDetails.state', 'bankDetails'])->orderBy('id', 'DESC');
     }
     public function create($data)
     {
@@ -101,8 +101,7 @@ class EmployeeServices
             if ($existingDetails->profile_image != null) {
                 unlinkFileOrImage($existingDetails->profile_image);
             }
-            if(isset($data['skill_id']) && !empty($data['skill_id']))
-            {
+            if (isset($data['skill_id']) && !empty($data['skill_id'])) {
                 $existingDetails->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($existingDetails, $data['language']);
             }
@@ -174,7 +173,7 @@ class EmployeeServices
     }
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
     {
-        return $this->employeeRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('id','joining_date')->get();
+        return $this->employeeRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('id', 'joining_date')->get();
     }
     public function getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds = null, $designationIds = null, $allCompanyBranches = null, $allDepartment = null, $allDesignation = null)
     {
@@ -216,5 +215,27 @@ class EmployeeServices
     public function getEmployeeByNameByEmpIdFilter($companyId, $searchKey)
     {
         return $this->employeeRepository->where('company_id', $companyId)->where('name', 'Like', '%' . $searchKey . '%')->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
+    }
+    public function getExitEmployeeList($companyId)
+    {
+        return $this->employeeRepository->where('company_id', $companyId)->onlyTrashed()->paginate(10);
+    }
+
+    public function searchFilterForExitEmployee($companyId, $searchKey)
+    {
+        $allEmployeeDetails = $this->employeeRepository
+            ->where('company_id', $companyId)
+            ->onlyTrashed();
+        if (!empty($searchKey['search'])) {
+            $searchTerm = '%' . $searchKey['search'] . '%';
+            $allEmployeeDetails = $allEmployeeDetails->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'LIKE', $searchTerm)
+                    ->orWhere('official_email_id', 'LIKE', $searchTerm)
+                    ->orWhere('email', 'LIKE', $searchTerm)
+                    ->orWhere('phone', 'LIKE', $searchTerm)
+                    ->orWhere('emp_id', 'LIKE', $searchTerm);
+            });
+        }
+        return $allEmployeeDetails->paginate(10);
     }
 }

@@ -14,12 +14,12 @@ class MenusTableSeeder extends Seeder
      */
     public function run()
     {
-
+        
 
         \DB::table('menus')->delete();
-
+        
         \DB::table('menus')->insert(array (
-            0 =>
+            0 => 
             array (
                 'id' => 1,
                 'title' => 'Country',
@@ -31,7 +31,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 11:47:40',
                 'updated_at' => '2025-01-15 11:47:40',
             ),
-            1 =>
+            1 => 
             array (
                 'id' => 2,
                 'title' => 'State',
@@ -43,7 +43,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 11:48:30',
                 'updated_at' => '2025-01-15 11:48:30',
             ),
-            2 =>
+            2 => 
             array (
                 'id' => 3,
                 'title' => 'Previous Company',
@@ -55,7 +55,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 12:51:05',
                 'updated_at' => '2025-01-15 12:51:05',
             ),
-            3 =>
+            3 => 
             array (
                 'id' => 4,
                 'title' => 'Company Branch',
@@ -67,7 +67,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 12:56:24',
                 'updated_at' => '2025-01-15 12:56:24',
             ),
-            4 =>
+            4 => 
             array (
                 'id' => 5,
                 'title' => 'Employee',
@@ -79,7 +79,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 12:59:31',
                 'updated_at' => '2025-01-15 12:59:31',
             ),
-            5 =>
+            5 => 
             array (
                 'id' => 6,
                 'title' => 'Holiday',
@@ -91,7 +91,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 13:04:36',
                 'updated_at' => '2025-01-15 13:04:36',
             ),
-            6 =>
+            6 => 
             array (
                 'id' => 7,
                 'title' => 'Weekend',
@@ -103,7 +103,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 13:04:59',
                 'updated_at' => '2025-01-15 13:04:59',
             ),
-            7 =>
+            7 => 
             array (
                 'id' => 8,
                 'title' => 'Announcement',
@@ -115,7 +115,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 13:07:21',
                 'updated_at' => '2025-01-15 13:07:21',
             ),
-            8 =>
+            8 => 
             array (
                 'id' => 9,
                 'title' => 'Break Type',
@@ -127,7 +127,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 13:11:57',
                 'updated_at' => '2025-01-15 13:11:57',
             ),
-            9 =>
+            9 => 
             array (
                 'id' => 10,
                 'title' => 'Resignation Status',
@@ -139,7 +139,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 13:13:57',
                 'updated_at' => '2025-01-15 13:13:57',
             ),
-            10 =>
+            10 => 
             array (
                 'id' => 11,
                 'title' => 'Office Timing Config',
@@ -151,7 +151,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 15:02:12',
                 'updated_at' => '2025-01-15 15:02:12',
             ),
-            11 =>
+            11 => 
             array (
                 'id' => 12,
                 'title' => 'Office Shifts',
@@ -163,7 +163,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 15:04:16',
                 'updated_at' => '2025-01-15 15:04:16',
             ),
-            12 =>
+            12 => 
             array (
                 'id' => 13,
                 'title' => 'Timing Config',
@@ -175,7 +175,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 15:05:07',
                 'updated_at' => '2025-01-15 15:05:07',
             ),
-            13 =>
+            13 => 
             array (
                 'id' => 14,
                 'title' => 'Role Management',
@@ -187,7 +187,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:02:20',
                 'updated_at' => '2025-01-15 16:02:20',
             ),
-            14 =>
+            14 => 
             array (
                 'id' => 15,
                 'title' => 'Role',
@@ -199,7 +199,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:03:30',
                 'updated_at' => '2025-01-15 16:03:30',
             ),
-            15 =>
+            15 => 
             array (
                 'id' => 16,
                 'title' => 'Assign Permission',
@@ -211,7 +211,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:04:41',
                 'updated_at' => '2025-01-15 16:04:41',
             ),
-            16 =>
+            16 => 
             array (
                 'id' => 17,
                 'title' => 'News Management',
@@ -223,7 +223,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:09:51',
                 'updated_at' => '2025-01-15 16:09:51',
             ),
-            17 =>
+            17 => 
             array (
                 'id' => 18,
                 'title' => 'News',
@@ -235,7 +235,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:11:25',
                 'updated_at' => '2025-01-15 16:11:25',
             ),
-            18 =>
+            18 => 
             array (
                 'id' => 19,
                 'title' => 'News Category',
@@ -247,7 +247,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:12:12',
                 'updated_at' => '2025-01-15 16:12:12',
             ),
-            19 =>
+            19 => 
             array (
                 'id' => 20,
                 'title' => 'Policy Management',
@@ -259,7 +259,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:13:10',
                 'updated_at' => '2025-01-15 16:13:10',
             ),
-            20 =>
+            20 => 
             array (
                 'id' => 21,
                 'title' => 'Policy',
@@ -271,7 +271,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:13:32',
                 'updated_at' => '2025-01-15 16:13:32',
             ),
-            21 =>
+            21 => 
             array (
                 'id' => 22,
                 'title' => 'Policy Category',
@@ -283,7 +283,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:14:05',
                 'updated_at' => '2025-01-15 16:14:05',
             ),
-            22 =>
+            22 => 
             array (
                 'id' => 23,
                 'title' => 'Asset Management',
@@ -295,7 +295,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:18:29',
                 'updated_at' => '2025-01-15 16:18:29',
             ),
-            23 =>
+            23 => 
             array (
                 'id' => 24,
                 'title' => 'Asset Manufacturer',
@@ -307,7 +307,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:19:56',
                 'updated_at' => '2025-01-15 16:19:56',
             ),
-            24 =>
+            24 => 
             array (
                 'id' => 25,
                 'title' => 'Asset Status',
@@ -319,7 +319,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:20:25',
                 'updated_at' => '2025-01-15 16:20:25',
             ),
-            25 =>
+            25 => 
             array (
                 'id' => 26,
                 'title' => 'Asset Category',
@@ -331,7 +331,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:21:25',
                 'updated_at' => '2025-01-15 16:21:25',
             ),
-            26 =>
+            26 => 
             array (
                 'id' => 27,
                 'title' => 'Asset Dashboard',
@@ -343,7 +343,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:21:59',
                 'updated_at' => '2025-01-15 16:21:59',
             ),
-            27 =>
+            27 => 
             array (
                 'id' => 28,
                 'title' => 'Asset',
@@ -355,7 +355,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 16:18:29',
                 'updated_at' => '2025-01-15 16:18:29',
             ),
-            28 =>
+            28 => 
             array (
                 'id' => 29,
                 'title' => 'Attendance Management',
@@ -367,7 +367,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:43:32',
                 'updated_at' => '2025-01-15 17:43:32',
             ),
-            29 =>
+            29 => 
             array (
                 'id' => 30,
                 'title' => 'Attendance',
@@ -379,7 +379,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:43:54',
                 'updated_at' => '2025-01-15 17:43:54',
             ),
-            30 =>
+            30 => 
             array (
                 'id' => 31,
                 'title' => 'Attendance Status',
@@ -391,7 +391,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:44:23',
                 'updated_at' => '2025-01-15 17:44:23',
             ),
-            31 =>
+            31 => 
             array (
                 'id' => 32,
                 'title' => 'Complain',
@@ -403,7 +403,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:49:56',
                 'updated_at' => '2025-01-15 17:49:56',
             ),
-            32 =>
+            32 => 
             array (
                 'id' => 33,
                 'title' => 'Complain Status',
@@ -415,7 +415,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:51:15',
                 'updated_at' => '2025-01-15 17:51:15',
             ),
-            33 =>
+            33 => 
             array (
                 'id' => 34,
                 'title' => 'Complain Category',
@@ -427,7 +427,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:51:49',
                 'updated_at' => '2025-01-15 17:51:49',
             ),
-            34 =>
+            34 => 
             array (
                 'id' => 35,
                 'title' => 'Leave Management',
@@ -439,7 +439,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:54:14',
                 'updated_at' => '2025-01-15 17:54:14',
             ),
-            35 =>
+            35 => 
             array (
                 'id' => 36,
                 'title' => 'Leave Type',
@@ -451,7 +451,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:54:47',
                 'updated_at' => '2025-01-15 17:54:47',
             ),
-            36 =>
+            36 => 
             array (
                 'id' => 37,
                 'title' => 'Leave Status',
@@ -463,7 +463,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:54:47',
                 'updated_at' => '2025-01-15 17:54:47',
             ),
-            37 =>
+            37 => 
             array (
                 'id' => 38,
                 'title' => 'Employee Leave',
@@ -473,9 +473,9 @@ class MenusTableSeeder extends Seeder
                 'status' => 1,
                 'order_no' => 29,
                 'created_at' => '2025-01-15 17:54:47',
-                'updated_at' => '2025-01-15 17:54:47',
+                'updated_at' => '2025-01-23 12:28:11',
             ),
-            38 =>
+            38 => 
             array (
                 'id' => 39,
                 'title' => 'Employee Leave Credit',
@@ -487,7 +487,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:54:47',
                 'updated_at' => '2025-01-15 17:54:47',
             ),
-            39 =>
+            39 => 
             array (
                 'id' => 40,
                 'title' => 'Leave Status Update',
@@ -499,7 +499,7 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:54:47',
                 'updated_at' => '2025-01-15 17:54:47',
             ),
-            40 =>
+            40 => 
             array (
                 'id' => 41,
                 'title' => 'Employee Leave Available',
@@ -511,8 +511,20 @@ class MenusTableSeeder extends Seeder
                 'created_at' => '2025-01-15 17:54:47',
                 'updated_at' => '2025-01-15 17:54:47',
             ),
+            41 => 
+            array (
+                'id' => 42,
+                'title' => 'Exit Employee ',
+                'slug' => '/company/employee/exit/list',
+                'icon' => '<i class="fa fa-user-times" aria-hidden="true"></i>',
+                'parent_id' => NULL,
+                'status' => 1,
+                'order_no' => 30,
+                'created_at' => '2025-01-15 17:54:47',
+                'updated_at' => '2025-01-23 12:27:40',
+            ),
         ));
-
-
+        
+        
     }
 }

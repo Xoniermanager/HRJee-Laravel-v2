@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Company;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Jobs\EmployeeExportFileJob;
 use App\Http\Controllers\Controller;
 use App\Http\Services\RolesServices;
 use App\Http\Services\CustomRoleService;
@@ -17,7 +18,6 @@ use App\Http\Services\EmployeeServices;
 use App\Http\Services\LanguagesServices;
 use App\Http\Requests\EmployeeAddRequest;
 use App\Http\Services\DepartmentServices;
-use App\Http\Services\SpreadsheetService;
 use App\Http\Services\DocumentTypeService;
 use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\AssetCategoryService;
@@ -42,12 +42,7 @@ class EmployeeController extends Controller
     private $languagesServices;
     private $skillServices;
     private $assetCategoryServices;
-    protected $spreadsheetService;
-
-
-
     public function __construct(
-        SpreadsheetService $spreadsheetService,
         CountryServices $countryService,
         PreviousCompanyService $previousCompanyService,
         QualificationService $qualificationService,
@@ -80,14 +75,13 @@ class EmployeeController extends Controller
         $this->languagesServices = $languagesServices;
         $this->skillServices = $skillServices;
         $this->assetCategoryServices = $assetCategoryServices;
-        $this->spreadsheetService = $spreadsheetService;
     }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->employeeService->all($request == null,Auth::guard('company')->user()->company_id);
+        $allUserDetails = $this->employeeService->all($request == null, Auth::guard('company')->user()->company_id)->paginate(10);
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
@@ -180,7 +174,7 @@ class EmployeeController extends Controller
                     'message' => 'Basic Details Added Successfully! Please Continue',
                     'data' => $userDetails,
                     'allUserDetails' => view('company.employee.list', [
-                        'allUserDetails' => $this->employeeService->all('',Auth::guard('company')->user()->company_id)
+                        'allUserDetails' => $this->employeeService->all('', Auth::guard('company')->user()->company_id)->paginate(10)
                     ])->render()
                 ]);
             }
@@ -197,7 +191,7 @@ class EmployeeController extends Controller
     public function getfilterlist(Request $request)
     {
         try {
-            $allUserDetails = $this->employeeService->all($request,Auth::guard('company')->user()->company_id);
+            $allUserDetails = $this->employeeService->all($request, Auth::guard('company')->user()->company_id)->paginate(10);
             if ($allUserDetails) {
                 return response()->json([
                     'data' => view('company.employee.list', compact('allUserDetails'))->render()
@@ -212,5 +206,84 @@ class EmployeeController extends Controller
     {
         $singleViewEmployeeDetails = $user->load('assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
+    }
+
+    public function deleteEmployee(User $user)
+    {
+        try {
+            $updateDetails = $user->update(['exit_date' => now()->format('Y-m-d'), 'status' => '0']);
+            if ($updateDetails) {
+                $deleteDetails = $user->delete();
+
+                if ($deleteDetails) {
+                    // Fetch all user details after deletion
+                    $allUserDetails = $this->employeeService->all('', Auth::guard('company')->user()->company_id)->paginate(10);
+
+                    return response()->json([
+                        'data' => view('company.employee.list', compact('allUserDetails'))->render()
+                    ]);
+                }
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+    public function statusUpdate(Request $request, $userId)
+    {
+        try {
+            $updateStatus = User::find($userId)->update(['status' => $request->status]);
+            if ($updateStatus) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Employee status updated successfully."
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to update the status. Please try again."
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function exitEmployeeList()
+    {
+        $allEmployeeExitDetails = $this->employeeService->getExitEmployeeList(Auth::guard('company')->user()->company_id);
+        return view('company.exit_employee.index', compact('allEmployeeExitDetails'));
+    }
+
+    public function searchFilterForExitEmployee(Request $request)
+    {
+        try {
+            $allEmployeeExitDetails = $this->employeeService->searchFilterForExitEmployee(Auth::guard('company')->user()->company_id, $request->all());
+            return response()->json([
+                'data' => view('company.exit_employee.list', compact('allEmployeeExitDetails'))->render()
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    public function exportEmployee(Request $request)
+    {
+        try {
+            $allEmployeeDetails = $this->employeeService->all($request, Auth::guard('company')->user()->company_id)->get();
+            // $userEmail = Auth::guard('company')->user()->email;
+            $userEmail = "arjun@xoniertechnologies.com";
+            $userName = "Xonier";
+            EmployeeExportFileJob::dispatch($userEmail, $userName, $allEmployeeDetails);
+            return response()->json([
+                'status' => true,
+                'message' => 'The file is being processed and will be sent to your email shortly.'
+            ]);
+        } catch (Exception $e) {
+            // Return error response if there is an exception
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 }

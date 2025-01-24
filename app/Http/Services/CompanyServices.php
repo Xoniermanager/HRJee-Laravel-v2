@@ -54,7 +54,7 @@ class CompanyServices
                 $query->where('status', $searchKey['status']);
             }
             if (isset($searchKey['deletedAt'])) {
-                $query->where('deleted_at', $searchKey['deletedAt']);
+                $query->onlyTrashed();
             }
             if (isset($searchKey['companyTypeId'])) {
                 $query->where('company_type_id', $searchKey['companyTypeId']);

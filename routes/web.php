@@ -34,13 +34,12 @@ use App\Http\Controllers\Employee\LeaveTrackingController;
 */
 
 /** ---------------Employee Panel Started--------------  */
-Route::prefix('employee')->middleware('Check2FA')->group(function () {
-
+Route::prefix('employee')->middleware(['check.employee.status', 'Check2FA'])->group(function ()
+ {
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
     Route::get('/impersonate', [DashboardController::class, 'startImpersonate'])->name('employee.impersonate');
     Route::get('/unset-impersonate', [DashboardController::class, 'endImpersonate'])->name('employee.unset-impersonate');
-
     //Daily Attendance
     Route::get('/daily/attendance', [DailyAttendanceController::class, 'index'])->name('employee.daily.attendance');
 
