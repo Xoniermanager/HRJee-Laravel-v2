@@ -32,7 +32,10 @@
                                 <!--end:Menu link-->
                             </div>
                             <!--end:Menu item-->
-                            {!! getCompanyMenuHtml(Auth()->guard('company')->user()->company_id)!!}
+                            
+                            {!! getCompanyMenuHtml(Auth()->guard('company')->user()->id)!!}
+                            
+                            
                             {{-- <div class="menu-item" data-url="{{ route('country.index') }}">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('country.index') }}">

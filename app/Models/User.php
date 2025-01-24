@@ -231,7 +231,7 @@ class User extends Authenticatable
     }
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id', 'id');
+        return $this->belongsTo(CustomRole::class, 'role_id', 'id');
     }
     public function officeShift()
     {

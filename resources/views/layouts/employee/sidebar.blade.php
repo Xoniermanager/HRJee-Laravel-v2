@@ -47,7 +47,7 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            @if(Auth()->guard('employee')->user()->hasPermission('announcement'))
+                            {{-- @if(Auth()->guard('employee')->user()->hasPermission('announcement')) --}}
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.announcement') }}">
@@ -61,8 +61,8 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            @endif
-                            @if(Auth()->guard('employee')->user()->hasPermission('news'))
+                            {{-- @endif --}}
+                            {{-- @if(Auth()->guard('employee')->user()->hasPermission('news')) --}}
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.news') }}">
@@ -76,7 +76,7 @@
                                 </a>
                                 <!--end:Menu link-->
                             </div>
-                            @endif
+                            {{-- @endif --}}
                             <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link" href="{{ route('employee.policy') }}">

@@ -36,6 +36,12 @@ class CompanyUserService
     {
         return $this->companyUserRepository->find($id)->delete();
     }
+
+    public function hardDelete($id)
+    {
+        return $this->companyUserRepository->find($id)->forceDelete();
+    }
+
     public function softDelete($id)
     {
         return $this->companyUserRepository->where('branch_id', $id)->delete();

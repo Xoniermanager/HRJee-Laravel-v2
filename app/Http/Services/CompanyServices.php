@@ -2,6 +2,8 @@
 
 namespace App\Http\Services;
 
+use App\Models\Menu;
+use App\Models\CompanyMenu;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CompanyRepository;
 use Illuminate\Support\Facades\Session;
@@ -100,18 +102,43 @@ class CompanyServices
 
     public function getCompanyMenus()
     {
-        $menus = $this->companyRepository->with([
-            'menu' => function ($query) {
-                $query->where('status', 1)
-                    ->whereNull('parent_id') // Only fetch parent menus
-                    ->orderBy('order_no', 'ASC');
-            },
-            'menu.children' => function ($query) {
-                $query->where('status', 1) // Fetch only active children
-                    ->orderBy('order_no', 'ASC');
-            }
-        ])->find(auth()->guard('company')->user()->company_id);
+        // $menus = $this->companyRepository->with([
+        //     'menu' => function ($query) {
+        //         $query->where('status', 1)
+        //             ->whereNull('parent_id') // Only fetch parent menus
+        //             ->orderBy('order_no', 'ASC');
+        //     },
+        //     'menu.children' => function ($query) {
+        //         $query->where('status', 1) // Fetch only active children
+        //             ->orderBy('order_no', 'ASC');
+        //     }
+        // ])->find(auth()->guard('company')->user()->company_id);
 
-        return $menus->menu;
+        // return $menus->menu;
+
+
+        $companyMenuSql = CompanyMenu::with(['menu' => function ($query) {
+            $query->where('status', 1);
+            $query->orderBy('order_no', 'ASC');
+        }, 'menu.parent'])->where('company_id', auth()->guard('company')->user()->company_id);   
+    
+
+        $companyMenuIDs = $companyMenuSql->pluck('menu_id')->toArray();
+        $companyMenus = $companyMenuSql->get();
+        foreach ($companyMenus as $companyMenu) {
+            $menu = $companyMenu->menu;
+            $companyMenuIDs[] = $menu->parent_id;
+        }
+
+        $companyMenus = Menu::where('status', 1)->whereNull('parent_id')->whereIn('id', $companyMenuIDs)->with([
+                'children' => function ($query) use($companyMenuIDs) {
+                    $query->whereIn('id', $companyMenuIDs)
+                        ->orderBy('order_no', 'ASC');
+                }
+            ])->orderBy('order_no', 'ASC')->get();
+
+        return $companyMenus;
+
+
     }
 }

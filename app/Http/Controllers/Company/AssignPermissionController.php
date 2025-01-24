@@ -25,7 +25,7 @@ class AssignPermissionController extends Controller
     public function index()
     {
         $roles = CompanyMenu::with(['role', 'menu'])->whereNotNull('role_id')->get()->groupBy('role_id');
-        
+
         return view('company.roles_and_permission.assign_permission.index', compact('roles'));
     }
 
@@ -33,6 +33,8 @@ class AssignPermissionController extends Controller
     {
         $roles = CustomRole::orderBy('id', 'DESC')->get();
         $allMenus = $this->companyServices->getCompanyMenus();
+
+        // dd($allMenus);
 
         return view('company.roles_and_permission.assign_permission.add_assign', compact('roles', 'allMenus'));
     }

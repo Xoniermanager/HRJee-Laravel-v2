@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Models\CustomRole;
+use App\Models\CompanyMenu;
 use App\Http\Services\MenuService;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CompanyServices;
@@ -40,8 +42,13 @@ class AssignMenuCompanyController extends Controller
             'menu_id'    => 'required|array',
             'menu_id.*'    => 'required|exists:menus,id',
         ]);
+
         $company = $this->companyRepository->getCompanyById($validated['company_id'])->first();
         $company->menu()->sync($validated['menu_id']);
+        
+        $roleIDs = CustomRole::where('company_id', $validated['company_id'])->pluck('id')->toArray();
+        CompanyMenu::whereIn('role_id', $roleIDs)->whereNotIn('menu_id', $validated['menu_id'])->delete();
+        
         return redirect(route('admin.assign_menu.index'))->with('success', 'Feature Updated Successfully');
     }
     public function get_assign_feature(Request $request)
