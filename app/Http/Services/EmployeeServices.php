@@ -88,7 +88,7 @@ class EmployeeServices
                 ->orWhere('official_mobile_no', 'Like', '%' . $searchKeyword . '%');
         }
         // added relationship data
-        return $allEmployeeDetails->with(['addressDetails', 'addressDetails.country', 'addressDetails.state', 'bankDetails'])->orderBy('id', 'DESC')->paginate(10);
+        return $allEmployeeDetails->with(['addressDetails', 'addressDetails.country', 'addressDetails.state', 'bankDetails'])->orderBy('id', 'DESC');
     }
     public function create($data)
     {

@@ -28,7 +28,6 @@ use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
-use App\Http\Controllers\Company\SpreadsheetController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
@@ -57,7 +56,10 @@ use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
-
+// Route::get('/test',function()
+// {
+//     return \App\Jobs\EmployeeExportFileJob::dispatch('arjun@xoniertechnologies.com');
+// });
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
@@ -180,12 +182,7 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
         Route::get('/status/update/{user:id}', 'statusUpdate')->name('employee.status_update');
         Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('employee.exit.employeelist');
-    });
-
-    Route::controller(SpreadsheetController::class)->group(function () {
-        Route::post('/export/employee', 'exportEmployee')->name('export.employee');
-        Route::post('/export/employee/bank/details', 'exportEmployeeBankDetails')->name('export.employee.bank.details');
-        Route::post('/export/employee/address/details', 'exportEmployeeAddressDetails')->name('export.employee.address.details');
+        Route::get('/export', 'exportEmployee')->name('employee.export');
     });
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
