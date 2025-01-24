@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Jobs\EmployeeExportFileJob;
 use App\Http\Controllers\Controller;
 use App\Http\Services\RolesServices;
+use App\Http\Services\CustomRoleService;
 use App\Http\Services\ShiftServices;
 use App\Http\Services\SkillsService;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +37,7 @@ class EmployeeController extends Controller
     private $employeeService;
     private $branchService;
     private $roleService;
+    private $customRoleService;
     private $shiftService;
     private $languagesServices;
     private $skillServices;
@@ -54,8 +56,8 @@ class EmployeeController extends Controller
         ShiftServices $shiftService,
         LanguagesServices $languagesServices,
         SkillsService $skillServices,
-        AssetCategoryService $assetCategoryServices
-
+        AssetCategoryService $assetCategoryServices,
+        CustomRoleService $customRoleService
 
     ) {
         $this->countryService = $countryService;
@@ -68,6 +70,7 @@ class EmployeeController extends Controller
         $this->employeeService = $employeeService;
         $this->branchService = $branchService;
         $this->roleService = $roleService;
+        $this->customRoleService = $customRoleService;
         $this->shiftService = $shiftService;
         $this->languagesServices = $languagesServices;
         $this->skillServices = $skillServices;
@@ -101,7 +104,8 @@ class EmployeeController extends Controller
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages =   $this->languagesServices->defaultLanguages();
         $allBranches = $this->branchService->all(Auth()->guard('company')->user()->company_id);
-        $allRoles = $this->roleService->all();
+        // $allRoles = $this->roleService->all();
+        $allRoles = $this->customRoleService->all();
         $allShifts = $this->shiftService->getAllActiveShifts();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
 
@@ -134,7 +138,8 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $allBranches = $this->branchService->all(Auth()->guard('company')->user()->company_id);
-        $allRoles = $this->roleService->all();
+        // $allRoles = $this->roleService->all();
+        $allRoles = $this->customRoleService->all();
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages =   $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();

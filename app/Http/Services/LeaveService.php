@@ -21,6 +21,12 @@ class LeaveService
     {
         return $this->leaveRepository->orderBy('id', 'DESC')->paginate(10);
     }
+
+    public function leavesByUserId($userId)
+    {
+        return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->paginate(10);
+    }
+
     public function create(array $data)
     {
         $payload = array();
@@ -51,6 +57,7 @@ class LeaveService
             $startDate = Carbon::parse($data['from']);
             $endDate = Carbon::parse($data['to']);
             $days = $startDate->diffInDays($endDate);
+            $days = $days == 0 ? 1 : $days; //if applied for only one day then days diff will show 0 so
             $data = $this->employeeLeaveAvailableService->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days);
             $response = array('status' => true, 'message' => 'Leave Apply successfully', 'data' => $data);
         }
@@ -73,7 +80,11 @@ class LeaveService
     }
     public function getLeaveDetailsOnlyUserId()
     {
-        return $this->leaveRepository->select('id', 'user_id')->get();
+        return $this->leaveRepository->select('id', 'user_id', 'from', 'to')->get();
+    }
+    public function getPendingLeavesByUserId()
+    {
+        return $this->leaveRepository->where('leave_status_id', 1)->select('id', 'user_id', 'from', 'to')->get();
     }
     public function getAllAppliedLeave()
     {

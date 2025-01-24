@@ -44,6 +44,8 @@ class EmployeeLeaveManagementService
     $finalCreditedDetails = $this->emoloyeeLeaveManagementRepository->where('employee_leave_available_id', $employeeLeaveAvailableId)->orderBy('id', 'DESC')->first();
     if (isset($finalCreditedDetails) && !empty($finalCreditedDetails)) {
       $data['available'] = $finalCreditedDetails->available - $debitValue;
+    } else {
+      $data['available'] = $debitValue;
     }
     $response = $this->emoloyeeLeaveManagementRepository->create($data);
     if ($response) {

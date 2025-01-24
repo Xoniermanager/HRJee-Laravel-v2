@@ -283,7 +283,9 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
         //permission
         Route::prefix('/assign_permissions')->controller(AssignPermissionController::class)->group(function () {
             Route::get('/', 'index')->name('assign_permission');
+            Route::get('/add', 'add')->name('add_assign_permission');
             Route::post('/create', 'store')->name('assign_permission.store');
+            Route::get('/assigned-permission', 'getAssignedPermissions')->name('assign_permission.assigned');
             Route::get('/delete', 'destroy')->name('assign_permissions.delete');
         });
 

@@ -22,6 +22,12 @@ class EmployeeLeaveAvailableService
   {
     return $this->employeeLeaveAvailableRepository->where('user_id',$id)->paginate(10)->groupBy('leave_type_id');
   }
+
+  public function getAvailableLeaveByUserIdTypeId($userId, $leaveTypeId)
+  {
+    return $this->employeeLeaveAvailableRepository->where('user_id', $userId)->where('leave_type_id', $leaveTypeId)->first();
+  }
+
   public function createDetails($userId, $leaveTypeId, $creditValue, $mode)
   {
     $existingDetails = $this->employeeLeaveAvailableRepository->where('user_id', $userId)->where('leave_type_id', $leaveTypeId)->orderBy('id', 'Desc')->first();
@@ -47,14 +53,18 @@ class EmployeeLeaveAvailableService
   }
   public function debitLeaveDetails($userId, $leaveTypeId, $debitValue)
   {
+    
     $existingDetails = $this->employeeLeaveAvailableRepository->where('user_id', $userId)->where('leave_type_id', $leaveTypeId)->orderBy('id', 'Desc')->first();
     $response = array('status'=>true,'message'=>'leave not available','data'=>[]);
-
+    
     if (isset($existingDetails) && !empty($existingDetails)) {
       $finalAvailableValue = $existingDetails->available - $debitValue;
+      
       $updateDetails = $existingDetails->update(['available' => $finalAvailableValue]);
+      
       if ($updateDetails) {
         $data = $this->employeeLeaveManagementService->debitLeaveDetails($userId, $existingDetails->id, $debitValue);
+        
         $response = array('status'=>true,'message'=>'leave not available','data'=>$data);
       }
     }

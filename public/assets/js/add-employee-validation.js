@@ -41,7 +41,7 @@ jQuery(document).ready(function () {
             department_id: 'Please Select the Department',
             designation_id: 'Please Select the Designation',
             company_branch_id: 'Please Select the Branch',
-            role_id: 'Please Select the Roles',
+            role_id: 'Please Select the role',
             qualification_id: 'Please select the qualification',
             skill_id: 'Please select the skill', // Corrected message for skill_id
             shift_id: 'Please Select the Shift',

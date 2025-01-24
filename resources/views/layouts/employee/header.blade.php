@@ -11,6 +11,17 @@
             </h1>
             <!--end::Heading-->
         </div>
+        <div class="page-title d-flex flex-column align-items-start justify-content-center flex-wrap me-lg-2 pb-5 pb-lg-0"
+            data-kt-swapper="true" data-kt-swapper-mode="prepend"
+            data-kt-swapper-parent="{default: '#kt_content_container', lg: '#kt_header_container'}">
+            <!--begin::Heading-->
+            @if(auth()->guard('employee')->user()->role)
+            <a href="/employee/impersonate" class="btn btn-sm btn-primary align-self-center">
+                Switch as {{auth()->guard('employee')->user()->role->name}}
+            </a>
+            @endif
+            <!--end::Heading-->
+        </div>
         <!--end::Page title=-->
         <!--begin::Wrapper-->
         <div class="d-flex d-lg-none align-items-center ms-n2">
