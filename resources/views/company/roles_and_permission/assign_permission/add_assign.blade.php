@@ -34,8 +34,7 @@ Roles And Permissions
                                                     <option value="">Select Role</option>
 
                                                     @forelse ($roles as $role)
-                                                        <option value="{{ $role->id }}"
-                                                            data-permission="{{ json_encode($role->permissions->pluck('id')->toArray()) }}">
+                                                        <option value="{{ $role->id }}">
                                                             {{ $role->name }}
                                                         </option>
                                                         @empty
