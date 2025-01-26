@@ -6,16 +6,16 @@
             <tr class="fw-bold">
                 <th>Sr. No.</th>
                 <th class="min-w-150px">Name</th>
-                <th>Department</th>
-                <th>Designation</th>
+                {{-- <th>Department</th>
+                <th>Designation</th> --}}
                 <th>Email</th>
                 <th>Official Email</th>
                 <th>Gender</th>
                 <th class="min-w-150px">Marital Status</th>
                 <th class="min-w-150px">Joining Date</th>
-                <th class="min-w-150px">Employee Status</th>
+                {{-- <th class="min-w-150px">Employee Status</th> --}}
                 <th class="min-w-150px">Employee Type</th>
-                <th class="min-w-150px">Shift</th>
+                {{-- <th class="min-w-150px">Shift</th> --}}
                 <th class="min-w-150px">Branch</th>
                 <th class="min-w-150px">Status</th>
                 <th class="">Action</th>
@@ -28,8 +28,8 @@
             <tr>
                 <td>{{ $key + 1 }}</td>
                 <td>{{ $singleUserDetails->name }}</td>
-                <td>{{ $singleUserDetails->department->name }}</td>
-                <td>{{ $singleUserDetails->designation->name }}</td>
+                {{-- <td>{{ $singleUserDetails->department->name }}</td>
+                <td>{{ $singleUserDetails->designation->name }}</td> --}}
                 <td>{{ $singleUserDetails->email}}</td>
                 <td>{{ $singleUserDetails->official_email_id }}</td>
                 @if ($singleUserDetails->gender == 'M')
@@ -44,9 +44,9 @@
                 @endif
                 <td>{{ $singleUserDetails->joining_date }}</td>
 
-                <td>{{ $singleUserDetails->employeeStatus->name }}</td>
+                {{-- <td>{{ $singleUserDetails->employeeStatus->name }}</td> --}}
                 <td>{{ $singleUserDetails->employeeType->name }}</td>
-                <td>{{ $singleUserDetails->officeShift->name }}</td>
+                {{-- <td>{{ $singleUserDetails->officeShift->name }}</td> --}}
                 <td>{{ $singleUserDetails->companyBranch->name }}</td>
                 <td data-order="Invalid date">
                     <label class="switch">

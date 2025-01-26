@@ -20,36 +20,40 @@ return new class extends Migration
             $table->string('password');
             $table->string('father_name')->nullable();
             $table->string('mother_name')->nullable();
-            $table->enum('blood_group',['A+','A-','B+','B-','O-','O+']);
-            $table->enum('gender',['M','F','O']);                            /**    M:MALE ,F:FEMALE,O:OTHER    */
-            $table->enum('marital_status',['M','S']);                       /**    M:MARRIED ,S:SINGLE       */
+            $table->enum('blood_group', ['A+', 'A-', 'B+', 'B-', 'O-', 'O+', 'N/A'])->default('N/A');
+            $table->enum('gender', ['M', 'F', 'O']);
+            /**    M:MALE ,F:FEMALE,O:OTHER    */
+            $table->enum('marital_status', ['M', 'S', 'N/A'])->default('N/A');
+            /**    M:MARRIED ,S:SINGLE       */
             $table->unsignedBigInteger('employee_status_id');
             $table->date('date_of_birth');
             $table->date('joining_date');
             $table->string('phone')->unique();
-            $table->string('profile_image')->nullable();
+            $table->string(column: 'profile_image')->nullable();
             $table->unsignedBigInteger('company_id');
             $table->string('last_login_ip');
             $table->foreign('employee_status_id')->references('id')->on('employee_statuses')->nullable();
             $table->foreign('company_id')->references('id')->on('companies')->nullable();
             $table->unsignedBigInteger('employee_type_id');
             $table->foreign('employee_type_id')->references('id')->on('employee_types');
-            $table->unsignedBigInteger('department_id');
+            $table->unsignedBigInteger('department_id')->nullable();
             $table->foreign('department_id')->references('id')->on('departments');
-            $table->unsignedBigInteger('designation_id');
+            $table->unsignedBigInteger('designation_id')->nullable();
             $table->foreign('designation_id')->references('id')->on('designations');
             $table->unsignedBigInteger('role_id');
             $table->foreign('role_id')->references('id')->on('roles');
             $table->unsignedBigInteger('company_branch_id');
             $table->foreign('company_branch_id')->references('id')->on('company_branches');
-            $table->unsignedBigInteger('qualification_id');
+            $table->unsignedBigInteger('qualification_id')->nullable();
             $table->foreign('qualification_id')->references('id')->on('qualifications');
-            $table->unsignedBigInteger('shift_id');
+            $table->unsignedBigInteger('shift_id')->nullable();
             $table->foreign('shift_id')->references('id')->on('shifts');
             $table->string('offer_letter_id')->unique()->nullable();
             $table->boolean('work_from_office')->default(false);
             $table->date('exit_date')->nullable();
             $table->string('official_mobile_no')->unique()->nullable();
+            $table->boolean('status')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
