@@ -501,6 +501,7 @@
                                     icon: 'success',
                                     confirmButtonText: 'OK'
                                 });
+                                $('#employee_list').replaceWith(response.data);
                             } else if (response.status === 'error') {
                                 if (response.errors) {
                                     let errorsHtml = '<ul>';

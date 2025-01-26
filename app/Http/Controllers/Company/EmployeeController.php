@@ -289,22 +289,17 @@ class EmployeeController extends Controller
     {
         // Validate that the file is uploaded
         $validator = Validator::make($request->all(), [
-            'file' => 'required|mimes:csv|max:10240',
+            'file' => 'required|mimes:csv|max:2048',
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'The file is required and must be an Excel or CSV file.'
             ], 400);
         }
-
         $import = new UserImport();
-
         try {
-            // Try to import the file
             Excel::import($import, $request->file('file'));
-            // If there are validation failures, return them as JSON
             $failures = $import->getFailures();
             if (count($failures) > 0) {
                 return response()->json([
@@ -312,10 +307,11 @@ class EmployeeController extends Controller
                     'errors' => $failures,
                 ]);
             }
-            // No errors, return success message
+            $allUserDetails = $this->employeeService->all('', Auth::guard('company')->user()->company_id)->paginate(10);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Employee imported successfully!',
+                'data' => view('company.employee.list', compact('allUserDetails'))->render()
             ]);
         } catch (\Exception $e) {
             // Catch any general exceptions and return an error message
