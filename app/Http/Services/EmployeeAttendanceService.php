@@ -2,9 +2,15 @@
 
 namespace App\Http\Services;
 
-use Carbon\Carbon;
-use Illuminate\Support\Arr;
+use App\Http\Services\EmployeeServices;
+use App\Http\Services\HolidayServices;
+use App\Http\Services\LeaveService;
+use App\Http\Services\WeekendService;
 use App\Repositories\EmployeeAttendanceRepository;
+use Carbon\Carbon;
+use DateInterval;
+use DateTime;
+use Illuminate\Support\Arr;
 
 class EmployeeAttendanceService
 {
@@ -95,32 +101,6 @@ class EmployeeAttendanceService
                 return array('status' => false, 'message' => 'Your office hours are over. ' . $officeEndTime);
             }
 
-
-            if ($userDetails->officeShift->check_in_buffer > 0) {
-                $bufferTime = ' +' . $userDetails->officeShift->check_in_buffer . ' minutes';
-                $officeStartTime  = date('H:i:s', strtotime($userDetails->officeShift->start_time . $bufferTime));
-            }
-
-            if (date('H:i:s') > $officeStartTime) {
-                $payload['late'] = 1;
-            }
-
-            $todayConfirmLeaveDeatils = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, date('Y-m-d'));
-            $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDeatils);
-
-            if ($checkLeaveDetails['success']) {
-                if ($checkLeaveDetails['status'] == 'Full') {
-                    return array('status' => false, 'message' => 'Today you are on leave');
-                } else if ($checkLeaveDetails['status'] == '1 Half') {
-                    if (date('H:i:s', strtotime($userDetails->officeShift->half_day_login)) > date('H:i:s')) {
-                        return array('status' => false, 'message' => 'Today you are on half day. So please punch in on second half ' . $userDetails->officeShift->half_day_login);
-                    }
-                } else {
-                    if (date('H:i:s') >= date('H:i:s', strtotime($userDetails->officeShift->half_day_login))) {
-                        return array('status' => false, 'message' => 'Today you are on half day');
-                    }
-                }
-            }
             $todayHoliday =  $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, date('Y-m-d'), $userDetails->company_branch_id);
             if ($todayHoliday) {
                 return array('status' => false, 'message' => 'Today is ' . $todayHoliday->name . ' holiday');
@@ -129,6 +109,45 @@ class EmployeeAttendanceService
             if ($checkWeekend) {
                 return array('status' => false, 'message' => 'Punch-in cannot be processed today as it is your weekend.');
             }
+
+
+
+            $todayConfirmLeaveDeatils = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, date('Y-m-d'));
+            $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDeatils);
+
+            if ($userDetails->officeShift->check_in_buffer > 0) {
+                $bufferTime = ' +' . $userDetails->officeShift->check_in_buffer . ' minutes';
+                $officeStartTime  = date('H:i:s', strtotime($userDetails->officeShift->start_time . $bufferTime));
+            }
+            //dd($checkLeaveDetails);
+            if ($checkLeaveDetails['success']) {
+                if ($checkLeaveDetails['status'] == 'Full') {
+                    return array('status' => false, 'message' => 'Today you are on leave');
+                } else if ($checkLeaveDetails['status'] == '1 Half') {
+                    if (date('H:i:s', strtotime($userDetails->officeShift->half_day_login)) > date('H:i:s')) {
+                        return array('status' => false, 'message' => 'Today you are on half day. So please punch in on second half ' . $userDetails->officeShift->half_day_login);
+                    }
+                    if ($userDetails->officeShift->check_in_buffer > 0) {
+                        $bufferTime = ' +' . $userDetails->officeShift->check_in_buffer . ' minutes';
+                        $officeStartTime  = date('H:i:s', strtotime($userDetails->officeShift->half_day_login . $bufferTime));
+                    } else {
+                        $officeStartTime = $userDetails->officeShift->half_day_login;
+                    }
+                    $payload['status'] = 2;
+                } else {
+                    //dd($userDetails->officeShift->half_day_login);
+                    if (date('H:i:s') >= date('H:i:s', strtotime($userDetails->officeShift->half_day_login))) {
+                        return array('status' => false, 'message' => 'Today you are on half day');
+                    }
+                    $payload['status'] = 2;
+                }
+            }
+
+            if (date('H:i:s') > $officeStartTime) {
+                $payload['late'] = 1;
+            }
+
+
             $this->employeeAttendanceRepository->create($payload);
             return  ['status' => true, 'data' => 'Punch In'];
         }
@@ -255,5 +274,37 @@ class EmployeeAttendanceService
         } else {
             return false;
         }
+    }
+
+    public function updateAttendanceDetails($breakDetails, $breakHourValue)
+    {
+        $attendanceDetails = $this->employeeAttendanceRepository->where('id', $breakDetails->employee_attendance_id)->first();
+       
+        //dd($attendanceDetails);
+        $totalBreak = '00:00:00';
+        //dd($attendanceDetails);
+        if ($attendanceDetails->total_break_time == null) {
+            // Calculate the time difference between break start and break hour
+            $time1 = new DateTime($breakDetails->start_time);
+            $time2 = new DateTime($breakHourValue);
+            $time_diff = $time1->diff($time2);
+            //dd($time_diff);
+            // Format the difference as HH:mm:ss
+            $totalBreak = $time_diff->format('%H:%I:%S');
+        } else {
+            // Calculate the time difference between break start and break hour
+            $time1 = new DateTime($breakDetails->start_time);
+            $time2 = new DateTime($breakHourValue);
+            $time_diff1 = $time1->diff($time2);
+
+            // Add the calculated time difference to total break time
+            $time3 = new DateTime($attendanceDetails->total_break_time);
+            $time3->add(new DateInterval('PT' . $time_diff1->h . 'H' . $time_diff1->i . 'M' . $time_diff1->s . 'S'));
+
+            // Format the new total break time as HH:mm:ss
+            $totalBreak = $time3->format('H:i:s');
+        }
+        //dd($totalBreak);
+        return $attendanceDetails->update(['total_break_time' => $totalBreak]);
     }
 }
