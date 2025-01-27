@@ -60,7 +60,8 @@ class LeaveService
             $endDate = Carbon::parse($data['to']);
             $days = $startDate->diffInDays($endDate);
             $days = $days == 0 ? 1 : $days; //if applied for only one day then days diff will show 0 so
-            $data = $this->employeeLeaveAvailableService->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days);
+            //$data = $this->employeeLeaveAvailableService->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days); //leave should not debit till not approved
+            $data = [];
             $response = array('status' => true, 'message' => 'Leave Apply successfully', 'data' => $data);
         }
         return $response;
@@ -103,7 +104,7 @@ class LeaveService
     public function getUserConfirmLeaveByDate($id, $fromdate, $toDate = NULL)
     {
         return $this->leaveRepository->where('user_id', $id)->where('from', '<=', $fromdate)
-            ->where('to', '>=', $toDate)
+            ->where('to', '>=', ($toDate ? $toDate : $fromdate))
             ->where('leave_status_id', 2)
             ->first();
     }
