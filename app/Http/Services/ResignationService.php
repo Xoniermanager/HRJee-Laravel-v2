@@ -25,9 +25,13 @@ class ResignationService
     return $query->paginate(10);
   }
 
-  public function getResignationByResigtionStatusIds($statuses, $userId)
+  public function getResignationByResignationStatusIds($statuses, $userId)
   {
-    return $this->resignationRepository->whereNotIn('status', $statuses)->where('user_id', $userId)->orderBy('id', 'DESC')->get();
+    return $this->resignationRepository
+      ->whereIn('status', $statuses)
+      ->where('user_id', $userId)
+      ->orderBy('id', 'DESC')
+      ->get();
   }
 
   public function resignation($data, $userId)

@@ -56,7 +56,7 @@ class ResignationStatusService
       if ($resignation) {
         $resignation->update([
           'status' => $data['status'],
-          'release_date' => $data['release_date']
+          'release_date' => $data['release_date'] ?? null
         ]);
 
         // Save Log
@@ -72,7 +72,6 @@ class ResignationStatusService
       DB::commit();
       return true;
     } catch (\Throwable $th) {
-      dd($th);
       DB::rollBack();
       return false;
     }
