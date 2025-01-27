@@ -1,8 +1,6 @@
 @extends('layouts.company.main')
 @section('content')
-@section('title')
-    Add Asset
-@endsection
+@section('title','Asset Dashboard')
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
@@ -189,7 +187,7 @@
                                     <h5>Asset status based on category</h5>
                                     <canvas id="myChart" width="400" height="100"></canvas>
                                 </div>
-                                 
+
                             </div>
                             <!--end::Container-->
                         </div>
@@ -249,7 +247,7 @@
 
         }
     });
-   
+
 </script>
 
 @endsection

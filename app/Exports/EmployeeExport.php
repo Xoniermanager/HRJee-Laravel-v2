@@ -69,6 +69,9 @@ class EmployeeExport implements FromCollection, WithHeadings, WithMapping, WithS
         if ($allEmployeeDetails->gender == 'F') {
             $allEmployeeDetails->gender = "Female";
         }
+        if ($allEmployeeDetails->gender == 'N/A') {
+            $allEmployeeDetails->gender = "N/A";
+        }
         if ($allEmployeeDetails->gender == 'O') {
             $allEmployeeDetails->gender = "Other";
         }
@@ -78,7 +81,9 @@ class EmployeeExport implements FromCollection, WithHeadings, WithMapping, WithS
         if ($allEmployeeDetails->marital_status == 'S') {
             $allEmployeeDetails->marital_status = "Single";
         }
-
+        if ($allEmployeeDetails->marital_status == 'N/A') {
+            $allEmployeeDetails->marital_status = "N/A";
+        }
         return [
             $serialNumber++,
             $allEmployeeDetails->name,
@@ -92,13 +97,13 @@ class EmployeeExport implements FromCollection, WithHeadings, WithMapping, WithS
             $allEmployeeDetails->marital_status,
             getFormattedDate($allEmployeeDetails->date_of_birth),
             getFormattedDate($allEmployeeDetails->joining_date),
-            $allEmployeeDetails->department->name,
-            $allEmployeeDetails->designation->name,
-            $allEmployeeDetails->companyBranch->name,
-            $allEmployeeDetails->bankDetails->account_name,
-            $allEmployeeDetails->bankDetails->account_number,
-            $allEmployeeDetails->bankDetails->bank_name,
-            $allEmployeeDetails->bankDetails->ifsc_code,
+            $allEmployeeDetails->department->name ?? '',
+            $allEmployeeDetails->designation->name ?? '',
+            $allEmployeeDetails->companyBranch->name ?? '',
+            $allEmployeeDetails->bankDetails->account_name ?? '',
+            $allEmployeeDetails->bankDetails->account_number ?? '',
+            $allEmployeeDetails->bankDetails->bank_name ?? '',
+            $allEmployeeDetails->bankDetails->ifsc_code ?? '',
         ];
     }
     public function styles($sheet)

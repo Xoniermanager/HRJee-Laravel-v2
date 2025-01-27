@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Exception;
+use Illuminate\Http\Request;
+use App\Http\Services\AssetService;
 use App\Http\Controllers\Controller;
+use App\Jobs\EmployeeAssetExportJob;
 use App\Http\Requests\AssetStoreRequest;
 use App\Http\Services\AssetCategoryService;
-use App\Http\Services\AssetManufacturerService;
-use App\Http\Services\AssetService;
-use App\Http\Services\AssetStatusService;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use App\Http\Services\AssetManufacturerService;
 
 
 class AssetController extends Controller
@@ -88,7 +89,7 @@ class AssetController extends Controller
 
     public function serachAssetFilterList(Request $request)
     {
-        $allAssetDetails = $this->assetService->serachAssetFilterList($request);
+        $allAssetDetails = $this->assetService->serachAssetFilterList($request)->paginate(10);
         if ($allAssetDetails) {
             return response()->json([
                 'success' => 'Searching',
@@ -128,6 +129,7 @@ class AssetController extends Controller
         $finalData['total_rented'] = $collectData->where('ownership', 'rented')->count();
 
         $allAssetCategory = $this->assetCategoryService->getAllActiveAssetCategoryWithAsset();
+        // dd($allAssetCategory->toArray());
 
         $assetCategoryData = ['labels' => [], 'available' => [], 'allocated' => [], 'total' => []];
         foreach ($allAssetCategory as $key => $assetCategory) {
@@ -142,5 +144,24 @@ class AssetController extends Controller
 
 
         return view('company.asset.dashboard', compact('finalData', 'assetCategoryData'));
+    }
+
+    public function exportAssetDetails(Request $request)
+    {
+        try {
+            $allAssetDetails = $this->assetService->serachAssetFilterList($request)->get();
+            $userEmail = "arjun@xoniertechnologies.com";
+            $userName = "Xonier";
+            EmployeeAssetExportJob::dispatch($userEmail, $userName, $allAssetDetails);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'The file is being processed and will be sent to your email shortly.'
+                ],200);
+        } catch (Exception $e) {
+            Log::error('Error exporting asset details: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'An error occurred while processing your request. Please try again later.'
+            ], 500);
+        }
     }
 }
