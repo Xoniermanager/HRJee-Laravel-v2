@@ -107,30 +107,34 @@ class LeaveService
     }
     public function checkTodayLeaveData($data)
     {
+        //dd($data);
         if ($data) {
             if ($data->from == $data->to) {
-                if ($data->is_half_day) {
-                    if ($data->from_half_day == 1) {
+                if ($data->is_half_day == 1) {
+                    //dd($data);
+                    if ($data->from_half_day != '') {
                         return ['success' => true, 'message' => 'Today on half day', 'status' => '1 Half'];
-                    } else if ($data->from_half_day == 2) {
+                    } else if ($data->to_half_day != '') {
                         return ['success' => true, 'message' => 'Today on half day', 'status' => '2 Half'];
+                    }else{
+                        return ['success' => true, 'message' => 'Today on leave', 'status' => 'Full']; 
                     }
                 } else {
                     return ['success' => true, 'message' => 'Today on leave', 'status' => 'Full'];
                 }
             } else {
                 if ($data->is_half_day && date('Y-m-d') == $data->from) {
-                    if ($data->from_half_day == 1) {
+                    if ($data->from_half_day != '') {
                         return ['success' => true, 'message' => 'Today on half day', 'status' => '1 Half'];
-                    } else if ($data->from_half_day == 2) {
+                    } else if ($data->to_half_day != '') {
                         return ['success' => true, 'message' => 'Today on half day', 'status' => '2 Half'];
                     } else {
                         return ['success' => true, 'message' => 'Today on leave', 'status' => 'Full'];
                     }
                 } else if ($data->is_half_day &&  date('Y-m-d') == $data->to) {
-                    if ($data->to_half_day == 1) {
+                    if ($data->from_half_day != '') {
                         return ['success' => true, 'message' => 'Today on half day', 'status' => '1 Half'];
-                    } else if ($data->to_half_day == 2) {
+                    } else if ($data->to_half_day != '') {
                         return ['success' => true, 'message' => 'Today on half day', 'status' => '2 Half'];
                     } else {
                         return ['success' => true, 'message' => 'Today on leave', 'status' => 'Full'];

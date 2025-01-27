@@ -268,3 +268,5 @@ function getCompanyMenuHtml($companyId) {
 
     return $html;
 }
+
+
