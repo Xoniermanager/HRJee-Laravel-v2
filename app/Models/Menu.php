@@ -14,7 +14,8 @@ class Menu extends Model
         'slug',
         'status',
         'icon',
-        'order_no'
+        'order_no',
+        'role'
     ];
 
     public function parent()
