@@ -43,7 +43,9 @@ class LeaveService
             $payload['user_id']          = $data['user_id'];
         } else {
             $payload['leave_applied_by'] = Auth::guard('company')->user()->company_id?? Auth::guard('employee')->user()->id ?? Auth()->user()->id;
-            $payload['user_id'] = Auth::guard('company')->user()->company_id ?? Auth::guard('employee')->user()->id ?? Auth()->user()->id;
+            //$payload['user_id'] = Auth::guard('company')->user()->company_id ?? Auth::guard('employee')->user()->id ?? Auth()->user()->id;
+            $payload['user_id'] = Auth::guard('employee')->user()->id;
+
         }
         if (isset($data['is_half_day']) && !empty($data['is_half_day'])) {
             $payload['is_half_day']      = $data['is_half_day'];
@@ -98,10 +100,10 @@ class LeaveService
     {
         return $this->leaveRepository->find($id);
     }
-    public function getUserConfirmLeaveByDate($id, $date)
+    public function getUserConfirmLeaveByDate($id, $fromdate, $toDate = NULL)
     {
-        return $this->leaveRepository->where('user_id', $id)->where('from', '<=', $date)
-            ->where('to', '>=', $date)
+        return $this->leaveRepository->where('user_id', $id)->where('from', '<=', $fromdate)
+            ->where('to', '>=', $toDate)
             ->where('leave_status_id', 2)
             ->first();
     }
