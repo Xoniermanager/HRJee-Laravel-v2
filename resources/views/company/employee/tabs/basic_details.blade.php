@@ -182,7 +182,7 @@
             <div class="col-md-4 form-group">
                 <label for="">Role*</label>
                 <select class="form-control" name="role_id">
-                    <option value="">Select the roles</option>
+                    <option value="">Select the role</option>
                     @forelse ($allRoles as $role)
                     <option {{ ($singleUserDetails->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
                         value="{{ $role->id }}">{{ $role->name }}</option>

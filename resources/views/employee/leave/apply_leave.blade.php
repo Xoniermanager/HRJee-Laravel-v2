@@ -10,9 +10,16 @@
         <div class="col-lg-12 col-xl-12 col-xxl-12 mb-5">
             <!--begin::Timeline widget 3-->
             <div class="card h-md-100">
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <!--begin::Header-->
                 <div class="card-header p-0 align-items-center">
+                    
                     <div class="card-body">
+
                         <form action="{{ route('employee.apply.store') }}" method="post" id="apply_leave_form">
                             @csrf
                             <div class="col-md-12">

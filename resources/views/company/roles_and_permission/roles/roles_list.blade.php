@@ -49,7 +49,7 @@
             @empty
                 <td colspan="3">
                     <span class="text-danger">
-                        <strong>No Office Time Found!</strong>
+                        <strong>No Role Found!</strong>
                     </span>
                 </td>
             @endforelse
