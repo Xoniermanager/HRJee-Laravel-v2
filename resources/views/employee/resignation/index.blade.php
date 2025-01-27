@@ -128,6 +128,9 @@
 							<textarea class="form-control" rows="3" name="remark" id="remark"></textarea>
 							<span class="field_error text-danger remark_error"></span>
 						</div>
+
+						<span class="common_error text-danger"></span>
+
 						<div class="col-12">
 							<button class="btn btn-primary" type="submit">Save</button>
 						</div>

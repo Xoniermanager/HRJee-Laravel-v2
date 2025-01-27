@@ -25,11 +25,8 @@ class ResignationController extends Controller
         $resignationStatus = $this->resignationStatusService->all('all');
         $userId = auth()->guard('employee')?->user()?->id;
         $resignations = $this->resignationService->all($userId);
-        $canApply = $userId ?
-            $this->resignationService->getResignationByResigtionStatusIds(
-                ['pending', 'hold', 'withdrawn'],
-                $userId
-            )->count() >= 0 ? true : false
+        $canApply = $userId
+            ? !$this->resignationService->getResignationByResignationStatusIds(['pending', 'hold', 'approved'], $userId)->count()
             : false;
 
         return view('employee.resignation.index', compact('resignations', 'resignationStatus', 'canApply'));
@@ -42,6 +39,13 @@ class ResignationController extends Controller
             $userType = $authUser?->role?->name;
             $userId = $authUser?->id;
             $data = $request->all();
+
+            $canApply = $userId
+                ? !$this->resignationService->getResignationByResignationStatusIds(['pending', 'hold', 'approved'], $userId)->count()
+                : false;
+
+            if (!$canApply)
+                return errorMessage('null', 'Your previous resignation is still pending.');
 
             $checkStatus = $this->resignationService->resignation($data, $userId);
             if ($checkStatus) {
