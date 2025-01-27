@@ -55,7 +55,8 @@ class SendOtpService
 
       Session::put('user_2fa', Auth::guard($type)->user()->id);
       return true;
-    } else {
+    }
+    else {
       return false;
     }
   }

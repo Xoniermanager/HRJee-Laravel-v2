@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class EmployeeFileSend extends Mailable
+class EmployeeAssetFileSend extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -19,10 +19,10 @@ class EmployeeFileSend extends Mailable
         $this->companyName = $companyName;
     }
 
-    public function build(): EmployeeFileSend
+    public function build()
     {
-        return $this->subject('Employee Details Export')
-            ->view('email.employeeFileSend')
+        return $this->subject('Employee Asset Details Export')
+            ->view('email.employeeAssetSend')
             ->with([
                 'companyName' => $this->companyName, // Passing companyName to the view
             ]) // This is the view we will create next

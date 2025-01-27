@@ -276,9 +276,8 @@ class EmployeeController extends Controller
     {
         try {
             $allEmployeeDetails = $this->employeeService->all($request, Auth::guard('company')->user()->company_id)->get();
-            // $userEmail = Auth::guard('company')->user()->email;
-            $userEmail = "arjun@xoniertechnologies.com";
-            $userName = "Xonier";
+            $userEmail = Auth::guard('company')->user()->email;
+            $userName = Auth::guard('company')->user()->name;
             EmployeeExportFileJob::dispatch($userEmail, $userName, $allEmployeeDetails);
             return response()->json([
                 'status' => true,
