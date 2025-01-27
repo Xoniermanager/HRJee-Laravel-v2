@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger("menu_id");
             $table->unsignedBigInteger("company_id");
             $table->foreign('menu_id')->references('id')->on('menus');
-            $table->foreign('company_id')->references('id')->on('companies');
+            //$table->foreign('company_id')->references('id')->on('companies');
         });
     }
 

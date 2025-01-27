@@ -36,7 +36,7 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'Employee News',
                 'slug' => '/employee/news',
                 'icon' => '<i class="fa fa-newspaper"></i>',
-                'parent_id' => 18,
+                'parent_id' => 17,
                 'order_no' => 3,
                 'role' => 'employee'
             ],
