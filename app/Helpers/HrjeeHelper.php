@@ -156,7 +156,8 @@ function getWorkDateFromate($joiningDate)
     return $diff->format(' %y Years, %m Months, %d Days');
 }
 
-function fullMonthList() {
+function fullMonthList()
+{
     return  [
         '1' => 'January',
         '2' => 'February',
@@ -176,7 +177,8 @@ function fullMonthList() {
 /**
  * Encrypt the id and return the encrypted id
  */
-function getEncryptId($id) {
+function getEncryptId($id)
+{
     if (!empty($id)) {
         return Crypt::encrypt($id);
     }
@@ -186,14 +188,16 @@ function getEncryptId($id) {
 /**
  * Decrypt the encrypted id and return the original id
  */
-function getDecryptId($id) {
+function getDecryptId($id)
+{
     if (!empty($id)) {
         return Crypt::decrypt($id);
     }
     return false;
 }
 
-function getCompanyMenuHtml($companyId) {
+function getCompanyMenuHtml($companyId)
+{
     $companyMenus = [];
     $html = '';
 
@@ -207,7 +211,7 @@ function getCompanyMenuHtml($companyId) {
         $companyMenuSql = CompanyMenu::with(['menu' => function ($query) {
             $query->where('status', 1);
             $query->orderBy('order_no', 'ASC');
-        }, 'menu.parent'])->where('company_id', $companyId);   
+        }, 'menu.parent'])->where('company_id', $companyId);
     }
 
     $companyMenuIDs = $companyMenuSql->pluck('menu_id')->toArray();
@@ -235,7 +239,7 @@ function getCompanyMenuHtml($companyId) {
 
             // Iterate over the children
             foreach ($menu->children as $children) {
-                if(in_array($children->id, $companyMenuIDs)) {
+                if (in_array($children->id, $companyMenuIDs)) {
                     $html .= '<div class="menu-sub menu-sub-accordion">
                             <div class="menu-item" data-url="' . $children->slug . '">
                                 <a class="menu-link" href="' . $children->slug . '">
@@ -246,7 +250,7 @@ function getCompanyMenuHtml($companyId) {
                                 </a>
                             </div>
                             </div>';
-                }  
+                }
             }
 
             $html .= '</div>';  // Close the menu-item (accordion)
@@ -269,4 +273,69 @@ function getCompanyMenuHtml($companyId) {
     return $html;
 }
 
+function getEmployeeMenuHtml($companyId)
+{
+    $companyMenus = [];
+    $html = '';
 
+    $companyMenuSql = Menu::where(['status' => 1, 'role' => 'employee']);
+    $mainMenuIDs = $companyMenuSql->whereNull('parent_id')->pluck('id')->toArray();
+
+    $companyAssignedMenuIds = CompanyMenu::where('company_id', $companyId)->pluck('menu_id')->toArray();
+
+    $childMenuIDs = $companyMenuSql->whereIn('parent_id', $companyAssignedMenuIds)->whereNotNull('parent_id')->pluck('id')->toArray();
+    $parentMenuIDs = $companyMenuSql->whereIn('parent_id', $companyAssignedMenuIds)->whereNotNull('parent_id')->pluck('parent_id')->toArray();
+
+    $parentMenus = array_merge($mainMenuIDs, $parentMenuIDs);
+    $companyMenus = Menu::whereIn('id', $parentMenus)->orderBy('order_no', 'ASC')->with(['parent'])->get();
+
+    foreach ($companyMenus as $menu) {
+        // Check if the menu has children
+        if ($menu->children && $menu->children->isNotEmpty()) {
+            $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-5">
+                                    ' . $menu->icon . '
+                                </span>
+                            </span>
+                            <span class="menu-title">' . $menu->title . '</span>
+                            <span class="menu-arrow"></span>
+                        </span>';
+
+            // Iterate over the children
+            foreach ($menu->children as $children) {
+                if (in_array($children->id, $childMenuIDs)) {
+                    $html .= '<div class="menu-sub menu-sub-accordion">
+                            <div class="menu-item" data-url="' . $children->slug . '">
+                                <a class="menu-link" href="' . $children->slug . '">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                                    <span class="menu-title">' . $children->title . '</span>
+                                </a>
+                            </div>
+                            </div>';
+                }
+            }
+
+            $html .= '</div>';  // Close the menu-item (accordion)
+        }
+        if ($menu->parent_id == null && $menu->children->isEmpty()) {
+            // If no children, just a simple menu item
+            $html .= '<div class="menu-item" data-url="' . $menu->slug . '">
+                        <a class="menu-link" href="' . $menu->slug . '">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-5">
+                                    ' . $menu->icon . '
+                                </span>
+                            </span>
+                            <span class="menu-title">' . $menu->title . '</span>
+                        </a>
+                        </div>';
+        }
+
+    }
+
+    return $html;
+}
