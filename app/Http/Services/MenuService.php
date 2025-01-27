@@ -21,7 +21,12 @@ class MenuService
     }
     public function getFeatures()
     {
-        return $this->menuRepository->whereNull('parent_id')->with('children')->get();
+        return $this->menuRepository->where('role', 'company')->whereNull('parent_id')->with([
+            'children' => function ($query) {
+                $query->where('role', 'company')
+                    ->orderBy('order_no', 'ASC');
+            }
+        ])->get();
     }
 
     public function create($data)

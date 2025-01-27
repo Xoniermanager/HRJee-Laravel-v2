@@ -56,7 +56,7 @@ class ApplyLeaveController extends Controller
                 return redirect()->back()->with('error', 'Leaves not available');
             }
             
-            $alreadyAppliedLeave = $this->leaveService->getUserConfirmLeaveByDate($userID, $data['leave_type_id']);
+            $alreadyAppliedLeave = $this->leaveService->getUserConfirmLeaveByDate($userID, $data['from'], $data['to']);
             if($alreadyAppliedLeave) {
                 return redirect()->back()->with('error', 'You have already applied leave for this date');
             }

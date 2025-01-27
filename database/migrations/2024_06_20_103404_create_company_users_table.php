@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('company_users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->foreign('company_id')->references('id')->on('companies');
+            //$table->foreign('company_id')->references('id')->on('companies');
             $table->unsignedBigInteger('branch_id')->nullable();
-            $table->foreign('branch_id')->references('id')->on('company_branches');
+            //$table->foreign('branch_id')->references('id')->on('company_branches');
             $table->string('email', 191)->unique();
             $table->string('name', 191)->unique();
             $table->string('password')->unique();
