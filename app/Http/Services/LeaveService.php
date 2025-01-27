@@ -104,7 +104,7 @@ class LeaveService
     public function getUserConfirmLeaveByDate($id, $fromdate, $toDate = NULL)
     {
         return $this->leaveRepository->where('user_id', $id)->where('from', '<=', $fromdate)
-            ->where('to', '>=', $toDate)
+            ->where('to', '>=', ($toDate ? $toDate : $fromdate))
             ->where('leave_status_id', 2)
             ->first();
     }
