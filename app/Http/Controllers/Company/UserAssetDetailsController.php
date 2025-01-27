@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Services\UserAssetDetailService;
 use Throwable;
 use App\Http\Services\EmployeeServices;
-use App\Http\Services\SpreadsheetService;
-use App\Http\Services\UserBankDetailServices;
 use Illuminate\Support\Facades\Storage;
 
 class UserAssetDetailsController extends Controller
@@ -21,10 +19,8 @@ class UserAssetDetailsController extends Controller
     private $userAssetService;
     private $userAssetDetailService;
     private $assetService;
-    private $spreadsheetService;
-    public function __construct(AssetService $assetService, UserAssetDetailService $userAssetService, SpreadsheetService $spreadsheetService, UserAssetDetailService $userAssetDetailService)
+    public function __construct(AssetService $assetService, UserAssetDetailService $userAssetService,UserAssetDetailService $userAssetDetailService)
     {
-        $this->spreadsheetService = $spreadsheetService;
         $this->userAssetService = $userAssetService;
         $this->assetService = $assetService;
         $this->userAssetDetailService = $userAssetDetailService;
@@ -76,33 +72,6 @@ class UserAssetDetailsController extends Controller
             }
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
-        }
-    }
-
-
-    public function exportEmployeeAssetDetails(Request $request)
-    {
-        try {
-
-            $formData =  $request->data;
-            array_shift($formData);
-            $allAssetWithUserDetailsDetails = $this->assetService->serachAssetFilterList((object)$request->filter_data);
-            $selectKeys = array_keys($formData);
-            $headers = $selectKeys;
-            $AllAssetDetails = $allAssetWithUserDetailsDetails->select($selectKeys)->toArray();
-            if (count($AllAssetDetails) < 1) {
-                return errorMessage('null', 'data not found');
-            }
-            $response =   $this->spreadsheetService->exportData($AllAssetDetails, $headers);
-            if ($response['status'] == true) {
-                $check = $this->spreadsheetService->createSpreadsheet($response['data'], $response['path']);
-                if ($check)
-                    if (file_exists($response['path'])) {
-                        return apiResponse('success', $response['path']);
-                    }
-            }
-        } catch (Throwable $th) {
-            return response()->json(['error' =>  $th->getMessage()], 400);
         }
     }
 }

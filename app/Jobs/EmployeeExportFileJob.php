@@ -34,7 +34,7 @@ class EmployeeExportFileJob implements ShouldQueue
     {
         try {
             $fileName = 'employee_details_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
-            $filePath = 'employee_excel_sheet/' . $fileName;
+            $filePath = 'employee_excel/' . $fileName;
             $excelExport = new EmployeeExport($this->allEmployeeDetails);
             $stored = Excel::store($excelExport, $filePath, 'public');
             if ($stored) {

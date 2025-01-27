@@ -232,7 +232,6 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
     Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class)->group(function () {
         Route::post('/details/store', 'store')->name('employee.asset.details');
         Route::post('/details/update', 'updateDetails')->name('employee.asset.details.update');
-        Route::post('/export/employee/asset/details', 'exportEmployeeAssetDetails')->name('export.employee.asset.details');
     });
 
     //Holiday Module
@@ -349,6 +348,7 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
             Route::get('/search/filter', 'serachAssetFilterList');
             Route::get('/get/all/asset/{id}', 'getAllAssetByCategory');
             Route::get('/dashboard', 'getDashboard')->name('asset.dashboard');
+            Route::post('/export/byFilter', 'exportAssetDetails')->name('export.asset_details');
         });
         //Asset Manufacturer Module
         Route::prefix('/asset-manufacturer')->controller(AssetManufacturerController::class)->group(function () {

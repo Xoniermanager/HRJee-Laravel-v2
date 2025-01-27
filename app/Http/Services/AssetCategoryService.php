@@ -35,7 +35,7 @@ class AssetCategoryService
   }
   public function getAllActiveAssetCategoryWithAsset()
   {
-    return $this->assetCategoryRepository->has('assets')->where('status', '1')->get();
+    return $this->assetCategoryRepository->with('assets')->where('status', '1')->get();
   }
 
   public function serachAssetCategoryFilterList($request)

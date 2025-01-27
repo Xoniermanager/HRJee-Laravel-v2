@@ -239,7 +239,6 @@ class EmployeeAttendanceService
             $mainDate = $date->toDateString();
             $weekDayNumber = $date->dayOfWeekIso;
             foreach ($data['employee_id'] as $employeeId) {
-
                 //Get Employee Details By User Id
                 $employeeDetails = $this->employeeService->getUserDetailById($employeeId);
 
@@ -257,8 +256,8 @@ class EmployeeAttendanceService
 
                 if ($checkHoliday == null && $checkExistingAttendance == null && $checkLeave == null && $checkWeekend == null) {
                     $payload[] = [
-                        'punch_in'          => date('Y/m/d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
-                        'punch_out'         => date('Y/m/d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),
+                        'punch_in'          => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
+                        'punch_out'         => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),
                         'user_id'           => $employeeId,
                         'remark'            => $data['remark'],
                         'punch_in_using'    => $data['punch_in_using'],
@@ -279,7 +278,7 @@ class EmployeeAttendanceService
     public function updateAttendanceDetails($breakDetails, $breakHourValue)
     {
         $attendanceDetails = $this->employeeAttendanceRepository->where('id', $breakDetails->employee_attendance_id)->first();
-       
+
         //dd($attendanceDetails);
         $totalBreak = '00:00:00';
         //dd($attendanceDetails);
