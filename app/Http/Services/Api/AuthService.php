@@ -37,8 +37,7 @@ class AuthService
                 return errorMessage('null', 'please enter valid password!');
             }
             if ($user && $user->id == '2') {
-                $user = auth()->guard('employee_api')->user();
-                $user['access_token'] = $user->createToken("HrJee TOKEN")->plainTextToken;
+                $user['access_token'] = $user->createToken('token')->plainTextToken;
                 return apiResponse('success', $user);
             } else {
                 $otpResponse = $this->sendOtpService->generateOTP($request->email, 'employee');
