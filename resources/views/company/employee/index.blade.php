@@ -40,15 +40,15 @@
                     </div>
                     <a class="col-md-1 btn btn-sm ms-3 btn-primary align-self-center wt-space"
                         id="export_button">Export</a>
-                    <a href="{{ route('employee.add') }}"
-                        class="col-md-1 btn btn-sm ms-3 btn-primary align-self-center wt-space">
-                        Import</a>
                     <a href="{{ asset('storage/test.csv')}}"
                         class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space" download>
                         Download Template</a>
+                    <a href="{{ route('employee.add') }}"
+                        class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
+                        Add Employee</a>
                     <form id="importForm" enctype="multipart/form-data">
                         @csrf
-                        <input type="file" name="file" id="file" class="form-control mt-4">
+                        <input type="file" name="file" id="file" class="form-control mt-4 ">
                         <button type="submit" class="btn btn-sm ms-3 btn-primary align-self-center wt-space">Upload
                             File</button>
                     </form>

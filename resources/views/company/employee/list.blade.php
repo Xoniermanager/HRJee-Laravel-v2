@@ -10,19 +10,20 @@
                 <th>Designation</th> --}}
                 <th>Email</th>
                 <th>Official Email</th>
+                <th>Branch</th>
                 <th>Gender</th>
                 <th class="min-w-150px">Marital Status</th>
                 <th class="min-w-150px">Joining Date</th>
                 {{-- <th class="min-w-150px">Employee Status</th> --}}
                 <th class="min-w-150px">Employee Type</th>
                 {{-- <th class="min-w-150px">Shift</th> --}}
-                <th class="min-w-150px">Branch</th>
                 <th class="min-w-150px">Status</th>
                 <th class="">Action</th>
             </tr>
         </thead>
         <!--end::Table head-->
         <!--begin::Table body-->
+        {{-- {{ dd($allUserDetails->toArray()) }} --}}
         @forelse ($allUserDetails as $key => $singleUserDetails)
         <tbody class="">
             <tr>
@@ -32,13 +33,18 @@
                 <td>{{ $singleUserDetails->designation->name }}</td> --}}
                 <td>{{ $singleUserDetails->email}}</td>
                 <td>{{ $singleUserDetails->official_email_id }}</td>
+                <td>{{ $singleUserDetails->companyBranch->name }}</td>
                 @if ($singleUserDetails->gender == 'M')
                 <td>Male</td>
+                @elseif($singleUserDetails->gender == 'N/A')
+                <td>N/A</td>
                 @else
                 <td>Female</td>
                 @endif
                 @if ($singleUserDetails->marital_status == 'S')
                 <td>Single</td>
+                @elseif($singleUserDetails->marital_status == 'N/A')
+                <td>N/A</td>
                 @else
                 <td>Married</td>
                 @endif
@@ -47,7 +53,6 @@
                 {{-- <td>{{ $singleUserDetails->employeeStatus->name }}</td> --}}
                 <td>{{ $singleUserDetails->employeeType->name }}</td>
                 {{-- <td>{{ $singleUserDetails->officeShift->name }}</td> --}}
-                <td>{{ $singleUserDetails->companyBranch->name }}</td>
                 <td data-order="Invalid date">
                     <label class="switch">
                         <input type="checkbox" <?=$singleUserDetails->status == '1' ? 'checked' : '' ?>
