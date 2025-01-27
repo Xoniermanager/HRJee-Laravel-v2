@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Company;
 
+use Carbon\Carbon;
 use App\Models\Leave;
 use Illuminate\Http\Request;
 use App\Http\Services\LeaveService;
@@ -102,8 +103,13 @@ class LeaveStatusLogController extends Controller
             $data = $request->all();
             if ($this->leaveStatusLogService->create($data)) {
                 if($data['leave_status_id'] == 2) {
-                    $leave = $this->leaveService->getDetailsById($data['leave_id']);                 
-                    $this->employeeLeaveAvailableService->debitLeaveDetails($leave->user_id, $leave->user_id, 1);
+                    $leave = $this->leaveService->getDetailsById($data['leave_id']);  
+                    
+                    $startDate = Carbon::parse($leave->from);
+                    $endDate = Carbon::parse($leave->to);
+                    $days = $startDate->diffInDays($endDate);
+
+                    $this->employeeLeaveAvailableService->debitLeaveDetails($leave->user_id, $leave->leave_type_id, ($days <= 0 ? 1 : $days));
                 }
 
                 return redirect(route('leave.status.log.index'))->with('success', 'Updated successfully');
