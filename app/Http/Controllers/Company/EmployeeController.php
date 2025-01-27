@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use App\Models\User;
+use App\Imports\UserImport;
 use Illuminate\Http\Request;
 use App\Jobs\EmployeeExportFileJob;
 use App\Http\Controllers\Controller;
@@ -12,12 +13,14 @@ use App\Http\Services\CustomRoleService;
 use App\Http\Services\ShiftServices;
 use App\Http\Services\SkillsService;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
 use App\Http\Services\LanguagesServices;
 use App\Http\Requests\EmployeeAddRequest;
 use App\Http\Services\DepartmentServices;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Services\DocumentTypeService;
 use App\Http\Services\EmployeeTypeService;
 use App\Http\Services\AssetCategoryService;
@@ -102,7 +105,7 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
-        $languages =   $this->languagesServices->defaultLanguages();
+        $languages = $this->languagesServices->defaultLanguages();
         $allBranches = $this->branchService->all(Auth()->guard('company')->user()->company_id);
         // $allRoles = $this->roleService->all();
         $allRoles = $this->customRoleService->all();
@@ -141,7 +144,7 @@ class EmployeeController extends Controller
         // $allRoles = $this->roleService->all();
         $allRoles = $this->customRoleService->all();
         $allShifts = $this->shiftService->getAllActiveShifts();
-        $languages =   $this->languagesServices->defaultLanguages();
+        $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
         // Get employee details to update
         $singleUserDetails = $user->load('officeShift', 'language', 'skill', 'assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
@@ -284,6 +287,43 @@ class EmployeeController extends Controller
         } catch (Exception $e) {
             // Return error response if there is an exception
             return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    public function uploadImport(Request $request)
+    {
+        // Validate that the file is uploaded
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:csv|max:2048',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'The file is required and must be an Excel or CSV file.'
+            ], 400);
+        }
+        $import = new UserImport();
+        try {
+            Excel::import($import, $request->file('file'));
+            $failures = $import->getFailures();
+            if (count($failures) > 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => $failures,
+                ]);
+            }
+            $allUserDetails = $this->employeeService->all('', Auth::guard('company')->user()->company_id)->paginate(10);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Employee imported successfully!',
+                'data' => view('company.employee.list', compact('allUserDetails'))->render()
+            ]);
+        } catch (\Exception $e) {
+            // Catch any general exceptions and return an error message
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while importing the file.',
+            ], 500);
         }
     }
 }

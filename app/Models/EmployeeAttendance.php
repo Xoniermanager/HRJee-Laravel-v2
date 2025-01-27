@@ -22,7 +22,9 @@ class EmployeeAttendance extends Model
         'attendance_status_id',
         'jiofence_auto_check_in',
         'jiofence_auto_check_out',
+        'total_break_time',
         'late',
+        'status',
         'remark'
     ];
     public function user()

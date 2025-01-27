@@ -9,7 +9,11 @@ class EmployeeType extends Model
 {
     use HasFactory;
 
+    const NEWJOINEE = '2';
+
     protected $fillable = [
-        'name','description','status'
-];
+        'name',
+        'description',
+        'status'
+    ];
 }

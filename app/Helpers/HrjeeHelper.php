@@ -280,12 +280,12 @@ function getEmployeeMenuHtml($companyId)
 
     $companyMenuSql = Menu::where(['status' => 1, 'role' => 'employee']);
     $mainMenuIDs = $companyMenuSql->whereNull('parent_id')->pluck('id')->toArray();
-    
+
     $companyAssignedMenuIds = CompanyMenu::where('company_id', $companyId)->pluck('menu_id')->toArray();
 
     $childMenuIDs = $companyMenuSql->whereIn('parent_id', $companyAssignedMenuIds)->whereNotNull('parent_id')->pluck('id')->toArray();
     $parentMenuIDs = $companyMenuSql->whereIn('parent_id', $companyAssignedMenuIds)->whereNotNull('parent_id')->pluck('parent_id')->toArray();
-    
+
     $parentMenus = array_merge($mainMenuIDs, $parentMenuIDs);
     $companyMenus = Menu::whereIn('id', $parentMenus)->orderBy('order_no', 'ASC')->with(['parent'])->get();
 
@@ -334,7 +334,7 @@ function getEmployeeMenuHtml($companyId)
                         </a>
                         </div>';
         }
-        
+
     }
 
     return $html;
