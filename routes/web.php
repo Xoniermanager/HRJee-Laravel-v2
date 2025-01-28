@@ -34,8 +34,7 @@ use App\Http\Controllers\Employee\LeaveTrackingController;
 */
 
 /** ---------------Employee Panel Started--------------  */
-Route::prefix('employee')->middleware(['check.employee.status', 'Check2FA'])->group(function ()
- {
+Route::prefix('employee')->middleware(['check.employee.status', 'Check2FA'])->group(function () {
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
     Route::get('/impersonate', [DashboardController::class, 'startImpersonate'])->name('employee.impersonate');
@@ -52,13 +51,13 @@ Route::prefix('employee')->middleware(['check.employee.status', 'Check2FA'])->gr
     // Resignation Management
     Route::prefix('resignation')->name('resignation.')->controller(ResignationController::class)->group(function () {
         Route::get('/', 'index')->name('index');
-        // Route::post('/change-status', 'changeStatus')->name('changeStatus');
+        Route::post('/apply', 'applyResignation')->name('apply');
+        Route::post('/{id}', 'editResignation')->name('edit');
+        Route::get('/{id}', 'view')->name('view');
+        Route::post('/{id}/status', 'changeStatus')->name('change-status');
 
         Route::get('/delete/{id?}', 'destroy')->name('delete');
         Route::post('/cancel', 'actionResignation')->name('actionResignation');
-        Route::post('/apply', 'applyResignation')->name('apply');
-        Route::post('/edit', 'editResignation')->name('edit');
-        Route::get('/view/{id?}', 'view')->name('view');
     });
 
     //   // Resignation Management

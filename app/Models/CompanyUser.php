@@ -8,5 +8,10 @@ class CompanyUser extends Authenticatable
 {
     use SoftDeletes;
     protected $table = 'company_users';
-    protected $fillable = ['company_id','branch_id','email','name','password','status'];
+    protected $fillable = ['company_id', 'branch_id', 'email', 'name', 'password', 'status'];
+
+    public function resignationLogs()
+    {
+        return $this->morphMany(ResignationLog::class, 'actionTakenBy');
+    }
 }
