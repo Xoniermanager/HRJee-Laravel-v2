@@ -69,7 +69,7 @@ class AttendanceController extends Controller
         $encryptId = getDecryptId($userId);
         $userDetail = $this->employeeService->getUserDetailById($encryptId);
         $employeeDetail = $this->viewsearchFilterDetails(Carbon::now()->month, date('Y'), $userDetail);
-        dd($employeeDetail);
+        
         return view('company.attendance.view', compact('employeeDetail'));
     }
 
@@ -94,16 +94,23 @@ class AttendanceController extends Controller
             $allAttendanceDetails[date('d F Y', strtotime($startDate))]['leave'] = $checkLeave;
             $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
         }
-        return
-            [
-                'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
-                'totalLeave'   => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
-                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::guard('company')->user()->company_id, $month, $year, $employeeDetails->company_branch_id)->count(),
-                'shortAttendance' => '0',
-                'totalAbsent' => '0',
-                'emp_id'    => $employeeDetails->id,
-                'allAttendanceDetails' => $allAttendanceDetails
-            ];
+        $totalPresent = $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count();
+        $totalLeave = $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year);
+        $totalHoliday = $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::guard('company')->user()->company_id, $month, $year, $employeeDetails->company_branch_id)->count();
+        $shortAttendance = $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count();
+        $totalAbsent = date('d', strtotime('last day of ' . $year . '-' . $month)) - ($totalPresent + $totalLeave + $totalHoliday + $shortAttendance) ;
+
+        $response = [
+            'totalPresent' => $totalPresent,
+            'totalLeave'   => $totalLeave,
+            'totalHoliday' => $totalHoliday,
+            'shortAttendance' => $shortAttendance,
+            'totalAbsent' => $totalAbsent,
+            'emp_id'    => $employeeDetails->id,
+            'allAttendanceDetails' => $allAttendanceDetails
+        ];
+        
+        return $response;
     }
     public function searchFilterByEmployeeId(Request $request, $empId)
     {

@@ -84,6 +84,22 @@ class EmployeeAttendanceService
         /** If Data Exit in Table Soo we Implement for Puch Out  */
         $existingDetails = $this->getAttendanceByDateByUserId($userDetails->id, date('Y-m-d'))->first();
         if (isset($existingDetails) && !empty($existingDetails)) {
+
+            //check if user is in short attendance
+            if ($userDetails->officeShift->check_out_buffer > 0) {
+                $bufferTime = ' -' . $userDetails->officeShift->check_out_buffer . ' minutes';
+                $officeShortAttendanceTime  = date('H:i:s', strtotime($officeEndTime. $bufferTime));
+                if (date('H:i:s') < $officeShortAttendanceTime) {
+                    return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
+                } elseif((date('H:i:s') >= $officeShortAttendanceTime) && (date('H:i:s') < date('H:i:s', strtotime($officeEndTime)))) {
+                    $payload['is_short_attendance'] = 1;
+                }
+            } else {
+                if (date('H:i:s') < date('H:i:s', strtotime($officeEndTime))) {
+                    return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
+                }
+            }
+
             $payload['punch_out'] = $attendanceTime;
             $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
             return ['data' => 'Punch Out', 'status' => true];
@@ -211,6 +227,11 @@ class EmployeeAttendanceService
     public function getAllAttendanceByMonthByUserId($month, $userId, $year)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year);
+    }
+
+    public function getShortAttendanceByMonthByUserId($month, $userId, $year)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year)->where('is_short_attendance', 1);
     }
 
     public function getAttendanceByDateByUserId($userId, $date)
