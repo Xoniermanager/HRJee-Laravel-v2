@@ -251,4 +251,9 @@ class User extends Authenticatable
     {
         return $this->role->permissions()->where('name', $permissionName)->exists();
     }
+
+    public function resignationLogs()
+    {
+        return $this->morphMany(ResignationLog::class, 'actionTakenBy');
+    }
 }

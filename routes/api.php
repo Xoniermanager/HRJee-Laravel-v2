@@ -81,4 +81,13 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
         Route::get('/list', 'allAssignedAnnouncement');
         Route::get('/view-details/{announcements:id}', 'viewAnnouncementDetails');
     });
+
+    /** Resignation Modules */
+    Route::prefix('resignation')->controller(ResignationController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'view');
+        Route::post('/', 'apply');
+        Route::put('/{id}', 'edit');
+        Route::put('/{id}/withdraw', 'withdraw');
+    });
 });

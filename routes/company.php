@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
+use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
@@ -129,7 +130,12 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
         Route::get('/search', 'searchResignationStatusFilter')->name('status.search');
     });
 
-
+    // Resignation Management
+    Route::prefix('resignation')->name('resignation.')->controller(ResignationController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{id}', 'view')->name('view');
+        Route::post('/{id}/status', 'changeStatus')->name('change-status');
+    });
 
     //Country Module
     Route::prefix('/country')->controller(CountryController::class)->group(function () {
