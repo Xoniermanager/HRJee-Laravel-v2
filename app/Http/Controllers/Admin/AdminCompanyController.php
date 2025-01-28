@@ -3,37 +3,40 @@
 namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use App\Models\Role;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Services\MenuService;
+use App\Http\Services\UserService;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ValidateCompany;
-use App\Http\Services\CompanyServices;
 use App\Http\Services\CompanyTypeService;
-use App\Repositories\CompanyRepository;
 use App\Http\Services\CompanyUserService;
+use App\Http\Services\CompanyDetailService;
 
 class AdminCompanyController extends Controller
 {
 
-    private $companyServices;
+    private $companyDetailService;
+    private $userService;
     private $companyUserService;
     private $menuServices;
     private $companyRepository;
     private $companyTypeService;
-    public function __construct(CompanyServices $companyServices, CompanyUserService $companyUserService, MenuService $menuServices, CompanyRepository $companyRepository, CompanyTypeService $companyTypeService)
+    public function __construct(CompanyDetailService $companyDetailService, CompanyUserService $companyUserService, MenuService $menuServices, CompanyTypeService $companyTypeService, UserService $userService)
     {
-        $this->companyServices = $companyServices;
+        $this->companyDetailService = $companyDetailService;
         $this->companyUserService = $companyUserService;
         $this->menuServices = $menuServices;
-        $this->companyRepository = $companyRepository;
         $this->companyTypeService = $companyTypeService;
+        $this->userService = $userService;
     }
     public function index()
     {
         return view('admin.company.index', [
-            'allCompaniesDetails' => $this->companyServices->all(),
+            'allCompaniesDetails' => $this->companyDetailService->all(),
             'allCompanyTypeDetails' => $this->companyTypeService->getAllActiveCompanyType()
         ]);
     }
@@ -47,38 +50,34 @@ class AdminCompanyController extends Controller
 
     public function edit_company(Request $request)
     {
-        $companyDetails = $this->companyServices->get_company_by_id($request->query('id'));
+        $companyDetails = $this->companyDetailService->get_company_by_id($request->query('id'));
         return view('admin.company.edit_company', ['companyDetails' => $companyDetails]);
     }
 
     public function store(ValidateCompany $request)
     {
         $validated = $request->validated();
-        if ($request->hasFile('logo')) {
-            $nameForImage = removingSpaceMakingName($request->name);
-            $upload_path = "/company_profile";
-            $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
-            $request->merge(['logo' => $filePath]);
-        }
-        $request->merge([
-            'joining_date' => Carbon::today()->toDateString(),
-        ]);
-        $createdCompany = $this->companyServices->create($request->except('_token', 'password', 'password_confirmation'));
-
-        if (isset($createdCompany) && $createdCompany->id != '') {
-            $data['company_id'] = $createdCompany->id;
-            $data['name'] = $request->name;
-            $data['password'] = Hash::make($request->password);
-            $data['email'] = $request->email;
-
-            $this->companyUserService->create($data);
-            return response()->json([
-                'success' => 'Company Created Successfully',
-            ]);
-        } else {
-            return response()->json([
-                'error' => 'Please try again after sometime!',
-            ]);
+        DB::beginTransaction();
+        try {
+            $request['role_id'] = Role::ADMIN;
+            $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'role_id'));
+            if ($userCreated) {
+                $request['user_id'] = $userCreated->id;
+                if ($request->hasFile('logo')) {
+                    $nameForImage = removingSpaceMakingName($request->name);
+                    $upload_path = "/company_log";
+                    $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
+                    $request->merge(['logo' => $filePath]);
+                }
+                $this->companyDetailService->create($request->except('name', 'email', '_token', 'password', 'password_confirmation', 'role_id'));
+                DB::commit();
+                return response()->json(['success' => 'Company Created Successfully']);
+            } else {
+                DB::rollBack();
+                return response()->json(['error' => 'Please try again later!']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Something went wrong. Please try again.']);
         }
     }
 
@@ -104,7 +103,7 @@ class AdminCompanyController extends Controller
         $request->merge([
             'joining_date' => Carbon::today()->toDateString(),
         ]);
-        $createdCompany = $this->companyServices->updateDetails($request->except('_token', 'password', 'password_confirmation'), $request->company_id);
+        $createdCompany = $this->companyDetailService->updateDetails($request->except('_token', 'password', 'password_confirmation'), $request->company_id);
 
         if ($createdCompany) {
             $data['name'] = $request->name;
@@ -123,12 +122,12 @@ class AdminCompanyController extends Controller
         $companyId = $request->id;
         $deleted = $this->companyUserService->deleteCompanyUserByCompanyId($companyId);
         if ($deleted) {
-            $data = $this->companyServices->deleteDetails($companyId);
+            $data = $this->companyDetailService->deleteDetails($companyId);
             if ($data) {
                 return response()->json([
                     'success' => 'Company Deleted Successfully',
                     'data'   =>  view("admin.company.company_list", [
-                        'allCompaniesDetails' => $this->companyServices->all()
+                        'allCompaniesDetails' => $this->companyDetailService->all()
                     ])->render()
                 ]);
             }
@@ -139,7 +138,7 @@ class AdminCompanyController extends Controller
 
     public function search(Request $request)
     {
-        $searchedItems = $this->companyServices->searchInCompany($request->all());
+        $searchedItems = $this->companyDetailService->searchInCompany($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
@@ -153,12 +152,12 @@ class AdminCompanyController extends Controller
     }
     public function statusUpdate(Request $request)
     {
-        $statusDetails = $this->companyServices->updateStatus($request->id, $request->status);
+        $statusDetails = $this->companyDetailService->updateStatus($request->id, $request->status);
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Company Status Updated Successfully',
                 'data'   =>  view("admin.company.company_list", [
-                    'allCompaniesDetails' => $this->companyServices->all()
+                    'allCompaniesDetails' => $this->companyDetailService->all()
                 ])->render()
             ]);
         } else {
