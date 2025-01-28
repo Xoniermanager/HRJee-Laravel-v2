@@ -18,6 +18,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role_id',
+        'company_id',
+        'manager_id',
+        'type',
         'status'
     ];
 
@@ -29,4 +32,22 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function menu()
+    {
+        return $this->role->menus();
+    }
+
+    public function details(){
+        if($this->type == 'company'){
+            return $this->hasOne(CompanyDetail::class, 'user_id');
+        }else{
+            return $this->hasOne(UserDetail::class, 'user_id');
+        }
+    }
 }

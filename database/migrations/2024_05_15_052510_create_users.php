@@ -17,8 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
-            $table->unsignedBigInteger('role_id');
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->unsignedBigInteger('role_id')->nullable();
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('manager_id')->nullable();
+            $table->enum('type', ['company', 'user'])->default('user');
             $table->boolean('status')->default(true);
             $table->rememberToken();
             $table->softDeletes();

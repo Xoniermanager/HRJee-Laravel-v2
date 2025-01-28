@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use App\Models\Menu;
 use App\Models\Role;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -54,14 +55,62 @@ class AdminCompanyController extends Controller
         return view('admin.company.edit_company', ['companyDetails' => $companyDetails]);
     }
 
+    protected function createRoleForCompany($companyId, $menuIds, $companyName)
+    {
+        DB::beginTransaction();
+
+        try {
+            $menus = Menu::whereIn('id', $menuIds)->get();
+            $adminRole = Role::updateOrCreate(
+                [
+                    'user_id' => $companyId,
+                    'name' => "$companyName Admin",
+                ],
+                [
+                    'description' => 'Administrator with full access',
+                    'category' => 'default',
+                    'status' => true,
+                ]
+            );
+
+            $syncData = [];
+            foreach ($menus as $menu) {
+                $syncData[$menu->id] = [
+                    'can_create' => true,
+                    'can_read' => true,
+                    'can_update' => true,
+                    'can_delete' => true,
+                ];
+            }
+
+            $adminRole->menus()->sync($syncData);
+            DB::commit();
+
+            return $adminRole->id;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
     public function store(ValidateCompany $request)
     {
         $validated = $request->validated();
         DB::beginTransaction();
         try {
-            $request['role_id'] = Role::ADMIN;
-            $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'role_id'));
+            $request['type'] = 'company';
+            $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'type'));
+
             if ($userCreated) {
+                // Assign Admin Role
+                try {
+                    $roleId = $this->createRoleForCompany($userCreated->id, [], $userCreated->name);
+                } catch (\Throwable $th) {
+                    return response()->json(['error' => 'Something went wrong. Please try again.']);
+                }
+
+                $userCreated->update(['role_id' => $roleId]);
+
                 $request['user_id'] = $userCreated->id;
                 if ($request->hasFile('logo')) {
                     $nameForImage = removingSpaceMakingName($request->name);
@@ -126,7 +175,7 @@ class AdminCompanyController extends Controller
             if ($data) {
                 return response()->json([
                     'success' => 'Company Deleted Successfully',
-                    'data'   =>  view("admin.company.company_list", [
+                    'data' => view("admin.company.company_list", [
                         'allCompaniesDetails' => $this->companyDetailService->all()
                     ])->render()
                 ]);
@@ -142,8 +191,8 @@ class AdminCompanyController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view("admin.company.company_list", [
-                    'allCompaniesDetails' =>  $searchedItems
+                'data' => view("admin.company.company_list", [
+                    'allCompaniesDetails' => $searchedItems
                 ])->render()
             ]);
         } else {
@@ -156,7 +205,7 @@ class AdminCompanyController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Company Status Updated Successfully',
-                'data'   =>  view("admin.company.company_list", [
+                'data' => view("admin.company.company_list", [
                     'allCompaniesDetails' => $this->companyDetailService->all()
                 ])->render()
             ]);

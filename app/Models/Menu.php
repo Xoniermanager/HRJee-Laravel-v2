@@ -27,8 +27,16 @@ class Menu extends Model
     {
         return $this->hasMany(Menu::class, 'parent_id');
     }
+
     public function company()
     {
         return $this->belongsToMany(Company::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'menu_role')
+            ->withPivot('can_create', 'can_read', 'can_update', 'can_delete')
+            ->withTimestamps();
     }
 }

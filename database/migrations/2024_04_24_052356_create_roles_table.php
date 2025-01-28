@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->boolean('status')->default(true);
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->enum('category', ['default', 'custom'])->default('default');
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }

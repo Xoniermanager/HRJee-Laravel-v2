@@ -18,4 +18,14 @@ class UserService
         $data['password'] = Hash::make($data['password']);
         return $this->userRepository->create($data);
     }
+
+    public function getCompanies()
+    {
+        return $this->userRepository->where('type', 'company');
+    }
+
+    public function getUserById($id)
+    {
+        return $this->userRepository->find($id);
+    }
 }
