@@ -35,6 +35,7 @@ class AttendanceController extends Controller
     public function index()
     {
         $allEmployeeDetails = $this->searchFilterDetails(Carbon::now()->month, Carbon::now()->year);
+
         return view('company.attendance.index', compact('allEmployeeDetails'));
     }
 
@@ -68,6 +69,7 @@ class AttendanceController extends Controller
         $encryptId = getDecryptId($userId);
         $userDetail = $this->employeeService->getUserDetailById($encryptId);
         $employeeDetail = $this->viewsearchFilterDetails(Carbon::now()->month, date('Y'), $userDetail);
+        dd($employeeDetail);
         return view('company.attendance.view', compact('employeeDetail'));
     }
 
@@ -85,8 +87,11 @@ class AttendanceController extends Controller
             if (isset($checkWeekend) && !empty($checkWeekend)) {
                 $weekendStatus = true;
             }
+            $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeDetails->id, date('Y-m-d', strtotime($startDate)), $endDate);
+            
             $allAttendanceDetails[date('d F Y', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByDateByUserId($employeeDetails->id, $startDate)->first();
             $allAttendanceDetails[date('d F Y', strtotime($startDate))]['weekend'] = $weekendStatus;
+            $allAttendanceDetails[date('d F Y', strtotime($startDate))]['leave'] = $checkLeave;
             $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
         }
         return

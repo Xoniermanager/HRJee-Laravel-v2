@@ -25,7 +25,8 @@ class EmployeeAttendance extends Model
         'total_break_time',
         'late',
         'status',
-        'remark'
+        'remark',
+        'is_short_attendance'
     ];
     public function user()
     {
