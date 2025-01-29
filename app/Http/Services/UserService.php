@@ -23,6 +23,7 @@ class UserService
     {
         return $this->userRepository->find($userId)->update($data);
     }
+    
     public function getCompanies()
     {
         return $this->userRepository->where('type', 'company');

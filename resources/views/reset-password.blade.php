@@ -111,7 +111,7 @@
                                         </div>
                                     @endif
                                     <p class="ad-register-text">Go to the login page <a
-                                            href="{{ route('employee') }}">Click Here</a></p>
+                                            href="{{ route('base') }}">Click Here</a></p>
                                 </div>
                             </form>
                             <!--end::Form-->
