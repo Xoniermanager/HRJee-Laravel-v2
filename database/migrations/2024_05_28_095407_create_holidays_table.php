@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('date');
             $table->string('year');
             $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('company_id')->references('id')->on('users');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

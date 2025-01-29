@@ -26,7 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('company_id');
             $table->foreign('country_id')->references('id')->on('countries');
             $table->foreign('state_id')->references('id')->on('states');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('company_id')->references('id')->on('users');
             $table->boolean('status')->default(true);
             $table->softDeletes('deleted_at')->nullable();
             $table->timestamps();
