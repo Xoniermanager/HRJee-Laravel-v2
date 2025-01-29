@@ -182,7 +182,8 @@
         /**-------------End----------*/
 
         /** Validation and Ajax Creation and Updated*/
-        jQuery(document).ready(function($) {
+        jQuery(document).ready(function() {
+            //alert();
             jQuery("#edit_resignation_status_form").validate({
                 rules: {
                     name: "required",

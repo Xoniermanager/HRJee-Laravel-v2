@@ -23,6 +23,7 @@ class WeekendService
     {
         try {
             $data['company_id'] = Auth()->user()->company_id;
+            $data['created_by'] = Auth()->user()->id;
             $payload = Arr::except($data, ['weekday_id', '_token', 'weekend_id']);
             if (isset($data['weekend_id']) && !empty($data['weekend_id'])) {
                 $this->weekendRepository->find($data['weekend_id'])->update($payload);
