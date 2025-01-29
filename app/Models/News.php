@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class News extends Model
 {
-    use HasFactory;
+    use HasFactory,CompanyScope;
 
-    protected $fillable = ['title', 'image', 'news_category_id', 'start_date', 'end_date', 'description', 'file', 'designation_id', 'department_id', 'news_category_id', 'company_branch_id','status','all_company_branch','all_department','all_designation','company_id','company_branches'];
+    protected $fillable = ['title', 'image', 'news_category_id', 'start_date', 'end_date', 'description', 'file', 'designation_id', 'department_id', 'news_category_id', 'company_branch_id','status','all_company_branch','all_department','all_designation','company_id','company_branches','created_by'];
 
     public function designations()
     {
