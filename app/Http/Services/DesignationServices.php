@@ -17,6 +17,12 @@ class DesignationServices
   {
     return $this->designationRepository->with('departments')->orderBy('id', 'DESC')->paginate(10);
   }
+
+  public function getByCompanyId($companyID)
+  {
+      return $this->designationRepository->where('company_id', $companyID)->orderBy('id', 'DESC')->paginate(10);
+  }
+
   public function create(array $data)
   {
     return $this->designationRepository->create($data);
@@ -56,7 +62,7 @@ class DesignationServices
       $designationDetails = $designationDetails->where('name', 'Like', '%' . $request['search'] . '%');
     }
     /**List By Status or Filter */
-    if (isset($request['status'])) {
+    if (isset($request['status']) && $request['status'] != "") {
       $designationDetails = $designationDetails->where('status', $request['status']);
     }
     /**List By Department ID or Filter */

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('designations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('department_id');
+            $table->string('name');
             $table->boolean('status')->default(true);
             $table->timestamps();
             $table->foreign('department_id')->references('id')->on('departments');
