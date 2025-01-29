@@ -86,8 +86,8 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        auth()->guard('employee')->logout();
-        return redirect(route('employee'));
+        auth()->logout();
+        return redirect(route('base'));
     }
 
     public function verifyOtp()

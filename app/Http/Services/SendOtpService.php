@@ -26,7 +26,7 @@ class SendOtpService
     $checkOTPExists = ['email' => $email, 'type' => $type];
     // Create OTP
     $code = "1234";
-    $userOtpDetails = ['code' => $code, 'updated_at' => Carbon::now()];
+    $userOtpDetails = ['code'  => $code,'updated_at' => Carbon::now()];
     $update = $this->userOtpRepository->updateOrCreate($checkOTPExists, $userOtpDetails);
     if ($update) {
       $mailData = [
@@ -34,7 +34,7 @@ class SendOtpService
         'otp_code' => $code,
         'expire_at' => Carbon::now()->addMinutes(2)->format("H:i A")
       ];
-      //   $checkValid = Mail::to($email)->send(new ResetPassword($mailData));
+    //   $checkValid = Mail::to($email)->send(new ResetPassword($mailData));
       $checkValid = true;
       if ($checkValid)
         return ['status' => true, 'message' => 'otp_sent_on_mail'];
@@ -48,11 +48,17 @@ class SendOtpService
     $find = UserCode::where(['email' => $data['email'], 'code' => $data['otp'], 'type' => $data['type']])
       ->where('updated_at', '>=', now()->subMinutes(20))
       ->first();
-
+      
     if ($find) {
-      Session::put('user_2fa', Auth::id());
+      if($guardType){
+        Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+      }else{
+        Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+      }
+
       return true;
-    } else {
+    }
+    else {
       return false;
     }
   }
