@@ -30,4 +30,8 @@ class CompanyDetail extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function companyType()
+    {
+        return $this->belongsTo(CompanyType::class);
+    }
 }

@@ -43,10 +43,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role->menus();
     }
 
-    public function details(){
-        if($this->type == 'company'){
+    public function details()
+    {
+        if ($this->type == 'company') {
             return $this->hasOne(CompanyDetail::class, 'user_id');
-        }else{
+        } else {
             return $this->hasOne(UserDetail::class, 'user_id');
         }
     }
