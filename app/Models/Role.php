@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     const ADMIN = '1';
     const USER = '2';
@@ -16,7 +17,10 @@ class Role extends Model
         'name',
         'description',
         'user_id',
-        'category'
+        'category',
+        'created_by',
+        'deleted_at',
+        'status'
     ];
 
     public function menus()

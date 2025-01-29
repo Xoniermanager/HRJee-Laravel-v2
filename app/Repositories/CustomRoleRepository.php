@@ -2,8 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\CustomRole;
-use Spatie\Permission\Contracts\Role;
+use App\Models\Role;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
