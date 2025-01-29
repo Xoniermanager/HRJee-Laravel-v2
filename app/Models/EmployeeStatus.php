@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class EmployeeStatus extends Model
 {
     use HasFactory;
+
+    const CURRENT = '1';
     protected $fillable = [
         'name','description','status'
 ];

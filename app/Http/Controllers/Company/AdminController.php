@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Cookie;
 
 class AdminController extends Controller
 {
-    private  $authService, $sendOtpService;
+    private $authService, $sendOtpService;
 
     public function __construct(AuthService $authService, SendOtpService $sendOtpService)
     {
@@ -34,28 +34,29 @@ class AdminController extends Controller
      */
     public function companyLogin(Request $request)
     {
-
         try {
-            // Validate login form data
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required|min:6',
             ]);
-            // If validation fails, return the error messages
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-            // If authentication fails, redirect back with an error message
             if (!Auth::guard('company')->attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with(['error' => 'These credentials do not match our records.']);
             } else {
+                $user = Auth()->user();
+                if ($user->status !== '1') {
+                    return redirect()->back()->with(['error' => 'Your account is not Active.Please Contact to Admin']);
+                }
                 Cookie::queue(Cookie::make('user_name', $request->email, 360));
                 Cookie::queue(Cookie::make('password', $request->password, 360));
-                $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, 'company');
-                if ($genrateOtpresponse['status'] == true) {
+                $generateOtpResponse = $this->sendOtpService->generateOTP($request->email, 'company');
+                if ($generateOtpResponse['status'] == true) {
                     return redirect('company/verify/otp');
-                } else
-                    return redirect('company/signin')->with('error', $genrateOtpresponse['message']);
+                } else {
+                    return redirect('company/signin')->with('error', $generateOtpResponse['message']);
+                }
             }
         } catch (Throwable $th) {
             return response()->json([
@@ -87,7 +88,7 @@ class AdminController extends Controller
     public function verifyOtp()
     {
         if (!auth()->guard('company')->check()) {
-            return  redirect('/company/signin');
+            return redirect('/company/signin');
         }
         return view('company-verify-otp');
     }
@@ -103,7 +104,7 @@ class AdminController extends Controller
             if ($verifyOtpResponse)
                 return redirect('company/dashboard');
             else
-                return redirect('company/verify/otp')->with('error',  'invalid_or_expired_otp');
+                return redirect('company/verify/otp')->with('error', 'invalid_or_expired_otp');
         } catch (Throwable $th) {
             return Redirect::back()->withErrors($th->getMessage());
         }
@@ -119,14 +120,14 @@ class AdminController extends Controller
     {
         try {
             if (!auth()->guard('company')->check()) {
-                return   redirect('/company/signin');
+                return redirect('/company/signin');
             }
             $email = auth()->guard('company')->user()->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'company');
             if ($otpResponse['status'] == true)
-                return redirect('company/verify/otp')->with('success',  transLang($otpResponse['message']));
+                return redirect('company/verify/otp')->with('success', transLang($otpResponse['message']));
             else
-                return redirect('company/verify/otp')->with('error',  transLang($otpResponse['message']));
+                return redirect('company/verify/otp')->with('error', transLang($otpResponse['message']));
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }

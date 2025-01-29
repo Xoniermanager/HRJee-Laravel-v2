@@ -1,6 +1,6 @@
 @extends('layouts.admin.main')
 
-@section('title', 'employee_status')
+@section('title', 'Employee Status')
 
 @section('content')
 
@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     @include('admin.employee_status.employee_status_list')
-                    {{ $allEmployeeStatusDetails->links() }}
                     </div>
                 </div>
             </div>

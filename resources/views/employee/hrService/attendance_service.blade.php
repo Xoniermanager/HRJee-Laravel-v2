@@ -1,7 +1,7 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-    Attendance
+Attendance
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -14,20 +14,19 @@
                     <!--begin::Card title-->
                     <div class="card-title m-0">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label for="">From date</label>
-                                <input type="date" class="form-control mb-3 date" id="from_date"
-                                    value="{{ old('from_date') }}">
+                                <input type="date" value="{{ date("Y-m-01") ?? old('from_date') }}" class="form-control mb-3 date" id="from_date">
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label for="">To date</label>
-                                <input type="date" class="form-control mb-3 date" id="to_date"
-                                    value="{{ old('to_date') }}">
+                                <input type="date"  value="{{ date("Y-m-d") ?? old('to_date')}}" class="form-control mb-3 date" id="to_date">
+                            </div>
+                            <div class="col-md-4 mt-5">
+                                <button class="btn btn-sm btn-primary" id="export_button"> Export Attendance</button>
                             </div>
                         </div>
-
                     </div>
-                    <!--end::Card title-->
                 </div>
                 <div class="separator  mb-9"></div>
 
@@ -61,19 +60,27 @@
         var from_date = $('#from_date').val();
         var to_date = $('#to_date').val();
         if (from_date && to_date) {
-            search_filter_results(from_date, to_date)
+            search_filter_results()
         } else {
             return false;
         }
     });
-
-    function search_filter_results(from_date, to_date) {
+    $('#export_button').on('click', function() {
+        let empId = {{ Auth()->guard('employee')->user()->id }};
+        exportAttendanceByUserIdByToDateFromDate(empId,$('#to_date').val(),$('#from_date').val())
+    });
+    $(document).on('click', '#attendance_list a', function(e) {
+        e.preventDefault();
+        var page_no = $(this).attr('href').split('page=')[1];
+        search_filter_results(page_no);
+    });
+    function search_filter_results(page_no = 1) {
         $.ajax({
             type: 'GET',
-            url: "<?= route('search.filter.attendance') ?>",
+            url: employee_ajax_base_url + "/search/filter/date?page=" + page_no,
             data: {
-                'from_date': from_date,
-                'to_date': to_date
+                'from_date': $('#from_date').val(),
+                'to_date':$('#to_date').val()
             },
             success: function(response) {
                 $('#attendance_list').replaceWith(response.data);

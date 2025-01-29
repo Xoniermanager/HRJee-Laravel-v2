@@ -2,11 +2,13 @@
 
 namespace App\Http\Services;
 
-use App\Http\Requests\ChangeResignationStatusRequest;
-use App\Repositories\ResignationLogRepository;
-use App\Repositories\ResignationRepository;
-use App\Repositories\ResignationStatusRepository;
+use App\Models\ResignationLog;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\ResignationRepository;
+use App\Repositories\ResignationLogRepository;
+use App\Repositories\ResignationStatusRepository;
+use App\Http\Requests\ChangeResignationStatusRequest;
 
 class ResignationStatusService
 {
@@ -25,9 +27,9 @@ class ResignationStatusService
   {
     $query = $this->resignationStatusRepository->select('id', 'name', 'status')->orderBy('id', 'DESC');
     if ($type == 'all')
-      $query =     $query->active()->get();
+      $query = $query->active()->get();
     else
-      $query =  $query->paginate(10);
+      $query = $query->paginate(10);
 
     return $query;
   }
@@ -45,40 +47,33 @@ class ResignationStatusService
 
 
 
-  public function changeStatus($data, $userType)
+  public function changeStatus($resignationId, $data, $action_taken_by)
   {
+    try {
+      DB::beginTransaction();
+      $resignation = $this->resignationRepository->find($resignationId);
 
-    $resignation = $this->resignationRepository->find($data['resignation_id']);
-    if ($resignation) {
+      if ($resignation) {
+        $resignation->update([
+          'status' => $data['status'],
+          'release_date' => $data['release_date'] ?? null
+        ]);
 
-      // // check perssion for employee have only withdraw resgination
-      // if ($userType == 'Employee' && $data['resignation_status_id'] != 4) {
-      //   return ['status' => false, 'msg' => `you have only permission to cancel resignation!`];
-      // }
-      // to store old status in log table
-      $resignationStatusId = $resignation->resignation_status_id;
-      $updateData = ['resignation_status_id' => $data['resignation_status_id']];
-
-      // check the action already applied or not
-      if ($resignationStatusId == $data['resignation_status_id']) {
-        return ['status' => false, 'msg' => 'this action just before taken!'];
+        // Save Log
+        $resignationLog = new ResignationLog([
+          'status' => $data['status'],
+          'resignation_id' => $resignationId,
+          'remark' => $data['remark']
+        ]);
+        $resignationLog->actionTakenBy()->associate($action_taken_by);
+        $resignationLog->save();
       }
 
-      // update realease date if status is for approved
-      if ($data['resignation_status_id'] == 1) {
-        $updateData['release_date'] = date('Y-m-d H:m:s', strtotime("+60 days"));
-      }
-
-      $update = $resignation->update($updateData);
-      if ($update) {
-        // create resignation log
-        $data['resignation_status_id'] = $resignationStatusId;
-        $createLog = $this->resignationLogRepository->create($data);
-        if ($createLog)
-          return ['status' => true, 'msg' => 'executed'];
-        else
-          return ['status' => false, 'msg' => 'not executed'];
-      }
+      DB::commit();
+      return true;
+    } catch (\Throwable $th) {
+      DB::rollBack();
+      return false;
     }
   }
   public function updateDetails($data, $id)
@@ -93,7 +88,8 @@ class ResignationStatusService
   public function create($data)
   {
 
-    $data['company_id'] = Auth::guard('company')->user()->company_id;
+    $data['company_id'] = Auth()->user()->company_id;
+    $data['created_by'] = Auth()->user()->id;
     return $this->resignationStatusRepository->create($data);
   }
 

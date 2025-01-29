@@ -14,7 +14,7 @@ class CompanyBranchObserver
     public function __construct(
         CompanyUserService $companyUserServices
     ) {
-        $this->companyUserServices  = $companyUserServices;
+        $this->companyUserServices = $companyUserServices;
     }
     /**
      * Handle the CompanyBranch "created" event.
@@ -23,7 +23,7 @@ class CompanyBranchObserver
     {
 
         $data['branch_id'] = $companyBranch->id;
-        $data['company_id'] = auth()->guard('company')->user()->id;
+        $data['company_id'] = Auth()->user()->id;
         $data['name'] = $companyBranch->name;
         $data['email'] = $companyBranch->email;
         $data['password'] = Hash::make('password');

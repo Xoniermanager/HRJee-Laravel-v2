@@ -1,6 +1,6 @@
 @extends('layouts.admin.main')
 
-@section('title', 'previous_company')
+@section('title', 'Previous Company')
 
 @section('content')
     <div class="page-body">
@@ -30,7 +30,6 @@
                             </div>
                         </div>
                     @include('admin.previous_company.previous_company_list')
-                    {{ $allPreviousCompanyDetails->links() }}
                     </div>
                 </div>
             </div>

@@ -22,38 +22,24 @@ class RolesTableSeeder extends Seeder
             0 =>
             array(
                 'id' => 1,
-                'name' => 'Company',
-                'guard_name' => 'web',
-                'created_at' => '2024-06-21 14:53:48',
-                'updated_at' => '2024-06-21 14:53:48',
+                'name' => 'Xonier Admin',
+                'description' => 'Administrator with full access',
+                'company_id' => 1,
+                'category' => 'default',
                 'status' => 1,
+                'created_at' => '2025-01-29 10:41:20',
+                'updated_at' => '2025-01-29 10:41:20',
             ),
             1 =>
             array(
                 'id' => 2,
-                'name' => 'Employee',
-                'guard_name' => 'web',
-                'created_at' => '2024-06-21 14:53:58',
-                'updated_at' => '2024-06-21 14:53:58',
-                'status' => 1,
-            ),
-            2 =>
-            array(
-                'id' => 3,
                 'name' => 'User',
-                'guard_name' => 'web',
-                'created_at' => '2024-06-21 14:54:03',
-                'updated_at' => '2024-06-21 14:54:03',
+                'description' => 'User with full access',
+                'company_id' => NULL,
+                'category' => 'default',
                 'status' => 1,
-            ),
-            3 =>
-            array(
-                'id' => 4,
-                'name' => 'HR',
-                'guard_name' => 'web',
-                'created_at' => '2024-06-21 14:53:48',
-                'updated_at' => '2024-06-21 14:53:48',
-                'status' => 1,
+                'created_at' => '2025-01-29 10:41:20',
+                'updated_at' => '2025-01-29 10:41:20',
             ),
         ));
     }

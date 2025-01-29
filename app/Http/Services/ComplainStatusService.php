@@ -17,7 +17,7 @@ class ComplainStatusService
   }
   public function create(array $data)
   {
-    $data['company_id'] = Auth()->guard('company')->user()->company_id ?? '';
+    $data['company_id'] = Auth()->user()->id ?? '';
     return $this->complainStatusRepository->create($data);
   }
 

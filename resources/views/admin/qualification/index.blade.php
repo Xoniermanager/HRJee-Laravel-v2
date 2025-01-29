@@ -1,6 +1,6 @@
 @extends('layouts.admin.main')
 
-@section('title', 'qualification')
+@section('title', 'Qualification')
 
 @section('content')
 
@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     @include('admin.qualification.qualification_list')
-                    {{ $allQualificationDetails->links() }}
                     </div>
                 </div>
             </div>

@@ -1,18 +1,15 @@
 @extends('layouts.employee.main')
-
-@section('title', 'Hello Shibli Sone')
-
+@section('title', Auth()->guard('employee')->user()->name)
 @section('content')
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible">
-            {{ session('error') }}
-        </div>
-    @endif
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible">
-            {{ session('success') }}
-        </div>
-    @endif
+    <style>
+        .punchinbar p {
+            font-weight: 500;
+        }
+
+        .punchinbar p span {
+            font-weight: 400;
+        }
+    </style>
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
@@ -39,8 +36,7 @@
                                     <!--end::Header-->
                                     <!--begin::Card footer-->
                                     <div class="card-footer"
-                                        style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
-border-bottom-right-radius: 30px;">
+                                        style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
                                         <div class="fw-bold text-white py-2">
 
@@ -147,175 +143,107 @@ border-bottom-right-radius: 30px;">
                                 <!--end::Card widget 3-->
                             </div>
                         </div>
-
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                         <div class="card card-body bg-light-info col-md-12 mb-3">
                             <div class="">
                                 <div class="card-body py-3">
-                                    <!--begin::Table container-->
-                                    <div class="table-responsive">
-                                        <!--begin::Table-->
-                                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                            <!--begin::Table head-->
-                                            <thead>
-                                                <tr>
-                                                    <td class="w-10px">
-                                                        <span data-kt-element="bullet"
-                                                            class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"></span>
-                                                    </td>
+                                    <div class="row">
+                                        <div class="col-md-2" style="gap: 10px">
+                                            <h5>{{ date('l') }}</h5>
+                                            <span class="text-primary-400 fw-bold fs-7 d-block mb-4">{{ getFormattedDate(date('d-m-Y')) }}</span>
+                                            <span class="text-primary-400 fw-bold fs-7 d-block " id="current-time"></span>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <span data-kt-element="bullet"
+                                                class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
+                                                style="width: 4px;height: 80px !important;"></span>
+                                        </div>
 
-                                                    <td class="min-w-300px">
-                                                        <div class="timer-display-id">
-                                                            <h4 id="timer" class="m-0" style="display: none">00:00:00
-                                                            </h4>
-                                                        </div>
+                                        <div class="col-md-9 d-flex punchinbar" style="gap: 15px">
+                                            {{-- <span data-kt-element="bullet"
+                                            class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
+                                            style="width: 1px;height: 30px !important;"></span> --}}
+                                            @if ($existingAttendanceDetail && $existingAttendanceDetail->totalBreakHour != '')
+                                                <p>Break Time <span
+                                                        id="break_timer">{{ $existingAttendanceDetail->totalBreakHour }}</span>
+                                                </p>
+                                                <span data-kt-element="bullet"
+                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
+                                                    style="width: 1px;height: 30px !important;"></span>
+                                            @endif
 
-                                                        <span class="text-primary-400 fw-bold fs-7 d-block ">Working
-                                                            Hours</span>
-                                                    </td>
-                                                    {{-- <td>
-                                                        <a href="#" data-bs-toggle="modal" class=""
-                                                            modal-target="#employee_break_history">
-                                                            <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
-                                                            <span class="btn btn-primary fs-3 py-2 "> Take a Break</span>
-                                                            <!--end::Svg Icon-->
-                                                        </a>
-                                                    </td> --}}
-                                                    <td class="text-end">
-                                                        <!--begin::Icon-->
-                                                        <div class="d-flex justify-content-end flex-shrink-0">
-                                                            <form action="{{ route('employee.attendance') }}"
-                                                                method="post">
-                                                                @csrf
-                                                                <!--begin::Attach-->
-                                                                <button class="btn btn-primary fs-3 py-2 " id="start-timer"
-                                                                    onclick="start()" style="display:none">
-                                                                    Punch In
-                                                                </button>
-                                                                <button class="btn btn-primary fs-3 py-2 " id="stop-timer"
-                                                                    onclick="stop()" style="display:none">
-                                                                    Punch Out
-                                                                </button>
-                                                            </form>
-                                                            <!--end::Attach-->
-                                                        </div>
 
-                                                    </td>
-                                                </tr>
-                                            </thead>
-                                            <!--end::Table head-->
+                                            @if ($existingAttendanceDetail && !empty($existingAttendanceDetail))
+                                                <p> PunchIn Time :
+                                                    <span>{{ date('H:i:s', strtotime($existingAttendanceDetail->punch_in)) }}</span>
+                                                </p>
+                                                <span data-kt-element="bullet"
+                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
+                                                    style="width: 1px;height: 30px !important;"></span>
+                                            @endif
 
-                                        </table>
-                                        <!--end::Table-->
+
+                                            @if (!empty($existingAttendanceDetail) && $existingAttendanceDetail->punch_out != '')
+                                                <p> PunchOut Time :
+                                                    <span>{{ date('H:i:s', strtotime($existingAttendanceDetail->punch_out)) }}</span>
+                                                </p>
+                                                <span data-kt-element="bullet"
+                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
+                                                    style="width: 1px;height: 30px !important;"></span>
+                                                <p> Working Hours :
+                                                    <span>{{ getTotalWorkingHour($existingAttendanceDetail->punch_in, $existingAttendanceDetail->punch_out) }}</span>
+                                                </p>
+                                            @endif
+
+
+                                            @if (
+                                                !empty($existingAttendanceDetail) &&
+                                                    $existingAttendanceDetail->punch_in != '' &&
+                                                    $existingAttendanceDetail->punch_out == '')
+                                                <p> Working Timer : <span id="punchin-timer"></span></p>
+                                            @endif
+
+                                            @if ($existingAttendanceDetail == null)
+                                                <button class="btn btn-sm btn-primary align-self-center"
+                                                    id="start-timer">
+                                                    Punch In
+                                                </button>
+                                            @endif
+                                            @if ($existingAttendanceDetail && $existingAttendanceDetail->punch_out == '')
+
+                                                <button class="btn btn-sm btn-primary align-self-center" id="stop-timer">
+                                                    Punch Out
+                                                </button>
+                                                @if ($takenBreakDetails && !empty($takenBreakDetails))
+                                                    <a class="btn btn-sm btn-danger align-self-center"
+                                                        href="{{ route('employee_break_out', $takenBreakDetails->id) }}">
+                                                        Break Out
+                                                    </a>
+                                                @else
+                                                    <button class="btn btn-sm btn-danger align-self-center"
+                                                        data-bs-toggle="modal" data-bs-target="#break" id="take_break">
+                                                        Take Break
+                                                    </button>
+                                                @endif
+                                            @endif
+
+                                        </div>
                                     </div>
+                                    <!--begin::Table container-->
                                     <!--end::Table container-->
-
                                 </div>
-
                                 <!--begin::Body-->
                             </div>
                         </div>
-                        <!--begin::Row-->
-                        {{-- <div class="row gy-5 g-xl-10">
-                            <!--begin::Col-->
-                            <div class="card card-body col-md-12">
-                                <div class="card-header p-4">
-                                    <!--begin::Card title-->
-                                    <div class="card-title m-0">
-                                        <h3 class="fw-bold m-0"> All News</h3>
-                                    </div>
-                                    <!--end::Card title-->
-                                </div>
-                                <div class="separator  mb-9"></div>
-
-                                <div class="row g-10">
-                                    <!--begin::Col-->
-                                    <div class="col-md-4">
-                                        <!--begin::Feature post-->
-                                        <div class="card-xl-stretch me-md-6">
-                                            <!--begin::Image-->
-                                            <img src="/assets/media/news/1.png" class="card-rounded min-h-175px mb-5">
-
-                                            <!--end::Image-->
-                                            <!--begin::Body-->
-                                            <div class="m-0">
-                                                <!--begin::Title-->
-                                                <a href="news_details.html"
-                                                    class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">Scrum
-                                                    Meeting</a>
-                                                <!--end::Title-->
-                                                <!--begin::Text-->
-                                                <div class="fw-semibold fs-5 text-gray-600 text-dark my-4">
-                                                    <i class="fa fa-calendar-days"></i> March 27,2024
-                                                </div>
-                                                <!--end::Text-->
-
-                                            </div>
-                                            <!--end::Body-->
-                                        </div>
-                                        <!--end::Feature post-->
-                                    </div>
-                                    <!--end::Col-->
-                                    <!--begin::Col-->
-                                    <div class="col-md-4">
-                                        <!--begin::Feature post-->
-                                        <div class="card-xl-stretch me-md-6">
-                                            <!--begin::Image-->
-                                            <img src="/assets/media/news/2.jpg" class="card-rounded min-h-175px mb-5">
-
-                                            <!--end::Image-->
-                                            <!--begin::Body-->
-                                            <div class="m-0">
-                                                <!--begin::Title-->
-                                                <a href="news_details.html"
-                                                    class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">First
-                                                    news</a>
-                                                <!--end::Title-->
-                                                <!--begin::Text-->
-                                                <div class="fw-semibold fs-5 text-gray-600 text-dark my-4">
-                                                    <i class="fa fa-calendar-days"></i> March 27,2024
-                                                </div>
-                                                <!--end::Text-->
-
-                                            </div>
-                                            <!--end::Body-->
-                                        </div>
-                                        <!--end::Feature post-->
-                                    </div>
-                                    <!--end::Col-->
-
-                                </div>
-                            </div>
-                            <!--end::Col-->
-                        </div> --}}
-                        <!--end::Row-->
-                        <form id="employee_break_history">
-                            @csrf
-                            <input type="hidden" name="employee_attendance_id" value="{{ $existingDetails->id ?? '' }}">
-                            <!--begin::Wrapper-->
-                            <div class="mw-lg-600px mx-auto p-4">
-                                <!--begin::Input group-->
-                                <div class="mt-3 mb-3">
-                                    <label class="required">Break Type</label>
-                                    <select class="form-control mb-3" name="break_type_id">
-                                        <option value="">Select Break Type</option>
-                                        @forelse ($allBreakTypeDetails as $breakTypeDetails)
-                                            <option value="{{ $breakTypeDetails->id }}">{{ $breakTypeDetails->name }}
-                                            </option>
-                                        @empty
-                                            <option value="">No Break Type Available</option>
-                                        @endforelse
-                                    </select>
-                                </div>
-                                <div class="mt-3 mb-3">
-                                    <label class="">Comment</label>
-                                    <input type="text" name="comment" class="form-control">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-
-                            </div>
-                        </form>
-
-                        <!--begin::Body-->
                     </div>
                 </div>
                 <!--end::Col-->
@@ -323,80 +251,228 @@ border-bottom-right-radius: 30px;">
             <!--end::Row-->
         </div>
     </div>
-    {{-- <div class="modal" id="employee_break_history">
+
+    <!-------------Modal----------------->
+    <div class="modal" id="break" tabindex="-1" aria-modal="true" role="dialog">
         <!--begin::Modal dialog-->
-        <div class="modal-dialog modal-dialog-centered mw-500px">
+        <div class="modal-dialog p-9 w-550px">
             <!--begin::Modal content-->
-            <div class="modal-content">
+            <div class="modal-content modal-rounded">
                 <!--begin::Modal header-->
-                <div class="modal-header">
+                <div class="modal-header border d-flex justify-content-between">
+                    <!--begin::Modal title-->
+                    <h2>Break Time</h2>
+                    <!--end::Modal title-->
                     <!--begin::Close-->
-                    <h2>Take Break</h2>
                     <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-                        <span class="svg-icon svg-icon-1">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
-                                    transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->
+                        <i class="fa fa-times fs-1"><span class="path1"></span><span class="path2"></span></i>
                     </div>
                     <!--end::Close-->
                 </div>
                 <!--begin::Modal header-->
                 <!--begin::Modal body-->
-                <div class="modal-body scroll-y pt-0 pb-5 border-top">
+                <div class="modal-body scroll-y m-1">
+                    <form id="employee_break_history">
+                        @csrf
+                        <input type="hidden" name="employee_attendance_id"
+                            value="{{ $existingAttendanceDetail->id ?? '' }}">
+                        <div class="col-md-12 form-group">
+                            <label class="required">Select Break Type</label>
+                            <select class="form-control mb-3" name="break_type_id">
+                                <option value="">Select Break Type</option>
+                                @forelse ($allBreakTypeDetails as $breakTypeDetails)
+                                    <option value="{{ $breakTypeDetails->id }}">{{ $breakTypeDetails->name }}
+                                    </option>
+                                @empty
+                                    <option value="">No Break Type Available</option>
+                                @endforelse
+                            </select>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label class="required">Comment </label>
+                            <textarea type="text" class="form-control" name="comment"></textarea>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <button type="submit" class="btn btn-sm btn-primary align-self-center">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <!--end::Modal body-->
+                <!--begin::Modal body-->
             </div>
-            <!--end::Modal content-->
         </div>
-        <!--end::Modal dialog-->
-    </div> --}}
+    </div>
+
     <script>
-        jQuery(document).ready(function() {
-            let start_time = '{{ $existingDetails->punch_in ?? '' }}';
-            let end_time = '{{ $existingDetails->punch_out ?? '' }}';
-            get_timer_clock(start_time, end_time)
+        function startTimer(time) {
+            // Parse the input time (e.g., "14:00:00")
+            const parts = time.split(':');
+            let hours = parseInt(parts[0], 10);
+            let minutes = parseInt(parts[1], 10);
+            let seconds = parseInt(parts[2], 10);
+
+            // Convert to total seconds
+            let totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+            // Start the timer
+            const timerInterval = setInterval(() => {
+                // Calculate hours, minutes, and seconds
+                const currentHours = Math.floor(totalSeconds / 3600);
+                const currentMinutes = Math.floor((totalSeconds % 3600) / 60);
+                const currentSeconds = totalSeconds % 60;
+
+                // Display the timer
+                $("#break_timer").text(
+                    `${String(currentHours).padStart(2, '0')}:${String(currentMinutes).padStart(2, '0')}:${String(currentSeconds).padStart(2, '0')}`
+                    );
+
+                // Decrement the total seconds
+                totalSeconds++;
+
+                // Stop the timer when it reaches 0
+                if (totalSeconds < 0) {
+                    clearInterval(timerInterval);
+                    console.log("Timer finished!");
+                }
+            }, 1000);
+        }
+
+        // Example usage
+
+
+        var employeeAttendanceUrl = "<?= route('employee.attendance') ?>";
+        setInterval(updateCurrentTime, 1000);
+        updateCurrentTime();
+
+        @if (!is_null($existingAttendanceDetail) && empty($takenBreakDetails)) // Check if $existingAttendanceDetail is not null
+            // Pass PHP values to JavaScript and ensure proper JSON encoding
+            var punchIn = @json($existingAttendanceDetail->punch_in);
+            var punchOut = @json($existingAttendanceDetail->punch_out);
+            get_timer_clock(punchIn, punchOut);
+        @endif
+
+        @if (!empty($takenBreakDetails) && $takenBreakDetails)
+            var breakTime = @json($existingAttendanceDetail->totalBreakHour);
+            startTimer(breakTime);
+            clearInterval(refreshIntervalId);
+        @endif
+
+        //var setCurrentInterval = '';
+
+        // @if (is_null($existingAttendanceDetail))
+        //     // Update the time every second
+        //     //setCurrentInterval = setInterval(updateCurrentTime, 1000);
+        //     // Call the function immediately to avoid 1-second delay
+
+        // @endif
+
+        function get_timer_clock(punch_in, punch_out) {
+            var refreshIntervalId = '';
+            if (punch_in != '' && punch_out == null) {
+                let timeLaps = '';
+                var StartedTime = new Date(punch_in).getTime();
+                refreshIntervalId = setInterval(() => {
+                    var EndedTime = new Date().getTime();
+                    var diff = EndedTime - StartedTime;
+                    var hours = Math.floor(diff / 3.6e6);
+                    var minutes = Math.floor((diff % 3.6e6) / 6e4);
+                    var seconds = Math.floor((diff % 6e4) / 1000);
+                    let h = hours < 10 ? '0' + hours : hours;
+                    let m = minutes < 10 ? '0' + minutes : minutes;
+                    let s = seconds < 10 ? '0' + seconds : seconds;
+                    var duration = h + ":" + m + ":" + s;
+                    timeLaps = duration;
+                    $("#punchin-timer").text(timeLaps);
+                }, 1000);
+            } else if (punch_out != '') {
+
+                clearInterval(refreshIntervalId);
+                if (punch_out) {
+                    var StartedTime = new Date(punch_in).getTime();
+                    var EndedTime = new Date(punch_out).getTime();
+
+                    var diff = EndedTime - StartedTime;
+                    var hours = Math.floor(diff / 3.6e6);
+                    var minutes = Math.floor((diff % 3.6e6) / 6e4);
+                    var seconds = Math.floor((diff % 6e4) / 1000);
+                    let h = hours < 10 ? '0' + hours : hours;
+                    let m = minutes < 10 ? '0' + minutes : minutes;
+                    let s = seconds < 10 ? '0' + seconds : seconds;
+                    var duration = h + ":" + m + ":" + s;
+                    timeLaps = duration;
+                }
+            } else {
+                console.log('hello');
+            }
+        }
+
+        function updateCurrentTime() {
+            // Get the current time
+            const now = new Date();
+
+            // Format the time as HH:MM:SS
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const currentTime = `${hours}:${minutes}:${seconds}`;
+
+            // Update the element with the current time
+            document.getElementById('current-time').innerText = currentTime;
+        }
+
+        jQuery("#employee_break_history").validate({
+            rules: {
+                break_type_id: "required",
+                comment: "required",
+            },
+            messages: {
+                break_type_id: "Please select the Break Type",
+                comment: "Please enter the message",
+            },
+            submitHandler: function(form) {
+                var break_data = $(form).serialize();
+                $.ajax({
+                    url: "<?= route('employee_break_in') ?>",
+                    type: 'post',
+                    data: break_data,
+                    success: function(response) {
+                        if (response.status) {
+                            jQuery('#take_break').hide();
+                            jQuery('#break_out').show();
+                            jQuery('#break').modal('hide');
+                            jQuery('#employee_break_history')[0].reset();
+                            //clearInterval(refreshIntervalId);
+                            Swal.fire({
+                                title: "Done!",
+                                text: response.message,
+                                icon: "success"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Reload the page
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            jQuery('#break').modal('hide');
+                            Swal.fire('Error!', response.message, 'error', 'Cool')
+                            jQuery('#employee_break_history')[0].reset();
+                        }
+                    },
+                    error: function(error_messages) {
+                        let errors = error_messages.responseJSON.error;
+                        for (var error_key in errors) {
+                            $(document).find('[name=' + error_key + ']').after(
+                                '<span id="' + error_key +
+                                '_error" class="text text-danger">' + errors[
+                                    error_key] + '</span>');
+                            setTimeout(function() {
+                                jQuery("#" + error_key + "_error").remove();
+                            }, 5000);
+                        }
+                    }
+                });
+            }
         });
-        jQuery(document).ready(function () {
-    // $("#employee_break_history").validate({
-    //     rules: {
-    //         break_type_id: "required"
-    //     },
-    //     messages: {
-    //         break_type_id: "Please Select the Break Type"
-    //     },
-    //     submitHandler: function (form) {
-    //         var break_history_details = $(form).serialize();
-    //         $.ajax({
-    //             url: "{{ route('employee_break_history') }}",
-    //             type: 'POST',
-    //             data: break_history_details,
-    //             success: function (response) {
-    //                 jQuery('#employee_break_history').modal('hide');
-    //                 swal.fire("Done!", response.message, "success");
-    //                 jQuery("#employee_break_history")[0].reset();
-    //             },
-    //             error: function (error_messages) {
-    //                 let errors = error_messages.responseJSON.error;
-    //                 for (var error_key in errors) {
-    //                     $(document).find('[name=' + error_key + ']').after(
-    //                         '<span class="' + error_key +
-    //                         '_error text text-danger">' + errors[
-    //                         error_key] + '</span>');
-    //                     setTimeout(function () {
-    //                         jQuery("." + error_key + "_error").remove();
-    //                     }, 4000);
-    //                 }
-    //             }
-    //         });
-    //     }
-    // });
-});
     </script>
 @endsection

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
+use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
@@ -20,18 +21,18 @@ use App\Http\Controllers\Company\BreakTypeController;
 use App\Http\Controllers\Company\LanguagesController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
+use App\Http\Controllers\Company\AttendanceController;
 use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
-use App\Http\Controllers\Company\SpreadsheetController;
-use App\Http\Controllers\Company\UserDetailsController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
+use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
@@ -41,6 +42,7 @@ use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
+use App\Http\Controllers\Company\CompanyDashboardController;
 use App\Http\Controllers\Company\ComplainCategoryController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\ResignationStatusController;
@@ -52,14 +54,25 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
+use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 
-Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(function () {
-    Route::view('/dashboard', 'company.dashboard.dashboard')->name('company.dashboard');
+// Route::get('/test',function()
+// {
+//     return \App\Jobs\EmployeeExportFileJob::dispatch('arjun@xoniertechnologies.com');
+// });
+//Common Route Used in Employee and Company Panel
+Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
+
+Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'checkUrlAcess'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('company/profile', 'company_profile')->name('company.profile');
         Route::post('company/update/{id}', 'update_company')->name('update.company');
         Route::post('company/change/password', 'company_change_password')->name('company.change.password');
+    });
+    Route::controller(CompanyDashboardController::class)->group(function () {
+        Route::get('/dashboard', 'index')->name('company.dashboard');
+        Route::get('/employee-search-filter', 'searchFilterEmployee')->name('company.employee_search.filter');
     });
 
     Route::controller(CompanyBranchesController::class)->group(function () {
@@ -117,7 +130,12 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/search', 'searchResignationStatusFilter')->name('status.search');
     });
 
-
+    // Resignation Management
+    Route::prefix('resignation')->name('resignation.')->controller(ResignationController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{id}', 'view')->name('view');
+        Route::post('/{id}/status', 'changeStatus')->name('change-status');
+    });
 
     //Country Module
     Route::prefix('/country')->controller(CountryController::class)->group(function () {
@@ -136,7 +154,6 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('/update', 'update')->name('state.update');
         Route::get('/delete', 'destroy')->name('state.delete');
         Route::get('/status/update', 'statusUpdate')->name('state.statusUpdate');
-        Route::get('/get/all/state', 'getAllStates')->name('get.all.country.state');
         Route::get('/search', 'searchStateFilter');
     });
 
@@ -160,24 +177,20 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
 
     //Employee Module
     Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
-        Route::get('/index', 'index')->name('employee.index');
+        Route::get('/', 'index')->name('employee.index');
         Route::get('/add', 'add')->name('employee.add');
         Route::post('/store', 'store')->name('employee.store');
         Route::get('/edit/{user:id}', 'edit')->name('employee.edit');
         Route::get('/get/filter/list', 'getfilterlist');
         Route::get('/get/personal/details/{users:id}', 'getPersonalDetails')->name('employee.personal.details');
         Route::get('/view/{user:id}', 'view')->name('employee.view');
+        Route::get('/delete/{user:id}', 'deleteEmployee')->name('employee.delete');
+        Route::get('/status/update/{user:id}', 'statusUpdate')->name('employee.status_update');
+        Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
+        Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('employee.exit.employeelist');
+        Route::get('/export', 'exportEmployee')->name('employee.export');
+        Route::post('/export-file',  'uploadImport')->name('upload.file');
     });
-
-    Route::controller(SpreadsheetController::class)->group(function () {
-        Route::post('/export/employee', 'exportEmployee')->name('export.employee');
-        Route::post('/export/employee/bank/details', 'exportEmployeeBankDetails')->name('export.employee.bank.details');
-        Route::post('/export/employee/address/details', 'exportEmployeeAddressDetails')->name('export.employee.address.details');
-    });
-
-
-
-
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
         Route::get('/get/advance/details/{id}', 'getAdvanceDetails');
@@ -217,15 +230,14 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
     //Document Details for employee
     Route::post('/employee/document/details', [UserDocumentDetailsController::class, 'store'])->name('employee.document.details');
 
-    //User / Permission Details for employee
-    Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
+    // //User / Permission Details for employee
+    // Route::post('/employee/user/details', [UserDetailsController::class, 'store'])->name('employee.users.details');
 
 
     //Asset Details for user
     Route::prefix('/employee/assets/')->controller(UserAssetDetailsController::class)->group(function () {
         Route::post('/details/store', 'store')->name('employee.asset.details');
         Route::post('/details/update', 'updateDetails')->name('employee.asset.details.update');
-        Route::post('/export/employee/asset/details', 'exportEmployeeAssetDetails')->name('export.employee.asset.details');
     });
 
     //Holiday Module
@@ -235,6 +247,7 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::post('/update', 'update')->name('holiday.update');
         Route::get('/delete', 'destroy')->name('holiday.delete');
         Route::get('/status/update', 'statusUpdate')->name('holiday.statusUpdate');
+        Route::get('/search/filter', 'searchFilterData');
     });
 
 
@@ -255,65 +268,61 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/leave/details', 'getLeaveAppliedDetailsbyId')->name('leave.applied.details');
     });
 
-    //Roles and Permission Module
-    Route::prefix('/roles')->controller(RolesController::class)->group(function () {
-        Route::get('/', 'index')->name('roles');
-        Route::post('/create', 'store')->name('role.store');
-        Route::post('/update', 'update')->name('role.update');
-        Route::get('/delete', 'destroy')->name('role.delete');
-        Route::get('/status/update', 'statusUpdate')->name('role.statusUpdate');
-    });
+    Route::prefix('/roles')->group(function () {
+        //Roles and Permission Module
+        Route::controller(RolesController::class)->group(function () {
+            Route::get('/', 'index')->name('roles');
+            Route::post('/create', 'store')->name('role.store');
+            Route::post('/update', 'update')->name('role.update');
+            Route::get('/delete', 'destroy')->name('role.delete');
+            Route::get('/status/update', 'statusUpdate')->name('role.statusUpdate');
+        });
 
-    Route::prefix('/permissions')->controller(PermissionsController::class)->group(function () {
-        Route::get('/', 'index')->name('permissions');
-        Route::post('/create', 'store')->name('permission.store');
-        Route::post('/update', 'update')->name('permission.update');
-        Route::get('/delete', 'destroy')->name('permission.delete');
-        Route::get('/status/update', 'statusUpdate')->name('permission.statusUpdate');
-    });
+        Route::prefix('/permissions')->controller(PermissionsController::class)->group(function () {
+            Route::get('/', 'index')->name('permissions');
+            Route::post('/create', 'store')->name('permission.store');
+            Route::post('/update', 'update')->name('permission.update');
+            Route::get('/delete', 'destroy')->name('permission.delete');
+            Route::get('/status/update', 'statusUpdate')->name('permission.statusUpdate');
+        });
 
-    //TODO assign permission
-    Route::prefix('/assign_permissions')->controller(AssignPermissionController::class)->group(function () {
-        Route::get('/', 'index')->name('assign_permission');
-        Route::post('/create', 'store')->name('assign_permission.store');
-        Route::get('/delete', 'destroy')->name('assign_permissions.delete');
-    });
+        //permission
+        Route::prefix('/assign_permissions')->controller(AssignPermissionController::class)->group(function () {
+            Route::get('/', 'index')->name('assign_permission');
+            Route::get('/add', 'add')->name('add_assign_permission');
+            Route::post('/create', 'store')->name('assign_permission.store');
+            Route::get('/assigned-permission', 'getAssignedPermissions')->name('assign_permission.assigned');
+            Route::get('/delete', 'destroy')->name('assign_permissions.delete');
+        });
 
-    Route::get('permissions', [PermissionsController::class, 'index'])->name('permissions');
-    Route::get('permissions/create', [PermissionsController::class, 'permissions_form'])->name('create.permissions.form');
-    Route::post('add-permissions', [PermissionsController::class, 'add_permissions'])->name('add.permissions');
-    Route::get('permissions/{id}/edit', [PermissionsController::class, 'edit_permissions'])->name('edit.permissions');
-    Route::patch('permissions/{id}/', [PermissionsController::class, 'update_permissions'])->name('update.permissions');
-    Route::get('delete-permissions/{id}', [PermissionsController::class, 'delete_permissions'])->name('delete.permissions');
-
-    // Office Time Configs
-    Route::prefix('/office-time')->controller(OfficeTimingConfigController::class)->group(function () {
-        Route::get('/', 'index')->name('office_time_config.index');
-        Route::post('/create', 'store')->name('office_time_config.store');
-        Route::post('/update', 'update')->name('office_time_config.update');
-        Route::get('/delete', 'destroy')->name('office_time_config.delete');
-        Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
-        Route::get('/search/filter', 'searchOfficeTimeFilter');
+        Route::get('permissions', [PermissionsController::class, 'index'])->name('permissions');
+        Route::get('permissions/create', [PermissionsController::class, 'permissions_form'])->name('create.permissions.form');
+        Route::post('add-permissions', [PermissionsController::class, 'add_permissions'])->name('add.permissions');
+        Route::get('permissions/{id}/edit', [PermissionsController::class, 'edit_permissions'])->name('edit.permissions');
+        Route::patch('permissions/{id}/', [PermissionsController::class, 'update_permissions'])->name('update.permissions');
+        Route::get('delete-permissions/{id}', [PermissionsController::class, 'delete_permissions'])->name('delete.permissions');
     });
 
     // Office Shifts
-    Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
-        Route::get('/', 'index')->name('shifts.index');
-        Route::post('/create', 'store')->name('shift.store');
-        Route::post('/update', 'update')->name('shift.update');
-        Route::get('/delete', 'destroy')->name('shift.delete');
-        Route::get('/status/update', 'statusUpdate')->name('shift.statusUpdate');
-        Route::get('/search/filter', 'searchShiftFilter');
-    });
+    Route::prefix('/shifts')->group(function () {
+        // Office Time Configs
+        Route::prefix('/office-time')->controller(OfficeTimingConfigController::class)->group(function () {
+            Route::get('/', 'index')->name('office_time_config.index');
+            Route::post('/create', 'store')->name('office_time_config.store');
+            Route::post('/update', 'update')->name('office_time_config.update');
+            Route::get('/delete', 'destroy')->name('office_time_config.delete');
+            Route::get('/status/update', 'statusUpdate')->name('office_time_config.statusUpdate');
+            Route::get('/search/filter', 'searchOfficeTimeFilter');
+        });
 
-    //Attendance Status Module
-    Route::prefix('/attendance-status')->controller(AttendanceStatusController::class)->group(function () {
-        Route::get('/', 'index')->name('attendance.status.index');
-        Route::get('/add', 'applyLeave')->name('attendance.status.add');
-        Route::post('/create', 'store')->name('attendance.status.store');
-        Route::post('/update', 'update')->name('attendance.status.update');
-        Route::get('/delete', 'destroy')->name('attendance.status.delete');
-        Route::get('/status/update', 'statusUpdate')->name('attendance.status.statusUpdate');
+        Route::prefix('/office-shifts')->controller(OfficeShiftController::class)->group(function () {
+            Route::get('/', 'index')->name('shifts.index');
+            Route::post('/create', 'store')->name('shift.store');
+            Route::post('/update', 'update')->name('shift.update');
+            Route::get('/delete', 'destroy')->name('shift.delete');
+            Route::get('/status/update', 'statusUpdate')->name('shift.statusUpdate');
+            Route::get('/search/filter', 'searchShiftFilter');
+        });
     });
     //Leave Type Module
     Route::prefix('/leave-type')->controller(LeaveTypeController::class)->group(function () {
@@ -333,58 +342,75 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/status/update', 'statusUpdate')->name('leave.status.statusUpdate');
     });
 
-    //Asset Manufacturer Module
-    Route::prefix('/asset-manufacturer')->controller(AssetManufacturerController::class)->group(function () {
-        Route::get('/', 'index')->name('asset.manufacturer.index');
-        Route::post('/create', 'store')->name('asset.manufacturer.store');
-        Route::post('/update', 'update')->name('asset.manufacturer.update');
-        Route::get('/delete', 'destroy')->name('asset.manufacturer.delete');
-        Route::get('/status/update', 'statusUpdate')->name('asset.manufacturer.statusUpdate');
-        Route::get('/search/filter', 'serachAssetManufacturerFilterList');
+    Route::prefix('/asset')->group(function () {
+        //Asset Module
+        Route::controller(AssetController::class)->group(function () {
+            Route::get('/', 'index')->name('asset.index');
+            Route::get('/add', 'add')->name('asset.add');
+            Route::post('/store', 'store')->name('asset.store');
+            Route::get('/edit/{assets:id}', 'edit')->name('asset.edit');
+            Route::post('/update/{id}', 'update')->name('asset.update');
+            Route::get('/delete', 'destroy')->name('asset.delete');
+            Route::get('/search/filter', 'serachAssetFilterList');
+            Route::get('/get/all/asset/{id}', 'getAllAssetByCategory');
+            Route::get('/dashboard', 'getDashboard')->name('asset.dashboard');
+            Route::post('/export/byFilter', 'exportAssetDetails')->name('export.asset_details');
+        });
+        //Asset Manufacturer Module
+        Route::prefix('/asset-manufacturer')->controller(AssetManufacturerController::class)->group(function () {
+            Route::get('/', 'index')->name('asset.manufacturer.index');
+            Route::post('/create', 'store')->name('asset.manufacturer.store');
+            Route::post('/update', 'update')->name('asset.manufacturer.update');
+            Route::get('/delete', 'destroy')->name('asset.manufacturer.delete');
+            Route::get('/status/update', 'statusUpdate')->name('asset.manufacturer.statusUpdate');
+            Route::get('/search/filter', 'serachAssetManufacturerFilterList');
+        });
+
+        //Asset Status Module
+        Route::prefix('/asset-status')->controller(AssetStatusController::class)->group(function () {
+            Route::get('/', 'index')->name('asset.status.index');
+            Route::post('/create', 'store')->name('asset.status.store');
+            Route::post('/update', 'update')->name('asset.status.update');
+            Route::get('/delete', 'destroy')->name('asset.status.delete');
+            Route::get('/status/update', 'statusUpdate')->name('asset.status.statusUpdate');
+            Route::get('/search/filter', 'serachAssetStatusFilterList');
+        });
+
+        //Asset Category Module
+        Route::prefix('/asset-category')->controller(AssetCategoryController::class)->group(function () {
+            Route::get('/', 'index')->name('asset.category.index');
+            Route::post('/create', 'store')->name('asset.category.store');
+            Route::post('/update', 'update')->name('asset.category.update');
+            Route::get('/delete', 'destroy')->name('asset.category.delete');
+            Route::get('/status/update', 'statusUpdate')->name('asset.category.statusUpdate');
+            Route::get('/search/filter', 'serachAssetCategoryFilterList');
+        });
     });
 
-    //Asset Status Module
-    Route::prefix('/asset-status')->controller(AssetStatusController::class)->group(function () {
-        Route::get('/', 'index')->name('asset.status.index');
-        Route::post('/create', 'store')->name('asset.status.store');
-        Route::post('/update', 'update')->name('asset.status.update');
-        Route::get('/delete', 'destroy')->name('asset.status.delete');
-        Route::get('/status/update', 'statusUpdate')->name('asset.status.statusUpdate');
-        Route::get('/search/filter', 'serachAssetStatusFilterList');
+    Route::prefix('/news')->group(function () {
+        //News Module
+        Route::controller(NewsController::class)->group(function () {
+            Route::get('/', 'index')->name('news.index');
+            Route::get('/add', 'add')->name('news.add');
+            Route::post('/create', 'store')->name('news.store');
+            Route::get('/edit/{news:id}', 'edit')->name('news.edit');
+            Route::get('/view/{news:id}', 'view')->name('news.view');
+            Route::post('/update/{id}', 'update')->name('news.update');
+            Route::get('/delete/{id}', 'destroy')->name('news.delete');
+            Route::get('/status/update', 'statusUpdate')->name('news.statusUpdate');
+            Route::get('/search/filter', 'serachNewsFilterList');
+        });
+        //News Category Module
+        Route::prefix('/news-category')->controller(NewsCategoryController::class)->group(function () {
+            Route::get('/', 'index')->name('news.category.index');
+            Route::post('/create', 'store')->name('news.category.store');
+            Route::post('/update', 'update')->name('news.category.update');
+            Route::get('/delete', 'destroy')->name('news.category.delete');
+            Route::get('/status/update', 'statusUpdate')->name('news.category.statusUpdate');
+            Route::get('/search/filter', 'serachNewsCategoryFilterList');
+        });
     });
 
-    //Asset Category Module
-    Route::prefix('/asset-category')->controller(AssetCategoryController::class)->group(function () {
-        Route::get('/', 'index')->name('asset.category.index');
-        Route::post('/create', 'store')->name('asset.category.store');
-        Route::post('/update', 'update')->name('asset.category.update');
-        Route::get('/delete', 'destroy')->name('asset.category.delete');
-        Route::get('/status/update', 'statusUpdate')->name('asset.category.statusUpdate');
-        Route::get('/search/filter', 'serachAssetCategoryFilterList');
-    });
-
-    //Asset Module
-    Route::prefix('/asset')->controller(AssetController::class)->group(function () {
-        Route::get('/', 'index')->name('asset.index');
-        Route::get('/add', 'add')->name('asset.add');
-        Route::post('/store', 'store')->name('asset.store');
-        Route::get('/edit/{assets:id}', 'edit')->name('asset.edit');
-        Route::post('/update/{id}', 'update')->name('asset.update');
-        Route::get('/delete', 'destroy')->name('asset.delete');
-        Route::get('/search/filter', 'serachAssetFilterList');
-        Route::get('/get/all/asset/{id}', 'getAllAssetByCategory');
-        Route::get('/dashboard', 'getDashboard')->name('asset.dashboard');
-    });
-
-    //News Category Module
-    Route::prefix('/news-category')->controller(NewsCategoryController::class)->group(function () {
-        Route::get('/', 'index')->name('news.category.index');
-        Route::post('/create', 'store')->name('news.category.store');
-        Route::post('/update', 'update')->name('news.category.update');
-        Route::get('/delete', 'destroy')->name('news.category.delete');
-        Route::get('/status/update', 'statusUpdate')->name('news.category.statusUpdate');
-        Route::get('/search/filter', 'serachNewsCategoryFilterList');
-    });
 
     //leave Credit Module
     Route::prefix('/leave-credit-management')->controller(LeaveCreditManagementController::class)->group(function () {
@@ -398,43 +424,30 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
 
     //Employee Leave Available
     Route::get('get/allemployee/leave/available', [EmployeeLeaveAvailableController::class, 'getAllEmployeeLeaveAvailableList'])->name('getAllEmployeeLeaveAvailableList');
-
-    //News Module
-    Route::prefix('/news')->controller(NewsController::class)->group(function () {
-        Route::get('/', 'index')->name('news.index');
-        Route::get('/add', 'add')->name('news.add');
-        Route::post('/create', 'store')->name('news.store');
-        Route::get('/edit/{news:id}', 'edit')->name('news.edit');
-        Route::get('/view/{news:id}', 'view')->name('news.view');
-        Route::post('/update/{id}', 'update')->name('news.update');
-        Route::get('/delete/{id}', 'destroy')->name('news.delete');
-        Route::get('/status/update', 'statusUpdate')->name('news.statusUpdate');
-        Route::get('/search/filter', 'serachNewsFilterList');
-    });
-
     Route::get('skill_data', [SkillController::class, 'skill_data'])->name('skill_data');
 
-    //Policy Category Module
-    Route::prefix('/policy-category')->controller(PolicyCategoryController::class)->group(function () {
-        Route::get('/', 'index')->name('policy.category.index');
-        Route::post('/create', 'store')->name('policy.category.store');
-        Route::post('/update', 'update')->name('policy.category.update');
-        Route::get('/delete', 'destroy')->name('policy.category.delete');
-        Route::get('/status/update', 'statusUpdate')->name('policy.category.statusUpdate');
-        Route::get('/search/filter', 'serachPolicyCategoryFilterList');
-    });
-
-    //Policy Module
-    Route::prefix('/policy')->controller(PolicyController::class)->group(function () {
-        Route::get('/', 'index')->name('policy.index');
-        Route::get('/add', 'add')->name('policy.add');
-        Route::post('/create', 'store')->name('policy.store');
-        Route::get('/edit/{policies:id}', 'edit')->name('policy.edit');
-        Route::get('/view/{policies:id}', 'view')->name('policy.view');
-        Route::post('/update/{id}', 'update')->name('policy.update');
-        Route::get('/delete/{id}', 'destroy')->name('policy.delete');
-        Route::get('/status/update', 'statusUpdate')->name('policy.statusUpdate');
-        Route::get('/search/filter', 'serachPolicyFilterList');
+    Route::prefix('/policy')->group(function () {
+        //Policy Module
+        Route::controller(PolicyController::class)->group(function () {
+            Route::get('/', 'index')->name('policy.index');
+            Route::get('/add', 'add')->name('policy.add');
+            Route::post('/create', 'store')->name('policy.store');
+            Route::get('/edit/{policies:id}', 'edit')->name('policy.edit');
+            Route::get('/view/{policies:id}', 'view')->name('policy.view');
+            Route::post('/update/{id}', 'update')->name('policy.update');
+            Route::get('/delete/{id}', 'destroy')->name('policy.delete');
+            Route::get('/status/update', 'statusUpdate')->name('policy.statusUpdate');
+            Route::get('/search/filter', 'serachPolicyFilterList');
+        });
+        //Policy Category Module
+        Route::prefix('/policy-category')->controller(PolicyCategoryController::class)->group(function () {
+            Route::get('/', 'index')->name('policy.category.index');
+            Route::post('/create', 'store')->name('policy.category.store');
+            Route::post('/update', 'update')->name('policy.category.update');
+            Route::get('/delete', 'destroy')->name('policy.category.delete');
+            Route::get('/status/update', 'statusUpdate')->name('policy.category.statusUpdate');
+            Route::get('/search/filter', 'serachPolicyCategoryFilterList');
+        });
     });
 
     //Break Types Module
@@ -467,23 +480,6 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/search/filter', 'serachComplainCategoryFilterList');
     });
 
-
-    //Company Status Module
-    Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
-        Route::get('/', 'index')->name('company.status.index');
-        Route::post('/create', 'store')->name('company.status.store');
-        Route::post('/update', 'update')->name('company.status.update');
-        Route::get('/delete', 'destroy')->name('company.status.delete');
-        Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
-    });
-    //Company Status Module
-    Route::prefix('/company-status')->controller(CompanyStatusController::class)->group(function () {
-        Route::get('/', 'index')->name('company.status.index');
-        Route::post('/create', 'store')->name('company.status.store');
-        Route::post('/update', 'update')->name('company.status.update');
-        Route::get('/delete', 'destroy')->name('company.status.delete');
-        Route::get('/status/update', 'statusUpdate')->name('company.status.statusUpdate');
-    });
 
     //Company Size Module
     Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
@@ -546,5 +542,38 @@ Route::prefix('company')->middleware(['dashboard.access', 'Check2FA'])->group(fu
         Route::get('/delete', 'destroy')->name('document.type.delete');
         Route::get('/status/update', 'statusUpdate')->name('document.type.statusUpdate');
     });
+
+    Route::prefix('/attendance')->group(function () {
+        //Employee Attendance Module
+        Route::controller(AttendanceController::class)->group(function () {
+            Route::get('/', 'index')->name('attendance.index');
+            Route::get('/search/filter', 'searchFilter');
+            Route::get('/view/{empId}', 'viewAttendanceDetails')->name('attendance.view.details');
+            Route::get('/view/search/filter/{empId}', 'searchFilterByEmployeeId');
+            Route::post('/edit', 'editAttendanceByEmployeeId');
+            Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
+            Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
+        });
+        //Attendance Status Module
+        Route::prefix('/attendance-status')->controller(AttendanceStatusController::class)->group(function () {
+            Route::get('/', 'index')->name('attendance.status.index');
+            Route::get('/add', 'applyLeave')->name('attendance.status.add');
+            Route::post('/create', 'store')->name('attendance.status.store');
+            Route::post('/update', 'update')->name('attendance.status.update');
+            Route::get('/delete', 'destroy')->name('attendance.status.delete');
+            Route::get('/status/update', 'statusUpdate')->name('attendance.status.statusUpdate');
+        });
+    });
+    //Weekend Module
+    Route::prefix('/weekend')->controller(WeekendController::class)->group(function () {
+        Route::get('/', 'index')->name('weekend.index');
+        Route::post('/create', 'store')->name('weekend.store');
+        Route::get('/delete', 'destroy')->name('weekend.delete');
+        Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
+        Route::get('/get/weekend/details/companyId', 'getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
+    });
+});
+Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
+    Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
 /**---------------End Company Panel Route----------------*/

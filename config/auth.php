@@ -68,7 +68,7 @@ return [
         ],
         'admin' => [
             'driver' => 'eloquent',
-            'model' => App\Models\SuperAdminAuthentication::class,
+            'model' => App\Models\Admin::class,
         ]
     ],
 

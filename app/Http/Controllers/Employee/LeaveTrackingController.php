@@ -22,6 +22,7 @@ class LeaveTrackingController extends Controller
     {
         $leaveDetails = $this->leaveService->getDetailsById($id);
         $leaveLogStatusDetails = $this->leaveStatusLogService->getDetailsByLeaveId($id);
-        return view('employee.leave_tracking.index', compact('leaveDetails','leaveLogStatusDetails'));
+
+        return view('employee.leave.partials.leave_tracking_modal', compact('leaveDetails','leaveLogStatusDetails'));
     }
 }

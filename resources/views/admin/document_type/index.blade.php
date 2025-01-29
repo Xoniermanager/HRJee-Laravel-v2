@@ -1,6 +1,6 @@
 @extends('layouts.admin.main')
 
-@section('title', 'document_type')
+@section('title', 'Document Type')
 
 @section('content')
 
@@ -31,7 +31,6 @@
                             </div>
                         </div>
                     @include('admin.document_type.document_type_list')
-                    {{ $allDocumentTypes->links() }}
                     </div>
                 </div>
             </div>

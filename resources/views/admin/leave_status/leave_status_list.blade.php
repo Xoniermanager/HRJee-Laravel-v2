@@ -56,6 +56,9 @@
         </table>
         <!--end::Table-->
     </div>
+    <div class="mt-3">
+{{ $allLeaveStatusDetails->links('paginate') }}
+
+    </div>
     <!--end::Table container-->
 </div>
-{{ $allLeaveStatusDetails->links() }}

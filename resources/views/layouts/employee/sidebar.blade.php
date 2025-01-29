@@ -33,185 +33,9 @@
                                 <!--end:Menu link-->
                             </div>
                             <!--end:Menu item-->
-                            <!--begin:Menu item-->
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.attendance.service') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-calendar-days"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Attendance Details</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.announcement') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-newspaper"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Announcement</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            {{-- @if(Auth()->guard('employee')->user()->userDetails->roles->hasAnyPermission('news')) --}}
-                            {{-- @can(['news']) --}}
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.news') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-newspaper"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> News</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            {{-- @endcan --}}
-                            {{-- @endif --}}
-                            <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.policy') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-file-contract"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> Policy</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-
-                            <!--begin:Menu item-->
-                            {{-- <div class="menu-item">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.hr.service') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-users-gear"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title"> HR Service</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div> --}}
-                            <!--begin:Menu item-->
-                            {{-- <div class="menu-item ">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.support') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-headphones"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Support</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div> --}}
-                            <div class="menu-item ">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('hr_complain.index') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-headphones"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">HR Complain</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <!--begin:Menu item-->
-                            <div class="menu-item ">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.notification') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-bell"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Notification</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <div class="menu-item ">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.holidays') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-bell"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Holidays</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <!--begin:Menu item-->
-                            {{-- <div class="menu-item ">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.account') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-file-contract"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Account</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div> --}}
-                            <div class="menu-item ">
-                                <a class="menu-link" href="{{ route('employee.leave') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-file-contract"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Apply Leave</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <!--begin:Menu item-->
-                            <div class="menu-item ">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('employee.leave.available') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-file-contract"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Leave Available</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
-                            <div class="menu-item ">
-                                <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('resignation.index') }}">
-                                    <span class="menu-icon">
-                                        <span class="svg-icon svg-icon-5">
-                                            <i class="fa fa-file-contract"></i>
-                                        </span>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-title">Resignation</span>
-                                </a>
-                                <!--end:Menu link-->
-                            </div>
+                            
+                            
+                            {!! getEmployeeMenuHtml(Auth()->guard('employee')->user()->company_id)!!}
                             <!--begin:Menu item-->
                             <div class="menu-item ">
                                 <!--begin:Menu link-->
@@ -235,7 +59,7 @@
                                 <div class="d-flex align-items-center">
                                     <!--begin::Avatar-->
                                     <div class="symbol symbol-circle symbol-40px">
-                                        <img src="{{ asset('employee/assets/media/user.jpg') }}" alt="photo">
+                                        <img src="{{ Auth::guard('employee')->user()->profile_image ?? asset('employee/assets/media/user.jpg') }}" alt="photo">
                                     </div>
                                     <!--end::Avatar-->
 
@@ -243,12 +67,12 @@
                                     <div class="ms-2">
                                         <!--begin::Name-->
                                         <a class="text-gray-800 text-hover-primary fs-6 fw-bold lh-1">
-                                            Shibli Sone</a>
+                                           {{Auth::guard('employee')->user()->name}}</a>
                                         <!--end::Name-->
 
                                         <!--begin::Major-->
                                         <span class="text-muted fw-semibold d-block fs-7 lh-1">
-                                            Project Manager</span>
+                                            {{Auth::guard('employee')->user()->designation->name}} </a></span>
                                         <!--end::Major-->
                                     </div>
                                     <!--end::User info-->
@@ -270,19 +94,18 @@
                                             <div class="menu-content d-flex align-items-center px-3">
                                                 <!--begin::Avatar-->
                                                 <div class="symbol symbol-50px me-5">
-                                                    <img alt="Logo"
-                                                        src="{{ asset('employee/assets/media/user.jpg') }}">
+                                                    <img alt="Logo" src="{{ Auth::guard('employee')->user()->profile_image ?? asset('employee/assets/media/user.jpg') }}">
                                                 </div>
                                                 <!--end::Avatar-->
 
                                                 <!--begin::Username-->
                                                 <div class="d-flex flex-column">
                                                     <div class="fw-bold d-flex align-items-center fs-5">
-                                                        Shibli Sone
+                                                       {{Auth::guard('employee')->user()->name}}
                                                     </div>
 
                                                     <a class="fw-semibold text-muted text-hover-primary fs-7">
-                                                        Project Manager </a>
+                                                       {{Auth::guard('employee')->user()->designation->name}} </a>
                                                 </div>
                                                 <!--end::Username-->
                                             </div>

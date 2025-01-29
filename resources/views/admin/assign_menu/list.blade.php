@@ -1,0 +1,51 @@
+<div id="assign_menu_list">
+	<div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
+		<div class="datatable-container">
+			<table class="table" id="project-status">
+				<thead>
+					<tr>
+						<th>
+							<span class="f-light f-w-600">SrNo.</span>
+						</th>
+						<th>
+							<span class="f-light f-w-600">Company</span>
+						</th>
+						<th>
+							<p class="f-light">Menu Name</p>
+						</th>
+					</tr>
+				</thead>
+				@forelse ($allCompanyDetails as $key => $companyDetails)
+					<tr>
+						<td>
+							<p class="f-light">{{ $key + 1 }}</p>
+						</td>
+
+						<td>
+							<p class="f-light">{{ $companyDetails->name }}</p>
+						</td>
+
+						<td>
+							@forelse ($companyDetails->menu as $menu)
+								{{ ucfirst($menu->title) }}@if (!$loop->last)
+									,
+								@endif
+							@empty
+								No menu available
+							@endforelse
+						</td>
+
+					</tr>
+				@empty
+					<tr>
+						<td colspan="6" class="text-danger text-center">No Company Menu Available</td>
+					</tr>
+				@endforelse
+				</tbody>
+			</table>
+		</div>
+		<div class="mt-3">
+			{{ $allCompanyDetails->links('paginate') }}
+		</div>
+	</div>
+</div>

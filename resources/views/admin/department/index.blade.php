@@ -28,7 +28,6 @@
                             </div>
                         </div>
                     @include('admin.department.department_list')
-                    {{ $allDepartmentDetails->links() }}
                     </div>
                 </div>
             </div>

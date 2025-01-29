@@ -12,24 +12,41 @@
             {{ session('danger') }}
         </div>
     @endif
+    <style>
+        .swal-popup-error {
+    background-color: #fff3f3;  /* Light red background */
+    border: 1px solid #f44336;   /* Red border */
+    padding: 20px;
+}
+
+.swal-title-error {
+    color: #d32f2f;  /* Dark red for the title */
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.swal-content-error {
+    font-size: 14px;
+    color: #d32f2f;  /* Dark red for error text */
+}
+
+.swal-content-error ul {
+    padding-left: 20px;
+    margin-top: 0;
+}
+
+.swal-content-error li {
+    color: red;  /* Red color for individual list items */
+    margin-bottom: 5px;
+}
+
+    </style>
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
             <div class="card mb-4">
                 <div class="card-header d-block cursor-pointer border-0">
                     <div class="row align-items-center mt-4">
-                        <a href="#" class="col-md-3 btn btn-sm btn-primary ms-3 align-self-center wt-space"
-                            data-bs-toggle="modal" data-bs-target="#kt_modal_bulk_permission">
-                            <i class="fa fa-upload"></i> Bulk Attendance Permission</a>
-                        <a href="#" class="col-md-2 btn btn-sm btn-primary ms-3 align-self-center "
-                            data-bs-toggle="modal" data-bs-target="#kt_modal_employee">
-                            <i class="fa fa-upload"></i> Employee</a>
-                        <!--begin::Menu toggle-->
-                        <a href="{{ route('employee.add') }}"
-                            class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
-                            Add Employee</a>
-                        <!--begin::Menu toggle-->
-
                         <div class="col-md-4">
                             <div class="d-flex align-items-center position-relative">
                                 <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
@@ -50,24 +67,25 @@
                                 <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
                             </div>
                         </div>
-
-                        <div class="col-md-6 me-0 d-flex">
-                            <div class="mb-1   " data-bs-toggle="modal" data-bs-target="#export_popup">
-                                <a href="#" class=" btn btn-sm btn-danger ms-3 align-self-center">Export Employee</a>
-                            </div>
-                            <div class="mb-1 " data-bs-toggle="modal" data-bs-target="#export_bank_details">
-                                <a href="#" class="btn btn-sm btn-danger ms-3 align-self-center">Export Bank
-                                    Details</a>
-                            </div>
-                            <div class="mb-1 " data-bs-toggle="modal" data-bs-target="#export_address_details">
-                                <a href="#" class="btn btn-sm btn-danger ms-3 align-self-center">Export Address
-                                    Details</a>
-                            </div>
-                        </div>
+                        <a class="col-md-1 btn btn-sm ms-3 btn-primary align-self-center wt-space"
+                            id="export_button">Export</a>
+                        <a href="{{ asset('storage/test.csv') }}"
+                            class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space" download>
+                            Download Template</a>
+                        <a href="{{ route('employee.add') }}"
+                            class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
+                            Add Employee</a>
+                        <form id="importForm" enctype="multipart/form-data">
+                            @csrf
+                            <input type="file" name="file" id="file" class="form-control mt-4 ">
+                            <button type="submit" class="btn btn-sm ms-3 btn-primary align-self-center wt-space">Upload
+                                File</button>
+                        </form>
+                        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+                        <div id="validationErrors" class="alert alert-danger" style="display: none;"></div>
                     </div>
                 </div>
             </div>
-
             <!--begin::Row-->
             <div class="row gy-5 g-xl-10">
                 <!--begin::Col-->
@@ -97,7 +115,9 @@
                                         <option value="">Employee Status</option>
                                         @foreach ($allEmployeeStatus as $employeeStatus)
                                             <option
-                                                {{ request()->get('emp_status_id') == $employeeStatus->id || old('emp_status_id') == $employeeStatus->id ? 'selected' : '' }}
+                                                {{ request()->get('emp_status_id') == $employeeStatus->id || old('emp_status_id') == $employeeStatus->id
+                                                    ? 'selected'
+                                                    : '' }}
                                                 value="{{ $employeeStatus->id }}">{{ $employeeStatus->name }}</option>
                                         @endforeach
                                     </select>
@@ -119,7 +139,9 @@
                                         <option value="">All Employee Type</option>
                                         @foreach ($allEmployeeType as $employeeType)
                                             <option
-                                                {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id') == $employeeType->id ? 'selected' : '' }}
+                                                {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id') == $employeeType->id
+                                                    ? 'selected'
+                                                    : '' }}
                                                 value="{{ $employeeType->id }}">{{ $employeeType->name }}</option>
                                         @endforeach
                                     </select>
@@ -129,7 +151,9 @@
                                         <option value="">All Department</option>
                                         @foreach ($alldepartmentDetails as $departmentDetails)
                                             <option
-                                                {{ request()->get('department_id') == $departmentDetails->id || old('department_id') == $departmentDetails->id ? 'selected' : '' }}
+                                                {{ request()->get('department_id') == $departmentDetails->id || old('department_id') == $departmentDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
                                                 value="{{ $departmentDetails->id }}">{{ $departmentDetails->name }}
                                             </option>
                                         @endforeach
@@ -150,7 +174,9 @@
                                         <option value="">Branch</option>
                                         @foreach ($allBranches as $branchDetails)
                                             <option
-                                                {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') == $branchDetails->id ? 'selected' : '' }}
+                                                {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') == $branchDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
                                                 value="{{ $branchDetails->id }}">{{ $branchDetails->name }}</option>
                                         @endforeach
                                     </select>
@@ -160,7 +186,10 @@
                                         <option value="">Qualification</option>
                                         @foreach ($allQualification as $qualificationDetails)
                                             <option
-                                                {{ request()->get('qualification_id') == $qualificationDetails->id || old('qualification_id') == $qualificationDetails->id ? 'selected' : '' }}
+                                                {{ request()->get('qualification_id') == $qualificationDetails->id ||
+                                                old('qualification_id') == $qualificationDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
                                                 value="{{ $qualificationDetails->id }}">{{ $qualificationDetails->name }}
                                             </option>
                                         @endforeach
@@ -331,393 +360,6 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="export_popup" tabindex="-1" aria-hidden="true">
-            <div>
-                <div class="modal-dialog mw-900px">
-                    <!--begin::Modal content-->
-                    <div class="modal-content">
-                        <!--begin::Modal header-->
-                        <div class="modal-header pb-0">
-                            <!--begin::Close-->
-                            <h3 class="fw-bold m-0">Export</h3>
-                            <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-                                <span class="svg-icon svg-icon-1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2"
-                                            rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                                        <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                            transform="rotate(45 7.41422 6)" fill="currentColor" />
-                                    </svg>
-                                </span>
-                                <!--end::Svg Icon-->
-                            </div>
-                            <!--end::Close-->
-                        </div>
-                        <!--begin::Modal header-->
-                        <!--begin::Modal body-->
-                        <div class="modal-body scroll-y p-4">
-                            <form action="{{ route('export.employee') }}" method="post" id="export_employee_form">
-                                @csrf
-                                <input type="hidden" name="gender_filter" class="export_gender">
-                                <input type="hidden" name="emp_status_id" class="export_emp_status">
-                                <input type="hidden" name="marital_status_filter" class="export_marital_status">
-                                <input type="hidden" name="emp_type_id" class="export_emp_type_id">
-                                <input type="hidden" name="depertment_id" class="export_depertment_id">
-
-                                <div class="row w-100">
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox" checked
-                                                name="name">
-                                            <label for="gender">Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox"
-                                                name="official_email_id" checked>
-                                            <label for="gender">Official Email ID</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox" name="email"
-                                                checked>
-                                            <label for="gender">Email</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox" name="gender"
-                                                checked>
-
-                                            <label for="gender">Gender</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox"
-                                                name="marital_status" checked>
-
-                                            <label for="gender">Marital Status</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox"
-                                                name="joining_date" checked>
-
-                                            <label for="gender">Joining Date</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox"
-                                                name="date_of_birth" checked>
-
-                                            <label for="gender">DOB</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox"
-                                                name="blood_group" checked>
-
-                                            <label for="gender">Blood Group</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox" name="phone"
-                                                checked>
-
-                                            <label for="gender">Phone</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox" name="branch"
-                                                checked>
-
-                                            <label for="gender">Branch</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox" name="department"
-                                                checked>
-
-                                            <label for="gender">Department</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox"
-                                                name="designation" checked>
-
-                                            <label for="gender">Designation</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox"
-                                                name="official_mobile_no" checked>
-
-                                            <label for="gender">Official Mobile No</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <input class="form-check-input me-3 filter" type="checkbox" name="shift"
-                                                checked>
-
-                                            <label for="gender">Shift</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="form-check form-switch form-check-custom form-check-solid">
-                                            <button class="btn btn-sm btn-danger ms-3 align-self-center" type="button"
-                                                onclick="exportData('export_employee_form')">Export</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="export_bank_details" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog mw-900px">
-                <!--begin::Modal content-->
-                <div class="modal-content">
-                    <!--begin::Modal header-->
-                    <div class="modal-header pb-0">
-                        <!--begin::Close-->
-                        <h3 class="fw-bold m-0">Export</h3>
-                        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                            <span class="svg-icon svg-icon-1">
-                                <i class="fa fa-close"></i>
-                            </span>
-                        </div>
-                        <!--end::Close-->
-                    </div>
-                    <div class="modal-body scroll-y p-4">
-                        <form action="{{ route('export.employee.bank.details') }}" method="post"
-                            id="export_bank_details_form">
-                            @csrf
-                            <input type="hidden" name="gender" class="export_gender">
-                            <input type="hidden" name="emp_status_id" class="export_emp_status">
-                            <input type="hidden" name="marital_status" class="export_marital_status">
-                            <input type="hidden" name="emp_type_id" class="export_emp_type_id">
-                            <input type="hidden" name="depertment_id" class="export_depertment_id">
-                            <div class="row w-100">
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" checked
-                                            name="name">
-                                        <label for="gender">Name</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="email"
-                                            checked>
-                                        <label for="gender">Email</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="department"
-                                            checked>
-                                        <label for="gender">Department</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="designation"
-                                            checked>
-                                        <label for="gender">Designation</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="bank_name"
-                                            checked>
-                                        <label for="gender">Bank Name</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="account_name"
-                                            checked>
-
-                                        <label for="gender">Account Name</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="account_number"
-                                            checked>
-
-                                        <label for="gender">Account Number</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="ifsc_code"
-                                            checked>
-
-                                        <label for="gender">Ifsc Code</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <div class="form-check form-switch form-check-custom form-check-solid">
-                                    <button class="btn btn-sm btn-danger ms-3 align-self-center" type="button"
-                                        onclick="exportData('export_bank_details_form')">Export</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="export_address_details" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog mw-900px">
-                <!--begin::Modal content-->
-                <div class="modal-content">
-                    <!--begin::Modal header-->
-                    <div class="modal-header pb-0">
-                        <!--begin::Close-->
-                        <h3 class="fw-bold m-0">Export</h3>
-                        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                            <span class="svg-icon svg-icon-1">
-                                <i class="fa fa-close"></i>
-                            </span>
-                        </div>
-                        <!--end::Close-->
-                    </div>
-                    <div class="modal-body scroll-y p-4">
-                        <form action="{{ route('export.employee.address.details') }}" method="post"
-                            id="address_export_form">
-                            @csrf
-                            <input type="hidden" name="gender" class="export_gender">
-                            <input type="hidden" name="emp_status_id" class="export_emp_status">
-                            <input type="hidden" name="marital_status" class="export_marital_status">
-                            <input type="hidden" name="emp_type_id" class="export_emp_type_id">
-                            <input type="hidden" name="depertment_id" class="export_depertment_id">
-                            <div class="row w-100">
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" checked
-                                            name="name">
-                                        <label for="gender">Name</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="email"
-                                            checked>
-                                        <label for="gender">Email</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="department"
-                                            checked>
-                                        <label for="gender">Department</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="designation"
-                                            checked>
-                                        <label for="gender">Designation</label>
-                                    </div>
-                                </div>
-                                <h4>Permanent address</h4>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox"
-                                            name="permanent_country" checked>
-                                        <label for="gender">Country</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox"
-                                            name="permanent_state" checked>
-
-                                        <label for="gender">State</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox"
-                                            name="permanent_address" checked>
-
-                                        <label for="gender">Address</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="permanent_city"
-                                            checked>
-                                        <label for="gender">City</label>
-                                    </div>
-                                </div>
-                                <h4>Local address</h4>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="local_country"
-                                            checked>
-                                        <label for="gender">Country</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="local_state"
-                                            checked>
-
-                                        <label for="gender">State</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="local_address"
-                                            checked>
-
-                                        <label for="gender">Address</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" name="local_city"
-                                            checked>
-                                        <label for="gender">City</label>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <div class="form-check form-switch form-check-custom form-check-solid">
-                                    <button class="btn btn-sm btn-danger ms-3 align-self-center" type="button"
-                                        onclick="exportData('address_export_form')">Export</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-     
-
         <script>
             let submit_handler = false;
             $(".filter").on("click", function(event) {
@@ -780,6 +422,152 @@
                     success: function(response) {
                         $('#employee_list').replaceWith(response.data);
                     }
+                });
+            });
+
+            function deleteFunction(id) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "Are you sure want to exit the employee?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Confirm!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: company_ajax_base_url + '/employee/delete/' + id,
+                            type: "get",
+                            success: function(res) {
+                                Swal.fire("Done!", "It was succesfully Exit!", "success");
+                                $('#employee_list').replaceWith(res.data);
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                Swal.fire("Error deleting!", "Please try again", "error");
+                            }
+                        });
+                    }
+                });
+            }
+
+            function handleStatus(id) {
+                var checked_value = $('#checked_value_' + id).prop('checked');
+                let status;
+                let status_name;
+                if (checked_value == true) {
+                    status = 1;
+                    status_name = 'Active';
+                } else {
+                    status = 0;
+                    status_name = 'Inactive';
+                }
+                $.ajax({
+                    url: company_ajax_base_url + '/employee/status/update/' + id,
+                    type: 'get',
+                    data: {
+                        'status': status,
+                    },
+                    success: function(res) {
+                        if (res.status == true) {
+                            swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
+                        } else {
+                            swal.fire("Oops!", 'Something Went Wrong', "error");
+                        }
+                    }
+                })
+            }
+
+
+            jQuery('#export_button').on('click', function() {
+                var filteredData = $('#filter_id').serialize();
+                $.ajax({
+                    type: 'get',
+                    url: "{{ route('employee.export') }}",
+                    data: filteredData,
+                    success: function(response) {
+                        if (response.status) {
+                            Swal.fire({
+                                title: 'Sucess',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Something Went Wrong! Please try Again!',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function() {
+                        console.log("Export failed");
+                    }
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                // Handle the form submission via AJAX
+                $('#importForm').on('submit', function(e) {
+                    e.preventDefault();
+                    var formData = new FormData(this);
+                    $('#errorMessage').hide();
+                    $('#validationErrors').hide();
+
+                    $.ajax({
+                        url: '{{ route('upload.file') }}',
+                        method: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    title: 'Sucess',
+                                    text: response.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                });
+                                $('#employee_list').replaceWith(response.data);
+                            } else if (response.status === 'error') {
+                                if (response.errors) {
+                                    let errorsHtml =
+                                        '<ul style="color: red; list-style-type: none; padding-left: 20px; margin: 0;">';
+                                    response.errors.forEach(function(error) {
+                                        // Ensure you join multiple errors with commas if needed
+                                        let errorMessages = Array.isArray(error.errors) ?
+                                            error.errors.join(', ') : error.errors;
+                                        errorsHtml +=
+                                            '<li style="color: red; margin-bottom: 5px;">Row ' +
+                                            error.row + ': ' + errorMessages + '</li>';
+                                    });
+                                    errorsHtml += '</ul>';
+
+                                    Swal.fire({
+                                        title: "The Internet?",
+                                        html: errorsHtml, // Use "html" for custom HTML content
+                                        icon: "error", // "error" icon for SweetAlert
+                                        customClass: {
+                                            popup: 'swal-popup-error', // Custom class for the popup
+                                            title: 'swal-title-error', // Optional: custom class for title
+                                            content: 'swal-content-error' // Optional: custom class for content
+                                        }
+                                    });
+                                } else {
+                                    $('#errorMessage').text(response.message).show();
+                                }
+                            }
+                        },
+                        error: function(xhr) {
+                            var response = xhr.responseJSON;
+                            $('#errorMessage').text(response.message ||
+                                'An unexpected error occurred.').show();
+                        }
+                    });
                 });
             });
         </script>

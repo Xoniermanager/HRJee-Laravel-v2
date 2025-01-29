@@ -1,6 +1,6 @@
 @extends('layouts.admin.main')
 
-@section('title', 'states')
+@section('title', 'States')
 
 @section('content')
 
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     @include('admin.state.state_list')
-                    {{ $allStateDetails->links() }}
+                    {{ $allStateDetails->links('paginate') }}
                 </div>
             </div>
         </div>

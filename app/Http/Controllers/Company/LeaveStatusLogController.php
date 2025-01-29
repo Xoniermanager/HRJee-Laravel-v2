@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Company;
 
+use Carbon\Carbon;
 use App\Models\Leave;
 use Illuminate\Http\Request;
 use App\Http\Services\LeaveService;
 use App\Http\Controllers\Controller;
 use App\Http\Services\LeaveStatusLogService;
 use App\Http\Services\LeaveStatusService;
+use App\Http\Services\EmployeeLeaveAvailableService;
 use Illuminate\Validation\ValidationException;
 
 
@@ -16,12 +18,14 @@ class LeaveStatusLogController extends Controller
     private $leaveService;
     private $leaveStatusService;
     private $leaveStatusLogService;
+    private $employeeLeaveAvailableService;
 
-    public function __construct(LeaveService $leaveService, LeaveStatusService $leaveStatusService, LeaveStatusLogService $leaveStatusLogService)
+    public function __construct(EmployeeLeaveAvailableService $employeeLeaveAvailableService, LeaveService $leaveService, LeaveStatusService $leaveStatusService, LeaveStatusLogService $leaveStatusLogService)
     {
         $this->leaveService = $leaveService;
         $this->leaveStatusService = $leaveStatusService;
         $this->leaveStatusLogService = $leaveStatusLogService;
+        $this->employeeLeaveAvailableService = $employeeLeaveAvailableService;
     }
     public function index()
     {
@@ -30,8 +34,9 @@ class LeaveStatusLogController extends Controller
     }
     public function add()
     {
-        $allLeaveDetails = $this->leaveService->getLeaveDetailsOnlyUserId();
+        $allLeaveDetails = $this->leaveService->getPendingLeavesByUserId();
         $allLeaveStatusDetails = $this->leaveStatusService->getAllActiveLeaveStatus()->where('id', '!=', '1');
+        
         return view('company.leave_status_log.add', compact('allLeaveDetails', 'allLeaveStatusDetails'));
     }
     public function getLeaveAppliedDetailsbyId(Request $request)
@@ -97,6 +102,16 @@ class LeaveStatusLogController extends Controller
             ]);
             $data = $request->all();
             if ($this->leaveStatusLogService->create($data)) {
+                if($data['leave_status_id'] == 2) {
+                    $leave = $this->leaveService->getDetailsById($data['leave_id']);  
+                    
+                    $startDate = Carbon::parse($leave->from);
+                    $endDate = Carbon::parse($leave->to);
+                    $days = $startDate->diffInDays($endDate);
+
+                    $this->employeeLeaveAvailableService->debitLeaveDetails($leave->user_id, $leave->leave_type_id, ($days <= 0 ? 1 : $days));
+                }
+
                 return redirect(route('leave.status.log.index'))->with('success', 'Updated successfully');
             }
         } catch (ValidationException $e) {

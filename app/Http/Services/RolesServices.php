@@ -15,6 +15,12 @@ class RolesServices
     { 
      return $this->rolesRepository->orderBy('id','DESC')->all();
     }
+
+    public function getRolesByCompanyID($id)
+    { 
+     return $this->rolesRepository->where('company_id', $id)->orderBy('id','DESC')->get();
+    }
+
     public function create(array $data)
     {
       return $this->rolesRepository->create($data);

@@ -17,6 +17,7 @@ class AssetManufacturerService
   }
   public function create(array $data)
   {
+    $data['created_by'] = Auth()->user()->id;
     return $this->assetManufacturerRepository->create($data);
   }
 

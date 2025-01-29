@@ -18,14 +18,26 @@ class EmployeeAttendanceController extends Controller
     {
         $data['punch_in_using'] = 'Web';
         $response = $this->employeeAttendanceService->create($data);
-        if ($response['status'] == true && $response['data'] == 'Puch Out') {
-            return back()->with('success', "You Puch Out Successfully");
+
+        if ($response['status'] == true && $response['data'] == 'Punch Out') {
+
+            return response()->json([
+                'success' => true,
+                'message'   =>'You have successfully punched out.'
+            ]);
+
         }
-        if ($response['status'] == true && $response['data'] == 'Puch In') {
-            return back()->with('success', "You Puch In Successfully");
+        if ($response['status'] == true && $response['data'] == 'Punch In') {
+            return response()->json([
+                'success' => true,
+                'message'   =>'You have successfully punched in.'
+            ]);
         }
         if ($response['status'] == false) {
-            return back()->with('error', "Don't Access you to Puch In Current Time");
+            return response()->json([
+                'success' => false,
+                'message'   =>$response['message']
+            ]);
         }
     }
 }

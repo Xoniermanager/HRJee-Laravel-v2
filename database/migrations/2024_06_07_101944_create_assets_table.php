@@ -31,7 +31,8 @@ return new class extends Migration
             $table->string('invoice_file')->nullable();
             $table->enum('allocation_status', ['available', 'allocated'])->default('available');
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }

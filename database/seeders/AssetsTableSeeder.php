@@ -14,12 +14,12 @@ class AssetsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('assets')->delete();
-        
+
         \DB::table('assets')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
                 'name' => 'Donnie Hegmann',
@@ -35,12 +35,12 @@ class AssetsTableSeeder extends Seeder
                 'validation_upto' => '2025-01-09',
                 'serial_no' => '630',
                 'invoice_file' => NULL,
-                'allocation_status' => 'available',
+                'allocation_status' => 'allocated',
                 'company_id' => 1,
                 'created_at' => '2024-06-24 11:20:55',
                 'updated_at' => '2024-06-24 11:20:55',
             ),
-            1 => 
+            1 =>
             array (
                 'id' => 2,
                 'name' => 'Dimitri Adams',
@@ -56,12 +56,12 @@ class AssetsTableSeeder extends Seeder
                 'validation_upto' => '2025-06-04',
                 'serial_no' => '520',
                 'invoice_file' => NULL,
-                'allocation_status' => 'available',
+                'allocation_status' => 'allocated',
                 'company_id' => 1,
                 'created_at' => '2024-06-24 11:21:16',
                 'updated_at' => '2024-06-24 11:21:16',
             ),
-            2 => 
+            2 =>
             array (
                 'id' => 3,
                 'name' => 'Harrison Hoppe',
@@ -77,12 +77,12 @@ class AssetsTableSeeder extends Seeder
                 'validation_upto' => '2024-06-28',
                 'serial_no' => '53',
                 'invoice_file' => NULL,
-                'allocation_status' => 'available',
+                'allocation_status' => 'allocated',
                 'company_id' => 1,
                 'created_at' => '2024-06-24 11:21:44',
                 'updated_at' => '2024-06-24 11:21:44',
             ),
-            3 => 
+            3 =>
             array (
                 'id' => 4,
                 'name' => 'Harrison Hoppe',
@@ -98,12 +98,12 @@ class AssetsTableSeeder extends Seeder
                 'validation_upto' => '2024-06-28',
                 'serial_no' => '53',
                 'invoice_file' => NULL,
-                'allocation_status' => 'available',
+                'allocation_status' => 'allocated',
                 'company_id' => 1,
                 'created_at' => '2024-06-24 11:21:45',
                 'updated_at' => '2024-06-24 11:21:45',
             ),
-            4 => 
+            4 =>
             array (
                 'id' => 5,
                 'name' => 'Fidel Feil',
@@ -119,13 +119,13 @@ class AssetsTableSeeder extends Seeder
                 'validation_upto' => '2024-12-27',
                 'serial_no' => '162',
                 'invoice_file' => NULL,
-                'allocation_status' => 'available',
+                'allocation_status' => 'allocated',
                 'company_id' => 1,
                 'created_at' => '2024-06-24 11:22:06',
                 'updated_at' => '2024-06-24 11:22:06',
             ),
         ));
-        
-        
+
+
     }
 }

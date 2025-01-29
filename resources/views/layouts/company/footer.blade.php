@@ -44,6 +44,7 @@
 
 <!-- Employee Validation Script -->
 <script src="{{ asset('assets/js/add-employee-validation.js') }}"></script>
+<script src="{{ asset('admin/assets/js/jquery.searchableSelect.js') }}"></script>
 
 <!-- Auto-hide alert after 4 seconds -->
 <script>

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Permission;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PermissionSeeder extends Seeder
@@ -20,7 +20,6 @@ class PermissionSeeder extends Seeder
             'announcement',
             'leave',
          ];
-
           // Looping and Inserting Array's Permissions into Permission Table
          foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);

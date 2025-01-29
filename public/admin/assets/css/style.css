@@ -9474,7 +9474,7 @@
 
   .social-profile {
     text-align: center;
-    background-image: url(../images/other-images/profile-bg.png);
+    /* background-image: url(../images/other-images/profile-bg.png); */
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -56459,3 +56459,42 @@
 .field_error{
   color:red
 }
+.feature-form ul li {
+    margin-bottom: 10px;
+    border: 1px dashed #ccc;
+    padding: 2px 8px;
+    width: 48%;
+    float: left;
+    margin-right: 1%;
+}
+.feature-form ul li ul {
+    padding-left: 10px;
+    margin-top: 10px;
+}
+.feature-form ul li {
+    margin-bottom: 10px;
+    border: 1px dashed #ccc;
+    padding: 2px 8px;
+    width: 48%;
+    float: left;
+    margin-right: 1%;
+}
+.float-right {
+    float: right;
+}
+.required:after {
+    content: "*";
+    position: relative;
+    font-size: inherit;
+    color: red;
+    padding-left: 0.25rem;
+    font-weight: 600;
+}
+.chart1 {
+        text-align: center;
+    }
+.employee_chart {
+        width: 100% !important;
+        max-width: 300px;
+        margin: 0 auto;
+    }
