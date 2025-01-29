@@ -18,7 +18,7 @@ trait CompanyScope
 
             if ($user->type === 'employee') {
                 $builder->whereIn('created_by', [$user->company_id, $user->id]);
-            } else {
+            } else if ($user->type === 'company') {
                 $builder->where('company_id', $user->company_id);
             }
         });
