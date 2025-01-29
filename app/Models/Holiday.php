@@ -15,7 +15,8 @@ class Holiday extends Model
         'date',
         'year',
         'company_id',
-        'status'
+        'status',
+        'created_by'
     ];
     public function companyBranch()
     {

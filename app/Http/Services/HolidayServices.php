@@ -26,7 +26,9 @@ class HolidayServices
                 return $value !== 'all';
             });
             $data['company_branch_id'] = array_values($data['company_branch_id']);
-            $data['company_id'] = Auth()->user()->id;
+            $data['company_id'] = Auth()->user()->company_id;
+            $data['created_by'] = Auth()->user()->id;
+
             $response = $this->holidayRepository->create(Arr::except($data, 'company_branch_id'));
             if ($response) {
                 $response->companyBranch()->sync($data['company_branch_id']);
