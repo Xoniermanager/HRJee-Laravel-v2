@@ -19,6 +19,7 @@ class LeaveStatusService
   public function create(array $data)
   {
     $data['company_id'] = Auth()->user()->company_id ?? '';
+    $data['created_by'] = Auth()->user()->id ?? '';
     return $this->leaveStatusRepository->create($data);
   }
   public function updateDetails(array $data, $id)

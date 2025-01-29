@@ -127,6 +127,7 @@ class AdminCompanyController extends Controller
                 return response()->json(['error' => 'Please try again later!']);
             }
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(['error' => 'Something went wrong. Please try again.']);
         }
     }

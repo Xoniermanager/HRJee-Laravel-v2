@@ -30,7 +30,7 @@ class CompanyBranchesTableSeeder extends Seeder
                 'address' => 'Noida H-161 BSI Park',
                 'city' => 'Noida',
                 'pincode' => '201901',
-                'country_id' => 103,
+                'country_id' => 100,
                 'state_id' => 1,
                 'company_id' => 1,
                 'created_by' => 1,
