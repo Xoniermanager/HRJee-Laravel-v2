@@ -13,6 +13,7 @@ class Designations extends Model
             'name',
             'company_id',
             'department_id',
+            'created_by',
             'status'
     ];
 

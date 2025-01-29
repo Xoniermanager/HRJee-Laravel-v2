@@ -10,15 +10,19 @@ class Department extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'status','company_id'
+        'name',
+        'status',
+        'company_id',
+        'created_by'
     ];
 
     public function departments()
     {
         return $this->hasOne(Department::class);
-        
+
     }
-    public function news() {
+    public function news()
+    {
         return $this->belongsToMany(News::class);
     }
 }
