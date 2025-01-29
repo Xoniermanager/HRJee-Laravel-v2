@@ -17,6 +17,7 @@ class StateController extends Controller
     private $countryService;
     public function __construct(StateServices $stateService, CountryServices $countryService)
     {
+        
         $this->stateService = $stateService;
         $this->countryService = $countryService;
     }
@@ -121,8 +122,10 @@ class StateController extends Controller
 
     public function getAllStates(Request $request)
     {
+       
         $country_id = $request->country_id;
         $allStateDetails = $this->stateService->getAllStateUsingCountryID($country_id);
+        //dd($allStateDetails);
         if (count($allStateDetails) > 0 && isset($allStateDetails)) {
             $response = [
                 'status'    =>  true,

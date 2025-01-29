@@ -27,6 +27,7 @@ class BranchServices
   public function create($data)
   {
     $data['company_id'] = Auth()->user()->company_id;
+    $data['created_by'] = Auth()->user()->id;
     return $this->branchRepository->create($data);
   }
   public function deleteDetails($id)
