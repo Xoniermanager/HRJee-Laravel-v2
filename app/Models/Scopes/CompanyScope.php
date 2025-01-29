@@ -13,9 +13,7 @@ trait CompanyScope
             if (!Auth::check()) {
                 return;
             }
-
             $user = Auth::user();
-
             if ($user->type === 'employee') {
                 $builder->whereIn('created_by', [$user->company_id, $user->id]);
             } else if ($user->type === 'company') {
