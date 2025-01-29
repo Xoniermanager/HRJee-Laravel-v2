@@ -27,7 +27,8 @@ return new class extends Migration
             $table->unsignedBigInteger('company_branch_id')->nullable();
             $table->foreign('company_branch_id')->references('id')->on('company_branches');
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

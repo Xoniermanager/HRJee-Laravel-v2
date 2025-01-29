@@ -37,6 +37,7 @@ class AnnouncementServices
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
     $finalPayload['company_id'] = Auth()->user()->company_id;
+    $finalPayload['created_by'] = Auth()->user()->id;
     $announcementDetails = $this->announcementRepository->create($finalPayload);
     if ($announcementDetails) {
       $announcementModelDetails = Announcement::find($announcementDetails->id);
