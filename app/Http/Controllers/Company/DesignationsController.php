@@ -26,8 +26,8 @@ class DesignationsController extends Controller
     public function index()
     {
         return view('company.designation.index', [
-            'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->id()),
-            'allDepartments' => $this->departmentService->getByCompanyId(auth()->id())->where('status', '1')
+            'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->user()->company_id),
+            'allDepartments' => $this->departmentService->getByCompanyId(auth()->user()->company_id)->where('status', '1')
         ]);
     }
 
@@ -37,26 +37,27 @@ class DesignationsController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateDesignation  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:designations,name,NULL,id,company_id,' . auth()->id()],
+            $validateDesignation = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'unique:designations,name,NULL,id,company_id,' . auth()->user()->company_id],
             ]);
             if ($validateDesignation->fails()) {
                 return response()->json(['error' => $validateDesignation->messages()], 400);
             }
             $data = $request->all();
-            $data['company_id'] = auth()->id();
+            $data['company_id'] = auth()->user()->company_id;
+            $data['created_by'] = auth()->user()->id;
             if ($this->designationService->create($data)) {
                 return response()->json(
                     [
                         'message' => 'Designation Created Successfully!',
-                        'data'   =>  view('company.designation.designation_list', [
-                            'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->id())
+                        'data' => view('company.designation.designation_list', [
+                            'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->user()->company_id)
                         ])->render()
                     ]
                 );
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -65,8 +66,8 @@ class DesignationsController extends Controller
      */
     public function update(Request $request)
     {
-        $validateDesignation  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:designations,name,' . $request->id . ',id,company_id,' . auth()->id()],
+        $validateDesignation = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'unique:designations,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
         ]);
 
         if ($validateDesignation->fails()) {
@@ -77,8 +78,8 @@ class DesignationsController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Designation Updated Successfully!',
-                'data'   =>  view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->id())
+                'data' => view('company.designation.designation_list', [
+                    'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->user()->company_id)
                 ])->render()
             ]);
         }
@@ -92,16 +93,18 @@ class DesignationsController extends Controller
         $data = $this->designationService->deleteDetails($id);
         if ($data) {
             return response()->json([
-                'success', 'Deleted Successfully!',
-                'data'   =>  view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->id())
+                'success',
+                'Deleted Successfully!',
+                'data' => view('company.designation.designation_list', [
+                    'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->user()->company_id)
                 ])->render()
             ]);
         } else {
             return response()->json([
-                'error', 'Something Went Wrong! Please try Again',
-                'data'   =>  view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->id())
+                'error',
+                'Something Went Wrong! Please try Again',
+                'data' => view('company.designation.designation_list', [
+                    'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->user()->company_id)
                 ])->render()
             ]);
         }
@@ -114,8 +117,8 @@ class DesignationsController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Designation Status Updated Successfully',
-                'data'   =>  view("company.designation.designation_list", [
-                    'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->id())
+                'data' => view("company.designation.designation_list", [
+                    'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->user()->company_id)
                 ])->render()
             ]);
         } else {
@@ -125,27 +128,27 @@ class DesignationsController extends Controller
 
     public function getAllDesignation(Request $request)
     {
-        $validateDesignation  = Validator::make($request->all(), [
-            'all_departments'      =>   'in:false,true',
-            'department_id'        =>   'required_if:all_departments,==,false',
-            'department_id.*'      =>   'exists:departments,id',
+        $validateDesignation = Validator::make($request->all(), [
+            'all_departments' => 'in:false,true',
+            'department_id' => 'required_if:all_departments,==,false',
+            'department_id.*' => 'exists:departments,id',
 
         ]);
         $departmentIds = $request->department_id;
         if ($request->all_departments == true) {
-            $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($departmentIds,true);
+            $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($departmentIds, true);
         } else {
             $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($departmentIds);
         }
         if (isset($allDesignationDetails) && count($allDesignationDetails) > 0) {
             $response = [
-                'status'    =>  true,
-                'data'      =>  $allDesignationDetails
+                'status' => true,
+                'data' => $allDesignationDetails
             ];
         } else {
             $response = [
-                'status'    =>  false,
-                'error'     => 'No Designation found this Department'
+                'status' => false,
+                'error' => 'No Designation found this Department'
             ];
         }
         return json_encode($response);
@@ -156,7 +159,7 @@ class DesignationsController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view("company.designation.designation_list", [
+                'data' => view("company.designation.designation_list", [
                     'allDesignationDetails' => $searchedItems
                 ])->render()
             ]);

@@ -109,7 +109,7 @@ class AdminCompanyController extends Controller
                     return response()->json(['error' => 'Something went wrong. Please try again.']);
                 }
 
-                $userCreated->update(['role_id' => $roleId]);
+                $userCreated->update(['role_id' => $roleId, 'company_id' => $userCreated->id]);
 
                 $request['user_id'] = $userCreated->id;
                 if ($request->hasFile('logo')) {
