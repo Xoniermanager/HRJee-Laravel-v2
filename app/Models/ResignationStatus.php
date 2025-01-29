@@ -12,6 +12,7 @@ class ResignationStatus extends Model
 
     protected $table = 'resignation_status';
     protected $guarded = ['id'];
+    
 
 
     public function scopeActive($query)

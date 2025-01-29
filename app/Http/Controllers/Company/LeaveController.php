@@ -31,7 +31,9 @@ class LeaveController extends Controller
     public function applyLeave()
     {
         $leaveTypes = $this->leaveTypeService->getAllActiveLeaveType();
+       
         $allEmployeeDetails = $this->employeeService->all('', Auth()->user()->company_id)->paginate(10);
+        dd($allEmployeeDetails);
         return view('company.leave.apply_leave', compact('leaveTypes', 'allEmployeeDetails'));
     }
 
