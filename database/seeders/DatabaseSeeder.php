@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CompanyTypesTableSeeder::class);
         $this->call(RolesTableSeeder::class);
         $this->call(MenusTableSeeder::class);
+        $this->call(ResignationStatusTableSeeder::class);
         // $this->call(CompanyTableSeeder::class);
         // $this->call(CountryTableSeeder::class);
         // $this->call(StatesTableSeeder::class);
@@ -56,7 +57,6 @@ class DatabaseSeeder extends Seeder
         // // $this->call(AnnouncementsTableSeeder::class);
         // $this->call(PolicyCategoriesTableSeeder::class);
         // $this->call(BreakTypesTableSeeder::class);
-        // $this->call(ResignationStatusTableSeeder::class);
         // $this->call(ComplainStatusesTableSeeder::class);
         // $this->call(ComplainCategoriesTableSeeder::class);
         // $this->call(RoleHasPermissionsTableSeeder::class);
