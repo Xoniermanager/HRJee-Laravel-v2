@@ -25,6 +25,7 @@ return new class extends Migration
             $table->unsignedBigInteger('country_id');
             $table->unsignedBigInteger('state_id');
             $table->unsignedBigInteger('company_id');
+            $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('country_id')->references('id')->on('countries');
             $table->foreign('state_id')->references('id')->on('states');
             $table->boolean('status')->default(true);
