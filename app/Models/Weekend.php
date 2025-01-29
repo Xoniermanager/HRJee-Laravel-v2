@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Weekend extends Model
 {
-    use HasFactory;
+    use HasFactory, CompanyScope;
     protected $fillable = ['company_branch_id', 'description', 'status', 'company_id','department_id','created_by'];
     public function companyBranch()
     {
