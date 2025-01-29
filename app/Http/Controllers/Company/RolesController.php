@@ -24,7 +24,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles = $this->customRoleService->getRolesByCompanyID(Auth()->user()->id);
+        $roles = $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id);
 
         return view('company.roles_and_permission.roles.index')->with(['roles' => $roles]);
     }
@@ -39,7 +39,7 @@ class RolesController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:custom_roles,name'],
+                'name' => ['required', 'string', 'unique:roles,name,NULL,id,user_id,' . auth()->user()->company_id],
             ]);
 
             if ($validator->fails()) {
@@ -47,13 +47,16 @@ class RolesController extends Controller
             }
 
             $data = $request->all();
-            $data['company_id'] = Auth()->user()->id;
+            $data = $request->except(['_token']);
+            $data['user_id'] = Auth()->user()->company_id;
+            $data['created_by'] = Auth()->user()->id;
+            
             if ($this->customRoleService->create($data)) {
 
                 return response()->json([
                     'message' => 'Role Created Successfully!',
                     'data' => view('company/roles_and_permission/roles/roles_list', [
-                        'roles' => $this->customRoleService->all()
+                        'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
                     ])->render()
                 ]);
             }
@@ -69,7 +72,7 @@ class RolesController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', new OnlyString, 'unique:states,name,' . $request->id],
+            'name' => ['required', 'string', 'unique:roles,name,' . $request->id . ',id,user_id,' . auth()->user()->company_id],
         ]);
 
         if ($validator->fails()) {
@@ -83,7 +86,7 @@ class RolesController extends Controller
                 [
                     'message' => 'Role Updated Successfully!',
                     'data' => view('company/roles_and_permission/roles/roles_list', [
-                        'roles' => $this->customRoleService->all()
+                        'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
                     ])->render()
                 ]
             );
@@ -99,7 +102,7 @@ class RolesController extends Controller
             return response()->json([
                 'message' => 'Role Status Updated Successfully!',
                 'data' => view('company/roles_and_permission/roles/roles_list', [
-                    'roles' => $this->customRoleService->all()
+                    'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
                 ])->render()
             ]);
         } else {
@@ -118,7 +121,7 @@ class RolesController extends Controller
             return response()->json([
                 'message' => 'Role Deleted Successfully!',
                 'data' => view('company/roles_and_permission/roles/roles_list', [
-                    'roles' => $this->customRoleService->all()
+                    'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
                 ])->render()
             ]);
         } else {

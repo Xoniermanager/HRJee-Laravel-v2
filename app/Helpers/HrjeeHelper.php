@@ -202,7 +202,6 @@ function getCompanyMenuHtml($companyId)
     $html = '';
     $user = Auth::user();
     $companyMenuIDs = [];
-
     foreach ($user->menu as $menu) {
         // Check if the menu has children
         if ($menu->children && $menu->children->isNotEmpty()) {

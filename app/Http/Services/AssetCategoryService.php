@@ -17,6 +17,7 @@ class AssetCategoryService
   }
   public function create(array $data)
   {
+    $data['created_by'] = Auth()->user()->id;
     return $this->assetCategoryRepository->create($data);
   }
 

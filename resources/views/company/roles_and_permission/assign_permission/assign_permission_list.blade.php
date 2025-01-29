@@ -11,6 +11,7 @@
                     <th>Permissions</th>
                 </tr>
             </thead>
+            
             @forelse ($roles as $role) 
             <tbody class="">
                 <tr>

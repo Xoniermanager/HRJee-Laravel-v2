@@ -120,8 +120,7 @@ Add News
                                                     multiple="multiple" name="company_branch_id[]" id="company_branch">
                                                     <option value=""></option>
                                                     @foreach ($allCompanyBranchesDetails as $compayBranches)
-                                                    <option value="{{ $compayBranches->id }}" @if
-                                                        (old("company_branch_id")){{ (in_array($departmentsDetails->id,
+                                                    <option value="{{ $compayBranches->id }}" @if (old("company_branch_id")){{ (in_array($departmentsDetails->id,
                                                         old("company_branch_id")) ? "selected":"") }}@endif>
                                                         {{ $compayBranches->name }}
                                                     </option>
@@ -157,8 +156,7 @@ Add News
                                                     onchange="get_designation_by_department_id()"
                                                     name="department_id[]">
                                                     @foreach ($allDepartmentsDetails as $departmentsDetails)
-                                                    <option value="{{ $departmentsDetails->id }}" @if
-                                                        (old("department_id")){{ (in_array($departmentsDetails->id,
+                                                    <option value="{{ $departmentsDetails->id }}" @if (old("department_id")){{ (in_array($departmentsDetails->id,
                                                         old("department_id")) ? "selected":"") }}@endif>
                                                         {{ $departmentsDetails->name }}</option>
                                                     @endforeach

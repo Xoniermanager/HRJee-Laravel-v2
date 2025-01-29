@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Announcement extends Model
 {
-    use HasFactory;
+    use HasFactory, CompanyScope;
     protected $guarded = ['id'];
     public function designations()
     {
@@ -25,7 +26,7 @@ class Announcement extends Model
     protected function image(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => url("storage/" .  $value)
+            get: fn($value) => url("storage/" .  $value)
         );
     }
 }

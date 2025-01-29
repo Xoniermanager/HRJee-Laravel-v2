@@ -37,6 +37,7 @@ class AssetService
         }
         $data['asset_status_id'] = AssetStatus::CREATED;
         $data['company_id'] = Auth()->user()->company_id;
+        $data['created_by'] = Auth()->user()->id;
         return $this->assetRepository->create($data);
     }
 
