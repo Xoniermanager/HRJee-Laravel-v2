@@ -59,13 +59,13 @@ class AssignMenuCompanyController extends Controller
         }
 
         $adminRole->menus()->sync($syncData);
-        
+
         return redirect(route('admin.assign_menu.index'))->with('success', 'Feature Updated Successfully');
     }
 
     public function get_assign_feature(Request $request)
     {
-        $menuIds = $this->companyRepository->getCompanyById($request->company_id)->with('menu')->first();
+        $menuIds = $this->userService->getUserById($request->company_id);
         return response()->json([
             'success' => true,
             'data' => $menuIds->menu->pluck('id')->toArray()
@@ -74,7 +74,7 @@ class AssignMenuCompanyController extends Controller
 
     public function searchFilterMenu(Request $request)
     {
-        $allCompanyDetails = $this->companyServices->searchCompanyMenu($request->searchKey);
+        $allCompanyDetails = $this->userService->searchCompanyMenu($request->searchKey);
         return response()->json([
             'success' => true,
             'data' => view("admin.assign_menu.list", compact('allCompanyDetails'))->render()

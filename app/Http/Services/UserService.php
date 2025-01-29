@@ -73,4 +73,19 @@ class UserService
             }
         })->paginate(10);
     }
+    public function searchCompanyMenu($searchKey)
+    {
+        return $this->userRepository
+            ->with('role.menus')
+            ->where(function ($query) use ($searchKey) {
+                if (!empty($searchKey)) {
+                    $query->where('name', 'like', "%{$searchKey}%")
+                        ->orWhereHas('role.menus', function ($menuQuery) use ($searchKey) {
+                            // Search for 'title' in the 'menus' related to 'role'
+                            $menuQuery->where('menus.title', 'like', "%{$searchKey}%");
+                        });
+                }
+            })
+            ->paginate(10);
+    }
 }

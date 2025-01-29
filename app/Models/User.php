@@ -40,7 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function menu()
     {
-        return $this->role->menus();
+        return $this->role->belongsToMany(Menu::class);
     }
 
     public function details()
