@@ -8,16 +8,12 @@ use Spatie\Permission\Models\Role;
 use App\Models\CompanyMenu;
 use App\Models\CustomRole;
 use App\Http\Controllers\Controller;
-use App\Http\Services\CompanyServices;
 
 class AssignPermissionController extends Controller
 {
-    private $companyServices;
 
-    public function __construct(CompanyServices $companyServices)
-    {
-        $this->companyServices = $companyServices;
-    }
+    public function __construct()
+    {}
 
     /**
      * Display a listing of the resource.
@@ -25,7 +21,7 @@ class AssignPermissionController extends Controller
     public function index()
     {
         $roles = CompanyMenu::with(['role', 'menu'])->whereNotNull('role_id')->get()->groupBy('role_id');
-
+        
         return view('company.roles_and_permission.assign_permission.index', compact('roles'));
     }
 

@@ -46,47 +46,21 @@ class AssignMenuCompanyController extends Controller
         ]);
 
         $company = $this->userService->getUserById($validated['company_id']);
-        $this->createRoleForCompany($validated['company_id'], $validated['menu_id'], $company->name);
-        return redirect(route('admin.assign_menu.index'))->with('success', 'Feature Updated Successfully');
-    }
-
-    protected function createRoleForCompany($companyId, $menuIds, $companyName)
-    {
-        DB::beginTransaction();
-
-        try {
-            $menus = Menu::whereIn('id', $menuIds)->get();
-
-            $adminRole = Role::updateOrCreate(
-                [
-                    'user_id' => $companyId,
-                    'name' => "$companyName Admin",
-                ],
-                [
-                    'description' => 'Administrator with full access',
-                    'category' => 'default',
-                    'status' => true,
-                ]
-            );
-
-            $syncData = [];
-            foreach ($menus as $menu) {
-                $syncData[$menu->id] = [
-                    'can_create' => true,
-                    'can_read' => true,
-                    'can_update' => true,
-                    'can_delete' => true,
-                ];
-            }
-
-            $adminRole->menus()->sync($syncData);
-
-            DB::commit();
-            return $adminRole->id;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
+        $adminRole = $company->role;
+        $menus = Menu::whereIn('id', $validated['menu_id'])->get();
+        $syncData = [];
+        foreach ($menus as $menu) {
+            $syncData[$menu->id] = [
+                'can_create' => true,
+                'can_read' => true,
+                'can_update' => true,
+                'can_delete' => true,
+            ];
         }
+
+        $adminRole->menus()->sync($syncData);
+        
+        return redirect(route('admin.assign_menu.index'))->with('success', 'Feature Updated Successfully');
     }
 
     public function get_assign_feature(Request $request)
