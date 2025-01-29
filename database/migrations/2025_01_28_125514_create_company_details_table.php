@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('username');
             $table->string('contact_no');
             $table->string('joining_date');
-            $table->string('logo');
+            $table->string('logo')->nullable();
             $table->string('company_size');
             $table->string('company_url');
             $table->string('company_address');
