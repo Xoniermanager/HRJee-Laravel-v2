@@ -20,10 +20,11 @@ class CustomRoleRepository extends BaseRepository
      */
     public function model()
     {
-        return CustomRole::class;
+        return Role::class;
     }
+
     public function getRolesById($id)
     {
-       return $this->where('id', $id);
+        return $this->where('id', $id);
     }
 }

@@ -13,8 +13,14 @@ class CustomRoleService
     $this->customRoleRepository = $customRoleRepository;
   }
 
-  public function all()
+  public function all($companyId = null)
   {
+    if ($companyId) {
+      $otherRoles = $this->customRoleRepository->where('user_id', $companyId)->get();
+      $userRole = $this->customRoleRepository->where('name', 'User')->get();
+      return $otherRoles->merge($userRole);
+    }
+
     return $this->customRoleRepository->orderBy('id', 'DESC')->all();
   }
 

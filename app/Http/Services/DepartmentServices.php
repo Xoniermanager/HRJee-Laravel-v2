@@ -15,6 +15,12 @@ class DepartmentServices
     {
         return $this->departmentRepository->orderBy('id', 'DESC')->paginate(10);
     }
+
+    public function getByCompanyId($companyID)
+    {
+        return $this->departmentRepository->where('company_id', $companyID)->orderBy('id', 'DESC')->paginate(10);
+    }
+
     public function create(array $data)
     {
         return $this->departmentRepository->create($data);
@@ -34,9 +40,9 @@ class DepartmentServices
         return $this->departmentRepository->find($id)->delete();
     }
 
-    public function serachDepartmentFilterList($request)
+    public function serachDepartmentFilterList($request, $companyID)
     {
-        $departmentDetails = $this->departmentRepository;
+        $departmentDetails = $this->departmentRepository->where('company_id', $companyID);
         /**List By Search or Filter */
         if (isset($request['search']) && !empty($request['search'])) {
             $departmentDetails = $departmentDetails->where('name', 'Like', '%' . $request['search'] . '%');
