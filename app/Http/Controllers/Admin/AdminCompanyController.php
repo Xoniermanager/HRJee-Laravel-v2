@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Exception;
 use Carbon\Carbon;
 use App\Models\Menu;
 use App\Models\Role;
@@ -51,7 +52,7 @@ class AdminCompanyController extends Controller
 
     public function edit_company(Request $request)
     {
-        $companyDetails = $this->companyDetailService->get_company_by_id($request->query('id'));
+        $companyDetails = $this->userService->getUserById($request->query('id'));
         return view('admin.company.edit_company', ['companyDetails' => $companyDetails]);
     }
 
@@ -133,53 +134,43 @@ class AdminCompanyController extends Controller
     public function update_company(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255,',
+            'name' => 'sometimes|required|string|max:255',
             'username' => 'sometimes|required|string|max:255',
             'contact_no' => 'sometimes|required|string|max:20',
             'password' => 'sometimes|required|confirmed',
-            'password_confirmation' => 'sometimes|required',
             'company_size' => 'sometimes|required|string',
             'company_url' => 'sometimes|required|string|url|max:100',
-            'company_address' => 'sometimes|sometimes|required|string|max:255',
+            'company_address' => 'sometimes|required|string|max:255', // Removed duplicate 'sometimes'
             'logo' => 'sometimes|max:2048',
         ]);
-        if ($request->hasFile('logo')) {
-            $nameForImage = removingSpaceMakingName($request->name);
-            $upload_path = "/company_profile";
-            $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
-            $request->merge(['logo' => $filePath]);
-        }
-        $request->merge([
-            'joining_date' => Carbon::today()->toDateString(),
-        ]);
-        $createdCompany = $this->companyDetailService->updateDetails($request->except('_token', 'password', 'password_confirmation'), $request->company_id);
 
-        if ($createdCompany) {
-            $data['name'] = $request->name;
-            $this->companyUserService->updateDetailsByCompanyId($data, $request->company_id);
-            return response()->json([
-                'success' => 'Company Updated Successfully',
-            ]);
-        } else {
-            return response()->json([
-                'error' => 'Please try again after sometime!',
-            ]);
+        try {
+            DB::beginTransaction();
+            $this->userService->updateDetail($request->only('name'), $request->id);
+            if ($request->hasFile('logo')) {
+                $nameForImage = removingSpaceMakingName($request->name);
+                $upload_path = "/company_profile";
+                $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
+                $request->merge(['logo' => $filePath]);
+            }
+            $this->companyDetailService->updateDetails($request->except('name', '_token', 'email'), $request->id);
+            DB::commit();
+            return response()->json(['success' => 'Company Updated Successfully']);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Something went wrong. Please try again.']);
         }
     }
     public function destroy(Request $request)
     {
-        $companyId = $request->id;
-        $deleted = $this->userService->deleteUserById($companyId);
+        $deleted = $this->userService->deleteUserById($request->id);
         if ($deleted) {
-            $data = $this->companyDetailService->deleteDetails($companyId);
-            if ($data) {
-                return response()->json([
-                    'success' => 'Company Deleted Successfully',
-                    'data' => view("admin.company.company_list", [
-                        'allCompaniesDetails' => $this->userService->getCompanies()->paginate(10)
-                    ])->render()
-                ]);
-            }
+            return response()->json([
+                'success' => 'Company Deleted Successfully',
+                'data' => view("admin.company.company_list", [
+                    'allCompaniesDetails' => $this->userService->getCompanies()->paginate(10)
+                ])->render()
+            ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
