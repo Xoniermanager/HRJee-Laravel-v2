@@ -14,12 +14,12 @@ class ShiftsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('shifts')->delete();
-        
+
         \DB::table('shifts')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
                 'name' => 'Stephanie Brakus',
@@ -39,9 +39,11 @@ class ShiftsTableSeeder extends Seeder
                 'lock_attendance' => 0,
                 'created_at' => '2024-06-21 15:01:18',
                 'updated_at' => '2024-06-21 15:01:22',
+                'company_id' => 1,
+                'created_by' => 1
             ),
         ));
-        
-        
+
+
     }
 }
