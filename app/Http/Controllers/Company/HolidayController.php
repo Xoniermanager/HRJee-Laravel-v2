@@ -111,9 +111,7 @@ class HolidayController extends Controller
     }
     public function statusUpdate(Request $request)
     {
-        $id = $request->id;
-        $data['status'] = $request->status;
-        $statusDetails = $this->holidayService->updateDetails($data, $id);
+        $statusDetails = $this->holidayService->updateStatus($request->id,$request->status);
         if ($statusDetails) {
             echo 1;
         } else {
@@ -123,7 +121,7 @@ class HolidayController extends Controller
 
     public function searchFilterData(Request $request)
     {
-        $allHolidaysDetails = $this->holidayService->searchFilterData(Auth()->user()->company_id, $request->all());
+        $allHolidaysDetails = $this->holidayService->searchFilterData(Auth()->user()->id, $request->all());
         return response()->json([
             'success' => true,
             'data' => view('company.holiday.holiday_list', compact('allHolidaysDetails'))->render()

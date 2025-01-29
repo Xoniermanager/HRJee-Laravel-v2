@@ -26,7 +26,7 @@ class HolidayServices
                 return $value !== 'all';
             });
             $data['company_branch_id'] = array_values($data['company_branch_id']);
-            $data['company_id'] = Auth()->user()->company_id;
+            $data['company_id'] = Auth()->user()->id;
             $response = $this->holidayRepository->create(Arr::except($data, 'company_branch_id'));
             if ($response) {
                 $response->companyBranch()->sync($data['company_branch_id']);
@@ -40,14 +40,16 @@ class HolidayServices
     }
     public function updateDetails(array $data, $id)
     {
+        
         DB::beginTransaction();
         try {
             $holidayDetails = $this->holidayRepository->find($id);
             $data['company_branch_id'] = array_filter($data['company_branch_id'], function ($value) {
                 return $value !== 'all';
             });
+                    
             $data['company_branch_id'] = array_values($data['company_branch_id']);
-            $data['company_id'] = Auth()->user()->company_id;
+            $data['company_id'] = Auth()->user()->id;
             $holidayDetails->update(Arr::except($data, 'company_branch_id'));
             if ($holidayDetails) {
                 $holidayDetails->companyBranch()->sync($data['company_branch_id']);
@@ -116,5 +118,10 @@ class HolidayServices
             });
         }
         return $holidayDetails->paginate(10);
+    }
+
+    public function updateStatus($holidayId,$statusValue)
+    {
+        return $this->holidayRepository->find($holidayId)->update(['status' => $statusValue]);
     }
 }
