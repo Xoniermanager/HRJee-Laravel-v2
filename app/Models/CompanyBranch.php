@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CompanyBranch extends Model
 {
     use SoftDeletes;
-    use HasFactory;
+    use HasFactory, CompanyScope;
     protected $table = 'company_branches';
     protected $fillable = [
         'name',
@@ -39,10 +40,11 @@ class CompanyBranch extends Model
     {
         return $this->belongsTo(state::class);
     }
-    public function news() {
+    public function news()
+    {
         return $this->belongsToMany(News::class);
     }
-    
+
     public function announcements()
     {
         return $this->belongsToMany(Announcement::class, 'announcement_branch', 'branch_id', 'announcement_id');
