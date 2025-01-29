@@ -6,10 +6,11 @@ use Exception;
 use App\Models\User;
 use App\Imports\UserImport;
 use Illuminate\Http\Request;
+use App\Http\Services\UserService;
+use Illuminate\Support\Facades\DB;
 use App\Jobs\EmployeeExportFileJob;
 use App\Http\Controllers\Controller;
 use App\Http\Services\RolesServices;
-use App\Http\Services\CustomRoleService;
 use App\Http\Services\ShiftServices;
 use App\Http\Services\SkillsService;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
 use App\Http\Services\EmployeeServices;
+use App\Http\Services\CustomRoleService;
 use App\Http\Services\LanguagesServices;
 use App\Http\Requests\EmployeeAddRequest;
 use App\Http\Services\DepartmentServices;
@@ -31,6 +33,7 @@ use App\Http\Services\PreviousCompanyService;
 class EmployeeController extends Controller
 {
     private $countryService;
+    private $userService;
     private $previousCompanyService;
     private $qualificationService;
     private $employeeTypeService;
@@ -60,7 +63,8 @@ class EmployeeController extends Controller
         LanguagesServices $languagesServices,
         SkillsService $skillServices,
         AssetCategoryService $assetCategoryServices,
-        CustomRoleService $customRoleService
+        CustomRoleService $customRoleService,
+        UserService $userService
 
     ) {
         $this->countryService = $countryService;
@@ -78,13 +82,14 @@ class EmployeeController extends Controller
         $this->languagesServices = $languagesServices;
         $this->skillServices = $skillServices;
         $this->assetCategoryServices = $assetCategoryServices;
+        $this->userService = $userService;
     }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->employeeService->all($request == null, Auth()->user()->company_id)->paginate(10);
+        $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
@@ -106,9 +111,8 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages = $this->languagesServices->defaultLanguages();
-        $allBranches = $this->branchService->all(Auth()->user()->id);
-        // $allRoles = $this->roleService->all();
-        $allRoles = $this->customRoleService->all();
+        $allBranches = $this->branchService->all(Auth()->user()->company_id);
+        $allRoles = $this->customRoleService->all(auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
 
@@ -147,7 +151,7 @@ class EmployeeController extends Controller
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
         // Get employee details to update
-        $singleUserDetails = $user->load('officeShift', 'language', 'skill', 'assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
+        $singleUserDetails = $user->load('details');
         return view(
             'company.employee.add_employee',
             compact(
@@ -170,18 +174,27 @@ class EmployeeController extends Controller
 
     public function store(EmployeeAddRequest $request)
     {
+        DB::beginTransaction();
         try {
-            $userDetails = $this->employeeService->create($request->all());
-            if ($userDetails) {
+            $request['company_id'] = Auth()->user()->company_id;
+            $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'company_id'));
+            if ($userCreated) {
+                $request['user_id'] = $userCreated->id;
+                $userDetails = $this->employeeService->create($request->except('name', 'password', 'email', '_token', 'company_id'));
+                DB::commit();
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
                     'data' => $userDetails,
                     'allUserDetails' => view('company.employee.list', [
-                        'allUserDetails' => $this->employeeService->all('', Auth()->user()->company_id)->paginate(10)
+                        'allUserDetails' => $this->userService->searchFilterEmployee('', Auth()->user()->company_id)->paginate(10)
                     ])->render()
                 ]);
+            } else {
+                DB::rollBack();
+                return response()->json(['error' => 'Please try again later!']);
             }
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
@@ -194,7 +207,7 @@ class EmployeeController extends Controller
     public function getfilterlist(Request $request)
     {
         try {
-            $allUserDetails = $this->employeeService->all($request, Auth()->user()->company_id)->paginate(10);
+            $allUserDetails = $this->userService->searchFilterEmployee($request, Auth()->user()->company_id)->paginate(10);
             if ($allUserDetails) {
                 return response()->json([
                     'data' => view('company.employee.list', compact('allUserDetails'))->render()

@@ -15,6 +15,6 @@ class LeaveStatus extends Model
     const CANCELLED = '3';
 
     protected $fillable = [
-        'name', 'status', 'company_id'
+        'name', 'status', 'company_id','created_by'
     ];
 }
