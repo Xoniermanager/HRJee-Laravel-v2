@@ -27,7 +27,7 @@ class UsersTableSeeder extends Seeder
                 'password' => '$2y$12$IR42QDoUUVhWecO3UOEN6ecuY6yCH75BDBCCjFV.rgHueR3rTCS8S',
                 'email_verified_at' => NULL,
                 'role_id' => 1,
-                'company_id' => NULL,
+                'company_id' => 1,
                 'manager_id' => NULL,
                 'type' => 'company',
                 'status' => 1,
