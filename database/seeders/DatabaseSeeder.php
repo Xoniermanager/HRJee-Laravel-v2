@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminTableSeeder::class);
         $this->call(CompanyTypesTableSeeder::class);
         $this->call(RolesTableSeeder::class);
+        $this->call(MenusTableSeeder::class);
         // $this->call(CompanyTableSeeder::class);
         // $this->call(CountryTableSeeder::class);
         // $this->call(StatesTableSeeder::class);
@@ -62,7 +63,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(WeekDaySeeder::class);
         // $this->call(WeekendsTableSeeder::class);
         // $this->call(WeekDayWeekendTableSeeder::class);
-        // $this->call(MenusTableSeeder::class);
+        //
         // $this->call(CompanyMenuTableSeeder::class);
         // $this->call(EmployeesMenusSeeder::class);
     }
