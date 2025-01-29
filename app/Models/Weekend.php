@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Weekend extends Model
 {
     use HasFactory;
-    protected $fillable = ['company_branch_id', 'description', 'status', 'company_id','department_id'];
+    protected $fillable = ['company_branch_id', 'description', 'status', 'company_id','department_id','created_by'];
     public function companyBranch()
     {
         return $this->belongsTo(CompanyBranch::class);
