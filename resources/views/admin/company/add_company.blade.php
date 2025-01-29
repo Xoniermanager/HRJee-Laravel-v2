@@ -60,8 +60,8 @@
                                                             <title>location</title>
                                                             <desc>Created with Sketch Beta.</desc>
                                                             <defs> </defs>
-                                                            <g id="Page-1" stroke="none" stroke-width="1"
-                                                                fill="none" fill-rule="evenodd" sketch:type="MSPage">
+                                                            <g id="Page-1" stroke="none" stroke-width="1" fill="none"
+                                                                fill-rule="evenodd" sketch:type="MSPage">
                                                                 <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
                                                                     transform="translate(-106.000000, -413.000000)"
                                                                     fill="#ddd">
@@ -99,9 +99,8 @@
                                                                     Detail</label>
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
-                                                                <input class="form-control" id="name"
-                                                                    name="name" type="text"
-                                                                    placeholder="Company Name">
+                                                                <input class="form-control" id="name" name="name"
+                                                                    type="text" placeholder="Company Name">
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
                                                                 <input class="form-control" id="contact_no"
@@ -117,16 +116,15 @@
 
                                                             <div class="col-md-6 col-sm-6">
                                                                 <input class="form-control" id="username"
-                                                                    name="username" type="text"
-                                                                    placeholder="UsernName" autocomplete="nop">
+                                                                    name="username" type="text" placeholder="UsernName"
+                                                                    autocomplete="nop">
                                                                 @error('username')
                                                                 <span class="text-danger">{{ $message }}</span>
                                                                 @enderror
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
-                                                                <input class="form-control" id="email"
-                                                                    name="email" type="email"
-                                                                    placeholder="Company Email">
+                                                                <input class="form-control" id="email" name="email"
+                                                                    type="email" placeholder="Company Email">
                                                             </div>
 
                                                         </div>
@@ -154,8 +152,8 @@
                                                         <div class="row">
                                                             <div class="col-12">
                                                                 <div class="image-input">
-                                                                    <input type="file" id="logo"
-                                                                        name="logo" class="form-control">
+                                                                    <input type="file" id="logo" name="logo"
+                                                                        class="form-control">
                                                                     <p for="imageInput" class="image-button"> Choose
                                                                         Logo</p>
                                                                     <img src="" class="image-preview">
@@ -178,8 +176,8 @@
                                                                 <g id="SVGRepo_iconCarrier">
                                                                     <path d="M5 12H19M19 12L13 6M19 12L13 18"
                                                                         stroke="#000000" stroke-width="2"
-                                                                        stroke-linecap="round"
-                                                                        stroke-linejoin="round"></path>
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                    </path>
                                                                 </g>
                                                             </svg>
                                                         </div>
@@ -214,7 +212,8 @@
                                                                     name="company_type_id">
                                                                     <option value="">Company type</option>
                                                                     @forelse ($allCompanyTypeDetails as $item)
-                                                                    <option value="{{ $item->id }}">{{ $item->id }}</option>
+                                                                    <option value="{{ $item->id }}">{{ $item->name }}
+                                                                    </option>
                                                                     @empty
                                                                     <option value="">No Company Type</option>
                                                                     @endforelse
@@ -235,8 +234,10 @@
                                                     <div class="col-12">
                                                         <div class="row bottomspace">
                                                             <div class="col-md-12 col-sm-12">
-                                                                <textarea class="form-control" id="text-area" row="2" name="company_address"
-                                                                    placeholder="Enter Your Company Address" id="company_address"></textarea>
+                                                                <textarea class="form-control" id="text-area" row="2"
+                                                                    name="company_address"
+                                                                    placeholder="Enter Your Company Address"
+                                                                    id="company_address"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -270,8 +271,8 @@
                                                                 <g id="SVGRepo_iconCarrier">
                                                                     <path d="M5 12H19M19 12L13 6M19 12L13 18"
                                                                         stroke="#ffffff" stroke-width="2"
-                                                                        stroke-linecap="round"
-                                                                        stroke-linejoin="round"></path>
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                    </path>
                                                                 </g>
                                                             </svg>
                                                         </div>
