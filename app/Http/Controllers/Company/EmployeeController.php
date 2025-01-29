@@ -84,13 +84,13 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->employeeService->all($request == null, Auth::guard('company')->user()->company_id)->paginate(10);
+        $allUserDetails = $this->employeeService->all($request == null, Auth()->user()->company_id)->paginate(10);
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allShifts = $this->shiftService->getAllActiveShifts();
-        $allBranches = $this->branchService->all(Auth()->guard('company')->user()->company_id);
+        $allBranches = $this->branchService->all(Auth()->user()->id);
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
         return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills'));
@@ -106,7 +106,7 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages = $this->languagesServices->defaultLanguages();
-        $allBranches = $this->branchService->all(Auth()->guard('company')->user()->company_id);
+        $allBranches = $this->branchService->all(Auth()->user()->id);
         // $allRoles = $this->roleService->all();
         $allRoles = $this->customRoleService->all();
         $allShifts = $this->shiftService->getAllActiveShifts();
@@ -140,7 +140,7 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
-        $allBranches = $this->branchService->all(Auth()->guard('company')->user()->company_id);
+        $allBranches = $this->branchService->all(Auth()->user()->id);
         // $allRoles = $this->roleService->all();
         $allRoles = $this->customRoleService->all();
         $allShifts = $this->shiftService->getAllActiveShifts();
@@ -177,7 +177,7 @@ class EmployeeController extends Controller
                     'message' => 'Basic Details Added Successfully! Please Continue',
                     'data' => $userDetails,
                     'allUserDetails' => view('company.employee.list', [
-                        'allUserDetails' => $this->employeeService->all('', Auth::guard('company')->user()->company_id)->paginate(10)
+                        'allUserDetails' => $this->employeeService->all('', Auth()->user()->company_id)->paginate(10)
                     ])->render()
                 ]);
             }
@@ -194,7 +194,7 @@ class EmployeeController extends Controller
     public function getfilterlist(Request $request)
     {
         try {
-            $allUserDetails = $this->employeeService->all($request, Auth::guard('company')->user()->company_id)->paginate(10);
+            $allUserDetails = $this->employeeService->all($request, Auth()->user()->company_id)->paginate(10);
             if ($allUserDetails) {
                 return response()->json([
                     'data' => view('company.employee.list', compact('allUserDetails'))->render()
@@ -220,7 +220,7 @@ class EmployeeController extends Controller
 
                 if ($deleteDetails) {
                     // Fetch all user details after deletion
-                    $allUserDetails = $this->employeeService->all('', Auth::guard('company')->user()->company_id)->paginate(10);
+                    $allUserDetails = $this->employeeService->all('', Auth()->user()->company_id)->paginate(10);
 
                     return response()->json([
                         'data' => view('company.employee.list', compact('allUserDetails'))->render()
@@ -256,14 +256,14 @@ class EmployeeController extends Controller
 
     public function exitEmployeeList()
     {
-        $allEmployeeExitDetails = $this->employeeService->getExitEmployeeList(Auth::guard('company')->user()->company_id);
+        $allEmployeeExitDetails = $this->employeeService->getExitEmployeeList(Auth()->user()->company_id);
         return view('company.exit_employee.index', compact('allEmployeeExitDetails'));
     }
 
     public function searchFilterForExitEmployee(Request $request)
     {
         try {
-            $allEmployeeExitDetails = $this->employeeService->searchFilterForExitEmployee(Auth::guard('company')->user()->company_id, $request->all());
+            $allEmployeeExitDetails = $this->employeeService->searchFilterForExitEmployee(Auth()->user()->company_id, $request->all());
             return response()->json([
                 'data' => view('company.exit_employee.list', compact('allEmployeeExitDetails'))->render()
             ]);
@@ -275,9 +275,9 @@ class EmployeeController extends Controller
     public function exportEmployee(Request $request)
     {
         try {
-            $allEmployeeDetails = $this->employeeService->all($request, Auth::guard('company')->user()->company_id)->get();
-            $userEmail = Auth::guard('company')->user()->email;
-            $userName = Auth::guard('company')->user()->name;
+            $allEmployeeDetails = $this->employeeService->all($request, Auth()->user()->company_id)->get();
+            $userEmail = Auth()->user()->email;
+            $userName = Auth()->user()->name;
             EmployeeExportFileJob::dispatch($userEmail, $userName, $allEmployeeDetails);
             return response()->json([
                 'status' => true,
@@ -311,7 +311,7 @@ class EmployeeController extends Controller
                     'errors' => $failures,
                 ]);
             }
-            $allUserDetails = $this->employeeService->all('', Auth::guard('company')->user()->company_id)->paginate(10);
+            $allUserDetails = $this->employeeService->all('', Auth()->user()->company_id)->paginate(10);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Employee imported successfully!',

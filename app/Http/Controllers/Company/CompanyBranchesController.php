@@ -30,7 +30,7 @@ class CompanyBranchesController extends Controller
      */
     public function index()
     {
-        $branches  = $this->branch_services->all(Auth::guard('company')->user()->company_id);
+        $branches = $this->branch_services->all(Auth()->user()->company_id);
         $countries = $this->countryService->getAllActiveCountry();
         return view('company.branch.index', [
             'branches' => $branches,
@@ -54,8 +54,8 @@ class CompanyBranchesController extends Controller
                 return response()->json(
                     [
                         'message' => 'Created Successfully!',
-                        'data'   =>  view('company.branch.branches-list', [
-                            'branches' => $this->branch_services->all(Auth()->guard('company')->user()->company_id)
+                        'data' => view('company.branch.branches-list', [
+                            'branches' => $this->branch_services->all(Auth()->user()->id)
                         ])->render()
                     ]
                 );
@@ -72,7 +72,7 @@ class CompanyBranchesController extends Controller
     public function update(Request $request)
     {
         try {
-            $validator  = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
                 'address' => ['required', 'string'],
                 'pincode' => ['required', 'integer'],
@@ -88,7 +88,7 @@ class CompanyBranchesController extends Controller
                 return response()->json(
                     [
                         'message' => 'Updated Successfully!',
-                        'data'    =>  view('company.branch.branches-list', ['branches' => $this->branch_services->all(Auth()->guard('company')->user()->company_id)])->render()
+                        'data' => view('company.branch.branches-list', ['branches' => $this->branch_services->all(Auth()->user()->id)])->render()
                     ]
                 );
             }
@@ -99,7 +99,7 @@ class CompanyBranchesController extends Controller
     public function updateBranch(Request $request)
     {
         try {
-            $validator  = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
                 'address' => ['required', 'string'],
                 'pincode' => ['required', 'integer'],
@@ -115,7 +115,7 @@ class CompanyBranchesController extends Controller
                 return response()->json(
                     [
                         'message' => 'Updated Successfully!',
-                        'data'    =>  view('company.branch.branches-list', ['branches' => $this->branch_services->all(Auth()->guard('company')->user()->company_id)])->render()
+                        'data' => view('company.branch.branches-list', ['branches' => $this->branch_services->all(Auth()->user()->id)])->render()
                     ]
                 );
             }
@@ -134,8 +134,8 @@ class CompanyBranchesController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Country Deleted Successfully',
-                'data'    =>  view('company.branch.branches-list', [
-                    'branches' => $this->branch_services->all(Auth()->guard('company')->user()->company_id)
+                'data' => view('company.branch.branches-list', [
+                    'branches' => $this->branch_services->all(Auth()->user()->id)
                 ])->render()
             ]);
         } else {
@@ -151,8 +151,8 @@ class CompanyBranchesController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Branch Status Updated Successfully',
-                'data'    =>  view('company.branch.branches-list', [
-                    'branches' => $this->branch_services->all(Auth()->guard('company')->user()->company_id)
+                'data' => view('company.branch.branches-list', [
+                    'branches' => $this->branch_services->all(Auth()->user()->id)
                 ])->render()
             ]);
         } else {
@@ -166,7 +166,7 @@ class CompanyBranchesController extends Controller
         if ($branches) {
             return response()->json([
                 'success' => 'Searching',
-                'data'    =>  view('company.branch.branches-list', compact('branches'))->render()
+                'data' => view('company.branch.branches-list', compact('branches'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

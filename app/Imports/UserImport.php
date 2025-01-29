@@ -47,7 +47,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
             $row['blood_group'] = 'N/A';
             $row['marital_status'] = 'N/A';
             $row['last_login_ip'] = request()->ip();
-            $row['company_id'] = Auth::guard('company')->user()->company_id;
+            $row['company_id'] = Auth()->user()->company_id;
             $row['employee_type_id'] = EmployeeType::NEWJOINEE;
             $row['role_id'] = '2';
             $companyBranch = CompanyBranch::where('name', $row['company_branch'])->first();

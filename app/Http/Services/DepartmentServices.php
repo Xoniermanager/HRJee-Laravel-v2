@@ -16,14 +16,13 @@ class DepartmentServices
         return $this->departmentRepository->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
-
     {
         return $this->departmentRepository->create($data);
     }
 
     public function getAllDepartmentsByCompanyId()
     {
-        return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', auth()->guard('company')->user()->company_id)->get();
+        return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', Auth()->user()->id)->get();
     }
 
     public function updateDetails(array $data, $id)
@@ -40,7 +39,7 @@ class DepartmentServices
         $departmentDetails = $this->departmentRepository;
         /**List By Search or Filter */
         if (isset($request['search']) && !empty($request['search'])) {
-            $departmentDetails = $departmentDetails->where('name', 'Like', '%' .$request['search'] . '%');
+            $departmentDetails = $departmentDetails->where('name', 'Like', '%' . $request['search'] . '%');
         }
         /**List By Status or Filter */
         if (isset($request['status'])) {

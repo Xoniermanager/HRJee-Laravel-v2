@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use App\Models\Menu;
 use App\Models\CompanyMenu;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,12 +24,12 @@ function unlinkFileOrImage($file)
     return true;
 }
 
-function uploadingImageorFile($file, String $path, $namePrefix = '')
+function uploadingImageorFile($file, string $path, $namePrefix = '')
 {
-    $image  = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
+    $image = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
     $path = $path . '/' . $image;
     Storage::disk('public')->put($path, file_get_contents($file));
-    return  $path;
+    return $path;
 }
 
 
@@ -116,8 +117,8 @@ if (!function_exists('errorMessage')) {
         return response()->json([
             'message' => transLang('given_data_invalid'),
             'status' => false,
-            'errors' =>  empty($errors) ? null : $errors,
-            'data' =>   $data === 'null' ? null : $data
+            'errors' => empty($errors) ? null : $errors,
+            'data' => $data === 'null' ? null : $data
         ], 401);
     }
 }
@@ -139,7 +140,7 @@ function getTotalWorkingHour($startTime, $endTime)
     $time1 = new DateTime($startTime);
     $time2 = new DateTime($endTime);
     $time_diff = $time1->diff($time2);
-    return  $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
+    return $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
 }
 
 
@@ -158,7 +159,7 @@ function getWorkDateFromate($joiningDate)
 
 function fullMonthList()
 {
-    return  [
+    return [
         '1' => 'January',
         '2' => 'February',
         '3' => 'March',
@@ -198,32 +199,11 @@ function getDecryptId($id)
 
 function getCompanyMenuHtml($companyId)
 {
-    $companyMenus = [];
     $html = '';
+    $user = Auth::user();
+    $companyMenuIDs = [];
 
-    if (session()->has('impersonation')) {
-        $roleID = session()->get('impersonation')['original_user_role'];
-        $companyMenuSql = CompanyMenu::with(['menu' => function ($query) {
-            $query->where('status', 1);
-            $query->orderBy('order_no', 'ASC');
-        }, 'menu.parent'])->where('role_id', $roleID);
-    } else {
-        $companyMenuSql = CompanyMenu::with(['menu' => function ($query) {
-            $query->where('status', 1);
-            $query->orderBy('order_no', 'ASC');
-        }, 'menu.parent'])->where('company_id', $companyId);
-    }
-
-    $companyMenuIDs = $companyMenuSql->pluck('menu_id')->toArray();
-    $companyMenus = $companyMenuSql->get();
-    foreach ($companyMenus as $companyMenu) {
-        $menu = $companyMenu->menu;
-        $companyMenuIDs[] = $menu->parent_id;
-    }
-
-    $companyMenus = Menu::where('status', 1)->whereIn('id', $companyMenuIDs)->orderBy('order_no', 'ASC')->get();
-
-    foreach ($companyMenus as $menu) {
+    foreach ($user->menu as $menu) {
         // Check if the menu has children
         if ($menu->children && $menu->children->isNotEmpty()) {
             $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
@@ -239,10 +219,11 @@ function getCompanyMenuHtml($companyId)
 
             // Iterate over the children
             foreach ($menu->children as $children) {
-                if (in_array($children->id, $companyMenuIDs)) {
-                    $html .= '<div class="menu-sub menu-sub-accordion">
-                            <div class="menu-item" data-url="' . $children->slug . '">
-                                <a class="menu-link" href="' . $children->slug . '">
+                $url = $user->type == 'company' ? "/company$children->slug" : "/employee$children->slug";
+
+                $html .= '<div class="menu-sub menu-sub-accordion">
+                            <div class="menu-item" data-url="' . $url . '">
+                                <a class="menu-link" href="' . $url . '">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
@@ -250,15 +231,16 @@ function getCompanyMenuHtml($companyId)
                                 </a>
                             </div>
                             </div>';
-                }
             }
 
             $html .= '</div>';  // Close the menu-item (accordion)
         }
         if ($menu->parent_id == null && $menu->children->isEmpty()) {
+            $url = $user->type == 'company' ? "/company$menu->slug" : "/employee$menu->slug";
+
             // If no children, just a simple menu item
-            $html .= '<div class="menu-item" data-url="' . $menu->slug . '">
-                        <a class="menu-link" href="' . $menu->slug . '">
+            $html .= '<div class="menu-item" data-url="' . $url . '">
+                        <a class="menu-link" href="' . $url . '">
                             <span class="menu-icon">
                                 <span class="svg-icon svg-icon-5">
                                     ' . $menu->icon . '
@@ -285,7 +267,7 @@ function getEmployeeMenuHtml($companyId)
 
     $childMenuIDs = Menu::where(['status' => 1, 'role' => 'employee'])->whereIn('parent_id', $companyAssignedMenuIds)->whereNotNull('parent_id')->pluck('id')->toArray();
     $parentMenuIDs = Menu::where(['status' => 1, 'role' => 'employee'])->whereIn('parent_id', $companyAssignedMenuIds)->whereNotNull('parent_id')->pluck('parent_id')->toArray();
-    
+
     $parentMenus = array_merge($mainMenuIDs, $parentMenuIDs);
     $companyMenus = Menu::whereIn('id', $parentMenus)->orderBy('order_no', 'ASC')->with(['parent'])->get();
 

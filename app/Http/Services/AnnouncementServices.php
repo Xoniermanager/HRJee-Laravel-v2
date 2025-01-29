@@ -14,7 +14,7 @@ class AnnouncementServices
   private $companyBranchServices;
   private $departmentServices;
   private $designationServices;
-  public function __construct(AnnouncementRepository $announcementRepository,BranchServices $companyBranchServices, DepartmentServices $departmentServices, DesignationServices $designationServices)
+  public function __construct(AnnouncementRepository $announcementRepository, BranchServices $companyBranchServices, DepartmentServices $departmentServices, DesignationServices $designationServices)
   {
     $this->announcementRepository = $announcementRepository;
     $this->companyBranchServices = $companyBranchServices;
@@ -36,8 +36,8 @@ class AnnouncementServices
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('company')->user()->company_id;
-    $announcementDetails =  $this->announcementRepository->create($finalPayload);
+    $finalPayload['company_id'] = Auth()->user()->company_id;
+    $announcementDetails = $this->announcementRepository->create($finalPayload);
     if ($announcementDetails) {
       $announcementModelDetails = Announcement::find($announcementDetails->id);
       if ($announcementDetails->all_company_branch == 0) {

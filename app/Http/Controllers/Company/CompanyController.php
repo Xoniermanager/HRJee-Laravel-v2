@@ -25,7 +25,7 @@ class CompanyController extends Controller
         CompanyServices $company_services,
         BranchServices $branch_services
     ) {
-        $this->company_services  = $company_services;
+        $this->company_services = $company_services;
         $this->branch_services = $branch_services;
     }
     /**
@@ -33,13 +33,13 @@ class CompanyController extends Controller
      */
     public function company_profile()
     {
-        if (empty(Auth::guard('company')->user()->branch_id))
-            $companyID = Auth::guard('company')->user()->company_id;
+        if (empty(Auth()->user()->branch_id))
+            $companyID = Auth()->user()->company_id;
         else
-            $companyID = Auth::guard('company')->user()->branch_id;
+            $companyID = Auth()->user()->branch_id;
 
 
-        $companyDetails =  $this->company_services->get_company_with_branch_details($companyID);
+        $companyDetails = $this->company_services->get_company_with_branch_details($companyID);
         $companyBranch = $companyDetails->branches->where('type', 'primary')->first();
         return view('company.company.company_profile', compact('companyDetails', 'companyBranch'));
     }
@@ -53,7 +53,7 @@ class CompanyController extends Controller
             $data = request()->except(['_token']);
             if ($request->logo !== null) {
                 $upload_path = "/uploads";
-                $image =  $data['logo'];
+                $image = $data['logo'];
                 $filePath = uploadingImageorFile($image, $upload_path, 'company_profile');
                 if ($filePath) {
                     $data['logo'] = $filePath;
@@ -76,7 +76,7 @@ class CompanyController extends Controller
             'old_password' => 'required',
             'new_password' => 'required|min:6|confirmed', // Ensure new password matches the confirmation field
         ]);
-        $companyUser = Auth::guard('company')->user();
+        $companyUser = Auth()->user();
         if (!Hash::check($request->old_password, $companyUser->password)) {
             smilify('success', 'The old password is incorrect.');
             return false;

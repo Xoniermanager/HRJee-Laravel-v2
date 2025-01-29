@@ -30,7 +30,7 @@ class CompanyDashboardController extends Controller
     }
     public function index()
     {
-        $companyId = Auth()->guard('company')->user()->company_id;
+        $companyId = Auth()->user()->id;
         $today = today();
         $dashboardData = [
             // Total office branches

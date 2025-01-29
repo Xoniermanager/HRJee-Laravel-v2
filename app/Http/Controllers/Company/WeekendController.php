@@ -30,8 +30,8 @@ class WeekendController extends Controller
     {
         // dd($this->weekendService->all());
         return view('company.weekend.index', [
-            'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->company_id),
-            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id),
+            'allWeekendDetails' => $this->weekendService->all(Auth()->user()->id),
+            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->user()->id),
             'allWeekDay' => WeekDay::get(),
             'allDepartments' => $this->departmentService->getAllDepartmentsByCompanyId()
         ]);
@@ -43,11 +43,11 @@ class WeekendController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateWeekendData  = Validator::make($request->all(), [
-                'company_branch_id'  => 'required|exists:company_branches,id',
-                'department_id'      => 'required|exists:departments,id',
-                'weekday_id'         =>   'required|array',
-                'weekday_id.*'       =>   'required'
+            $validateWeekendData = Validator::make($request->all(), [
+                'company_branch_id' => 'required|exists:company_branches,id',
+                'department_id' => 'required|exists:departments,id',
+                'weekday_id' => 'required|array',
+                'weekday_id.*' => 'required'
             ]);
             if ($validateWeekendData->fails()) {
                 return response()->json(['error' => $validateWeekendData->messages()], 400);
@@ -56,13 +56,13 @@ class WeekendController extends Controller
             if ($this->weekendService->create($data)) {
                 return response()->json([
                     'message' => 'Weekend Added Successfully!',
-                    'data'   =>  view('company.weekend.weekend_list', [
-                        'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->company_id)
+                    'data' => view('company.weekend.weekend_list', [
+                        'allWeekendDetails' => $this->weekendService->all(Auth()->user()->id)
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
     /**
@@ -75,8 +75,8 @@ class WeekendController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Holiday Deleted Successfully',
-                'data'   =>  view('company.weekend.weekend_list', [
-                    'allWeekendDetails' => $this->weekendService->all(Auth()->guard('company')->user()->company_id)
+                'data' => view('company.weekend.weekend_list', [
+                    'allWeekendDetails' => $this->weekendService->all(Auth()->user()->id)
                 ])->render()
             ]);
         } else {
@@ -85,7 +85,7 @@ class WeekendController extends Controller
     }
     public function statusUpdate(Request $request)
     {
-        $statusDetails = $this->weekendService->updateStatus($request->id,  $request->status);
+        $statusDetails = $this->weekendService->updateStatus($request->id, $request->status);
         if ($statusDetails) {
             echo 1;
         } else {
@@ -95,12 +95,12 @@ class WeekendController extends Controller
 
     public function getWeekEndDetailByCompanyId(Request $request)
     {
-        $data = $this->weekendService->getWeekendDetailsByCompanyBranchIdByCompanyId(Auth()->guard('company')->user()->company_id, $request->company_branch_id, $request->department_id);
+        $data = $this->weekendService->getWeekendDetailsByCompanyBranchIdByCompanyId(Auth()->user()->id, $request->company_branch_id, $request->department_id);
         if (isset($data) && !empty($data)) {
             return response()->json([
                 'status' => true,
-                'data'   => $data,
-                'weekdayId'   => $data->weekday->pluck('id')->toArray(),
+                'data' => $data,
+                'weekdayId' => $data->weekday->pluck('id')->toArray(),
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

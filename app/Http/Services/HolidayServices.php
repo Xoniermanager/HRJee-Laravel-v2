@@ -17,7 +17,7 @@ class HolidayServices
     }
     public function all()
     {
-        return $this->holidayRepository->where('company_id', Auth()->guard('company')->user()->company_id)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
+        return $this->holidayRepository->where('company_id', Auth()->user()->id)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
     {
@@ -26,7 +26,7 @@ class HolidayServices
                 return $value !== 'all';
             });
             $data['company_branch_id'] = array_values($data['company_branch_id']);
-            $data['company_id'] = Auth::guard('company')->user()->company_id;
+            $data['company_id'] = Auth()->user()->company_id;
             $response = $this->holidayRepository->create(Arr::except($data, 'company_branch_id'));
             if ($response) {
                 $response->companyBranch()->sync($data['company_branch_id']);
@@ -47,7 +47,7 @@ class HolidayServices
                 return $value !== 'all';
             });
             $data['company_branch_id'] = array_values($data['company_branch_id']);
-            $data['company_id'] = Auth::guard('company')->user()->company_id;
+            $data['company_id'] = Auth()->user()->company_id;
             $holidayDetails->update(Arr::except($data, 'company_branch_id'));
             if ($holidayDetails) {
                 $holidayDetails->companyBranch()->sync($data['company_branch_id']);

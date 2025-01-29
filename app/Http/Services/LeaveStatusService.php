@@ -18,7 +18,7 @@ class LeaveStatusService
   }
   public function create(array $data)
   {
-    $data['company_id'] = Auth::guard('company')->user()->company_id ?? '';
+    $data['company_id'] = Auth()->user()->company_id ?? '';
     return $this->leaveStatusRepository->create($data);
   }
   public function updateDetails(array $data, $id)
@@ -32,6 +32,6 @@ class LeaveStatusService
 
   public function getAllActiveLeaveStatus()
   {
-    return $this->leaveStatusRepository->where('status','1')->get();
+    return $this->leaveStatusRepository->where('status', '1')->get();
   }
 }

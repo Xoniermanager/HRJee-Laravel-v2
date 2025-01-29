@@ -100,7 +100,7 @@ class CompanyDetailService
     //         $query->where('status', 1);
     //         $query->where('role', 'company');
     //         $query->orderBy('order_no', 'ASC');
-    //     }, 'menu.parent'])->where('company_id', auth()->guard('company')->user()->company_id);
+    //     }, 'menu.parent'])->where('company_id', Auth()->user()->id);
 
 
     //     $companyMenuIDs = $companyMenuSql->pluck('menu_id')->toArray();

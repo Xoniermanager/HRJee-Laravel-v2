@@ -9,7 +9,7 @@ class CheckCompanyStatus
 {
     public function handle($request, Closure $next)
     {
-        $companyDetails = Auth::guard('company')->user();
+        $companyDetails = Auth()->user();
         if ($companyDetails && $companyDetails->status == '0') {
             Auth::logout();
             session()->flush();

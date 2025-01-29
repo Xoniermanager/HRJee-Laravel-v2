@@ -33,6 +33,10 @@ use App\Http\Controllers\Employee\LeaveTrackingController;
 |
 */
 
+// Route::middleware(['check.employee.status', 'Check2FA'])->group(function (){
+//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// });
+
 /** ---------------Employee Panel Started--------------  */
 Route::prefix('employee')->middleware(['check.employee.status', 'Check2FA'])->group(function () {
     //Employee Dashboard

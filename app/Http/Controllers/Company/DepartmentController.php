@@ -35,24 +35,24 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateDepartments  = Validator::make($request->all(), [
+            $validateDepartments = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:departments,name'],
             ]);
             if ($validateDepartments->fails()) {
                 return response()->json(['error' => $validateDepartments->messages()], 400);
             }
             $data = $request->all();
-            $data['company_id'] = Auth::guard('company')->user()->company_id;
+            $data['company_id'] = Auth()->user()->company_id;
             if ($this->departmentService->create($data)) {
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
-                    'data'   =>  view("company.department.department_list", [
+                    'data' => view("company.department.department_list", [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -61,7 +61,7 @@ class DepartmentController extends Controller
      */
     public function update(Request $request)
     {
-        $validateDepartments  = Validator::make($request->all(), [
+        $validateDepartments = Validator::make($request->all(), [
             'name' => ['required', 'string', 'unique:departments,name,' . $request->id],
         ]);
 
@@ -74,7 +74,7 @@ class DepartmentController extends Controller
             return response()->json(
                 [
                     'message' => 'Departments Updated Successfully!',
-                    'data'   =>  view('company.department.department_list', [
+                    'data' => view('company.department.department_list', [
                         'allDepartmentDetails' => $this->departmentService->all()
                     ])->render()
                 ]
@@ -92,7 +92,7 @@ class DepartmentController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Departments Deleted Successfully',
-                'data'   =>  view("company.department.department_list", [
+                'data' => view("company.department.department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -108,7 +108,7 @@ class DepartmentController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Departments Status Updated Successfully',
-                'data'   =>  view("company.department.department_list", [
+                'data' => view("company.department.department_list", [
                     'allDepartmentDetails' => $this->departmentService->all()
                 ])->render()
             ]);
@@ -122,8 +122,8 @@ class DepartmentController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view("company.department.department_list", [
-                    'allDepartmentDetails' =>  $searchedItems
+                'data' => view("company.department.department_list", [
+                    'allDepartmentDetails' => $searchedItems
                 ])->render()
             ]);
         } else {

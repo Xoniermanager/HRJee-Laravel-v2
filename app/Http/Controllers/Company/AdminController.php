@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Cookie;
 
 class AdminController extends Controller
 {
-    private  $authService, $sendOtpService;
+    private $authService, $sendOtpService;
 
     public function __construct(AuthService $authService, SendOtpService $sendOtpService)
     {
@@ -45,7 +45,7 @@ class AdminController extends Controller
             if (!Auth::guard('company')->attempt($request->only('email', 'password'))) {
                 return redirect()->back()->with(['error' => 'These credentials do not match our records.']);
             } else {
-                $user = Auth::guard('company')->user();
+                $user = Auth()->user();
                 if ($user->status !== '1') {
                     return redirect()->back()->with(['error' => 'Your account is not Active.Please Contact to Admin']);
                 }
@@ -88,7 +88,7 @@ class AdminController extends Controller
     public function verifyOtp()
     {
         if (!auth()->guard('company')->check()) {
-            return  redirect('/company/signin');
+            return redirect('/company/signin');
         }
         return view('company-verify-otp');
     }
@@ -104,7 +104,7 @@ class AdminController extends Controller
             if ($verifyOtpResponse)
                 return redirect('company/dashboard');
             else
-                return redirect('company/verify/otp')->with('error',  'invalid_or_expired_otp');
+                return redirect('company/verify/otp')->with('error', 'invalid_or_expired_otp');
         } catch (Throwable $th) {
             return Redirect::back()->withErrors($th->getMessage());
         }
@@ -120,14 +120,14 @@ class AdminController extends Controller
     {
         try {
             if (!auth()->guard('company')->check()) {
-                return   redirect('/company/signin');
+                return redirect('/company/signin');
             }
             $email = auth()->guard('company')->user()->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'company');
             if ($otpResponse['status'] == true)
-                return redirect('company/verify/otp')->with('success',  transLang($otpResponse['message']));
+                return redirect('company/verify/otp')->with('success', transLang($otpResponse['message']));
             else
-                return redirect('company/verify/otp')->with('error',  transLang($otpResponse['message']));
+                return redirect('company/verify/otp')->with('error', transLang($otpResponse['message']));
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }

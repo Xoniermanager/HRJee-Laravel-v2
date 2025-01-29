@@ -50,7 +50,7 @@ class EmployeeServices
 
         //List Selected by Department
         if (isset($request->department_id) && !empty($request->department_id)) {
-            $allEmployeeDetails =  $allEmployeeDetails->where('department_id', '=', $request->department_id);
+            $allEmployeeDetails = $allEmployeeDetails->where('department_id', '=', $request->department_id);
         }
         //List Selected by Shift
         if (isset($request->shift_id) && !empty($request->shift_id)) {
@@ -107,7 +107,7 @@ class EmployeeServices
             }
             $existingDetails->update($data);
         } else {
-            $data['company_id'] = Auth::guard('company')->user()->company_id;
+            $data['company_id'] = Auth()->user()->company_id;
             $data['password'] = Hash::make($data['password'] ?? 'password');
             $createData = $this->employeeRepository->create($data);
             $createData->skill()->sync($data['skill_id']);
@@ -120,7 +120,7 @@ class EmployeeServices
         $response =
             [
                 'status' => $status ?? 'updateData',
-                'id'     => $id ?? ''
+                'id' => $id ?? ''
             ];
         return $response;
     }
@@ -148,8 +148,8 @@ class EmployeeServices
         try {
 
             UserCode::updateOrCreate(['email' => $request->email], [
-                'type'  => 'user',
-                'code'  => $code,
+                'type' => 'user',
+                'code' => $code,
             ]);
             $mailData = [
                 'email' => $request->email,
@@ -180,13 +180,13 @@ class EmployeeServices
         $allCompanyDepartment = $this->departmentService->getAllDepartmentsByCompanyId();
         $allDepartmentIds = $allCompanyDepartment->pluck('id');
         $selectedDepartments = $allDepartmentIds;
-        $baseQuery =  $this->employeeRepository;
+        $baseQuery = $this->employeeRepository;
 
         /** Filter by Company Branch */
         if (isset($companyBranchIds) && count($companyBranchIds) > 0) {
             $baseQuery->whereIn('company_branch_id', $companyBranchIds);
         } else {
-            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
+            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
             $allCompanyBranchIds = $allCompanyBranchDetails->pluck('id');
             $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
         }

@@ -11,7 +11,7 @@ use App\Http\Services\EmployeeAttendanceService;
 use App\Http\Services\EmployeeBreakHistoryService;
 
 class DashboardController extends Controller
-{   
+{
     private $companyUserService;
     private $employeeAttendanceService;
     private $breakTypeService;
@@ -28,14 +28,14 @@ class DashboardController extends Controller
     public function index()
     {
         $existingAttendanceDetail = $this->employeeAttendanceService->getExtistingDetailsByUserId(Auth()->guard('employee')->user()->id);
-        
-        $allBreakTypeDetails =  $this->breakTypeService->getAllBreakTypeByCompanyId(Auth()->guard('employee')->user()->company_id);
+
+        $allBreakTypeDetails = $this->breakTypeService->getAllBreakTypeByCompanyId(Auth()->guard('employee')->user()->company_id);
         $takenBreakDetails = '';
         if (isset($existingAttendanceDetail) && !empty($existingAttendanceDetail)) {
             $takenBreakDetails = $this->employeeBreakHistoryService->getBreakHistoryByAttendanceId($existingAttendanceDetail->id);
             $existingAttendanceDetail['totalBreakHour'] = $this->employeeBreakHistoryService->getTotalBreakHour($existingAttendanceDetail->id);
         }
-       //dd($existingAttendanceDetail);
+        //dd($existingAttendanceDetail);
         return view('employee.dashboard.dashboard', compact('existingAttendanceDetail', 'allBreakTypeDetails', 'takenBreakDetails'));
     }
 
@@ -57,7 +57,7 @@ class DashboardController extends Controller
             'email' => $employee->email,
             'status' => 1
         ];
-        
+
         $companyUser = $this->companyUserService->updateOrCreate(['email' => $employee->email], $data);
 
         // Log in the company under the company guard
@@ -71,9 +71,9 @@ class DashboardController extends Controller
         if (!session()->has('impersonation')) {
             return redirect()->back()->with('error', 'No impersonation in progress.');
         }
-        
-        $this->companyUserService->hardDelete(auth()->guard('company')->user()->id);
-        
+
+        $this->companyUserService->hardDelete(Auth()->user()->id);
+
         // Retrieve original guard and user info
         $impersonation = session()->get('impersonation');
         auth()->guard($impersonation['original_guard'])->loginUsingId($impersonation['original_user_id']);

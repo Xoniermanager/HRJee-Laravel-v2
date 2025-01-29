@@ -15,17 +15,17 @@ class AssetService
     }
     public function all($type = '')
     {
-        $query = $this->assetRepository->where('company_id', Auth()->guard('company')->user()->company_id)->with(['userAsset', 'userAsset.user', 'assetStatus', 'assetCategories', 'assetManufacturers'])->orderBy('id', 'DESC');
+        $query = $this->assetRepository->where('company_id', Auth()->user()->id)->with(['userAsset', 'userAsset.user', 'assetStatus', 'assetCategories', 'assetManufacturers'])->orderBy('id', 'DESC');
         if ($type == 'all') {
             $query = $query->get();
         } else {
-            $query =   $query->paginate(10);
+            $query = $query->paginate(10);
         }
         return $query;
     }
     public function allAssetWithUser()
     {
-        return  $this->assetRepository->where('company_id', Auth()->guard('company')->user()->company_id)->with(['userAsset', 'userAsset.user'])->orderBy('id', 'DESC')->paginate(10);
+        return $this->assetRepository->where('company_id', Auth()->user()->id)->with(['userAsset', 'userAsset.user'])->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
     {
@@ -36,7 +36,7 @@ class AssetService
             $data['invoice_file'] = $filePath;
         }
         $data['asset_status_id'] = AssetStatus::CREATED;
-        $data['company_id'] = Auth::guard('company')->user()->company_id;
+        $data['company_id'] = Auth()->user()->company_id;
         return $this->assetRepository->create($data);
     }
 
@@ -57,7 +57,7 @@ class AssetService
     }
     public function deleteDetails($id)
     {
-        $existingDetails =  $this->assetRepository->find($id);
+        $existingDetails = $this->assetRepository->find($id);
         if ($existingDetails->invoice_file != null) {
             unlinkFileOrImage($existingDetails->invoice_file);
         }
@@ -70,7 +70,7 @@ class AssetService
 
     public function serachAssetFilterList($request)
     {
-        $assetDetails = $this->assetRepository->where('company_id', Auth()->guard('company')->user()->company_id);
+        $assetDetails = $this->assetRepository->where('company_id', Auth()->user()->id);
 
         /**List By Search or Filter */
         if (isset($request->search) && !empty($request->search)) {

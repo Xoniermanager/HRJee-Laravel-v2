@@ -41,8 +41,8 @@ class NewsService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('company')->user()->company_id;
-    $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
+    $finalPayload['company_id'] = Auth()->user()->company_id;
+    $newsCreatedDetails = $this->newsRepository->create($finalPayload);
     if ($newsCreatedDetails) {
       $newsDetails = News::find($newsCreatedDetails->id);
       if ($newsCreatedDetails->all_company_branch == 0) {

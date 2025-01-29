@@ -14,19 +14,19 @@ use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
 {
-    private $customRoleService; 
+    private $customRoleService;
     public function __construct(CustomRoleService $customRoleService)
     {
-            $this->customRoleService = $customRoleService;
+        $this->customRoleService = $customRoleService;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $roles = $this->customRoleService->getRolesByCompanyID(auth()->guard('company')->user()->company_id);
-        
-        return view('company.roles_and_permission.roles.index')->with(['roles'=> $roles]);
+        $roles = $this->customRoleService->getRolesByCompanyID(Auth()->user()->id);
+
+        return view('company.roles_and_permission.roles.index')->with(['roles' => $roles]);
     }
 
     public function role_form()
@@ -38,7 +38,7 @@ class RolesController extends Controller
     {
 
         try {
-            $validator  = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:custom_roles,name'],
             ]);
 
@@ -47,19 +47,19 @@ class RolesController extends Controller
             }
 
             $data = $request->all();
-            $data['company_id'] = auth()->guard('company')->user()->company_id;
+            $data['company_id'] = Auth()->user()->id;
             if ($this->customRoleService->create($data)) {
 
                 return response()->json([
                     'message' => 'Role Created Successfully!',
-                    'data'   =>  view('company/roles_and_permission/roles/roles_list', [
+                    'data' => view('company/roles_and_permission/roles/roles_list', [
                         'roles' => $this->customRoleService->all()
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
 
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -68,7 +68,7 @@ class RolesController extends Controller
      */
     public function update(Request $request)
     {
-        $validator  = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', new OnlyString, 'unique:states,name,' . $request->id],
         ]);
 
@@ -78,11 +78,11 @@ class RolesController extends Controller
         $updateRole = $request->except(['_token', 'id']);
         $companyStatus = $this->customRoleService->updateDetails($updateRole, $request->id);
         if ($companyStatus) {
-            
+
             return response()->json(
                 [
                     'message' => 'Role Updated Successfully!',
-                    'data'   =>  view('company/roles_and_permission/roles/roles_list', [
+                    'data' => view('company/roles_and_permission/roles/roles_list', [
                         'roles' => $this->customRoleService->all()
                     ])->render()
                 ]
@@ -98,7 +98,7 @@ class RolesController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'message' => 'Role Status Updated Successfully!',
-                'data'   =>  view('company/roles_and_permission/roles/roles_list', [
+                'data' => view('company/roles_and_permission/roles/roles_list', [
                     'roles' => $this->customRoleService->all()
                 ])->render()
             ]);
@@ -117,7 +117,7 @@ class RolesController extends Controller
         if ($data) {
             return response()->json([
                 'message' => 'Role Deleted Successfully!',
-                'data'   =>  view('company/roles_and_permission/roles/roles_list', [
+                'data' => view('company/roles_and_permission/roles/roles_list', [
                     'roles' => $this->customRoleService->all()
                 ])->render()
             ]);

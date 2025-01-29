@@ -14,7 +14,7 @@ class PolicyService
   private $departmentServices;
   private $companyBranchServices;
   private $designationServices;
-  public function __construct(DesignationServices $designationServices,BranchServices $companyBranchServices, DepartmentServices $departmentServices, PolicyRepository $policyRepository)
+  public function __construct(DesignationServices $designationServices, BranchServices $companyBranchServices, DepartmentServices $departmentServices, PolicyRepository $policyRepository)
   {
     $this->policyRepository = $policyRepository;
     $this->departmentServices = $departmentServices;
@@ -41,9 +41,9 @@ class PolicyService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('company')->user()->company_id;
-    // $finalPayload['company_branch_id'] = Auth::guard('company')->user()->branch_id ?? '';
-    $policyCreatedDetails =  $this->policyRepository->create($finalPayload);
+    $finalPayload['company_id'] = Auth()->user()->company_id;
+    // $finalPayload['company_branch_id'] = Auth()->user()->branch_id ?? '';
+    $policyCreatedDetails = $this->policyRepository->create($finalPayload);
     if ($policyCreatedDetails) {
       $policyDetails = Policy::find($policyCreatedDetails->id);
       if ($policyCreatedDetails->all_company_branch == 0) {
