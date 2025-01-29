@@ -17,7 +17,7 @@ class CustomRoleService
   {
     if ($companyId) {
       $otherRoles = $this->customRoleRepository->where('user_id', $companyId)->get();
-      $userRole = $this->customRoleRepository->where('name', 'User');
+      $userRole = $this->customRoleRepository->where('name', 'User')->get();
       return $otherRoles->merge($userRole);
     }
 
