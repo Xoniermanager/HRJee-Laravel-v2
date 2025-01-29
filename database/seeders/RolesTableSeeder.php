@@ -14,13 +14,13 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('roles')->delete();
-        
-        \DB::table('roles')->insert(array (
-            0 => 
-            array (
+
+        \DB::table('roles')->insert(array(
+            0 =>
+            array(
                 'id' => 1,
                 'name' => 'Xonier Admin',
                 'description' => 'Administrator with full access',
@@ -30,8 +30,17 @@ class RolesTableSeeder extends Seeder
                 'created_at' => '2025-01-29 10:41:20',
                 'updated_at' => '2025-01-29 10:41:20',
             ),
+            1 =>
+            array(
+                'id' => 2,
+                'name' => 'User',
+                'description' => 'User with full access',
+                'user_id' => NULL,
+                'category' => 'default',
+                'status' => 1,
+                'created_at' => '2025-01-29 10:41:20',
+                'updated_at' => '2025-01-29 10:41:20',
+            ),
         ));
-        
-        
     }
 }

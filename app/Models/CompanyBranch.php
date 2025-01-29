@@ -25,6 +25,7 @@ class CompanyBranch extends Model
         'country_id',
         'company_id',
         'status',
+        'created_by'
     ];
     public function company()
     {

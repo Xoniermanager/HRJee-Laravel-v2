@@ -125,7 +125,7 @@ class StateController extends Controller
        
         $country_id = $request->country_id;
         $allStateDetails = $this->stateService->getAllStateUsingCountryID($country_id);
-        
+        //dd($allStateDetails);
         if (count($allStateDetails) > 0 && isset($allStateDetails)) {
             $response = [
                 'status'    =>  true,

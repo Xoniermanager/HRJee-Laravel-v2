@@ -19,19 +19,15 @@ class CompanyDetailService
     {
         return $this->companyDetailRepository->all();
     }
-    public function create($data)
+    public function create($data): mixed
     {
         $data['joining_date'] = date('Y-m-d');
         return $this->companyDetailRepository->create($data);
     }
-
-    public function updateDetails(array $data, $id)
+    
+    public function updateDetails($data, $userId)
     {
-        return $this->companyDetailRepository->find($id)->update($data);
-    }
-    public function deleteDetails($id)
-    {
-        return $this->companyDetailRepository->find($id)->delete();
+        return $this->companyDetailRepository->where('user_id', $userId)->update($data);
     }
 
     public function searchInCompany($searchKey)

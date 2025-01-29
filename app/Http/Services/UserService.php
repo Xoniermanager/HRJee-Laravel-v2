@@ -19,6 +19,10 @@ class UserService
         return $this->userRepository->create($data);
     }
 
+    public function updateDetail($data, $userId)
+    {
+        return $this->userRepository->find($userId)->update($data);
+    }
     public function getCompanies()
     {
         return $this->userRepository->where('type', 'company');
@@ -47,12 +51,12 @@ class UserService
         return $this->userRepository->where(function ($query) use ($searchKey) {
             if (!empty($searchKey['key'])) {
                 $query->where('name', 'like', "%{$searchKey['key']}%")
-                    ->orWhere('email', 'like', "%{$searchKey['key']}%")
-                    ->orWhereHas('details', function($q) use ($searchKey) {
-                        $q->where('details.username', 'like', "%{$searchKey['key']}%")
-                            ->orWhere('details.contact_no', 'like', "%{$searchKey['key']}%")
-                            ->orWhere('details.company_address', 'like', "%{$searchKey['key']}%");
-                    });
+                    ->orWhere('email', 'like', "%{$searchKey['key']}%");
+                // ->orWhereHas('profile', function($q) use ($searchKey) {
+                //     $q->where('username', 'like', "%{$searchKey['key']}%")
+                //         ->orWhere('contact_no', 'like', "%{$searchKey['key']}%")
+                //         ->orWhere('company_address', 'like', "%{$searchKey['key']}%");
+                // });
             }
             if (isset($searchKey['status'])) {
                 $query->where('status', $searchKey['status']);
@@ -61,7 +65,11 @@ class UserService
                 $query->onlyTrashed();
             }
             if (isset($searchKey['companyTypeId'])) {
-                $query->where('details.company_type_id', $searchKey['companyTypeId']);
+                $query->whereHas('details', function ($query) use ($searchKey) {
+                    if ($query->where('type' == 'company')) {
+                        $query->where('company_details.company_type_id', $searchKey['companyTypeId']);
+                    }
+                });
             }
         })->paginate(10);
     }
