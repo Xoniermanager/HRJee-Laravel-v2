@@ -39,7 +39,7 @@ class RolesController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:roles,name,NULL,id,user_id,' . auth()->user()->company_id],
+                'name' => ['required', 'string', 'unique:roles,name,NULL,id,company_id,' . auth()->user()->company_id],
             ]);
 
             if ($validator->fails()) {
@@ -48,7 +48,7 @@ class RolesController extends Controller
 
             $data = $request->all();
             $data = $request->except(['_token']);
-            $data['user_id'] = Auth()->user()->company_id;
+            $data['company_id'] = Auth()->user()->company_id;
             $data['created_by'] = Auth()->user()->id;
             
             if ($this->customRoleService->create($data)) {
@@ -72,7 +72,7 @@ class RolesController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:roles,name,' . $request->id . ',id,user_id,' . auth()->user()->company_id],
+            'name' => ['required', 'string', 'unique:roles,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
         ]);
 
         if ($validator->fails()) {

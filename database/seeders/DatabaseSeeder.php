@@ -43,10 +43,10 @@ class DatabaseSeeder extends Seeder
         $this->call(ComplainStatusesTableSeeder::class);
         $this->call(ComplainCategoriesTableSeeder::class);
         $this->call(WeekDaySeeder::class);
+        $this->call(CompanyBranchesTableSeeder::class);
+        $this->call(OfficeTimingConfigsTableSeeder::class);
+        $this->call(ShiftsTableSeeder::class);
         // $this->call(RoleHasPermissionsTableSeeder::class);
-        // $this->call(CompanyBranchesTableSeeder::class);
-        // $this->call(OfficeTimingConfigsTableSeeder::class);
-        // $this->call(ShiftsTableSeeder::class);
         // $this->call(PermissionSeeder::class);
         // $this->call(UsersTableSeeder::class);
         // $this->call(UserAddressesDetailsTableSeeder::class);

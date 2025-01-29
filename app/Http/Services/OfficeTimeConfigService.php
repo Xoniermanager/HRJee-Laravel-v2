@@ -17,6 +17,8 @@ class OfficeTimeConfigService
   }
   public function create(array $data)
   {
+    $data['company_id'] = Auth()->user()->company_id;
+    $data['created_by'] = Auth()->user()->id;
     return $this->officeTimeConfigRepository->create($data);
   }
 
