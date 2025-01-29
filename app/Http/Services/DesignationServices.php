@@ -17,6 +17,12 @@ class DesignationServices
   {
     return $this->designationRepository->with('departments')->orderBy('id', 'DESC')->paginate(10);
   }
+
+  public function fetchByCompany()
+    {
+        return $this->designationRepository->where('company_id', auth()->guard('company')->user()->company_id)->with('departments')->orderBy('id', 'DESC');
+    }
+
   public function create(array $data)
   {
     return $this->designationRepository->create($data);

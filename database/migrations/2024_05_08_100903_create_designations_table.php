@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('designations', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->string('name');
             $table->unsignedBigInteger('department_id');
             $table->boolean('status')->default(true);

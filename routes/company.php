@@ -132,9 +132,9 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
 
     // Resignation Management
     Route::prefix('resignation')->name('resignation.')->controller(ResignationController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/{id}', 'view')->name('view');
-        Route::post('/{id}/status', 'changeStatus')->name('change-status');
+        Route::get('/', 'index')->name('rindex');
+        Route::get('/{id}', 'view')->name('rview');
+        Route::post('/{id}/status', 'changeStatus')->name('rchange-status');
     });
 
     //Country Module
@@ -187,7 +187,7 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
         Route::get('/delete/{user:id}', 'deleteEmployee')->name('employee.delete');
         Route::get('/status/update/{user:id}', 'statusUpdate')->name('employee.status_update');
         Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
-        Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('employee.exit.employeelist');
+        Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
         Route::post('/export-file',  'uploadImport')->name('upload.file');
     });

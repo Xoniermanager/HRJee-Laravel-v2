@@ -12,7 +12,8 @@ class Designations extends Model
     protected $fillable = [
             'name',
             'department_id',
-            'status'
+            'status',
+            'company_id'
     ];
 
     public function departments()
