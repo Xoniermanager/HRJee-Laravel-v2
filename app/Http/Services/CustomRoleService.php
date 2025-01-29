@@ -26,11 +26,12 @@ class CustomRoleService
 
   public function getRolesByCompanyID($id)
   {
-    return $this->customRoleRepository->where('company_id', $id)->orderBy('id', 'DESC')->get();
+    return $this->customRoleRepository->where('user_id', $id)->orderBy('id', 'DESC')->get();
   }
 
   public function create(array $data)
   {
+    // dd($data);
     return $this->customRoleRepository->create($data);
   }
 

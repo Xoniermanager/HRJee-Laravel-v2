@@ -64,7 +64,7 @@ class AdminCompanyController extends Controller
             $menus = Menu::whereIn('id', $menuIds)->get();
             $adminRole = Role::updateOrCreate(
                 [
-                    'user_id' => $companyId,
+                    'company_id' => $companyId,
                     'name' => "$companyName Admin",
                 ],
                 [

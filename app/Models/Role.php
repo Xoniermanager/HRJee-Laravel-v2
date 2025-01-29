@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Scopes\CompanyScope;
 
 class Role extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, CompanyScope;
 
     const ADMIN = '1';
     const USER = '2';
@@ -15,8 +17,11 @@ class Role extends Model
     protected $fillable = [
         'name',
         'description',
-        'user_id',
-        'category'
+        'company_id',
+        'category',
+        'created_by',
+        'deleted_at',
+        'status'
     ];
 
     public function menus()
