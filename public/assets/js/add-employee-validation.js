@@ -19,7 +19,7 @@ jQuery(document).ready(function () {
             department_id: 'required',
             designation_id: 'required',
             company_branch_id: 'required',
-            role_id: 'required',
+            // role_id: 'required',
             qualification_id: 'required',
             skill_id: 'required',  // Corrected to treat skill_id as a required field, no need for []
             shift_id: 'required',
@@ -41,7 +41,7 @@ jQuery(document).ready(function () {
             department_id: 'Please Select the Department',
             designation_id: 'Please Select the Designation',
             company_branch_id: 'Please Select the Branch',
-            role_id: 'Please Select the role',
+            // role_id: 'Please Select the role',
             qualification_id: 'Please select the qualification',
             skill_id: 'Please select the skill', // Corrected message for skill_id
             shift_id: 'Please Select the Shift',
