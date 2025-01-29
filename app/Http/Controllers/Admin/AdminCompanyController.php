@@ -37,7 +37,7 @@ class AdminCompanyController extends Controller
     public function index()
     {
         return view('admin.company.index', [
-            'allCompaniesDetails' => $this->companyDetailService->all(),
+            'allCompaniesDetails' => $this->userService->getCompanies()->paginate(10),
             'allCompanyTypeDetails' => $this->companyTypeService->getAllActiveCompanyType()
         ]);
     }
@@ -169,14 +169,14 @@ class AdminCompanyController extends Controller
     public function destroy(Request $request)
     {
         $companyId = $request->id;
-        $deleted = $this->companyUserService->deleteCompanyUserByCompanyId($companyId);
+        $deleted = $this->userService->deleteUserById($companyId);
         if ($deleted) {
             $data = $this->companyDetailService->deleteDetails($companyId);
             if ($data) {
                 return response()->json([
                     'success' => 'Company Deleted Successfully',
                     'data' => view("admin.company.company_list", [
-                        'allCompaniesDetails' => $this->companyDetailService->all()
+                        'allCompaniesDetails' => $this->userService->getCompanies()->paginate(10)
                     ])->render()
                 ]);
             }
@@ -187,7 +187,7 @@ class AdminCompanyController extends Controller
 
     public function search(Request $request)
     {
-        $searchedItems = $this->companyDetailService->searchInCompany($request->all());
+        $searchedItems = $this->userService->searchFilterCompany($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
@@ -201,12 +201,12 @@ class AdminCompanyController extends Controller
     }
     public function statusUpdate(Request $request)
     {
-        $statusDetails = $this->companyDetailService->updateStatus($request->id, $request->status);
+        $statusDetails = $this->userService->updateStatus($request->id, $request->status);
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Company Status Updated Successfully',
                 'data' => view("admin.company.company_list", [
-                    'allCompaniesDetails' => $this->companyDetailService->all()
+                    'allCompaniesDetails' => $this->userService->getCompanies()->paginate(10)
                 ])->render()
             ]);
         } else {

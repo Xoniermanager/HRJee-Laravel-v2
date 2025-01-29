@@ -1,4 +1,3 @@
-
 <div class="list-product" id="company_list">
     <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
         <div class="datatable-container">
@@ -55,20 +54,20 @@
 
                     </td>
                     <td>
-                        <p class="f-light">{{$companiesDetails->joining_date}}</p>
+                        <p class="f-light">{{ getFormattedDate($companiesDetails->details->joining_date)}}</p>
                     </td>
                     <td>
                         <p class="f-light">{{$companiesDetails->email}}</p>
                     </td>
                     <td>
-                        <p class="f-light">{{$companiesDetails->contact_no}}</p>
+                        <p class="f-light">{{$companiesDetails->details->contact_no}}</p>
                     </td>
                     <td>
-                        <p class="f-light">{{$companiesDetails->company_address}}</p>
+                        <p class="f-light">{{$companiesDetails->details->company_address}}</p>
                     </td>
                     <td>
                         <a href="branch_detail.html"><span
-                                class="badge badge-primary p-2">{{$companiesDetails->company_size}}</span></a>
+                                class="badge badge-primary p-2">{{$companiesDetails->details->company_size}}</span></a>
                     </td>
                     <td>
                         <div class="form-check form-switch form-check-inline">
