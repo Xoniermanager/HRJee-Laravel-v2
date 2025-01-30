@@ -171,7 +171,7 @@ class PolicyService
     }
     public function getAllAssignedPolicyForEmployee()
     {
-        $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+        $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
         $allPolicyDetails = $this->policyRepository->where('company_id', $userDetails->company_id)->where('status', 1)->where('start_date', '<=', date('Y-m-d'))
             ->where('end_date', '>=', date('Y-m-d'))->get();
         $allAssignedPolicy = [];

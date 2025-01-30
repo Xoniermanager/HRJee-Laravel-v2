@@ -42,9 +42,9 @@ class LeaveService
         if (isset($data['leave_applied_by']) && !empty($data['leave_applied_by'])) {
             $payload['user_id'] = $data['user_id'];
         } else {
-            $payload['leave_applied_by'] = Auth()->user()->company_id ?? Auth::guard('employee')->user()->id ?? Auth()->user()->id;
-            //$payload['user_id'] = Auth()->user()->company_id ?? Auth::guard('employee')->user()->id ?? Auth()->user()->id;
-            $payload['user_id'] = Auth::guard('employee')->user()->id;
+            $payload['leave_applied_by'] = Auth()->user()->company_id ?? Auth::user()->id ?? Auth()->user()->id;
+            //$payload['user_id'] = Auth()->user()->company_id ?? Auth::user()->id ?? Auth()->user()->id;
+            $payload['user_id'] = Auth::user()->id;
 
         }
         if (isset($data['is_half_day']) && !empty($data['is_half_day'])) {

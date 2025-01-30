@@ -35,7 +35,7 @@ class ResignationController extends Controller
     public function applyResignation(Request $request)
     {
         try {
-            $authUser = auth()->guard('employee')->user();
+            $authUser = Auth()->user();
             $userType = $authUser?->role?->name;
             $userId = $authUser?->id;
             $data = $request->all();
@@ -64,7 +64,7 @@ class ResignationController extends Controller
     public function editResignation($id, Request $request)
     {
         try {
-            $authUser = auth()->guard('employee')->user();
+            $authUser = Auth()->user();
             $userType = $authUser?->role?->name;
             $userId = $authUser?->id;
             $data = $request->all();
@@ -100,7 +100,7 @@ class ResignationController extends Controller
             $data = $request->validated();
 
             $action_taken_by = auth()->guard('employee')->id()
-                ? auth()->guard('employee')->user()
+                ? Auth()->user()
                 : auth()->guard('company')->user();
 
             $resignationStatus = $this->resignationStatusService->changeStatus(
@@ -128,7 +128,7 @@ class ResignationController extends Controller
 
     public function destroy(Request $request)
     {
-        $userType = auth()->guard('employee')->user()->userDetails->roles->name;
+        $userType = Auth()->user()->userDetails->roles->name;
         $id = $request->id;
         $data = $this->resignationService->deleteDetails($id);
         if ($data) {
@@ -149,7 +149,7 @@ class ResignationController extends Controller
         try {
 
             $data = $request->validated();
-            $userType = auth()->guard('employee')->user()->userDetails->roles->name;
+            $userType = Auth()->user()->userDetails->roles->name;
 
             if ($userType == 'Employee')
                 $data['resignation_status_id'] = 4;
@@ -158,7 +158,7 @@ class ResignationController extends Controller
                 return errorMessage('', 'you have not permission to cancel resignation');
             }
 
-            $data['action_taken_by'] = auth()->guard('employee')->user()->id;
+            $data['action_taken_by'] = Auth()->user()->id;
             $resignationStatus = $this->resignationStatusService->changeStatus($data, $userType);
             if ($resignationStatus['status'] == true) {
                 $data = view('employee.resignation.resignation-list', [
