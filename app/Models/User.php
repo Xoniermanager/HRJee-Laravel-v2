@@ -44,9 +44,26 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role->belongsToMany(Menu::class)->with(['children']);
     }
 
+    public function menus()
+    {
+        if($this->role_id) {
+            $menusIDs = MenuRole::where('role_id', $this->role_id)->pluck('menu_id')->toArray();
+
+            return Menu::whereIn('id', $menusIDs)->with(['children'])->get()->toArray();
+        } else {
+
+            return [];
+        }
+    }
+
     public function details()
     {
-        return $this->hasOne(UserDetail::class, 'user_id');
+        if($this->type == "user") {
+            return $this->hasOne(UserDetail::class, 'user_id');
+        } else {
+            return $this->hasOne(CompanyDetail::class, 'user_id');
+        }
+        
     }
     public function companyDetails()
     {

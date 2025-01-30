@@ -26,8 +26,8 @@
 						</td>
 
 						<td>
-							@forelse ($companyDetails->menu as $menu)
-								{{ ucfirst($menu->title) }}@if (!$loop->last)
+							@forelse ($companyDetails->menus() as $menu)
+								{{ ucfirst($menu['title']) }}@if (!$loop->last)
 									,
 								@endif
 							@empty

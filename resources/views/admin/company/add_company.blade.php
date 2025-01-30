@@ -95,8 +95,7 @@
                                                         <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
                                                             <div class="col-12">
                                                                 <label class="form-label"
-                                                                    for="exampleFormControlInput1">Company
-                                                                    Detail</label>
+                                                                    for="exampleFormControlInput1">Company Name</label>
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
                                                                 <input class="form-control" id="name" name="name"
