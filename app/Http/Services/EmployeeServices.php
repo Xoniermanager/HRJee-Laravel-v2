@@ -181,7 +181,7 @@ class EmployeeServices
 
     public function getExitEmployeeList($companyId)
     {
-        return $this->userDetailRepository->where('company_id', $companyId)->onlyTrashed()->paginate(10);
+        return $this->userRepository->where('type', 'user')->where('company_id', $companyId)->onlyTrashed()->paginate(10);
     }
 
     public function searchFilterForExitEmployee($companyId, $searchKey)
