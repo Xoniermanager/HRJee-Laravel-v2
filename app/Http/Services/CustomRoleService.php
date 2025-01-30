@@ -46,4 +46,9 @@ class CustomRoleService
     return $this->customRoleRepository->find($id)->update($data);
   }
 
+  public function getDetails($id)
+  {
+    return $this->customRoleRepository->with(['users'])->find($id);
+  }
+
 }

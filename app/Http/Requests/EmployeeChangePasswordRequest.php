@@ -29,7 +29,7 @@ class EmployeeChangePasswordRequest extends FormRequest
             'old_password' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (!Hash::check($value, Auth::user()->password ?? Auth::guard('api')->user()->password)) {
+                    if (!Hash::check($value, Auth::user()->password)) {
                         $fail('Old Password didn\'t match');
                     }
                 },

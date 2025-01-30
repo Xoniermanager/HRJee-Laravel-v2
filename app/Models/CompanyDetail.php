@@ -34,4 +34,9 @@ class CompanyDetail extends Model
     {
         return $this->belongsTo(CompanyType::class);
     }
+
+    public function branches()
+    {
+        return $this->hasMany(CompanyBranch::class, 'company_id', 'user_id');
+    }
 }

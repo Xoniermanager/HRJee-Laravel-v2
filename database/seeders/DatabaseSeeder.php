@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call(EmployeeTypesTableSeeder::class);
         $this->call(LanguagesTableSeeder::class);
         $this->call(CompanyTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
         $this->call(LeaveStatusesTableSeeder::class);
         $this->call(NewsCategoriesTableSeeder::class);
         $this->call(LeaveTypesTableSeeder::class);
@@ -35,7 +36,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ComplainCategoriesTableSeeder::class);
         $this->call(WeekDaySeeder::class);
         $this->call(MenusTableSeeder::class);
-        $this->call(UsersTableSeeder::class);
         $this->call(CompanyBranchesTableSeeder::class);
          $this->call(OfficeTimingConfigsTableSeeder::class);
         $this->call(ShiftsTableSeeder::class);
@@ -64,6 +64,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(WeekendsTableSeeder::class);
         // $this->call(WeekDayWeekendTableSeeder::class);
         // $this->call(CompanyMenuTableSeeder::class);
-        // $this->call(EmployeesMenusSeeder::class);
+        $this->call(EmployeesMenusSeeder::class);
     }
 }

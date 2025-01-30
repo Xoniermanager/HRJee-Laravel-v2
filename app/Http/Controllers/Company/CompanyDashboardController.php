@@ -28,6 +28,7 @@ class CompanyDashboardController extends Controller
         $this->companyBranchService = $companyBranchService;
         $this->employeeService = $employeeService;
     }
+
     public function index()
     {
         $companyId = Auth()->user()->id;
@@ -45,11 +46,13 @@ class CompanyDashboardController extends Controller
             // Total active employees
             'total_active_employee' => User::where('company_id', $companyId)
                 ->where('status', '1') // Assuming STATUS_ACTIVE is defined in the User model
+                ->where('type', 'user')
                 ->count(),
 
             // Total inactive employees
             'total_inactive_employee' => User::where('company_id', $companyId)
                 ->where('status', '0') // Assuming STATUS_INACTIVE is defined in the User model
+                ->where('type', 'user')
                 ->count(),
 
             // Total leave taken today (approved)

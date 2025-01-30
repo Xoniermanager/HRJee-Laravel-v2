@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\UserDetail;
+use App\Repositories\UserRepository;
 use Throwable;
 
 use Carbon\Carbon;
@@ -16,18 +17,19 @@ use App\Repositories\UserDetailRepository;
 
 class EmployeeServices
 {
-    private $userDetailRepository;
+    private $userDetailRepository, $userRepository;
 
     private $companyBranchService;
     private $departmentService;
     private $designationService;
 
-    public function __construct(UserDetailRepository $userDetailRepository, BranchServices $companyBranchService, DepartmentServices $departmentService, DesignationServices $designationService)
+    public function __construct(UserDetailRepository $userDetailRepository, BranchServices $companyBranchService, DepartmentServices $departmentService, DesignationServices $designationService, UserRepository $userRepository)
     {
         $this->userDetailRepository = $userDetailRepository;
         $this->companyBranchService = $companyBranchService;
         $this->departmentService = $departmentService;
         $this->designationService = $designationService;
+        $this->userRepository = $userRepository;
     }
 
     public function create($data)
@@ -89,7 +91,7 @@ class EmployeeServices
 
     public function getUserDetailById($id)
     {
-        return $this->userDetailRepository->find($id);
+        return $this->userRepository->find($id);
     }
 
     public function forgetPassword($request, $code)
@@ -118,12 +120,12 @@ class EmployeeServices
 
     public function getAllEmployeeByCompanyId($companyId)
     {
-        return $this->userDetailRepository->where('company_id', $companyId);
+        return $this->userRepository->where('type', 'user')->where('company_id', $companyId);
     }
 
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
     {
-        return $this->userDetailRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('id', 'joining_date')->get();
+        return $this->userDetailRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('user_id', 'joining_date')->get();
     }
 
     public function getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds = null, $designationIds = null, $allCompanyBranches = null, $allDepartment = null, $allDesignation = null)
@@ -166,12 +168,18 @@ class EmployeeServices
 
     public function getEmployeeByNameByEmpIdFilter($companyId, $searchKey)
     {
-        return $this->userDetailRepository->where('company_id', $companyId)->where('name', 'Like', '%' . $searchKey . '%')->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
+        return $this->userRepository
+            ->where('type', 'user')
+            ->where('company_id', $companyId)
+            ->whereHas('details', function ($query) use ($searchKey) {
+                $query->where('name', 'Like', '%' . $searchKey . '%');
+                $query->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
+            });
     }
 
     public function getExitEmployeeList($companyId)
     {
-        return $this->userDetailRepository->where('company_id', $companyId)->onlyTrashed()->paginate(10);
+        return $this->userRepository->where('type', 'user')->where('company_id', $companyId)->onlyTrashed()->paginate(10);
     }
 
     public function searchFilterForExitEmployee($companyId, $searchKey)

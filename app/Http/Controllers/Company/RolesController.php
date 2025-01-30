@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Company;
 
 use Exception;
-use App\Models\roles;
-use App\Models\CustomRole;
-use App\Rules\OnlyString;
+use App\Models\MenuRole;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CustomRoleService;
 use Illuminate\Support\Facades\Validator;
@@ -50,6 +47,7 @@ class RolesController extends Controller
             $data = $request->except(['_token']);
             $data['company_id'] = Auth()->user()->company_id;
             $data['created_by'] = Auth()->user()->id;
+            $data['category'] = 'custom';
             
             if ($this->customRoleService->create($data)) {
 
@@ -116,9 +114,24 @@ class RolesController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
+
+        $role = $this->customRoleService->getDetails($id);
+        
+        if(count($role->users)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This role is already assigned to users',
+                'data' => view('company/roles_and_permission/roles/roles_list', [
+                    'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
+                ])->render()
+            ]);
+        }
+
         $data = $this->customRoleService->deleteDetails($id);
+        MenuRole::where('role_id', $request->role_id)->delete();
         if ($data) {
             return response()->json([
+                'status' => true,
                 'message' => 'Role Deleted Successfully!',
                 'data' => view('company/roles_and_permission/roles/roles_list', [
                     'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
