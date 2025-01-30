@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ValidateBranch;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
+use App\Http\Services\UserService;
 use Illuminate\Support\Facades\Validator;
 
 class AdminCompanyBranchesController extends Controller
@@ -19,11 +20,13 @@ class AdminCompanyBranchesController extends Controller
     private $branch_services;
     private  $countryService;
     private $stateService;
-    public function __construct(BranchServices $branch_services , CountryServices $countryService,StateServices $stateService)
+    private $userService;
+    public function __construct(BranchServices $branch_services , UserService $userService, CountryServices $countryService,StateServices $stateService)
     {
             $this->branch_services = $branch_services;
             $this->countryService = $countryService;
             $this->stateService = $stateService;
+            $this->userService = $userService;
     }
     /**
      * Display a listing of the resource.
@@ -31,25 +34,27 @@ class AdminCompanyBranchesController extends Controller
     public function index()
     {
         $branches  = $this->branch_services->allActiveBranches();
-        $countries = $this->countryService->all()->where('status', '1');
+        $countries = $this->countryService->getAllActiveCountry();
         $states    = $this->stateService->all()->where('status', '1');
         return view('admin.company_branch.index',[
                 'allCompanyBranchDetails' => $branches,
                 'countries' => $countries,
                 'states' => $states,
+                'allCompaniesDetails' => $this->userService->getCompanies()->get()
             ]);
     }
 
     public function store(ValidateBranch $request)
     {
 
-        $validator  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
-        ]);
+        // $validator  = Validator::make($request->all(), [
+        //     'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->messages()], 400);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json(['error' => $validator->messages()], 400);
+        // }
+        
         $companyStatus = $this->branch_services->create($request->all());
         if ($companyStatus) {
             return response()->json(
@@ -127,7 +132,7 @@ class AdminCompanyBranchesController extends Controller
 
     public function search(Request $request)
     {
-        $searchedItems = $this->branch_services->searchInCompanyBranch($request->all());
+        $searchedItems = $this->branch_services->searchInCompanyBranch($request);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',

@@ -15,6 +15,7 @@ class CountryServices
     {
         return $this->countryRepository->orderBy('id', 'DESC')->paginate(10);
     }
+    
     public function create(array $data)
     {
         return $this->countryRepository->create($data);

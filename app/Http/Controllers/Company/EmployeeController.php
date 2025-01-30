@@ -145,7 +145,7 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $allBranches = $this->branchService->all(Auth()->user()->id);
-        $allRoles = $this->customRoleService->all();
+        $allRoles = $this->customRoleService->all(auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();

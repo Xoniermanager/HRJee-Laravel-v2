@@ -26,7 +26,7 @@
                                 <select class="form-select h-50px" name="filterByCompanyType" id="filterByCompanyType">
                                     <option value="">Select Company Type</option>
                                     @foreach ($allCompanyTypeDetails as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -76,7 +76,7 @@
                             <input class="form-control" type="text" placeholder="Enter Your Department Name" name="name"
                                 id="name">
                             @error('name')
-                            <span class="text-denger">{{ $message}} </span>
+                                <span class="text-denger">{{ $message}} </span>
                             @enderror
                         </div>
                         <div class="col-12">
@@ -91,100 +91,98 @@
 
 <script>
     function deleteFunction(id) {
-            event.preventDefault();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "<?= route('admin.company.delete') ?>",
-                        type: "get",
-                        data: {
-                            id: id
-                        },
-                        success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            $('#company_list').replaceWith(res.data);
-                        },
-                        error: function(xhr, ajaxOptions, thrownError) {
-                            Swal.fire("Error deleting!", "Please try again", "error");
-                        }
-                    });
-                }
-            });
-        }
-        $(document).on("input", "#search", function(e) {
-            searchCompanyFilter()
-        });
-        $('#filterByStatus').change(function(){
-            searchCompanyFilter()
-        });
-        $('#filterByCompanyType').change(function(){
-            searchCompanyFilter()
-        });
-        $('#filteredByDeletedAt').change(function(){
-            if ($(this).is(':checked')) {
-                searchCompanyFilter($(this).val())
-            }
-            else
-            {
-                searchCompanyFilter()
-            }
-        });
-        function searchCompanyFilter(deletedAt = null)
-        {
-            $.ajax({
-                    url: "{{ route('admin.company.search') }}",
-                    type: 'get',
+        event.preventDefault();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= route('admin.company.delete') ?>",
+                    type: "get",
                     data: {
-                        'key': $('#search').val(),
-                        'status': $('#filterByStatus').val(),
-                        'companyTypeId' :$('#filterByCompanyType').val(),
-                        'deletedAt' :deletedAt,
+                        id: id
                     },
-                    success: function(res) {
-                        if (res) {
-                            jQuery('#company_list').replaceWith(res.data);
-                        }
+                    success: function (res) {
+                        Swal.fire("Done!", "It was succesfully deleted!", "success");
+                        $('#company_list').replaceWith(res.data);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        Swal.fire("Error deleting!", "Please try again", "error");
                     }
-                })
-        }
-
-        function handleStatus(id) {
-            var checked_value = $('#checked_value_'+id).prop('checked');
-            let status;
-
-            let status_name;
-            if (checked_value == true) {
-                status = 1;
-                status_name = 'Active';
-            } else {
-                status = 0;
-                status_name = 'Inactive';
+                });
             }
-            $.ajax({
-                url: "{{ route('admin.company.statusUpdate') }}",
-                type: 'get',
-                data: {
-                    'id': id,
-                    'status': status,
-                },
-                success: function(res) {
-                    if (res) {
-                        swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
-                        jQuery('#company_branch_list').replaceWith(res.data);
-                    } else {
-                        swal.fire("Oops!", 'Something Went Wrong', "error");
-                    }
-                }
-            })
+        });
+    }
+    $(document).on("input", "#search", function (e) {
+        searchCompanyFilter()
+    });
+    $('#filterByStatus').change(function () {
+        searchCompanyFilter()
+    });
+    $('#filterByCompanyType').change(function () {
+        searchCompanyFilter()
+    });
+    $('#filteredByDeletedAt').change(function () {
+        if ($(this).is(':checked')) {
+            searchCompanyFilter($(this).val())
         }
+        else {
+            searchCompanyFilter()
+        }
+    });
+    function searchCompanyFilter(deletedAt = null) {
+        $.ajax({
+            url: "{{ route('admin.company.search') }}",
+            type: 'get',
+            data: {
+                'key': $('#search').val(),
+                'status': $('#filterByStatus').val(),
+                'companyTypeId': $('#filterByCompanyType').val(),
+                'deletedAt': deletedAt,
+            },
+            success: function (res) {
+                if (res) {
+                    jQuery('#company_list').replaceWith(res.data);
+                }
+            }
+        })
+    }
+
+    function handleStatus(id) {
+        var checked_value = $('#checked_value_' + id).prop('checked');
+        let status;
+
+        let status_name;
+        if (checked_value == true) {
+            status = 1;
+            status_name = 'Active';
+        } else {
+            status = 0;
+            status_name = 'Inactive';
+        }
+        $.ajax({
+            url: "{{ route('admin.company.statusUpdate') }}",
+            type: 'get',
+            data: {
+                'id': id,
+                'status': status,
+            },
+            success: function (res) {
+                if (res) {
+                    swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
+                    jQuery('#company_branch_list').replaceWith(res.data);
+                } else {
+                    swal.fire("Oops!", 'Something Went Wrong', "error");
+                }
+            }
+        })
+    }
 
 
 </script>

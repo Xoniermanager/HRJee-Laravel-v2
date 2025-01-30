@@ -208,6 +208,13 @@ function getCompanyMenuHtml($companyId)
     $html = '';
     $user = Auth::user();
     $companyMenuIDs = [];
+
+    if($user->type == 'company' || session()->has('impersonation')) {
+        $urlPrefix = 'company';
+    } else {
+        $urlPrefix = 'employee';
+    }
+
     foreach ($user->menu as $menu) {
         // Check if the menu has children
         if ($menu->children && $menu->children->isNotEmpty()) {
@@ -224,7 +231,8 @@ function getCompanyMenuHtml($companyId)
 
             // Iterate over the children
             foreach ($menu->children as $children) {
-                $url = $user->type == 'company' ? "/company$children->slug" : "/employee$children->slug";
+                if($children->role == "company") {
+                    $url = "/$urlPrefix$children->slug";
 
                 $html .= '<div class="menu-sub menu-sub-accordion">
                             <div class="menu-item" data-url="' . $url . '">
@@ -236,12 +244,14 @@ function getCompanyMenuHtml($companyId)
                                 </a>
                             </div>
                             </div>';
+                }
+                
             }
 
             $html .= '</div>';  // Close the menu-item (accordion)
         }
         if ($menu->parent_id == null && $menu->children->isEmpty()) {
-            $url = $user->type == 'company' ? "/company$menu->slug" : "/employee$menu->slug";
+            $url = "/$urlPrefix$menu->slug";
 
             // If no children, just a simple menu item
             $html .= '<div class="menu-item" data-url="' . $url . '">

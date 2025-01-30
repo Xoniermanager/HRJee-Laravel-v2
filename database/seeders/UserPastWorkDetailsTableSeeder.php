@@ -31,20 +31,7 @@ class UserPastWorkDetailsTableSeeder extends Seeder
                 'current_company' => 0,
                 'created_at' => '2024-06-21 14:59:53',
                 'updated_at' => '2024-06-21 14:59:53',
-            ),
-            1 => 
-            array (
-                'id' => 2,
-                'user_id' => 2,
-                'previous_company_id' => 2,
-                'designation' => 'Hansen Inc',
-                'from' => '2025-01-01',
-                'to' => '2025-01-20',
-                'duration' => '2013',
-                'current_company' => 0,
-                'created_at' => '2025-01-30 12:53:38',
-                'updated_at' => '2025-01-30 12:53:38',
-            ),
+            )
         ));
         
         

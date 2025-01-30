@@ -611,7 +611,7 @@
 								<div class="d-flex align-items-center">
 									<!--begin::Avatar-->
 									<div class="symbol symbol-circle symbol-40px">
-										<img src="{{ asset('assets/media/user.jpg') }}" alt="photo">
+										<img src="{{ Auth::user()->details->logo ? Storage::url(Auth::user()->details->logo) : asset('employee/assets/media/user.jpg') }}" alt="photo">
 									</div>
 									<!--end::Avatar-->
 

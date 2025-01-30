@@ -46,11 +46,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function details()
     {
-        if ($this->type == 'company') {
-            return $this->hasOne(CompanyDetail::class, 'user_id');
-        } else {
-            return $this->hasOne(UserDetail::class, 'user_id');
-        }
+        return $this->hasOne(UserDetail::class, 'user_id');
+    }
+    public function companyDetails()
+    {
+        return $this->hasOne(CompanyDetail::class, 'user_id');
     }
 
     public function addressDetails()
