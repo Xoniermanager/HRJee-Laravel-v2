@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\UserBankDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Services\CountryServices;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UserAddressDetailsAddRequest;
@@ -85,11 +86,12 @@ class AccountController extends Controller
             return redirect()->back()->with(['error' => 'Please try Again']);
         }
     }
+    
     public function updateChangePassword(EmployeeChangePasswordRequest $request)
     {
         $credential = $request->validated();
         try {
-            $response = User::find(Auth()->user()->id)->update(['password' => $credential['password']]);
+            $response = User::find(Auth()->user()->id)->update(['password' => Hash::make($credential['password'])]);
             if ($response == true) {
                 return response()->json([
                     'status' => 200,

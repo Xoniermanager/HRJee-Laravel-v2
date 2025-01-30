@@ -58,7 +58,7 @@
 								<div class="d-flex align-items-center">
 									<!--begin::Avatar-->
 									<div class="symbol symbol-circle symbol-40px">
-										<img src="{{ Auth::user()->profile_image ?? asset('employee/assets/media/user.jpg') }}" alt="photo">
+										<img src="{{ Auth::user()->details->profile_image ? Storage::url(Auth::user()->details->profile_image) : asset('employee/assets/media/user.jpg') }}" alt="photo">
 									</div>
 									<!--end::Avatar-->
 
