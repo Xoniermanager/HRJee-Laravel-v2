@@ -261,6 +261,7 @@ class EmployeeAttendanceService
                         'user_id' => $employeeId,
                         'remark' => $data['remark'],
                         'punch_in_using' => $data['punch_in_using'],
+                        'punch_in_by' => $data['punch_in_by'],
                         'company_id' => $data['company_id'],
                         'created_by' => $data['created_by'],
                         'created_at' => Carbon::now(),
