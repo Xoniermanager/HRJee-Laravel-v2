@@ -50,6 +50,7 @@ class RolesController extends Controller
             $data = $request->except(['_token']);
             $data['company_id'] = Auth()->user()->company_id;
             $data['created_by'] = Auth()->user()->id;
+            $data['category'] = 'custom';
             
             if ($this->customRoleService->create($data)) {
 

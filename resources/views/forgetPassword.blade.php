@@ -95,7 +95,7 @@
                                         <!--end::Indicator progress-->
                                     </button>
                                     <p class="ad-register-text">Go to the login page <a
-                                            href="{{ route('employee') }}">Click Here</a></p>
+                                            href="{{ route('base') }}">Click Here</a></p>
                                 </div>
                                 <!--end::Submit button-->
 
