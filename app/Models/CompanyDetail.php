@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CompanyDetail extends Model
@@ -25,6 +26,12 @@ class CompanyDetail extends Model
         'company_type_id',
         'user_id'
     ];
+    protected function logo(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => url("storage" . $value)
+        );
+    }
 
     public function user()
     {

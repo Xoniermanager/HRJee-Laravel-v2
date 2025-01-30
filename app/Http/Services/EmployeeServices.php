@@ -179,22 +179,31 @@ class EmployeeServices
 
     public function getExitEmployeeList($companyId)
     {
-        return $this->userRepository->where('type', 'user')->where('company_id', $companyId)->onlyTrashed()->paginate(10);
+        return $this->userRepository->where('type', 'user')->where('company_id', $companyId)->whereHas('details', function ($query) {
+            $query->whereNotNull('exit_date');
+        })->paginate(10);
     }
 
     public function searchFilterForExitEmployee($companyId, $searchKey)
     {
-        $allEmployeeDetails = $this->userDetailRepository
+        $allEmployeeDetails = $this->userRepository->where('type', 'user')
             ->where('company_id', $companyId)
-            ->onlyTrashed();
-        if (!empty($searchKey['search'])) {
+            ->whereHas('details', function ($query) {
+                $query->whereNotNull('exit_date');
+            });
+
+        if (isset($searchKey) && !empty($searchKey['search'])) {
             $searchTerm = '%' . $searchKey['search'] . '%';
+
             $allEmployeeDetails = $allEmployeeDetails->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'LIKE', $searchTerm)
-                    ->orWhere('official_email_id', 'LIKE', $searchTerm)
                     ->orWhere('email', 'LIKE', $searchTerm)
-                    ->orWhere('phone', 'LIKE', $searchTerm)
-                    ->orWhere('emp_id', 'LIKE', $searchTerm);
+                    ->orWhereHas('details', function ($q) use ($searchTerm) {
+                        $q->where('official_email_id', 'LIKE', $searchTerm)
+                            ->orWhere('phone', 'LIKE', $searchTerm)
+                            ->orWhere('emp_id', 'LIKE', $searchTerm)
+                            ->orWhere('official_mobile_no', 'LIKE', $searchTerm);
+                    });
             });
         }
         return $allEmployeeDetails->paginate(10);

@@ -204,7 +204,7 @@ class EmployeeController extends Controller
     public function getPersonalDetails($id)
     {
         $data = $this->userService->getUserById($id);
-        return response()->json(['data' => $data ,'details' => $data->details]);
+        return response()->json(['data' => $data, 'details' => $data->details]);
     }
 
     public function getfilterlist(Request $request)
@@ -223,25 +223,21 @@ class EmployeeController extends Controller
 
     public function view(User $user)
     {
-        $singleViewEmployeeDetails = $user->load('assetDetails', 'familyDetails', 'qualificationDetails', 'advanceDetails', 'bankDetails', 'addressDetails', 'pastWorkDetails', 'documentDetails');
+        $singleViewEmployeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
 
     public function deleteEmployee(User $user)
     {
         try {
-            $updateDetails = $user->update(['exit_date' => now()->format('Y-m-d'), 'status' => '0']);
+            $statusValue = '0';
+            $user->update(['status' => $statusValue]);
+            $updateDetails = $user->details->update(['exit_date' => now()->format('Y-m-d'), 'status' => $statusValue]);
             if ($updateDetails) {
-                $deleteDetails = $user->delete();
-
-                if ($deleteDetails) {
-                    // Fetch all user details after deletion
-                    $allUserDetails = $this->employeeService->all('', Auth()->user()->company_id)->paginate(10);
-
-                    return response()->json([
-                        'data' => view('company.employee.list', compact('allUserDetails'))->render()
-                    ]);
-                }
+                $allUserDetails = $this->userService->searchFilterEmployee('', Auth()->user()->company_id)->paginate(10);
+                return response()->json([
+                    'data' => view('company.employee.list', compact('allUserDetails'))->render()
+                ]);
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
@@ -250,7 +246,7 @@ class EmployeeController extends Controller
     public function statusUpdate(Request $request, $userId)
     {
         try {
-            $updateStatus = User::find($userId)->update(['status' => $request->status]);
+            $updateStatus = $this->userService->updateStatus($userId, $request->status);
             if ($updateStatus) {
                 return response()->json([
                     'status' => true,
@@ -291,8 +287,10 @@ class EmployeeController extends Controller
     public function exportEmployee(Request $request)
     {
         try {
-            $allEmployeeDetails = $this->employeeService->all($request, Auth()->user()->company_id)->get();
+            $allEmployeeDetails = $this->userService->searchFilterEmployee($request, Auth()->user()->company_id)->get();
+            // dd($allEmployeeDetails->toArray());
             $userEmail = Auth()->user()->email;
+            // $userEmail = "arjun@xoniertechnologies.com";
             $userName = Auth()->user()->name;
             EmployeeExportFileJob::dispatch($userEmail, $userName, $allEmployeeDetails);
             return response()->json([
@@ -327,7 +325,7 @@ class EmployeeController extends Controller
                     'errors' => $failures,
                 ]);
             }
-            $allUserDetails = $this->employeeService->all('', Auth()->user()->company_id)->paginate(10);
+            $allUserDetails = $this->userService->searchFilterEmployee('', Auth()->user()->company_id)->paginate(10);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Employee imported successfully!',
@@ -335,6 +333,7 @@ class EmployeeController extends Controller
             ]);
         } catch (\Exception $e) {
             // Catch any general exceptions and return an error message
+            dd($e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while importing the file.',

@@ -20,12 +20,12 @@
 					<tr>
 						<td>{{ $key + 1 }}</td>
 						<td>{{ $employeeDetail->name }}</td>
-						<td>{{ $employeeDetail->detail->emp_id }}</td>
-						<td>{{ $employeeDetail->detail->official_email_id }}</td>
+						<td>{{ $employeeDetail->details->emp_id }}</td>
+						<td>{{ $employeeDetail->details->official_email_id }}</td>
 						<td>{{ $employeeDetail->email }}</td>
-						<td>{{ $employeeDetail->detail->phone }}</td>
-						<td>{{ getFormattedDate($employeeDetail->detail->joining_date) }}</td>
-						<td>{{ getFormattedDate($employeeDetail->detail->exit_date) }}</td>
+						<td>{{ $employeeDetail->details->phone }}</td>
+						<td>{{ getFormattedDate($employeeDetail->details->joining_date) }}</td>
+						<td>{{ getFormattedDate($employeeDetail->details->exit_date) }}</td>
 					</tr>
 				</tbody>
 			@empty
