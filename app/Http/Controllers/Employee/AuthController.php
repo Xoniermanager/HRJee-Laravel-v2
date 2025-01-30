@@ -128,7 +128,7 @@ class AuthController extends Controller
             if (!auth()->guard('employee')->check()) {
                 return redirect('/employee/signin');
             }
-            $email = Auth::guard('employee')->user()->email;
+            $email = Auth::user()->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'employee');
             if ($otpResponse['status'] == true)
                 return redirect('employee/verify/otp')->with('success', transLang($otpResponse['message']));
