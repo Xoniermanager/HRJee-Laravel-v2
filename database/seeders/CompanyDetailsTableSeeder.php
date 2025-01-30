@@ -22,7 +22,7 @@ class CompanyDetailsTableSeeder extends Seeder
             0 =>
             array(
                 'id' => 1,
-                'user_id' => 2,
+                'user_id' => 1,
                 'username' => 'xonier12345',
                 'contact_no' => '1234567890',
                 'joining_date' => '2025-01-29',
