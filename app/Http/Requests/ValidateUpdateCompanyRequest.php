@@ -27,9 +27,9 @@ class ValidateUpdateCompanyRequest extends FormRequest
 
             // 'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'sometimes|required|string|max:255',
-            'username' => 'sometimes|required|string|max:255|unique:companies,username,' . $userId,
+            'username' => 'sometimes|required|string|max:255|unique:company_details,username,' . $userId,
             'contact_no' => 'sometimes|required|string|max:20',
-            'email' => 'sometimes|required|string|email|max:255|unique:companies,email,' . $userId,
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $userId,
             'company_address' => 'sometimes|string|max:255',
             'state' => 'sometimes|string|max:100',
             'country' => 'sometimes|string|max:100',

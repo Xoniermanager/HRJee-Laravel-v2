@@ -9,7 +9,7 @@ class CheckEmployeeStatus
 {
     public function handle($request, Closure $next)
     {
-        $employeeDetails = Auth::guard('employee')->user();
+        $employeeDetails = Auth::user();
         if ($employeeDetails && $employeeDetails->status == '0') {
             Auth::logout();
             session()->flush();

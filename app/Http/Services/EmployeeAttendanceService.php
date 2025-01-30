@@ -31,7 +31,7 @@ class EmployeeAttendanceService
     }
     // public function create($data)
     // {
-    //     $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+    //     $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
     //     $attendanceTime = date('Y/m/d H:i:s');
     //     $startingTime = Carbon::parse($userDetails->officeShift->start_time);
     //     $loginBeforeShiftTime = $startingTime->subMinutes($userDetails->officeShift->login_before_shift_time);
@@ -71,7 +71,7 @@ class EmployeeAttendanceService
 
     public function create($data)
     {
-        $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+        $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
         $attendanceTime = date('Y/m/d H:i:s');
         $officeStartTime = $userDetails->officeShift->start_time;
         $officeEndTime = $userDetails->officeShift->end_time;
@@ -91,7 +91,7 @@ class EmployeeAttendanceService
             $payload['punch_in'] = $attendanceTime;
             if ($userDetails->officeShift->login_before_shift_time > 0) {
                 $beforTime = ' -' . $userDetails->officeShift->login_before_shift_time . ' minutes';
-                $loginBeforeShiftTime  = date('H:i:s', strtotime($userDetails->officeShift->start_time . $beforTime));
+                $loginBeforeShiftTime = date('H:i:s', strtotime($userDetails->officeShift->start_time . $beforTime));
                 if (date('H:i:s') < $loginBeforeShiftTime) {
                     return array('status' => false, 'message' => 'You are punching before your shift time. ' . $loginBeforeShiftTime);
                 }
@@ -101,7 +101,7 @@ class EmployeeAttendanceService
                 return array('status' => false, 'message' => 'Your office hours are over. ' . $officeEndTime);
             }
 
-            $todayHoliday =  $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, date('Y-m-d'), $userDetails->company_branch_id);
+            $todayHoliday = $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, date('Y-m-d'), $userDetails->company_branch_id);
             if ($todayHoliday) {
                 return array('status' => false, 'message' => 'Today is ' . $todayHoliday->name . ' holiday');
             }
@@ -117,7 +117,7 @@ class EmployeeAttendanceService
 
             if ($userDetails->officeShift->check_in_buffer > 0) {
                 $bufferTime = ' +' . $userDetails->officeShift->check_in_buffer . ' minutes';
-                $officeStartTime  = date('H:i:s', strtotime($userDetails->officeShift->start_time . $bufferTime));
+                $officeStartTime = date('H:i:s', strtotime($userDetails->officeShift->start_time . $bufferTime));
             }
             //dd($checkLeaveDetails);
             if ($checkLeaveDetails['success']) {
@@ -129,7 +129,7 @@ class EmployeeAttendanceService
                     }
                     if ($userDetails->officeShift->check_in_buffer > 0) {
                         $bufferTime = ' +' . $userDetails->officeShift->check_in_buffer . ' minutes';
-                        $officeStartTime  = date('H:i:s', strtotime($userDetails->officeShift->half_day_login . $bufferTime));
+                        $officeStartTime = date('H:i:s', strtotime($userDetails->officeShift->half_day_login . $bufferTime));
                     } else {
                         $officeStartTime = $userDetails->officeShift->half_day_login;
                     }
@@ -149,7 +149,7 @@ class EmployeeAttendanceService
 
 
             $this->employeeAttendanceRepository->create($payload);
-            return  ['status' => true, 'data' => 'Punch In'];
+            return ['status' => true, 'data' => 'Punch In'];
         }
     }
 
@@ -167,7 +167,7 @@ class EmployeeAttendanceService
     }
     public function getLastTenDaysAttendance()
     {
-        $userId = Auth()->guard('employee')->user()->id ?? auth()->guard('employee_api')->user()->id;
+        $userId = Auth()->user()->id ?? auth()->guard('employee_api')->user()->id;
         return $this->employeeAttendanceRepository->where('user_id', $userId)->where('punch_in', '>', now()->subDays(10)->endOfDay())->orderBy('id', 'DESC')->get();
     }
     // public function getWorkingHours($attendanceDetails)
@@ -249,20 +249,20 @@ class EmployeeAttendanceService
                 $checkExistingAttendance = $this->getAttendanceByDateByUserId($employeeId, $mainDate)->first();
 
                 //Check Leave if employee applied and status was approved
-                $checkLeave =  $this->leaveService->getUserConfirmLeaveByDate($employeeId, $mainDate);
+                $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeId, $mainDate);
 
                 //Check Weekend if Existing
                 $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->company_branch_id, $employeeDetails->department_id, $weekDayNumber);
 
                 if ($checkHoliday == null && $checkExistingAttendance == null && $checkLeave == null && $checkWeekend == null) {
                     $payload[] = [
-                        'punch_in'          => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
-                        'punch_out'         => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),
-                        'user_id'           => $employeeId,
-                        'remark'            => $data['remark'],
-                        'punch_in_using'    => $data['punch_in_using'],
-                        'created_at'        => Carbon::now(),
-                        'updated_at'        => Carbon::now()
+                        'punch_in' => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
+                        'punch_out' => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),
+                        'user_id' => $employeeId,
+                        'remark' => $data['remark'],
+                        'punch_in_using' => $data['punch_in_using'],
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
                     ];
                 }
             }

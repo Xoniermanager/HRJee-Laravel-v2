@@ -22,7 +22,7 @@ class AccountController extends Controller
     }
     public function index()
     {
-        $userAddressDetails = Auth::guard('employee')->user()->addressDetails;
+        $userAddressDetails = Auth::user()->addressDetails;
         $allCountries = $this->countryService->getAllActiveCountry();
         return view('employee.account.index', compact('userAddressDetails', 'allCountries'));
     }
@@ -43,7 +43,7 @@ class AccountController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
         $data = $request->except('_token');
-        $userDetails = User::find(Auth::guard('employee')->user()->id);
+        $userDetails = User::find(Auth::user()->id);
         if (isset($data['profile_image']) && !empty($data['profile_image'])) {
             if ($userDetails->getRawOriginal('profile_image') != null) {
                 unlinkFileOrImage($userDetails->profile_image);
@@ -65,13 +65,13 @@ class AccountController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        UserBankDetail::where('user_id', Auth::guard('employee')->user()->id)->update($request->except('_token'));
+        UserBankDetail::where('user_id', Auth::user()->id)->update($request->except('_token'));
         return redirect()->back()->with(['success' => 'Updated Successfully']);
     }
 
     public function addressDetailsUpdate(UserAddressDetailsAddRequest $request, UserAddressDetailServices $userAddressDetailServices)
     {
-        $request['user_id'] = Auth::guard('employee')->user()->id;
+        $request['user_id'] = Auth::user()->id;
         $updateDetails = $userAddressDetailServices->create($request->all());
         if ($updateDetails) {
             return redirect()->back()->with(['success' => 'Updated Successfully']);
@@ -81,12 +81,12 @@ class AccountController extends Controller
     }
     public function updateChangePassword(EmployeeChangePasswordRequest $request)
     {
-        $credential =  $request->validated();
+        $credential = $request->validated();
         try {
-            $response = User::find(Auth()->guard('employee')->user()->id)->update(['password' => $credential['password']]);
+            $response = User::find(Auth()->user()->id)->update(['password' => $credential['password']]);
             if ($response == true) {
                 return response()->json([
-                    'status'  => 200,
+                    'status' => 200,
                     'success' => true,
                     'message' => "Password has been changed successfully"
                 ], 200);

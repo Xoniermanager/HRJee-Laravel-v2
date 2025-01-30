@@ -14,13 +14,13 @@ class CompanyDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('company_details')->delete();
-        
-        \DB::table('company_details')->insert(array (
-            0 => 
-            array (
+
+        \DB::table('company_details')->insert(array(
+            0 =>
+            array(
                 'id' => 1,
                 'user_id' => 1,
                 'username' => 'xonier12345',
@@ -38,7 +38,5 @@ class CompanyDetailsTableSeeder extends Seeder
                 'updated_at' => '2025-01-29 10:41:20',
             ),
         ));
-        
-        
     }
 }

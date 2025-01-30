@@ -57,11 +57,16 @@ class CompanyDetailService
     }
     public function get_company_by_id($id)
     {
-        return $this->companyDetailRepository->getCompanyById($id)->first();
+        return $this->companyDetailRepository->where('user_id', $id)->first();
     }
     public function update_company($data)
     {
         return $this->companyDetailRepository->updateCompany($data);
+    }
+
+    public function updateCompanyDetails($data, $userId)
+    {
+        return $this->companyDetailRepository->where('user_id', $userId)->update($data);
     }
 
     public function get_company_with_branch_details($id)

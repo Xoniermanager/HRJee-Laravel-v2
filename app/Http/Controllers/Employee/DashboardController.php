@@ -25,11 +25,12 @@ class DashboardController extends Controller
         $this->breakTypeService = $breakTypeService;
         $this->employeeBreakHistoryService = $employeeBreakHistoryService;
     }
+    
     public function index()
     {
-        $existingAttendanceDetail = $this->employeeAttendanceService->getExtistingDetailsByUserId(Auth()->guard('employee')->user()->id);
+        $existingAttendanceDetail = $this->employeeAttendanceService->getExtistingDetailsByUserId(Auth()->user()->id);
 
-        $allBreakTypeDetails = $this->breakTypeService->getAllBreakTypeByCompanyId(Auth()->guard('employee')->user()->company_id);
+        $allBreakTypeDetails = $this->breakTypeService->getAllBreakTypeByCompanyId(Auth()->user()->company_id);
         $takenBreakDetails = '';
         if (isset($existingAttendanceDetail) && !empty($existingAttendanceDetail)) {
             $takenBreakDetails = $this->employeeBreakHistoryService->getBreakHistoryByAttendanceId($existingAttendanceDetail->id);
@@ -41,7 +42,7 @@ class DashboardController extends Controller
 
     public function startImpersonate()
     {
-        $employee = auth()->guard('employee')->user();
+        $employee = Auth()->user();
 
         // Save original guard and user info in session
         session()->put('impersonation', [

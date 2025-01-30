@@ -30,12 +30,12 @@ class EmployeeRepository extends BaseRepository
     // }
     public function getEmployeeById($id)
     {
-       return $this->where('id',$id);
+        return $this->where('id', $id);
     }
 
     public function getEmployeeDetailsById($id)
     {
-       $user = User::with('user_details', 'bankDetail', 'address')->find($id);
+        $user = User::with('user_details', 'bankDetail', 'address')->find($id);
         return $userDetails = [
             'user' => $user,
             'user_details' => $user->user_details,
@@ -52,5 +52,5 @@ class EmployeeRepository extends BaseRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

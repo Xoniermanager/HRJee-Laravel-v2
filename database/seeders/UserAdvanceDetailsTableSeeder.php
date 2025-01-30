@@ -14,15 +14,15 @@ class UserAdvanceDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('user_advance_details')->delete();
-        
+
         \DB::table('user_advance_details')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
-                'user_id' => 1,
+                'user_id' => 2,
                 'aadhar_no' => '123456',
                 'pan_no' => '12345',
                 'uan_no' => NULL,
@@ -37,7 +37,7 @@ class UserAdvanceDetailsTableSeeder extends Seeder
                 'updated_at' => '2024-06-21 14:57:49',
             ),
         ));
-        
-        
+
+
     }
 }

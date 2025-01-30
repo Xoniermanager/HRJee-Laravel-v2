@@ -24,12 +24,12 @@ class EmployeeChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'password'         => 'required|min:5|max:30',
+            'password' => 'required|min:5|max:30',
             'confirm_password' => 'required|same:password',
-            'old_password'     => [
+            'old_password' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (!Hash::check($value, Auth::guard('employee')->user()->password ?? Auth::guard('api')->user()->password)) {
+                    if (!Hash::check($value, Auth::user()->password ?? Auth::guard('api')->user()->password)) {
                         $fail('Old Password didn\'t match');
                     }
                 },

@@ -15,18 +15,19 @@ class CustomRoleService
 
   public function all($companyId = null)
   {
-    if ($companyId) {
-      $otherRoles = $this->customRoleRepository->where('company_id', $companyId)->get();
-      $userRole = $this->customRoleRepository->where('name', 'User')->get();
-      return $otherRoles->merge($userRole);
-    }
-
-    return $this->customRoleRepository->orderBy('id', 'DESC')->all();
+    return $this->customRoleRepository
+      ->where('company_id', $companyId)
+      ->where('category', 'custom')
+      ->orderBy('id', 'DESC')
+      ->get();
   }
 
   public function getRolesByCompanyID($id)
   {
-    return $this->customRoleRepository->where('company_id', $id)->orderBy('id', 'DESC')->get();
+    return $this->customRoleRepository
+      ->where('company_id', $id)
+      ->where('category', 'custom')
+      ->orderBy('id', 'DESC')->get();
   }
 
   public function create(array $data)
