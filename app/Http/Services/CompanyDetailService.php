@@ -64,9 +64,9 @@ class CompanyDetailService
         return $this->companyDetailRepository->updateCompany($data);
     }
 
-    public function updateCompanyDetails($data, )
+    public function updateCompanyDetails($data, $userId)
     {
-        return $this->companyDetailRepository->updateCompany($data);
+        return $this->companyDetailRepository->where('user_id', $userId)->update($data);
     }
 
     public function get_company_with_branch_details($id)

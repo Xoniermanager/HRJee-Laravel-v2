@@ -64,6 +64,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(WeekendsTableSeeder::class);
         // $this->call(WeekDayWeekendTableSeeder::class);
         // $this->call(CompanyMenuTableSeeder::class);
-        // $this->call(EmployeesMenusSeeder::class);
+        $this->call(EmployeesMenusSeeder::class);
     }
 }

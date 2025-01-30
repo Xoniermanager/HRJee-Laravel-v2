@@ -48,20 +48,25 @@ class CompanyController extends Controller
     {
         try {
             $data = request()->except(['_token']);
+            
+
+            $this->userService->updateDetail(['name' => $data['name'],'email' => $data['email']], auth()->id());
+            $detailPayload = [
+                'username' => $data['username'],
+                'contact_no' => $data['contact_no'],
+            ];
             if ($request->logo !== null) {
                 $upload_path = "/uploads";
                 $image = $data['logo'];
                 $filePath = uploadingImageorFile($image, $upload_path, 'company_profile');
                 if ($filePath) {
-                    $data['logo'] = $filePath;
+                    $detailPayload['logo'] = $filePath;
                 }
             }
-
-            dd($data);
-            $this->userService->updateDetail(['name' => $data['name'],'email' => $data['email']], auth()->id());
-            $updatedCompany = $this->companyDetailService->update_company($data);
+            $updatedCompany = $this->companyDetailService->updateCompanyDetails($detailPayload, auth()->id());
             if ($updatedCompany) {
                 smilify('success', 'Profile Updated Successfully!');
+
                 return redirect()->route('company.profile');
             }
         } catch (\Exception $e) {
