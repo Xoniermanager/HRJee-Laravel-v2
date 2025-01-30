@@ -1,7 +1,7 @@
 <div class="position-colps sidemenu-scroll float-left">
 	<!--begin::Aside-->
 	<a href="{{ route('company.dashboard') }}">
-		<img src="{{ asset('assets/media/logos/logo.png') }}" class="brand-logo">
+		<img src="{{  Auth::user()->companyDetails->logo ?? asset('assets/media/logos/logo.png') }}" class="brand-logo">
 	</a>
 	<div id="kt_aside" class="aside py-5" data-kt-drawer="true" data-kt-drawer-name="aside"
 		data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true"
@@ -611,7 +611,7 @@
 								<div class="d-flex align-items-center">
 									<!--begin::Avatar-->
 									<div class="symbol symbol-circle symbol-40px">
-										<img src="{{ Auth::user()->details->logo ? Storage::url(Auth::user()->details->logo) : asset('employee/assets/media/user.jpg') }}" alt="photo">
+										<img src="{{ Auth::user()->companyDetails->logo ??  asset('employee/assets/media/user.jpg') }}" alt="photo">
 									</div>
 									<!--end::Avatar-->
 
@@ -646,7 +646,7 @@
 											<div class="menu-content d-flex align-items-center px-3">
 												<!--begin::Avatar-->
 												<div class="symbol symbol-50px me-5">
-													<img alt="Logo" src="{{ asset('assets/media/user.jpg') }}">
+													<img alt="Logo" src="{{  Auth::user()->companyDetails->logo ?? asset('assets/media/user.jpg') }}">
 												</div>
 												<!--end::Avatar-->
 

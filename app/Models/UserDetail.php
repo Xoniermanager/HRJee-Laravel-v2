@@ -37,6 +37,12 @@ class UserDetail extends Model
         'start_time',
         'status'
     ];
+    protected function profileImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => url("storage" . $value)
+        );
+    }
 
     public function user()
     {

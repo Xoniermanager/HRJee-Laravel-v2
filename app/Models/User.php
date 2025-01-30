@@ -92,14 +92,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserRelativeDetail::class, 'user_id', 'id');
     }
-
-    protected function profileImage(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => url("storage" . $value)
-        );
-    }
-
     public function skill()
     {
         return $this->belongsToMany(Skill::class, 'user_skill', 'user_id', 'skill_id');
