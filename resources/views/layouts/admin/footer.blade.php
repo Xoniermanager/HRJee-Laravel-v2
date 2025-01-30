@@ -3,8 +3,8 @@
         <div class="row">
             <div
                 class="col-md-12 footer-copyright d-flex flex-wrap align-items-center justify-content-center">
-                <p class="mb-0 f-w-600">Copyright <span class="year-update"></span>Design & Developed by <a
-                        href="https://xoniertechnologies.com/">xonier Technologies pvt. Ltd.</a></p>
+                <p class="mb-0 f-w-600">Copyright <span class="year-update"></span> Design & Developed by <a
+                        href="https://xoniertechnologies.com/">Xonier Technologies Pvt. Ltd.</a></p>
             </div>
         </div>
     </div>
