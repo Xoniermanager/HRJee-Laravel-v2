@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Employee;
 use Throwable;
 use App\Models\Admin;
 use Illuminate\Http\Request;
-use App\Http\Services\AuthService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\SendOtpRequest;
 use App\Http\Services\SendOtpService;
 use App\Http\Requests\VerifyOtpRequest;
 use Illuminate\Support\Facades\Redirect;
@@ -18,16 +16,12 @@ use App\Http\Requests\ChangePasswordRequest;
 
 class AuthController extends Controller
 {
-    private $userAuthService;
-    private $authService;
     private $sendOtpService;
 
-    public function __construct(AuthService $userAuthService, SendOtpService $sendOtpService)
+    public function __construct(SendOtpService $sendOtpService)
     {
-        $this->userAuthService = $userAuthService;
         $this->sendOtpService = $sendOtpService;
     }
-
 
     public function index()
     {
