@@ -63,43 +63,43 @@ class EmployeeExport implements FromCollection, WithHeadings, WithMapping, WithS
     public function map($allEmployeeDetails): array
     {
         static $serialNumber = 1;
-        if ($allEmployeeDetails->gender == 'M') {
-            $allEmployeeDetails->gender = "Male";
+        if ($allEmployeeDetails->details->gender == 'M') {
+            $allEmployeeDetails->details->gender = "Male";
         }
-        if ($allEmployeeDetails->gender == 'F') {
-            $allEmployeeDetails->gender = "Female";
+        if ($allEmployeeDetails->details->gender == 'F') {
+            $allEmployeeDetails->details->gender = "Female";
         }
-        if ($allEmployeeDetails->gender == 'N/A') {
-            $allEmployeeDetails->gender = "N/A";
+        if ($allEmployeeDetails->details->gender == 'N/A') {
+            $allEmployeeDetails->details->gender = "N/A";
         }
-        if ($allEmployeeDetails->gender == 'O') {
-            $allEmployeeDetails->gender = "Other";
+        if ($allEmployeeDetails->details->gender == 'O') {
+            $allEmployeeDetails->details->gender = "Other";
         }
-        if ($allEmployeeDetails->marital_status == 'M') {
-            $allEmployeeDetails->marital_status = "Maried";
+        if ($allEmployeeDetails->details->marital_status == 'M') {
+            $allEmployeeDetails->details->marital_status = "Maried";
         }
-        if ($allEmployeeDetails->marital_status == 'S') {
-            $allEmployeeDetails->marital_status = "Single";
+        if ($allEmployeeDetails->details->marital_status == 'S') {
+            $allEmployeeDetails->details->marital_status = "Single";
         }
-        if ($allEmployeeDetails->marital_status == 'N/A') {
-            $allEmployeeDetails->marital_status = "N/A";
+        if ($allEmployeeDetails->details->marital_status == 'N/A') {
+            $allEmployeeDetails->details->marital_status = "N/A";
         }
         return [
             $serialNumber++,
             $allEmployeeDetails->name,
-            $allEmployeeDetails->emp_id,
+            $allEmployeeDetails->details->emp_id,
             $allEmployeeDetails->email,
-            $allEmployeeDetails->official_email_id,
-            $allEmployeeDetails->father_name,
-            $allEmployeeDetails->mother_name,
-            $allEmployeeDetails->blood_group,
-            $allEmployeeDetails->gender,
-            $allEmployeeDetails->marital_status,
-            getFormattedDate($allEmployeeDetails->date_of_birth),
-            getFormattedDate($allEmployeeDetails->joining_date),
-            $allEmployeeDetails->department->name ?? '',
-            $allEmployeeDetails->designation->name ?? '',
-            $allEmployeeDetails->companyBranch->name ?? '',
+            $allEmployeeDetails->details->official_email_id,
+            $allEmployeeDetails->details->father_name,
+            $allEmployeeDetails->details->mother_name,
+            $allEmployeeDetails->details->blood_group,
+            $allEmployeeDetails->details->gender,
+            $allEmployeeDetails->details->marital_status,
+            getFormattedDate($allEmployeeDetails->details->date_of_birth),
+            getFormattedDate($allEmployeeDetails->details->joining_date),
+            $allEmployeeDetails->details->department->name ?? '',
+            $allEmployeeDetails->details->designation->name ?? '',
+            $allEmployeeDetails->details->companyBranch->name ?? '',
             $allEmployeeDetails->bankDetails->account_name ?? '',
             $allEmployeeDetails->bankDetails->account_number ?? '',
             $allEmployeeDetails->bankDetails->bank_name ?? '',
