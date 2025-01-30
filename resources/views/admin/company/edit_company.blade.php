@@ -132,7 +132,7 @@
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
                                                                 <input class="form-control" id="contact_no" name="contact_no"
-                                                                    type="number" placeholder="Contact No." value="{{$companyDetails->details->contact_no}}">
+                                                                    type="number" placeholder="Contact No." value="{{$companyDetails->companyDetails->contact_no}}">
                                                             </div>
 
                                                         </div>
@@ -142,7 +142,7 @@
                                                         <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
 
                                                             <div class="col-md-6 col-sm-6">
-                                                                <input class="form-control" id="username" name="username" value="{{$companyDetails->details->username}}"
+                                                                <input class="form-control" id="username" name="username" value="{{$companyDetails->companyDetails->username}}"
                                                                     type="text" placeholder="UsernName">
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
@@ -225,11 +225,11 @@
                                                             </div>
 
                                                             <div class="col-md-6">
-                                                                <input class="form-control" id="company_url" name="company_url" value="{{$companyDetails->details->company_url}}"
+                                                                <input class="form-control" id="company_url" name="company_url" value="{{$companyDetails->companyDetails->company_url}}"
                                                                     type="url" placeholder="Company Website">
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
-                                                                <input class="form-control" value="{{$companyDetails->details->companyType->name}}" type="text" disabled>
+                                                                <input class="form-control" value="{{$companyDetails->companyDetails->companyType->name}}" type="text" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -238,7 +238,7 @@
                                                             <div class="col-md-6">
                                                                 <input class="form-control" id="company_size" name="company_size"
                                                                     type="number"
-                                                                    placeholder="No of User/Licence required." value="{{$companyDetails->details->company_size}}">
+                                                                    placeholder="No of User/Licence required." value="{{$companyDetails->companyDetails->company_size}}">
                                                             </div>
 
                                                         </div>
@@ -246,7 +246,7 @@
                                                     <div class="col-12">
                                                         <div class="row bottomspace">
                                                             <div class="col-md-12 col-sm-12">
-                                                                <textarea class="form-control" id="company_address" name="company_address" rows="2" placeholder="Enter Your Company Address">{{ $companyDetails->details->company_address }}</textarea>
+                                                                <textarea class="form-control" id="company_address" name="company_address" rows="2" placeholder="Enter Your Company Address">{{ $companyDetails->companyDetails->company_address }}</textarea>
                                                             </div>
                                                         </div>
                                                     </div>

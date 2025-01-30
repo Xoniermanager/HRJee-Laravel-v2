@@ -31,6 +31,8 @@
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 
 <script src="{{ asset('admin/assets/js/jquery.searchableSelect.js') }}"></script>
+<script src="{{ asset('assets/js/add-employee-validation.js') }}"></script>
+
 <script>
     setTimeout(function() {
         $('.alert').fadeOut('fast');

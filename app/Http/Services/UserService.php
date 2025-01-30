@@ -23,7 +23,7 @@ class UserService
     {
         return $this->userRepository->find($userId)->update($data);
     }
-    
+
     public function getCompanies()
     {
         return $this->userRepository->where('type', 'company');
@@ -43,36 +43,47 @@ class UserService
 
     public function deleteUserById($userId)
     {
-        $userDeatil = $this->userRepository->find($userId);
-        $userDeatil->details()->delete();
-        return $userDeatil->delete();
+        $userDetails = $this->userRepository->find($userId);
+        $userDetails->type == 'company' ? $userDetails->companyDetails()->delete() : $userDetails->details()->delete();
+        return $userDetails->delete();
     }
     public function searchFilterCompany($searchKey)
     {
-        return $this->userRepository->where(function ($query) use ($searchKey) {
-            if (!empty($searchKey['key'])) {
-                $query->where('name', 'like', "%{$searchKey['key']}%")
-                    ->orWhere('email', 'like', "%{$searchKey['key']}%");
-                // ->orWhereHas('profile', function($q) use ($searchKey) {
-                //     $q->where('username', 'like', "%{$searchKey['key']}%")
-                //         ->orWhere('contact_no', 'like', "%{$searchKey['key']}%")
-                //         ->orWhere('company_address', 'like', "%{$searchKey['key']}%");
-                // });
-            }
-            if (isset($searchKey['status'])) {
-                $query->where('status', $searchKey['status']);
-            }
-            if (isset($searchKey['deletedAt'])) {
-                $query->onlyTrashed();
-            }
-            if (isset($searchKey['companyTypeId'])) {
-                $query->whereHas('details', function ($query) use ($searchKey) {
-                    if ($query->where('type' == 'company')) {
-                        $query->where('company_details.company_type_id', $searchKey['companyTypeId']);
-                    }
-                });
-            }
-        })->paginate(10);
+        $allCompanyDetails = $this->userRepository->where('type', 'company');
+
+        // Apply company type filtering
+        $allCompanyDetails->when(isset($searchKey['companyTypeId']), function ($query) use ($searchKey) {
+            $query->whereHas('companyDetails', function ($query) use ($searchKey) {
+                $query->where('company_type_id', $searchKey['companyTypeId']);
+            });
+        });
+
+        // Apply search key filtering for 'name', 'email', and fields in 'companyDetails'
+        $allCompanyDetails->when(isset($searchKey['key']), function ($query) use ($searchKey) {
+            $query->where(function ($query) use ($searchKey) {
+                // Search in 'name' and 'email' fields on the User model
+                $query->where('name', 'like', '%' . $searchKey['key'] . '%')
+                    ->orWhere('email', 'like', '%' . $searchKey['key'] . '%')
+                    // Search in 'companyDetails' fields
+                    ->orWhereHas('companyDetails', function ($query) use ($searchKey) {
+                        $query->where('username', 'like', '%' . $searchKey['key'] . '%')
+                            ->orWhere('contact_no', 'like', '%' . $searchKey['key'] . '%')
+                            ->orWhere('company_address', 'like', '%' . $searchKey['key'] . '%');
+                    });
+            });
+        });
+
+        // Apply 'status' filtering
+        if (isset($searchKey['status'])) {
+            $allCompanyDetails->where('status', $searchKey['status']);
+        }
+
+        // Apply 'deletedAt' filtering for soft deletes
+        if (isset($searchKey['deletedAt'])) {
+            $allCompanyDetails->onlyTrashed();
+        }
+
+        return $allCompanyDetails->paginate(10);
     }
     public function searchCompanyMenu($searchKey)
     {

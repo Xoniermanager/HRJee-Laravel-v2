@@ -22,6 +22,7 @@ class ValidateBranch extends FormRequest
     public function rules(): array
     {
         return [
+            'company_id'=> 'required',
             'name' => 'required|string',
             'type' => 'required|in:primary,secondary',
             'contact_no' => 'required|numeric',
