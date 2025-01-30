@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Requests\EmployeeChangePasswordRequest;
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use App\Models\UserBankDetail;
 use App\Http\Controllers\Controller;
@@ -43,7 +44,11 @@ class AccountController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
         $data = $request->except('_token');
-        $userDetails = User::find(Auth::user()->id);
+        
+        $user = User::find(Auth::user()->id);
+        $user->update($data);
+
+        $userDetails = UserDetail::where('user_id', Auth::user()->id)->first();
         if (isset($data['profile_image']) && !empty($data['profile_image'])) {
             if ($userDetails->getRawOriginal('profile_image') != null) {
                 unlinkFileOrImage($userDetails->profile_image);
@@ -51,6 +56,7 @@ class AccountController extends Controller
             $data['profile_image'] = uploadingImageorFile($data['profile_image'], '/user_profile', removingSpaceMakingName($userDetails->name));
         }
         $userDetails->update($data);
+
         return redirect()->back()->with(['success' => 'Updated Successfully']);
     }
 

@@ -151,10 +151,16 @@ function getFormattedDate($date)
 
 function getWorkDateFromate($joiningDate)
 {
-    $joiningDate = Carbon::createFromFormat('Y-m-d', $joiningDate);
-    $currentDate = Carbon::now();
-    $diff = $joiningDate->diff($currentDate);
-    return $diff->format(' %y Years, %m Months, %d Days');
+    if($joiningDate) {
+        $joiningDate = Carbon::createFromFormat('Y-m-d', $joiningDate);
+        $currentDate = Carbon::now();
+        $diff = $joiningDate->diff($currentDate);
+
+        return $diff->format(' %y Years, %m Months, %d Days');
+    } else {
+
+        return $joiningDate;
+    }
 }
 
 function fullMonthList()
@@ -256,24 +262,13 @@ function getCompanyMenuHtml($companyId)
 
 function getEmployeeMenuHtml()
 {
-//    $companyMenus = [];
     $html = '';
 
-    $companyMenuSql = Menu::where(['status' => 1, 'role' => 'employee']);
-    // $mainMenuIDs = $companyMenuSql->whereNull('parent_id')->pluck('id')->toArray();
-
     $companyAssignedMenuIds = MenuRole::where('role_id', auth()->user()->parent->role_id)->pluck('menu_id')->toArray();
-
-    $childMenus = Menu::where(['status' => 1, 'role' => 'employee'])->where(function($query) use($companyAssignedMenuIds) {
+    $childMenus = Menu::where(['status' => 1, 'role' => 'employee'])->where(function ($query) use ($companyAssignedMenuIds) {
         $query->whereIn('parent_id', $companyAssignedMenuIds)
-          ->orWhere('parent_id', NULL);
+            ->orWhere('parent_id', NULL);
     })->get();
-
-    // $childMenuIDs = Menu::where(['status' => 1, 'role' => 'employee'])->whereIn('parent_id', $companyAssignedMenuIds)->whereNotNull('parent_id')->pluck('id')->toArray();
-    // $parentMenuIDs = Menu::where(['status' => 1, 'role' => 'employee'])->whereIn('parent_id', $companyAssignedMenuIds)->whereNotNull('parent_id')->pluck('parent_id')->toArray();
-
-    // $parentMenus = array_merge($mainMenuIDs, $parentMenuIDs);
-    // $companyMenus = Menu::whereIn('id', $parentMenus)->orderBy('order_no', 'ASC')->with(['parent'])->get();
 
     foreach ($childMenus as $menu) {
         // If no children, just a simple menu item

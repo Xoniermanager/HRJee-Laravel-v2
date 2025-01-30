@@ -261,7 +261,7 @@
 							</div>
 							<div class="col-md-6 form-group">
 								<label for="">Father's Name *</label>
-								<input class="form-control" name="father_name" type="text" value="{{ Auth::user()->father_name }}">
+								<input class="form-control" name="father_name" type="text" value="{{ Auth::user()->details->father_name }}">
 								@if ($errors->has('father_name'))
 									<div class="text-danger">{{ $errors->first('father_name') }}</div>
 								@endif
@@ -269,7 +269,7 @@
 
 							<div class="col-md-6 form-group">
 								<label for="">Mother Name *</label>
-								<input class="form-control" name="mother_name" type="text" value="{{ Auth::user()->mother_name }}">
+								<input class="form-control" name="mother_name" type="text" value="{{ Auth::user()->details->mother_name }}">
 								@if ($errors->has('mother_name'))
 									<div class="text-danger">{{ $errors->first('mother_name') }}</div>
 								@endif
@@ -277,7 +277,7 @@
 
 							<div class="col-md-6 form-group">
 								<label for="">DOB *</label>
-								<input class="form-control" name="date_of_birth" type="date" value="{{ Auth::user()->date_of_birth }}">
+								<input class="form-control" name="date_of_birth" type="date" value="{{ Auth::user()->details->date_of_birth }}">
 								@if ($errors->has('date_of_birth'))
 									<div class="text-danger">{{ $errors->first('date_of_birth') }}</div>
 								@endif
@@ -285,11 +285,11 @@
 							<div class="col-md-6 form-group">
 								<label for="">Gender *</label>
 								<select class="form-control" name="gender">
-									<option {{ Auth::user()->gender ?? old('gender') == 'M' ? 'selected' : '' }} value="M">
+									<option {{ Auth::user()->details->gender ?? old('gender') == 'M' ? 'selected' : '' }} value="M">
 										Male</option>
-									<option {{ Auth::user()->gender ?? old('gender') == 'F' ? 'selected' : '' }} value="F">
+									<option {{ Auth::user()->details->gender ?? old('gender') == 'F' ? 'selected' : '' }} value="F">
 										Female</option>
-									<option {{ Auth::user()->gender ?? old('gender') == 'O' ? 'selected' : '' }}value="O">
+									<option {{ Auth::user()->details->gender ?? old('gender') == 'O' ? 'selected' : '' }}value="O">
 										Other
 									</option>
 								</select>
@@ -299,7 +299,7 @@
 							</div>
 							<div class="col-md-6 form-group">
 								<label for="">Phone Number *</label>
-								<input class="form-control" name="phone" type="number" value="{{ Auth::user()->phone }}">
+								<input class="form-control" name="phone" type="number" value="{{ Auth::user()->details->phone }}">
 								@if ($errors->has('phone'))
 									<div class="text-danger">{{ $errors->first('phone') }}</div>
 								@endif
@@ -307,9 +307,9 @@
 							<div class="col-md-6 form-group">
 								<label for="">Marital Status *</label>
 								<select class="form-control" name="marital_status">
-									<option {{ Auth::user()->marital_status ?? old('marital_status') == 'M' ? 'selected' : '' }} value="M">
+									<option {{ Auth::user()->details->marital_status ?? old('marital_status') == 'M' ? 'selected' : '' }} value="M">
 										Married</option>
-									<option {{ Auth::user()->marital_status ?? old('marital_status') == 'S' ? 'selected' : '' }} value="S">
+									<option {{ Auth::user()->details->marital_status ?? old('marital_status') == 'S' ? 'selected' : '' }} value="S">
 										Single</option>
 								</select>
 								@if ($errors->has('marital_status'))
@@ -319,17 +319,17 @@
 							<div class="col-md-6 form-group">
 								<label for="">Blood Group *</label>
 								<select class="form-control" name="blood_group">
-									<option {{ Auth::user()->blood_group ?? old('blood_group') == 'A-' ? 'selected' : '' }} value="A-">A-
+									<option {{ Auth::user()->details->blood_group ?? old('blood_group') == 'A-' ? 'selected' : '' }} value="A-">A-
 									</option>
-									<option {{ Auth::user()->blood_group ?? old('blood_group') == 'A+' ? 'selected' : '' }} value="A+">A+
+									<option {{ Auth::user()->details->blood_group ?? old('blood_group') == 'A+' ? 'selected' : '' }} value="A+">A+
 									</option>
-									<option {{ Auth::user()->blood_group ?? old('blood_group') == 'B+' ? 'selected' : '' }} value="B+">B+
+									<option {{ Auth::user()->details->blood_group ?? old('blood_group') == 'B+' ? 'selected' : '' }} value="B+">B+
 									</option>
-									<option {{ Auth::user()->blood_group ?? old('blood_group') == 'B-' ? 'selected' : '' }} value="B-">B-
+									<option {{ Auth::user()->details->blood_group ?? old('blood_group') == 'B-' ? 'selected' : '' }} value="B-">B-
 									</option>
-									<option {{ Auth::user()->blood_group ?? old('blood_group') == 'O+' ? 'selected' : '' }} value="O+">O+
+									<option {{ Auth::user()->details->blood_group ?? old('blood_group') == 'O+' ? 'selected' : '' }} value="O+">O+
 									</option>
-									<option {{ Auth::user()->blood_group ?? old('blood_group') == 'O-' ? 'selected' : '' }} value="O-">O-
+									<option {{ Auth::user()->details->blood_group ?? old('blood_group') == 'O-' ? 'selected' : '' }} value="O-">O-
 									</option>
 								</select>
 								@if ($errors->has('blood_group'))
@@ -362,12 +362,12 @@
 						</div>
 						<div class="col-md-6 form-group">
 							<label for="">Company Branch </label>
-							<input class="form-control" name="" type="text" value="{{ Auth::user()->companyBranch->name }}"
+							<input class="form-control" name="" type="text" value="{{ Auth::user()->companyBranch ? Auth::user()->companyBranch->name : 'N/A' }}"
 								disabled>
 						</div>
 						<div class="col-md-6 form-group">
 							<label for="">Department </label>
-							<input class="form-control" name="" type="text" value="{{ Auth::user()->department->name }}"
+							<input class="form-control" name="" type="text" value="{{ Auth::user()->department ? Auth::user()->department->name : 'N/A' }}"
 								disabled>
 						</div>
 						<div class="col-md-6 form-group">
@@ -641,7 +641,7 @@
 			<!--begin::Modal header-->
 			<!--begin::Modal body-->
 			<div class="modal-body scroll-y border-top pb-5 pt-0">
-				@include('employee.change_password')
+				@include('employee.account.change_password')
 			</div>
 			<!--end::Modal body-->
 		</div>
