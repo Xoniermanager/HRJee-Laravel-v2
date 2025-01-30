@@ -20,7 +20,7 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'Attendance Detail',
                 'slug' => '/employee/attendance/service',
                 'icon' => '<i class="fa fa-calendar-days"></i>',
-                'parent_id' => 29,
+                'parent_id' => 28,
                 'order_no' => 1,
                 'role' => 'employee'
             ],
@@ -36,7 +36,7 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'Employee News',
                 'slug' => '/employee/news',
                 'icon' => '<i class="fa fa-newspaper"></i>',
-                'parent_id' => 17,
+                'parent_id' => 16,
                 'order_no' => 3,
                 'role' => 'employee'
             ],
@@ -44,7 +44,7 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'Policies',
                 'slug' => '/employee/policy',
                 'icon' => '<i class="fa fa-file-contractr"></i>',
-                'parent_id' => 20,
+                'parent_id' => 19,
                 'order_no' => 4,
                 'role' => 'employee'
             ],
@@ -52,7 +52,7 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'HR Complains',
                 'slug' => '/employee/hr-complain/index',
                 'icon' => '<i class="fa fa-headphones"></i>',
-                'parent_id' => 32,
+                'parent_id' => 31,
                 'order_no' => 5,
                 'role' => 'employee'
             ],
@@ -60,7 +60,7 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'Apply Leave',
                 'slug' => '/employee/leave',
                 'icon' => '<i class="fa fa-headphones"></i>',
-                'parent_id' => 35,
+                'parent_id' => 34,
                 'order_no' => 6,
                 'role' => 'employee'
             ],
@@ -68,7 +68,7 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'Leave Available',
                 'slug' => '/employee/get/leave/available',
                 'icon' => '<i class="fa fa-headphones"></i>',
-                'parent_id' => 35,
+                'parent_id' => 34,
                 'order_no' => 7,
                 'role' => 'employee'
             ],

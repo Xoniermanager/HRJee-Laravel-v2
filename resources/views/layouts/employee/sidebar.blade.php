@@ -34,7 +34,7 @@
 							</div>
 							<!--end:Menu item-->
 
-							{!! getEmployeeMenuHtml(Auth()->user()->company_id) !!}
+							{!! getEmployeeMenuHtml() !!}
 							<!--begin:Menu item-->
 							<div class="menu-item">
 								<!--begin:Menu link-->
