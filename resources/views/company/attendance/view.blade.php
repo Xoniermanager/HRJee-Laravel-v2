@@ -89,7 +89,7 @@
                             </div>
                             <div class="col-md-12 selectpermission mt-4">
                                 <label class="required">Remark</label>
-                                <textarea class="form-control mb-5 mt-3" name="remark"></textarea>
+                                <textarea class="form-control mb-5 mt-3" name="remark" id="remark"></textarea>
                             </div>
                         </div>
                         <!--end::Wrapper-->
@@ -117,11 +117,12 @@
         var months = @json(fullMonthList());
         let empId = {{ $employeeDetail['emp_id'] }}
 
-        function edit_attendance(attendanceId, punchIn, punchOut, date) {
+        function edit_attendance(attendanceId, punchIn, punchOut, date, remark="") {
             $('#date').val(date);
             $('#attendance_id').val(attendanceId);
             $('#punch_in').val(punchIn);
             $('#punch_out').val(punchOut);
+            $('#remark').val(remark);
         }
 
         $(document.body).ready(function() {
