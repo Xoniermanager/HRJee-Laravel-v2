@@ -65,7 +65,8 @@ class CompanyDashboardController extends Controller
                 ->where('leave_status_id', '1') // Assuming STATUS_PENDING is defined in Leave model
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
                 ->count(),
-            'all_users_details' => $this->employeeService->getAllEmployeeByCompanyId($companyId)->paginate(10)
+            // 'all_users_details' => $this->employeeService->getAllEmployeeByCompanyId($companyId)->paginate(10)
+            'all_users_details' => []
         ];
         return view('company.dashboard.dashboard', compact('dashboardData'));
     }
