@@ -36,9 +36,9 @@ class UserService
 
     public function updateStatus($userId, $statusValue)
     {
-        $userDetail = $this->userRepository->find($userId);
-        $userDetail->details()->update(['status' => $statusValue]);
-        return $userDetail->update(['status' => $statusValue]);
+        $userDetails = $this->userRepository->find($userId);
+        $userDetails->type == 'company' ? $userDetails->companyDetails()->update(['status' => $statusValue]) : $userDetails->details()->update(['status' => $statusValue]);
+        return $userDetails->update(['status' => $statusValue]);
     }
 
     public function deleteUserById($userId)
@@ -50,7 +50,6 @@ class UserService
     public function searchFilterCompany($searchKey)
     {
         $allCompanyDetails = $this->userRepository->where('type', 'company');
-
         // Apply company type filtering
         $allCompanyDetails->when(isset($searchKey['companyTypeId']), function ($query) use ($searchKey) {
             $query->whereHas('companyDetails', function ($query) use ($searchKey) {
@@ -103,68 +102,68 @@ class UserService
     public function searchFilterEmployee($request = null, $companyId)
     {
         $allEmployeeDetails = $this->userRepository
-        ->where('type', 'user')
-        ->where('company_id', $companyId)
-        ->whereHas('details', function ($query) use ($request) {
-            $query->whereNull('exit_date');
-            // Filtering by details-related fields
-            if (isset($request->gender) && !empty($request->gender)) {
-                $query->where('gender', $request->gender);
-            }
-            if (isset($request->emp_status_id) && !empty($request->emp_status_id)) {
-                $query->where('employee_status_id', $request->emp_status_id);
-            }
-            if (isset($request->marital_status) && !empty($request->marital_status)) {
-                $query->where('marital_status', $request->marital_status);
-            }
-            if (isset($request->emp_type_id) && !empty($request->emp_type_id)) {
-                $query->where('employee_type_id', $request->emp_type_id);
-            }
-            if (isset($request->department_id) && !empty($request->department_id)) {
-                $query->where('department_id', $request->department_id);
-            }
-            if (isset($request->shift_id) && !empty($request->shift_id)) {
-                $query->where('shift_id', $request->shift_id);
-            }
-            if (isset($request->branch_id) && !empty($request->branch_id)) {
-                $query->where('company_branch_id', $request->branch_id);
-            }
-            if (isset($request->qualification_id) && !empty($request->qualification_id)) {
-                $query->where('qualification_id', $request->qualification_id);
-            }
+            ->where('type', 'user')
+            ->where('company_id', $companyId)
+            ->whereHas('details', function ($query) use ($request) {
+                $query->whereNull('exit_date');
+                // Filtering by details-related fields
+                if (isset($request->gender) && !empty($request->gender)) {
+                    $query->where('gender', $request->gender);
+                }
+                if (isset($request->emp_status_id) && !empty($request->emp_status_id)) {
+                    $query->where('employee_status_id', $request->emp_status_id);
+                }
+                if (isset($request->marital_status) && !empty($request->marital_status)) {
+                    $query->where('marital_status', $request->marital_status);
+                }
+                if (isset($request->emp_type_id) && !empty($request->emp_type_id)) {
+                    $query->where('employee_type_id', $request->emp_type_id);
+                }
+                if (isset($request->department_id) && !empty($request->department_id)) {
+                    $query->where('department_id', $request->department_id);
+                }
+                if (isset($request->shift_id) && !empty($request->shift_id)) {
+                    $query->where('shift_id', $request->shift_id);
+                }
+                if (isset($request->branch_id) && !empty($request->branch_id)) {
+                    $query->where('company_branch_id', $request->branch_id);
+                }
+                if (isset($request->qualification_id) && !empty($request->qualification_id)) {
+                    $query->where('qualification_id', $request->qualification_id);
+                }
 
-            // Search operation inside the details relation
-            if (isset($request->search) && !empty($request->search)) {
-                $searchKeyword = $request->search;
-                $query->where(function ($query) use ($searchKeyword) {
-                    $query->where('official_email_id', 'LIKE', '%' . $searchKeyword . '%')
-                          ->orWhere('phone', 'LIKE', '%' . $searchKeyword . '%')
-                          ->orWhere('emp_id', 'LIKE', '%' . $searchKeyword . '%')
-                          ->orWhere('father_name', 'LIKE', '%' . $searchKeyword . '%')
-                          ->orWhere('mother_name', 'LIKE', '%' . $searchKeyword . '%')
-                          ->orWhere('offer_letter_id', 'LIKE', '%' . $searchKeyword . '%')
-                          ->orWhere('official_mobile_no', 'LIKE', '%' . $searchKeyword . '%');
-                });
-            }
-        });
+                // Search operation inside the details relation
+                if (isset($request->search) && !empty($request->search)) {
+                    $searchKeyword = $request->search;
+                    $query->where(function ($query) use ($searchKeyword) {
+                        $query->where('official_email_id', 'LIKE', '%' . $searchKeyword . '%')
+                            ->orWhere('phone', 'LIKE', '%' . $searchKeyword . '%')
+                            ->orWhere('emp_id', 'LIKE', '%' . $searchKeyword . '%')
+                            ->orWhere('father_name', 'LIKE', '%' . $searchKeyword . '%')
+                            ->orWhere('mother_name', 'LIKE', '%' . $searchKeyword . '%')
+                            ->orWhere('offer_letter_id', 'LIKE', '%' . $searchKeyword . '%')
+                            ->orWhere('official_mobile_no', 'LIKE', '%' . $searchKeyword . '%');
+                    });
+                }
+            });
 
-    if (isset($request->search) && !empty($request->search)) {
-        $searchKeyword = $request->search;
-        // Main search filter for the users table
-        $allEmployeeDetails->where(function ($query) use ($searchKeyword) {
-            $query->where('name', 'LIKE', '%' . $searchKeyword . '%')
-                  ->orWhere('email', 'LIKE', '%' . $searchKeyword . '%');
-        });
-    }
+        if (isset($request->search) && !empty($request->search)) {
+            $searchKeyword = $request->search;
+            // Main search filter for the users table
+            $allEmployeeDetails->where(function ($query) use ($searchKeyword) {
+                $query->where('name', 'LIKE', '%' . $searchKeyword . '%')
+                    ->orWhere('email', 'LIKE', '%' . $searchKeyword . '%');
+            });
+        }
 
-    // Filtering by skill_id
-    if (isset($request->skill_id) && !empty($request->skill_id)) {
-        $skillId = $request->skill_id;
-        $allEmployeeDetails->whereHas('skill', function ($query) use ($skillId) {
-            $query->where('skill_id', $skillId);
-        });
-    }
+        // Filtering by skill_id
+        if (isset($request->skill_id) && !empty($request->skill_id)) {
+            $skillId = $request->skill_id;
+            $allEmployeeDetails->whereHas('skill', function ($query) use ($skillId) {
+                $query->where('skill_id', $skillId);
+            });
+        }
 
-    return $allEmployeeDetails->orderBy('id', 'DESC');
+        return $allEmployeeDetails->orderBy('id', 'DESC');
     }
 }
