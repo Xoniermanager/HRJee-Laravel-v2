@@ -19,7 +19,7 @@
             <tbody class="">
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $employee->emp_id }}</td>
+                    <td>{{ $employee->details->emp_id }}</td>
                     <td>{{ $employee->name }}</td>
                     <td>{{$employee->totalPresent}}</td>
                     <td>{{$employee->totalLeave}}</td>
