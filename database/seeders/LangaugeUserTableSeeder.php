@@ -21,7 +21,7 @@ class LangaugeUserTableSeeder extends Seeder
         \DB::table('langauge_user')->insert(array (
             0 =>
             array (
-                'user_id' => 1,
+                'user_id' => 2,
                 'language_id' => 2,
                 'read' => 'b',
                 'write' => 'b',
@@ -31,7 +31,7 @@ class LangaugeUserTableSeeder extends Seeder
             ),
             1 =>
             array (
-                'user_id' => 1,
+                'user_id' => 2,
                 'language_id' => 1,
                 'read' => 'b',
                 'write' => 'b',

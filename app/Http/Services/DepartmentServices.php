@@ -28,7 +28,7 @@ class DepartmentServices
 
     public function getAllDepartmentsByCompanyId()
     {
-        return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', Auth()->user()->id)->get();
+        return $this->departmentRepository->where('company_id', auth()->user()->company_id)->get();
     }
 
     public function updateDetails(array $data, $id)

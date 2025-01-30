@@ -76,9 +76,9 @@ Route::prefix('/admin')->controller(AdminAuthController::class)->group(function 
 // /**---------------End Super Admin Auth Route----------------*/
 
 // /** Employee Complain */
-// Route::prefix('employee')->controller(EmployeeComplainController::class)->group(function () {
-//     Route::post('/send/message/{employee_complains:id}', 'sendMessage')->name('send.message');
-// });
+Route::prefix('employee')->controller(EmployeeComplainController::class)->group(function () {
+    Route::post('/send/message/{employee_complains:id}', 'sendMessage')->name('send.message');
+});
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('base');
     Route::post('/login', 'login')->name('login');

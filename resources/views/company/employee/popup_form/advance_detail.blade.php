@@ -99,6 +99,7 @@
                     $('#ctc_monthly_after_probation').val(response.data.ctc_monthly_after_probation);
                     $('#ctc_monthly_in_probation').val(response.data.ctc_monthly_in_probation);
                     $('#driving_licence_no').val(response.data.driving_licence_no);
+                    $('#insurance_no').val(response.data.insurance_no);
                     $('#esic_no').val(response.data.esic_no);
                     $('#pan_no').val(response.data.pan_no);
                     $('#pf_no').val(response.data.pf_no);

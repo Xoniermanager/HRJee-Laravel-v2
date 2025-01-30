@@ -3,25 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Menu;
-use App\Models\Role;
-use App\Models\HrjeeRole;
-use App\Models\CustomRole;
-use App\Models\CompanyMenu;
 use Illuminate\Http\Request;
 use App\Http\Services\MenuService;
 use App\Http\Services\UserService;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Services\CompanyDetailService;
 
 class AssignMenuCompanyController extends Controller
 {
-    private $menuServices, $userService, $companyDetailService;
-    public function __construct(MenuService $menuServices, UserService $userService, CompanyDetailService $companyDetailService)
+    private $menuServices, $userService;
+    public function __construct(MenuService $menuServices, UserService $userService)
     {
         $this->menuServices = $menuServices;
         $this->userService = $userService;
-        $this->companyDetailService = $companyDetailService;
     }
     public function index()
     {
