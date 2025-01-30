@@ -151,7 +151,7 @@ class AnnouncementServices
   }
   public function getAllAssignedAnnouncementForEmployee()
   {
-    $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+    $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
     $allAnnouncementDetails = $this->announcementRepository->where('company_id', $userDetails->company_id)->where('status', 1)->where('start_date_time', '<=', date('Y-m-d'))
       ->where('expires_at_time', '>=', date('Y-m-d'))->get();
     $allAssignedAnnouncement = [];

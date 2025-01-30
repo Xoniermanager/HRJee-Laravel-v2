@@ -19,7 +19,7 @@ class EmployeeComplainService
   public function create(array $data)
   {
     $data['complain_status_id'] = ComplainStatus::PROCESSING;
-    $data['user_id'] = Auth()->guard('employee')->user()->id;
+    $data['user_id'] = Auth()->user()->id;
     return $this->employeeComplainRepository->create($data);
   }
   public function getAllComplainDetailsByUserId($userId)
