@@ -14,12 +14,12 @@ class UserPastWorkDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-
+        
 
         \DB::table('user_past_work_details')->delete();
-
+        
         \DB::table('user_past_work_details')->insert(array (
-            0 =>
+            0 => 
             array (
                 'id' => 1,
                 'user_id' => 2,
@@ -32,8 +32,21 @@ class UserPastWorkDetailsTableSeeder extends Seeder
                 'created_at' => '2024-06-21 14:59:53',
                 'updated_at' => '2024-06-21 14:59:53',
             ),
+            1 => 
+            array (
+                'id' => 2,
+                'user_id' => 2,
+                'previous_company_id' => 2,
+                'designation' => 'Hansen Inc',
+                'from' => '2025-01-01',
+                'to' => '2025-01-20',
+                'duration' => '2013',
+                'current_company' => 0,
+                'created_at' => '2025-01-30 12:53:38',
+                'updated_at' => '2025-01-30 12:53:38',
+            ),
         ));
-
-
+        
+        
     }
 }

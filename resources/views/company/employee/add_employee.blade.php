@@ -242,7 +242,7 @@
             if (jQuery("#basic_create_form").valid()) {
                 jQuery('.nav-pills a[href="#basic_Details_tab"]').tab('show');
                 setTimeout(function() {
-                    createBasicDetails(jQuery('#basic_create_form'));
+                    createBasicDetails(jQuery('#basic_create_form')[0]);
                 }, 3000);
             } else {
                 jQuery('.nav-pills a[href="#basic_create_form"]').tab('show');
@@ -317,7 +317,7 @@
             setTimeout(function() {
                 if (all_data_saved) {
                     if (jQuery("#document_details").valid()) {
-                        createDocumentDetails(jQuery('#document_details'));
+                        createDocumentDetails(jQuery('#document_details')[0]);
                     } else {
                         jQuery('.nav-pills a[href="#document_tab"]').tab('show');
                     }

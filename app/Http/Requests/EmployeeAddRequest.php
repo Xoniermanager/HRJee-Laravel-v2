@@ -24,8 +24,8 @@ class EmployeeAddRequest extends FormRequest
         return [
             'name' => ['required', 'string'],
             'email' => ['required', 'unique:users,email,' . request()->get('id')],
-            // 'password' => ['required', 'string'],
-            'official_email_id' => ['required', 'unique:user_details,official_email_id,' . request()->get('id')],
+            'password' => ['sometimes', 'nullable', 'string'],
+            'official_email_id' => ['required', 'unique:user_details,official_email_id,' . request()->get('user_details_id')],
             'blood_group' => ['required', 'in:A-,A+,B-,B+,O-,O+'],
             'gender' => ['required', 'in:M,F,O'],
             'marital_status' => ['required', 'in:M,S'],

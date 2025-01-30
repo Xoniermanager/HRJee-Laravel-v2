@@ -150,6 +150,7 @@ class EmployeeController extends Controller
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
         $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
+        // dd($singleUserDetails->toArray());
         return view(
             'company.employee.add_employee',
             compact(
@@ -175,9 +176,13 @@ class EmployeeController extends Controller
         DB::beginTransaction();
         try {
             $request['company_id'] = Auth()->user()->company_id;
-            $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'company_id'));
-            if ($userCreated) {
+            if (isset($request->id) && !empty($request->id)) {
+                $userCreated = $this->userService->updateDetail($request->only('name', 'role_id'), $request->id);
+            } else {
+                $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'company_id'));
                 $request['user_id'] = $userCreated->id;
+            }
+            if ($userCreated) {
                 $userDetails = $this->employeeService->create($request->except('name', 'password', 'email', '_token', 'company_id'));
                 DB::commit();
                 return response()->json([
@@ -198,8 +203,8 @@ class EmployeeController extends Controller
     }
     public function getPersonalDetails($id)
     {
-        $data = $this->employeeService->getUserDetailById($id);
-        return response()->json(['data' => $data]);
+        $data = $this->userService->getUserById($id);
+        return response()->json(['data' => $data ,'details' => $data->details]);
     }
 
     public function getfilterlist(Request $request)

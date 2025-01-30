@@ -26,10 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LanguagesTableSeeder::class);
         $this->call(CompanyTableSeeder::class);
         $this->call(LeaveStatusesTableSeeder::class);
-        $this->call(AssetManufacturersTableSeeder::class);
-        $this->call(AssetStatusesTableSeeder::class);
-        $this->call(AssetCategoriesTableSeeder::class);
-        $this->call(AssetsTableSeeder::class);
         $this->call(NewsCategoriesTableSeeder::class);
         $this->call(LeaveTypesTableSeeder::class);
         $this->call(PolicyCategoriesTableSeeder::class);
@@ -49,6 +45,10 @@ class DatabaseSeeder extends Seeder
         $this->call(UserDetailsTableSeeder::class);
         $this->call(UserSkillTableSeeder::class);
         $this->call(LangaugeUserTableSeeder::class);
+        $this->call(AssetManufacturersTableSeeder::class);
+        $this->call(AssetStatusesTableSeeder::class);
+        $this->call(AssetCategoriesTableSeeder::class);
+        $this->call(AssetsTableSeeder::class);
         $this->call(UserAddressesDetailsTableSeeder::class);
         $this->call(UserAdvanceDetailsTableSeeder::class);
         $this->call(UserBankDetailsTableSeeder::class);

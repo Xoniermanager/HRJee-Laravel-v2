@@ -34,39 +34,37 @@ class EmployeeServices
     {
         try {
             DB::beginTransaction();
-
-            if (isset($data['profile_image']) && !empty($data['profile_image'])) {
-                $data['profile_image'] = uploadingImageorFile($data['profile_image'], '/user_profile', removingSpaceMakingName($data['name']));
+            if (!empty($data['profile_image'])) {
+                $data['profile_image'] = uploadingImageorFile(
+                    $data['profile_image'],
+                    '/user_profile',
+                    removingSpaceMakingName($data['name'])
+                );
             }
-
             $data['last_login_ip'] = request()->ip();
-
-            if ($data['id'] !== null) {
-                $existingDetails = $this->userDetailRepository->find($data['id']);
-                if ($existingDetails->profile_image != null) {
+            if ($data['user_details_id'] !== null) {
+                $existingDetails = $this->userDetailRepository->find($data['user_details_id']);
+                if ($existingDetails->profile_image) {
                     unlinkFileOrImage($existingDetails->profile_image);
                 }
-                if (isset($data['skill_id']) && !empty($data['skill_id'])) {
+                if (!empty($data['skill_id'])) {
                     $existingDetails->user->skill()->sync($data['skill_id']);
                     $this->syncEmployeeLanguages($existingDetails->user, $data['language']);
                 }
                 $existingDetails->update($data);
+                $status = 'updatedData';
+                $id = $existingDetails->user_id;
             } else {
                 $createdEmployee = $this->userDetailRepository->create($data);
                 $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
-            }
-
-            if (isset($createdEmployee)) {
                 $status = 'createdEmployee';
                 $id = $createdEmployee->id;
             }
-
             $response = [
-                'status' => $status ?? 'updateData',
+                'status' => $status,
                 'id' => $id ?? ''
             ];
-
             DB::commit();
             return $response;
         } catch (Throwable $th) {

@@ -3,7 +3,8 @@
 	<form id="basic_create_form" enctype="multipart/form-data">
 		@csrf
 		<input type="hidden" name="id" value="{{ $singleUserDetails->id ?? '' }}">
-		<input type="hidden" id="highest_qualification_id" value="{{ $singleUserDetails->qualification_id ?? '' }}">
+		<input type="hidden" name="user_details_id" value="{{ $singleUserDetails->details->id ?? '' }}">
+\		<input type="hidden" id="highest_qualification_id" value="{{ $singleUserDetails->details->qualification_id ?? '' }}">
 		<p id="get_skills_id" style="display: none">{{ $userSkills ?? '' }}</p>
 		<div class="row m-0 mb-6">
 			<!--begin::Label-->
@@ -18,7 +19,7 @@
 					style="background-image: url('/assets/media/user.jpg')">
 					<!--begin::Preview existing avatar-->
 					<div class="image-input-wrapper w-125px h-125px"
-						style="background-image: url({{ $singleUserDetails->profile_image ?? '/assets/media/user.jpg' }})">
+						style="background-image: url({{ $singleUserDetails->details->profile_image ?? '/assets/media/user.jpg' }})">
 					</div>
 					<!--end::Preview existing avatar-->
 					<!--begin::Label-->
@@ -53,12 +54,12 @@
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Email *</label>
-				<input class="form-control" type="email" name="email" value="{{ $singleUserDetails->email ?? '' }}">
+				<input class="form-control" type="email" name="email" value="{{ $singleUserDetails->email ?? '' }}" {{ isset($singleUserDetails->email) ? 'readonly' : '' }}>
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Official Email *</label>
 				<input class="form-control" type="email" name="official_email_id"
-					value="{{ $singleUserDetails->official_email_id ?? '' }}">
+					value="{{ $singleUserDetails->details->official_email_id ?? '' }}">
 			</div>
 			@if (!isset($singleUserDetails))
 				<div class="col-md-4 form-group">
@@ -68,27 +69,27 @@
 			@endif
 			<div class="col-md-4 form-group">
 				<label for="">Father's Name</label>
-				<input class="form-control" type="text" name="father_name" value="{{ $singleUserDetails->father_name ?? '' }}">
+				<input class="form-control" type="text" name="father_name" value="{{ $singleUserDetails->details->father_name ?? '' }}">
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Mother's Name</label>
-				<input class="form-control" type="text" name="mother_name" value="{{ $singleUserDetails->mother_name ?? '' }}">
+				<input class="form-control" type="text" name="mother_name" value="{{ $singleUserDetails->details->mother_name ?? '' }}">
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Blood Group *</label>
 				<select class="form-control" name="blood_group">
 					<option value="">Select the Blood Group</option>
-					<option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'A-' ? 'selected' : '' }} value="A-">A-
+					<option {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'A-' ? 'selected' : '' }} value="A-">A-
 					</option>
-					<option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'A+' ? 'selected' : '' }} value="A+">A+
+					<option {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'A+' ? 'selected' : '' }} value="A+">A+
 					</option>
-					<option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'B+' ? 'selected' : '' }} value="B+">B+
+					<option {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'B+' ? 'selected' : '' }} value="B+">B+
 					</option>
-					<option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'B-' ? 'selected' : '' }} value="B-">B-
+					<option {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'B-' ? 'selected' : '' }} value="B-">B-
 					</option>
-					<option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'O+' ? 'selected' : '' }} value="O+">O+
+					<option {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'O+' ? 'selected' : '' }} value="O+">O+
 					</option>
-					<option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'O-' ? 'selected' : '' }} value="O-">O
+					<option {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'O-' ? 'selected' : '' }} value="O-">O
 					</option>
 				</select>
 			</div>
@@ -96,11 +97,11 @@
 				<label for="">Gender *</label>
 				<select class="form-control" name="gender">
 					<option value="">Select the Gender</option>
-					<option {{ $singleUserDetails->gender ?? old('gender') == 'M' ? 'selected' : '' }} value="M">
+					<option {{ $singleUserDetails->details->gender ?? old('gender') == 'M' ? 'selected' : '' }} value="M">
 						Male</option>
-					<option {{ $singleUserDetails->gender ?? old('gender') == 'F' ? 'selected' : '' }} value="F">
+					<option {{ $singleUserDetails->details->gender ?? old('gender') == 'F' ? 'selected' : '' }} value="F">
 						Female</option>
-					<option {{ $singleUserDetails->gender ?? old('gender') == 'O' ? 'selected' : '' }}value="O">Other
+					<option {{ $singleUserDetails->details->gender ?? old('gender') == 'O' ? 'selected' : '' }}value="O">Other
 					</option>
 				</select>
 			</div>
@@ -108,9 +109,9 @@
 				<label for="">Marital Status *</label>
 				<select class="form-control" name="marital_status">
 					<option value="">Select the Marital Status</option>
-					<option {{ $singleUserDetails->marital_status ?? old('marital_status') == 'M' ? 'selected' : '' }}
+					<option {{ $singleUserDetails->details->marital_status ?? old('marital_status') == 'M' ? 'selected' : '' }}
 						value="M">Married</option>
-					<option {{ $singleUserDetails->marital_status ?? old('marital_status') == 'S' ? 'selected' : '' }}
+					<option {{ $singleUserDetails->details->marital_status ?? old('marital_status') == 'S' ? 'selected' : '' }}
 						value="S">Single</option>
 				</select>
 			</div>
@@ -120,7 +121,7 @@
 					<option value="">Select The Employee Status</option>
 					@forelse ($allEmployeeStatus as $employeeStatus)
 						<option
-							{{ $singleUserDetails->employee_status_id ?? old('employee_status_id') == $employeeStatus->id ? 'selected' : '' }}
+							{{ $singleUserDetails->details->employee_status_id ?? old('employee_status_id') == $employeeStatus->id ? 'selected' : '' }}
 							value="{{ $employeeStatus->id }}">
 							{{ $employeeStatus->name }}</option>
 					@empty
@@ -131,16 +132,16 @@
 			<div class="col-md-4 form-group">
 				<label for="">Date of Birth *</label>
 				<input class="form-control" type="date" name="date_of_birth"
-					value="{{ $singleUserDetails->date_of_birth ?? '' }}">
+					value="{{ $singleUserDetails->details->date_of_birth ?? '' }}">
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Date of Joining *</label>
 				<input class="form-control" type="date" name="joining_date"
-					value="{{ $singleUserDetails->joining_date ?? '' }}">
+					value="{{ $singleUserDetails->details->joining_date ?? '' }}">
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Phone Number *</label>
-				<input class="form-control" type="number" name="phone" value="{{ $singleUserDetails->phone ?? '' }}">
+				<input class="form-control" type="number" name="phone" value="{{ $singleUserDetails->details->phone ?? '' }}">
 			</div>
 			<div class="col-md-4 form-group">
 				<div class="k-w-300">
@@ -174,15 +175,15 @@
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Employee Id *</label>
-				<input class="form-control" type="text" name="emp_id" value="{{ $singleUserDetails->emp_id ?? '' }}"
-					@if (isset($singleUserDetails->offer_letter_id)) disabled @endif>
+				<input class="form-control" type="text" name="emp_id" value="{{ $singleUserDetails->details->emp_id ?? '' }}"
+					@if (isset($singleUserDetails->details->offer_letter_id)) disabled @endif>
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Role*</label>
 				<select class="form-control" name="role_id">
 					<option value="">Employee</option>
 					@forelse ($allRoles as $role)
-						<option {{ ($singleUserDetails->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
+						<option {{ ($singleUserDetails->details->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
 							value="{{ $role->id }}">{{ $role->name }}</option>
 					@empty
 						<option value="">No Roles Found</option>
@@ -194,7 +195,7 @@
 				<select class="form-control" name="employee_type_id">
 					<option value="">Select The Employee Type</option>
 					@forelse ($allEmployeeType as $employeeType)
-						<option {{ $singleUserDetails->employee_type_id ?? old('employee_type_id') ? 'selected' : '' }}
+						<option {{ $singleUserDetails->details->employee_type_id ?? old('employee_type_id') ? 'selected' : '' }}
 							value="{{ $employeeType->id }}">
 							{{ $employeeType->name }}</option>
 					@empty
@@ -208,7 +209,7 @@
 					<option value="">Select The Department</option>
 					@forelse ($alldepartmentDetails as $departmentDetails)
 						<option value="{{ $departmentDetails->id }}"
-							{{ $singleUserDetails->department_id ?? old('employee_type_id') == $departmentDetails->id ? 'selected' : '' }}>
+							{{ $singleUserDetails->details->department_id  == $departmentDetails->id ? 'selected' : '' }}>
 							{{ $departmentDetails->name }}</option>
 					@empty
 						<option value="">No Department Found</option>
@@ -225,7 +226,7 @@
 				<select class="form-control" name="company_branch_id">
 					<option value="">Please Select the Branch</option>
 					@forelse ($allBranches as $branch)
-						<option {{ $singleUserDetails->company_branch_id ?? old('company_branch_id') ? 'selected' : '' }}
+						<option {{ $singleUserDetails->details->company_branch_id ?? old('company_branch_id') ? 'selected' : '' }}
 							value="{{ $branch->id }}">{{ $branch->name }}</option>
 					@empty
 						<option value="">No Branches Found</option>
@@ -238,7 +239,7 @@
 				<select class="form-control" id="shift" name="shift_id">
 					<option value="">Please Select the Shift</option>
 					@forelse ($allShifts as $shift)
-						<option {{ $singleUserDetails->shift_id ?? old('shift_id') ? 'selected' : '' }} value="{{ $shift->id }}"
+						<option {{ $singleUserDetails->details->shift_id ?? old('shift_id') ? 'selected' : '' }} value="{{ $shift->id }}"
 							data-time="{{ $shift->start_time }}">{{ $shift->name }}
 						</option>
 					@empty
@@ -249,17 +250,17 @@
 			<div class="col-md-4 form-group">
 				<label for="">Shirt Start Time</label>
 				<input class="form-control" type="time" id="start_time" readonly
-					value="{{ $singleUserDetails->officeShift->start_time ?? '' }}">
+					value="{{ $singleUserDetails->details->officeShift->start_time ?? '' }}">
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Offer ID *</label>
 				<input class="form-control" type="text" name="offer_letter_id"
-					value="{{ $singleUserDetails->offer_letter_id ?? '' }}" @if (isset($singleUserDetails->offer_letter_id)) disabled @endif>
+					value="{{ $singleUserDetails->details->offer_letter_id ?? '' }}" @if (isset($singleUserDetails->offer_letter_id)) disabled @endif>
 			</div>
 			<div class="col-md-4 form-group">
 				<label for="">Official Phone Number *</label>
 				<input class="form-control" type="text" name="official_mobile_no"
-					value="{{ $singleUserDetails->official_mobile_no ?? '' }}">
+					value="{{ $singleUserDetails->details->official_mobile_no ?? '' }}">
 			</div>
 		</div>
 		<div class="container">
@@ -353,9 +354,9 @@
 </script>
 <script>
 	jQuery(document).ready(function() {
-		var departmentId = '{{ $singleUserDetails->department_id ?? '' }}';
+		var departmentId = '{{ $singleUserDetails->details->department_id ?? '' }}';
 		const all_department_id = [departmentId];
-		var designation_id = '{{ $singleUserDetails->designation_id ?? '' }}';
+		var designation_id = '{{ $singleUserDetails->details->designation_id ?? '' }}';
 		get_all_designation_using_department_id(all_department_id, designation_id);
 	});
 
