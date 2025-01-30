@@ -47,13 +47,13 @@ class EmployeeServices
                     unlinkFileOrImage($existingDetails->profile_image);
                 }
                 if (isset($data['skill_id']) && !empty($data['skill_id'])) {
-                    $existingDetails->skill()->sync($data['skill_id']);
+                    $existingDetails->user->skill()->sync($data['skill_id']);
                     $this->syncEmployeeLanguages($existingDetails->user, $data['language']);
                 }
                 $existingDetails->update($data);
             } else {
                 $createdEmployee = $this->userDetailRepository->create($data);
-                $createdEmployee->skill()->sync($data['skill_id']);
+                $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
             }
 

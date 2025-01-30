@@ -141,17 +141,17 @@ class UserService
                     ->orWhere('offer_letter_id', 'Like', '%' . $searchKeyword . '%')
                     ->orWhere('official_mobile_no', 'Like', '%' . $searchKeyword . '%');
             }
-            // List Selected by Skill Id
-            if (isset($request->skill_id) && !empty($request->skill_id)) {
-                $skillId = $request->skill_id;
-                $query->whereHas(
-                    'skill',
-                    function ($query) use ($skillId) {
-                        $query->where('skill_id', '=', $skillId);
-                    }
-                );
-            }
         });
-        return $allEmployeeDetails->with('details')->orderBy('id', 'DESC');
+        // List Selected by Skill Id
+        if (isset($request->skill_id) && !empty($request->skill_id)) {
+            $skillId = $request->skill_id;
+            $allEmployeeDetails->whereHas(
+                'skill',
+                function ($query) use ($skillId) {
+                    $query->where('skill_id', '=', $skillId);
+                }
+            );
+        }
+        return $allEmployeeDetails->orderBy('id', 'DESC');
     }
 }

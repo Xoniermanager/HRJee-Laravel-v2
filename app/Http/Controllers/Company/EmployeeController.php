@@ -145,13 +145,11 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $allBranches = $this->branchService->all(Auth()->user()->id);
-        // $allRoles = $this->roleService->all();
         $allRoles = $this->customRoleService->all();
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
-        // Get employee details to update
-        $singleUserDetails = $user->load('details');
+        $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
         return view(
             'company.employee.add_employee',
             compact(

@@ -14,15 +14,15 @@ class UserPastWorkDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('user_past_work_details')->delete();
-        
+
         \DB::table('user_past_work_details')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
-                'user_id' => 1,
+                'user_id' => 2,
                 'previous_company_id' => 1,
                 'designation' => 'Cartwright - Bernhard',
                 'from' => '2024-10-21',
@@ -33,7 +33,7 @@ class UserPastWorkDetailsTableSeeder extends Seeder
                 'updated_at' => '2024-06-21 14:59:53',
             ),
         ));
-        
-        
+
+
     }
 }

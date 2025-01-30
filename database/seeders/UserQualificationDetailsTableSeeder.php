@@ -14,15 +14,15 @@ class UserQualificationDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('user_qualification_details')->delete();
-        
+
         \DB::table('user_qualification_details')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
-                'user_id' => 1,
+                'user_id' => 2,
                 'qualification_id' => 4,
                 'institute' => 'Louisiana',
                 'university' => 'Rohnert Park',
@@ -32,10 +32,10 @@ class UserQualificationDetailsTableSeeder extends Seeder
                 'created_at' => '2024-06-21 14:59:27',
                 'updated_at' => '2024-06-21 14:59:27',
             ),
-            1 => 
+            1 =>
             array (
                 'id' => 2,
-                'user_id' => 1,
+                'user_id' => 2,
                 'qualification_id' => 1,
                 'institute' => 'Washington',
                 'university' => 'Vineland',
@@ -46,7 +46,7 @@ class UserQualificationDetailsTableSeeder extends Seeder
                 'updated_at' => '2024-06-21 14:59:27',
             ),
         ));
-        
-        
+
+
     }
 }

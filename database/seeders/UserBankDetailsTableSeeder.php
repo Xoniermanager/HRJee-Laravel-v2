@@ -14,15 +14,15 @@ class UserBankDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('user_bank_details')->delete();
-        
+
         \DB::table('user_bank_details')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
-                'user_id' => 1,
+                'user_id' => 2,
                 'account_name' => 'Adela Brown',
                 'account_number' => '484',
                 'bank_name' => 'Deborah Moen',
@@ -31,7 +31,7 @@ class UserBankDetailsTableSeeder extends Seeder
                 'updated_at' => '2024-06-21 14:59:07',
             ),
         ));
-        
-        
+
+
     }
 }

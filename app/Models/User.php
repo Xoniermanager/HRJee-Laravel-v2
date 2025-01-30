@@ -52,4 +52,63 @@ class User extends Authenticatable implements MustVerifyEmail
             return $this->hasOne(UserDetail::class, 'user_id');
         }
     }
+    public function addressDetails()
+    {
+        return $this->hasMany(UserAddressDetail::class, 'user_id');
+    }
+
+    public function bankDetails()
+    {
+        return $this->hasOne(UserBankDetail::class, 'user_id');
+    }
+
+    public function advanceDetails()
+    {
+        return $this->hasOne(UserAdvanceDetail::class, 'user_id');
+    }
+
+    public function pastWorkDetails()
+    {
+        return $this->hasMany(UserPastWorkDetail::class, 'user_id');
+    }
+
+    public function documentDetails()
+    {
+        return $this->hasMany(UserDocumentDetail::class, 'user_id', 'id');
+    }
+    public function qualificationDetails()
+    {
+        return $this->hasMany(UserQualificationDetail::class, 'user_id', 'id');
+    }
+    public function familyDetails()
+    {
+        return $this->hasMany(UserRelativeDetail::class, 'user_id', 'id');
+    }
+    protected function profileImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => url("storage" . $value)
+        );
+    }
+    public function skill()
+    {
+        return $this->belongsToMany(Skill::class, 'user_skill', 'user_id', 'skill_id');
+    }
+    public function language()
+    {
+        return $this->belongsToMany(Languages::class, 'langauge_user', 'user_id', 'language_id')->withPivot('read', 'write', 'speak');
+    }
+    public function assetDetails()
+    {
+        return $this->hasMany(UserAsset::class, 'user_id', 'id')->where('returned_date', '=', null);
+    }
+    public function hasPermission($permissionName)
+    {
+        return $this->role->permissions()->where('name', $permissionName)->exists();
+    }
+
+    public function resignationLogs()
+    {
+        return $this->morphMany(ResignationLog::class, 'actionTakenBy');
+    }
 }
