@@ -311,7 +311,12 @@
                             id: id
                         },
                         success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            console.log("res => ", res);
+                            if(res.status ==  false) {
+                                Swal.fire("Error deleting!", res.message, "error");
+                            } else {
+                                Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            }
                             $('#office_time_list').replaceWith(res.data);
                         },
                         error: function(xhr, ajaxOptions, thrownError) {

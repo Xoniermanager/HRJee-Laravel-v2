@@ -37,25 +37,29 @@ class AssignPermissionController extends Controller
     {
         $request->validate([
             'role_id' => 'required|exists:roles,id',
-            'menu_id'    => 'required|array',
+            'menu_id'    => 'sometimes|array',
             'menu_id.*'    => 'required|exists:menus,id',
         ]);
 
         try {
             $syncData = [];
-            foreach($request->menu_id as $menu_id) {
-                $syncData[$menu_id] = [
-                    'can_create' => true,
-                    'can_read' => true,
-                    'can_update' => true,
-                    'can_delete' => true,
-                ];
+            if($request->menu_id) {
+                foreach($request->menu_id as $menu_id) {
+                    $syncData[$menu_id] = [
+                        'can_create' => true,
+                        'can_read' => true,
+                        'can_update' => true,
+                        'can_delete' => true,
+                    ];
+                }
+    
+                $adminRole = Role::where('id', $request->role_id)->first();
+                $adminRole->menus()->sync($syncData);
+            } else {
+                MenuRole::where('role_id', $request->role_id)->delete();
             }
-            $adminRole = Role::where('id', $request->role_id)->first();
-            $adminRole->menus()->sync($syncData);
 
-            return redirect('/company/roles/assign_permissions')->with('success', 'Assigned Permissions Successfully!');
-
+            return redirect('/company/roles/assign_permissions')->with('success', 'Permissions updated successfully!');
         } catch (Exception $e) {
             return $e->getMessage();
         }
