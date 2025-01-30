@@ -14,16 +14,16 @@ class UserDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('user_details')->delete();
-        
+
         \DB::table('user_details')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 7,
                 'emp_id' => '123456',
-                'user_id' => 9,
+                'user_id' => 2,
                 'official_email_id' => 'arjun@gmail.com',
                 'father_name' => NULL,
                 'mother_name' => NULL,
@@ -52,7 +52,7 @@ class UserDetailsTableSeeder extends Seeder
                 'updated_at' => '2025-01-29 18:00:18',
             ),
         ));
-        
-        
+
+
     }
 }
