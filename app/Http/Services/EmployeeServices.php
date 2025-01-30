@@ -127,7 +127,7 @@ class EmployeeServices
 
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
     {
-        return $this->userDetailRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('id', 'joining_date')->get();
+        return $this->userDetailRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('user_id', 'joining_date')->get();
     }
 
     public function getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds = null, $designationIds = null, $allCompanyBranches = null, $allDepartment = null, $allDesignation = null)
@@ -174,8 +174,8 @@ class EmployeeServices
             ->where('type', 'user')
             ->where('company_id', $companyId)
             ->whereHas('details', function ($query) use ($searchKey) {
-               $query->where('name', 'Like', '%' . $searchKey . '%');
-               $query->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
+                $query->where('name', 'Like', '%' . $searchKey . '%');
+                $query->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
             });
     }
 
