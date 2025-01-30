@@ -41,7 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function menu()
     {
-        return $this->role->belongsToMany(Menu::class);
+        return $this->role->belongsToMany(Menu::class)->with(['children']);
     }
 
     public function details()

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use Illuminate\Http\Request;
-use App\Models\CompanyMenu;
+use App\Models\MenuRole;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 
@@ -27,7 +27,8 @@ class AssignPermissionController extends Controller
     public function add()
     {
         $roles = Role::where('category', 'custom')->orderBy('id', 'DESC')->get();
-        $allMenus = auth()->user()->menu->with(['children'])->where('parent_id', null);
+       
+        $allMenus = auth()->user()->menu->where('parent_id', null);
         
         return view('company.roles_and_permission.assign_permission.add_assign', compact('roles', 'allMenus'));
     }
@@ -62,7 +63,7 @@ class AssignPermissionController extends Controller
 
     public function getAssignedPermissions(Request $request)
     {
-        $menuIds = CompanyMenu::where('role_id', $request->role_id)->pluck('menu_id')->toArray();
+        $menuIds = MenuRole::where('role_id', $request->role_id)->pluck('menu_id')->toArray();
 
         return response()->json([
             'success' => true,
