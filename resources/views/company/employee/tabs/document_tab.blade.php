@@ -1,6 +1,6 @@
 <div class="tab-pane fade" id="document_tab">
     <!--begin::Wrapper-->
-    <form id="document_details">
+    <form id="document_details" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="user_id"
             value="{{ $singleUserDetails->id ?? '' }}">
@@ -70,7 +70,7 @@
                     timer: 1500
                 });
                 setTimeout(function() {
-                    location.href = "/company/employee/index";
+                    location.href = "/company/employee";
                 }, 3000);
                 // This variable is used on save all records button
                 all_data_saved = true;

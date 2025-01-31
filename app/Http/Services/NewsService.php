@@ -41,8 +41,9 @@ class NewsService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('company')->user()->company_id;
-    $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
+    $finalPayload['company_id'] = Auth()->user()->company_id;
+    $finalPayload['created_by'] = Auth()->user()->id;
+    $newsCreatedDetails = $this->newsRepository->create($finalPayload);
     if ($newsCreatedDetails) {
       $newsDetails = News::find($newsCreatedDetails->id);
       if ($newsCreatedDetails->all_company_branch == 0) {
@@ -170,7 +171,7 @@ class NewsService
   }
   public function getAllAssignedNewsForEmployee()
   {
-    $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+    $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
     $allNewsDetails = $this->newsRepository->where('company_id', $userDetails->company_id)->where('status', 1)->where('start_date', '<=', date('Y-m-d'))
       ->where('end_date', '>=', date('Y-m-d'))->get();
     $allAssignedNews = [];

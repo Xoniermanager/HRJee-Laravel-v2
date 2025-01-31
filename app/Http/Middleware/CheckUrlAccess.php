@@ -17,14 +17,14 @@ class CheckUrlAccess
      */
     public function handle($request, Closure $next): Response
     {
-        if (Auth::guard('company')->check()) {
+        if (Auth::check()) {
             //$currentUrl = '/' . $request->path();
 
             $segments = request()->segments();
             $baseSegments = array_slice($segments, 0, 2);
-            $currentUrl = '/'.implode('/', $baseSegments);
+            $currentUrl = '/' . implode('/', $baseSegments);
             if ($currentUrl != ('/company/dashboard' || '/company/profile')) {
-                $accessReponse = $this->checkMenuDetails($currentUrl, Auth::guard('company')->user()->company_id);
+                $accessReponse = $this->checkMenuDetails($currentUrl, Auth()->user()->company_id);
                 if ($accessReponse)
                     return $next($request);
                 else

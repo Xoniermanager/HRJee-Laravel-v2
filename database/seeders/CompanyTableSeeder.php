@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Carbon\Carbon;
 use App\Models\Company;
-use App\Models\CompanyUser;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,12 +29,6 @@ class CompanyTableSeeder extends Seeder
             'subscription_id' => 1, // You might want to adjust this
             'company_address' => 'XYZ',
             'company_type_id' => '1',
-        ]);
-        CompanyUser::insert([
-            'company_id' => '1',
-            'email' => 'xonier@gmail.com',
-            'name' => 'Xonier',
-            'password' => Hash::make('password') // <---- check this
         ]);
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.company.main')
 
-@section('title', 'main')
+@section('title', 'My Profile')
 
 @section('content')
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -252,7 +252,7 @@
                                 <div class="col-md-6 form-group">
                                     <label for="">Company Name </label>
                                     <input class="form-control" name="name" type="text"
-                                        value="{{ isset($companyDetails) ? $companyDetails->name : '' }}">
+                                        value="{{ $companyDetails->user ? $companyDetails->user->name : '' }}">
                                 </div>
                                 <div class="col-md-6 form-group">
                                     <label for="">User Name </label>
@@ -263,7 +263,7 @@
                                 <div class="col-md-6 form-group">
                                     <label for="">Company Email Id </label>
                                     <input class="form-control" name="email" type="email"
-                                        value="{{ isset($companyDetails) ? $companyDetails->email : '' }}">
+                                        value="{{ isset($companyDetails) ? $companyDetails->user->email : '' }}">
                                 </div>
                                 <div class="col-md-6 form-group">
                                     <label for="">Contact Number </label>

@@ -18,10 +18,10 @@ class DesignationServices
     return $this->designationRepository->with('departments')->orderBy('id', 'DESC')->paginate(10);
   }
 
-  public function fetchByCompany()
-    {
-        return $this->designationRepository->where('company_id', auth()->guard('company')->user()->company_id)->with('departments')->orderBy('id', 'DESC');
-    }
+  public function getByCompanyId($companyID)
+  {
+    return $this->designationRepository->where('company_id', $companyID)->orderBy('id', 'DESC')->paginate(10);
+  }
 
   public function create(array $data)
   {
@@ -30,9 +30,9 @@ class DesignationServices
   public function getDesignationsAdminOrCompany($department_id = '')
   {
     if (empty($department_id))
-      return  $this->designationRepository->whereNull('company_id')->orWhere('company_id', Auth()->guard('company')->user()->company_id)->get();
+      return $this->designationRepository->whereNull('company_id')->orWhere('company_id', Auth()->user()->id)->get();
     else
-      return  $this->designationRepository->where('department_id', $department_id)->get();
+      return $this->designationRepository->where('department_id', $department_id)->get();
   }
 
   public function updateDetails(array $data, $id)
@@ -47,7 +47,7 @@ class DesignationServices
   public function getAllDesignationByDepartmentIds($departmentIds = null, $allDepartment = null)
   {
     if ($allDepartment == true) {
-      $company_id = auth()->guard('company')->user()->company_id ?? Auth()->guard('employee')->user()->company_id ?? auth()->guard('employee_api')->user()->company_id;
+      $company_id = Auth()->user()->id ?? Auth()->user()->company_id ?? auth()->guard('employee_api')->user()->company_id;
       $departmentIds = $this->departmentService->getAllActiveDepartmentsByCompanyId($company_id)->pluck('id')->toArray();
       return $this->designationRepository->whereIn('department_id', $departmentIds)->where('status', '1')->get();
     } else {
@@ -62,8 +62,8 @@ class DesignationServices
       $designationDetails = $designationDetails->where('name', 'Like', '%' . $request['search'] . '%');
     }
     /**List By Status or Filter */
-    if (isset($request['status'])) {
-      $designationDetails = $designationDetails->where('status',$request['status']);
+    if (isset($request['status']) && $request['status'] != "") {
+      $designationDetails = $designationDetails->where('status', $request['status']);
     }
     /**List By Department ID or Filter */
     if (isset($request['department_id']) && !empty($request['department_id'])) {

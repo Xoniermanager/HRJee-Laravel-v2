@@ -1,20 +1,20 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title')
-Profile
+    Profile
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
-        <div class="card mb-5 mb-xl-10">
-            <div class="card-body pt-9 pb-0">
+        <div class="card mb-xl-10 mb-5">
+            <div class="card-body pb-0 pt-9">
                 <!--begin::Details-->
-                <div class="d-flex flex-wrap flex-sm-nowrap mb-3">
+                <div class="d-flex flex-sm-nowrap mb-3 flex-wrap">
                     <!--begin: Pic-->
-                    <div class="me-7 mb-4">
+                    <div class="mb-4 me-7">
                         <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
-                            <img src="{{Auth::guard('employee')->user()->profile_image ?? asset('employee/assets/media/user.jpg')}}"
+                            <img src="{{ Auth::user()->profile_image ?? asset('employee/assets/media/user.jpg') }}"
                                 alt="image">
 
                         </div>
@@ -23,20 +23,20 @@ Profile
                     <!--begin::Info-->
                     <div class="flex-grow-1">
                         <!--begin::Title-->
-                        <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
+                        <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap">
                             <!--begin::User-->
                             <div class="d-flex flex-column">
                                 <!--begin::Name-->
                                 <div class="d-flex align-items-center mb-2">
-                                    <a class="text-gray-900 text-hover-primary fs-2 fw-bold me-1">{{
-                                        Auth::guard('employee')->user()->name }}</a>
+                                    <a
+                                        class="text-hover-primary fs-2 fw-bold me-1 text-gray-900">{{ Auth::user()->name }}</a>
 
                                 </div>
                                 <!--end::Name-->
                                 <!--begin::Info-->
-                                <div class="d-flex flex-wrap fw-semibold fs-6 mb-4 pe-2">
+                                <div class="d-flex fw-semibold fs-6 mb-4 flex-wrap pe-2">
                                     <a href="#"
-                                        class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
+                                        class="d-flex align-items-center text-hover-primary mb-2 me-5 text-gray-400">
                                         <!--begin::Svg Icon | path: icons/duotune/communication/com006.svg-->
                                         <span class="svg-icon svg-icon-4 me-1">
                                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
@@ -47,14 +47,15 @@ Profile
                                                 <path
                                                     d="M9 16.5C10.95 16.5 12.75 15.75 14.025 14.55C13.425 12.675 11.4 11.25 9 11.25C6.6 11.25 4.57499 12.675 3.97499 14.55C5.24999 15.75 7.05 16.5 9 16.5Z"
                                                     fill="currentColor"></path>
-                                                <rect x="7" y="6" width="4" height="4" rx="2" fill="currentColor">
+                                                <rect x="7" y="6" width="4" height="4" rx="2"
+                                                    fill="currentColor">
                                                 </rect>
                                             </svg>
                                         </span>
-                                        <!--end::Svg Icon-->{{ Auth::guard('employee')->user()->designation->name }}
+                                        <!--end::Svg Icon-->{{ Auth::user()->details->designation->name }}
                                     </a>
                                     <a href="#"
-                                        class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
+                                        class="d-flex align-items-center text-hover-primary mb-2 me-5 text-gray-400">
                                         <!--begin::Svg Icon | path: icons/duotune/general/gen018.svg-->
                                         <span class="svg-icon svg-icon-4 me-1">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -69,7 +70,8 @@ Profile
                                         </span>
                                         <!--end::Svg Icon-->h-187, sec-63
                                     </a>
-                                    <a href="#" class="d-flex align-items-center text-gray-400 text-hover-primary mb-2">
+                                    <a href="#"
+                                        class="d-flex align-items-center text-hover-primary mb-2 text-gray-400">
                                         <!--begin::Svg Icon | path: icons/duotune/communication/com011.svg-->
                                         <span class="svg-icon svg-icon-4 me-1">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -82,15 +84,15 @@ Profile
                                                     fill="currentColor"></path>
                                             </svg>
                                         </span>
-                                        <!--end::Svg Icon-->{{ Auth::guard('employee')->user()->email }}
+                                        <!--end::Svg Icon-->{{ Auth::user()->email }}
                                     </a>
                                 </div>
                                 <!--end::Info-->
 
                                 <div
-                                    class="border bg-light-info border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                                    <p class="  pt-1 fw-semibold fs-4"><b>At work for:</b>{{
-                                        getWorkDateFromate(Auth::guard('employee')->user()->joining_date) }}</p>
+                                    class="bg-light-info min-w-125px mb-3 me-6 rounded border border-dashed border-gray-300 px-4 py-3">
+                                    <p class="fw-semibold fs-4 pt-1"><b>At work
+                                            for:</b>{{ getWorkDateFromate(Auth::user()->joining_date) }}</p>
                                 </div>
 
                             </div>
@@ -99,55 +101,55 @@ Profile
                             <div class="d-flex my-4">
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#change_password_model"
                                     class="btn btn-sm btn-primary align-self-center">
-                                    Change password</a>
+                                    Change Password</a>
                             </div>
                         </div>
                         <!--end::Title-->
                         <!--begin::Stats-->
-                        <div class="d-flex flex-wrap flex-stack">
+                        <div class="d-flex flex-stack flex-wrap">
                             <!--begin::Wrapper-->
                             <div class="d-flex flex-column flex-grow-1 pe-8">
                                 <!--begin::Stats-->
                                 <div class="d-flex flex-wrap">
                                     <!--begin::Stat-->
                                     <div
-                                        class="border bg-light-warning border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                        class="bg-light-warning min-w-125px mb-3 me-6 rounded border border-dashed border-gray-300 px-4 py-3">
                                         <!--begin::Number-->
                                         <div class="">
 
-                                            <div class="fs-2 fw-bold  text-center">3</div>
+                                            <div class="fs-2 fw-bold text-center">3</div>
                                         </div>
                                         <!--end::Number-->
                                         <!--begin::Label-->
-                                        <div class="fw-semibold fs-6  text-center ">Attendance</div>
+                                        <div class="fw-semibold fs-6 text-center">Attendance</div>
                                         <!--end::Label-->
                                     </div>
                                     <!--end::Stat-->
                                     <!--begin::Stat-->
                                     <div
-                                        class="border bg-light-danger border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                        class="bg-light-danger min-w-125px mb-3 me-6 rounded border border-dashed border-gray-300 px-4 py-3">
                                         <!--begin::Number-->
                                         <div class="">
 
-                                            <div class="fs-2 fw-bold text-center ">9/12</div>
+                                            <div class="fs-2 fw-bold text-center">9/12</div>
                                         </div>
                                         <!--end::Number-->
                                         <!--begin::Label-->
-                                        <div class="fw-semibold fs-6 text-center ">Leaves</div>
+                                        <div class="fw-semibold fs-6 text-center">Leaves</div>
                                         <!--end::Label-->
                                     </div>
                                     <!--end::Stat-->
                                     <!--begin::Stat-->
                                     <div
-                                        class="border border-gray-300  bg-light-success border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                        class="bg-light-success min-w-125px mb-3 me-6 rounded border border-dashed border-gray-300 px-4 py-3">
                                         <!--begin::Number-->
                                         <div class="">
 
-                                            <div class="fs-2 fw-bold text-center ">0</div>
+                                            <div class="fs-2 fw-bold text-center">0</div>
                                         </div>
                                         <!--end::Number-->
                                         <!--begin::Label-->
-                                        <div class="fw-semibold fs-6 text-center ">Awards</div>
+                                        <div class="fw-semibold fs-6 text-center">Awards</div>
                                         <!--end::Label-->
                                     </div>
                                     <!--end::Stat-->
@@ -164,17 +166,17 @@ Profile
                 <!--end::Details-->
                 <ul class="nav nav-pills nav-pills-custom mb-3 mt-10" role="tablist">
                     <!--begin::Item-->
-                    <li class="nav-item  me-3 me-lg-6" role="presentation">
+                    <li class="nav-item me-lg-6 me-3" role="presentation">
                         <!--begin::Link-->
-                        <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden  h-55px py-4 active"
+                        <a class="nav-link d-flex justify-content-between flex-column flex-center h-55px active overflow-hidden py-4"
                             data-bs-toggle="pill" href="#kt_profile_details_view" aria-selected="true" role="tab"
                             tabindex="-1">
 
                             <!--begin::Subtitle-->
-                            <span class="nav-text text-gray-700 fw-bold fs-6 ">Personal Details</span>
+                            <span class="nav-text fw-bold fs-6 text-gray-700">Personal Details</span>
                             <!--end::Subtitle-->
                             <!--begin::Bullet-->
-                            <span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span>
+                            <span class="bullet-custom position-absolute w-100 h-4px bg-primary bottom-0"></span>
                             <!--end::Bullet-->
 
                         </a>
@@ -182,16 +184,17 @@ Profile
                     </li>
                     <!--end::Item-->
                     <!--begin::Item-->
-                    <li class="nav-item  me-3 me-lg-6" role="presentation">
+                    <li class="nav-item me-lg-6 me-3" role="presentation">
                         <!--begin::Link-->
-                        <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden  h-55px py-4"
-                            data-bs-toggle="pill" href="#company_detail" aria-selected="false" role="tab" tabindex="-1">
+                        <a class="nav-link d-flex justify-content-between flex-column flex-center h-55px overflow-hidden py-4"
+                            data-bs-toggle="pill" href="#company_detail" aria-selected="false" role="tab"
+                            tabindex="-1">
 
                             <!--begin::Subtitle-->
-                            <span class="nav-text text-gray-700 fw-bold fs-6 ">Advance Details</span>
+                            <span class="nav-text fw-bold fs-6 text-gray-700">Advance Details</span>
                             <!--end::Subtitle-->
                             <!--begin::Bullet-->
-                            <span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span>
+                            <span class="bullet-custom position-absolute w-100 h-4px bg-primary bottom-0"></span>
                             <!--end::Bullet-->
 
                         </a>
@@ -199,32 +202,34 @@ Profile
                     </li>
                     <!--end::Item-->
                     <!--begin::Item-->
-                    <li class="nav-item  me-3 me-lg-6" role="presentation">
+                    <li class="nav-item me-lg-6 me-3" role="presentation">
                         <!--begin::Link-->
-                        <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden  h-55px py-4 "
-                            data-bs-toggle="pill" href="#account_detail" aria-selected="false" role="tab" tabindex="-1">
+                        <a class="nav-link d-flex justify-content-between flex-column flex-center h-55px overflow-hidden py-4"
+                            data-bs-toggle="pill" href="#account_detail" aria-selected="false" role="tab"
+                            tabindex="-1">
 
                             <!--begin::Subtitle-->
-                            <span class="nav-text text-gray-600 fw-bold fs-6 ">Bank Account Details</span>
+                            <span class="nav-text fw-bold fs-6 text-gray-600">Bank Account Details</span>
                             <!--end::Subtitle-->
                             <!--begin::Bullet-->
-                            <span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span>
+                            <span class="bullet-custom position-absolute w-100 h-4px bg-primary bottom-0"></span>
                             <!--end::Bullet-->
                         </a>
                         <!--end::Link-->
                     </li>
                     <!--end::Item-->
                     <!--begin::Item-->
-                    <li class="nav-item  me-3 me-lg-6" role="presentation">
+                    <li class="nav-item me-lg-6 me-3" role="presentation">
                         <!--begin::Link-->
-                        <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden  h-55px py-4"
-                            data-bs-toggle="pill" href="#address_tab" aria-selected="false" tabindex="-1" role="tab">
+                        <a class="nav-link d-flex justify-content-between flex-column flex-center h-55px overflow-hidden py-4"
+                            data-bs-toggle="pill" href="#address_tab" aria-selected="false" tabindex="-1"
+                            role="tab">
 
                             <!--begin::Subtitle-->
-                            <span class="nav-text text-gray-600 fw-bold fs-6 ">My Address</span>
+                            <span class="nav-text fw-bold fs-6 text-gray-600">My Address</span>
                             <!--end::Subtitle-->
                             <!--begin::Bullet-->
-                            <span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span>
+                            <span class="bullet-custom position-absolute w-100 h-4px bg-primary bottom-0"></span>
                             <!--end::Bullet-->
 
                         </a>
@@ -238,18 +243,18 @@ Profile
         </div>
         <div class="col-md-12">
             @if (session('error'))
-            <div class="alert alert-danger alert-dismissible">
-                {{ session('error') }}
-            </div>
+                <div class="alert alert-danger alert-dismissible">
+                    {{ session('error') }}
+                </div>
             @endif
             @if (session('success'))
-            <div class="alert alert-success alert-dismissible">
-                {{ session('success') }}
-            </div>
+                <div class="alert alert-success alert-dismissible">
+                    {{ session('success') }}
+                </div>
             @endif
         </div>
         <div class="tab-content">
-            <div class="card tab-pane fade active show  mb-5 mb-xl-10" id="kt_profile_details_view" role="tabpanel">
+            <div class="card tab-pane fade active show mb-xl-10 mb-5" id="kt_profile_details_view" role="tabpanel">
                 <!--begin::Card header-->
                 <div class="card-header cursor-pointer">
                     <!--begin::Card title-->
@@ -270,98 +275,101 @@ Profile
                                 <label for="">Profile Image </label>
                                 <input class="form-control" name="profile_image" type="file">
                                 @if ($errors->has('profile_image'))
-                                <div class="text-danger">{{ $errors->first('profile_image') }}</div>
+                                    <div class="text-danger">{{ $errors->first('profile_image') }}</div>
                                 @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Father's Name *</label>
                                 <input class="form-control" name="father_name" type="text"
-                                    value="{{  Auth::guard('employee')->user()->father_name  }}">
+                                    value="{{ Auth::user()->details->father_name }}">
                                 @if ($errors->has('father_name'))
-                                <div class="text-danger">{{ $errors->first('father_name') }}</div>
+                                    <div class="text-danger">{{ $errors->first('father_name') }}</div>
                                 @endif
                             </div>
 
                             <div class="col-md-6 form-group">
                                 <label for="">Mother Name *</label>
                                 <input class="form-control" name="mother_name" type="text"
-                                    value="{{ Auth::guard('employee')->user()->mother_name }}">
+                                    value="{{ Auth::user()->details->mother_name }}">
                                 @if ($errors->has('mother_name'))
-                                <div class="text-danger">{{ $errors->first('mother_name') }}</div>
+                                    <div class="text-danger">{{ $errors->first('mother_name') }}</div>
                                 @endif
                             </div>
 
                             <div class="col-md-6 form-group">
                                 <label for="">DOB *</label>
                                 <input class="form-control" name="date_of_birth" type="date"
-                                    value="{{ Auth::guard('employee')->user()->date_of_birth }}">
+                                    value="{{ Auth::user()->details->date_of_birth }}">
                                 @if ($errors->has('date_of_birth'))
-                                <div class="text-danger">{{ $errors->first('date_of_birth') }}</div>
+                                    <div class="text-danger">{{ $errors->first('date_of_birth') }}</div>
                                 @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Gender *</label>
                                 <select class="form-control" name="gender">
-                                    <option {{ Auth::guard('employee')->user()->gender ?? old('gender') == 'M' ?
-                                        'selected' : '' }} value="M">
+                                    <option
+                                        {{ Auth::user()->details->gender ?? old('gender') == 'M' ? 'selected' : '' }}
+                                        value="M">
                                         Male</option>
-                                    <option {{ Auth::guard('employee')->user()->gender ?? old('gender') == 'F' ?
-                                        'selected' : '' }} value="F">
+                                    <option
+                                        {{ Auth::user()->details->gender ?? old('gender') == 'F' ? 'selected' : '' }}
+                                        value="F">
                                         Female</option>
-                                    <option {{ Auth::guard('employee')->user()->gender ?? old('gender') == 'O' ?
-                                        'selected' : '' }}value="O">Other
+                                    <option
+                                        {{ Auth::user()->details->gender ?? old('gender') == 'O' ? 'selected' : '' }}value="O">
+                                        Other
                                     </option>
                                 </select>
                                 @if ($errors->has('gender'))
-                                <div class="text-danger">{{ $errors->first('gender') }}</div>
+                                    <div class="text-danger">{{ $errors->first('gender') }}</div>
                                 @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Phone Number *</label>
                                 <input class="form-control" name="phone" type="number"
-                                    value="{{ Auth::guard('employee')->user()->phone }}">
+                                    value="{{ Auth::user()->details->phone }}">
                                 @if ($errors->has('phone'))
-                                <div class="text-danger">{{ $errors->first('phone') }}</div>
+                                    <div class="text-danger">{{ $errors->first('phone') }}</div>
                                 @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Marital Status *</label>
                                 <select class="form-control" name="marital_status">
-                                    <option {{ Auth::guard('employee')->user()->marital_status ?? old('marital_status')
-                                        == 'M' ? 'selected' : '' }}
-                                        value="M">Married</option>
-                                    <option {{ Auth::guard('employee')->user()->marital_status ?? old('marital_status')
-                                        == 'S' ? 'selected' : '' }}
-                                        value="S">Single</option>
+                                    <option {{ Auth::user()->details->marital_status == 'M' ? 'selected' : '' }}
+                                        value="M">
+                                        Married</option>
+                                    <option {{ Auth::user()->details->marital_status == 'S' ? 'selected' : '' }}
+                                        value="S">
+                                        Single</option>
                                 </select>
                                 @if ($errors->has('marital_status'))
-                                <div class="text-danger">{{ $errors->first('marital_status') }}</div>
+                                    <div class="text-danger">{{ $errors->first('marital_status') }}</div>
                                 @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Blood Group *</label>
                                 <select class="form-control" name="blood_group">
-                                    <option {{ Auth::guard('employee')->user()->blood_group ?? old('blood_group') ==
-                                        'A-' ? 'selected' : '' }}
-                                        value="A-">A-</option>
-                                    <option {{ Auth::guard('employee')->user()->blood_group ?? old('blood_group') ==
-                                        'A+' ? 'selected' : '' }}
-                                        value="A+">A+</option>
-                                    <option {{ Auth::guard('employee')->user()->blood_group ?? old('blood_group') ==
-                                        'B+' ? 'selected' : '' }}
-                                        value="B+">B+</option>
-                                    <option {{ Auth::guard('employee')->user()->blood_group ?? old('blood_group') ==
-                                        'B-' ? 'selected' : '' }}
-                                        value="B-">B-</option>
-                                    <option {{ Auth::guard('employee')->user()->blood_group ?? old('blood_group') ==
-                                        'O+' ? 'selected' : '' }}
-                                        value="O+">O+</option>
-                                    <option {{ Auth::guard('employee')->user()->blood_group ?? old('blood_group') ==
-                                        'O-' ? 'selected' : '' }}
-                                        value="O-">O-</option>
+                                    <option {{ Auth::user()->details->blood_group == 'A-' ? 'selected' : '' }}
+                                        value="A-">A-
+                                    </option>
+                                    <option {{ Auth::user()->details->blood_group == 'A+' ? 'selected' : '' }}
+                                        value="A+">A+
+                                    </option>
+                                    <option {{ Auth::user()->details->blood_group == 'B+' ? 'selected' : '' }}
+                                        value="B+">B+
+                                    </option>
+                                    <option {{ Auth::user()->details->blood_group == 'B-' ? 'selected' : '' }}
+                                        value="B-">B-
+                                    </option>
+                                    <option {{ Auth::user()->details->blood_group == 'O+' ? 'selected' : '' }}
+                                        value="O+">O+
+                                    </option>
+                                    <option {{ Auth::user()->details->blood_group == 'O-' ? 'selected' : '' }}
+                                        value="O-">O-
+                                    </option>
                                 </select>
                                 @if ($errors->has('blood_group'))
-                                <div class="text-danger">{{ $errors->first('blood_group') }}</div>
+                                    <div class="text-danger">{{ $errors->first('blood_group') }}</div>
                                 @endif
                             </div>
                         </div>
@@ -372,7 +380,7 @@ Profile
             </div>
             <!--end::details View-->
 
-            <div class="card tab-pane fade   mb-5 mb-xl-10" id="company_detail" role="tabpanel">
+            <div class="card tab-pane fade mb-xl-10 mb-5" id="company_detail" role="tabpanel">
                 <!--begin::Card header-->
                 <div class="card-header cursor-pointer">
                     <!--begin::Card title-->
@@ -387,85 +395,85 @@ Profile
                         <div class="col-md-6 form-group">
                             <label for="">Employee Id </label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->emp_id }}" disabled>
+                                value="{{ Auth::user()->details->emp_id }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Company Branch </label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->companyBranch->name }}" disabled>
+                                value="{{ Auth::user()->companyBranch ? Auth::user()->companyBranch->name : 'N/A' }}"
+                                disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Department </label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->department->name }}" disabled>
+                                value="{{ Auth::user()->department ? Auth::user()->department->name : 'N/A' }}"
+                                disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Designation </label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->designation->name }}" disabled>
+                                value="{{ Auth::user()->details->designation->name }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Date of Joining</label>
                             <input class="form-control" name="" type="date"
-                                value="{{ Auth::guard('employee')->user()->joining_date }}" disabled>
+                                value="{{ Auth::user()->joining_date }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="">Official Email Id </label>
+                            <label for="">Official Email ID </label>
                             <input class="form-control" name="" type="email"
-                                value="{{ Auth::guard('employee')->user()->official_email_id }}" disabled>
+                                value="{{ Auth::user()->official_email_id }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="">Offer Letter Id</label>
+                            <label for="">Offer Letter ID</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->offer_letter_id }}" disabled>
+                                value="{{ Auth::user()->offer_letter_id }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Official Phone Number</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->official_mobile_no }}" disabled>
+                                value="{{ Auth::user()->official_mobile_no }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Pan Card No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->advanceDetails->aadhar_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->aadhar_no }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Aadhaar Card No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->advanceDetails->pan_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->pan_no }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">UAN No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->advanceDetails->uan_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->uan_no }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">ESIC No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->advanceDetails->esic_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->esic_no }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">PF No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->advanceDetails->pf_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->pf_no }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Insurance No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->advanceDetails->insurance_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->insurance_no }}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Driving License No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::guard('employee')->user()->advanceDetails->driving_licence_no }}"
-                                disabled>
+                                value="{{ Auth::user()->advanceDetails->driving_licence_no }}" disabled>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-            <div class="card tab-pane fade   mb-5 mb-xl-10" id="account_detail" role="tabpanel">
+            <div class="card tab-pane fade mb-xl-10 mb-5" id="account_detail" role="tabpanel">
                 <!--begin::Card header-->
                 <div class="card-header cursor-pointer">
                     <!--begin::Card title-->
@@ -484,33 +492,33 @@ Profile
                             <div class="col-md-6 form-group">
                                 <label for="">Account Holder Name*</label>
                                 <input class="form-control" name="account_name" type="text"
-                                    value="{{ Auth::guard('employee')->user()->bankDetails->account_name }}" required>
+                                    value="{{ Auth::user()->bankDetails->account_name }}" required>
                                 @if ($errors->has('account_name'))
-                                <div class="text-danger">{{ $errors->first('account_name') }}</div>
+                                    <div class="text-danger">{{ $errors->first('account_name') }}</div>
                                 @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Account No. *</label>
                                 <input class="form-control" name="account_number" type="text"
-                                    value="{{ Auth::guard('employee')->user()->bankDetails->account_number }}" required>
+                                    value="{{ Auth::user()->bankDetails->account_number }}" required>
                                 @if ($errors->has('account_number'))
-                                <div class="text-danger">{{ $errors->first('account_number') }}</div>
+                                    <div class="text-danger">{{ $errors->first('account_number') }}</div>
                                 @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">IFSC Code *</label>
                                 <input class="form-control" name="ifsc_code" type="text"
-                                    value="{{ Auth::guard('employee')->user()->bankDetails->ifsc_code }}" required>
+                                    value="{{ Auth::user()->bankDetails->ifsc_code }}" required>
                                 @if ($errors->has('ifsc_code'))
-                                <div class="text-danger">{{ $errors->first('ifsc_code') }}</div>
+                                    <div class="text-danger">{{ $errors->first('ifsc_code') }}</div>
                                 @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Bank Name *</label>
                                 <input class="form-control" name="bank_name" type="text"
-                                    value="{{ Auth::guard('employee')->user()->bankDetails->bank_name }}" required>
+                                    value="{{ Auth::user()->bankDetails->bank_name }}" required>
                                 @if ($errors->has('bank_name'))
-                                <div class="text-danger">{{ $errors->first('bank_name') }}</div>
+                                    <div class="text-danger">{{ $errors->first('bank_name') }}</div>
                                 @endif
                             </div>
                         </div>
@@ -518,7 +526,7 @@ Profile
                     </form>
                 </div>
             </div>
-            <div class="card tab-pane fade   mb-5 mb-xl-10" id="address_tab" role="tabpanel">
+            <div class="card tab-pane fade mb-xl-10 mb-5" id="address_tab" role="tabpanel">
                 <!--begin::Card header-->
                 <div class="card-header cursor-pointer">
                     <!--begin::Card title-->
@@ -529,25 +537,25 @@ Profile
 
                 </div>
                 @php
-                $local = [];
-                $permanent = [];
-                foreach ($userAddressDetails as $userAddress) {
-                if ($userAddress->address_type == 'local') {
-                $local = $userAddress;
-                }
+                    $local = [];
+                    $permanent = [];
+                    foreach ($userAddressDetails as $userAddress) {
+                        if ($userAddress->address_type == 'local') {
+                            $local = $userAddress;
+                        }
 
-                if ($userAddress->address_type == 'permanent') {
-                $permanent = $userAddress;
-                }
+                        if ($userAddress->address_type == 'permanent') {
+                            $permanent = $userAddress;
+                        }
 
-                if ($userAddress->address_type == 'both_same') {
-                $permanent = $userAddress;
-                $local = $userAddress;
-                $checkedbox = 'checked';
-                $inputDisabled = 'disabled';
-                $addressTypeValue = '1';
-                }
-                }
+                        if ($userAddress->address_type == 'both_same') {
+                            $permanent = $userAddress;
+                            $local = $userAddress;
+                            $checkedbox = 'checked';
+                            $inputDisabled = 'disabled';
+                            $addressTypeValue = '1';
+                        }
+                    }
                 @endphp
                 <div class="card-body p-9">
                     <!--begin::Card header-->
@@ -563,21 +571,20 @@ Profile
                                 <div class="row">
                                     <div class="col-md-12 form-group">
                                         <label for="">Address *</label>
-                                        <textarea class="form-control alldetails" type="text" name="l_address"
-                                            id="l_address">{{ $local->address ?? '' }}</textarea>
+                                        <textarea class="form-control alldetails" type="text" name="l_address" id="l_address">{{ $local->address ?? '' }}</textarea>
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label for="">Country *</label>
-                                        <select class="form-control alldetails" id="l_country_id" name="l_country_id">
+                                        <select class="form-control alldetails" id="l_country_id"
+                                            name="l_country_id">
                                             <option value="">Please Select Country</option>
                                             @forelse ($allCountries as $countriesDetails)
-                                            <option {{ $local->country_id ?? old('l_country_id') ==
-                                                $countriesDetails->id ?
-                                                'selected' : '' }}
-                                                value="{{ $countriesDetails->id }}">
-                                                {{ $countriesDetails->name }}</option>
+                                                <option
+                                                    {{ $local->country_id == $countriesDetails->id ? 'selected' : '' }}
+                                                    value="{{ $countriesDetails->id }}">
+                                                    {{ $countriesDetails->name }}</option>
                                             @empty
-                                            <option value="">No Country Found</option>
+                                                <option value="">No Country Found</option>
                                             @endforelse
                                         </select>
                                     </div>
@@ -588,8 +595,8 @@ Profile
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label for="">City *</label>
-                                        <input class="form-control alldetails" type="text" name="l_city" id="l_city"
-                                            value="{{ $local->city ?? '' }}">
+                                        <input class="form-control alldetails" type="text" name="l_city"
+                                            id="l_city" value="{{ $local->city ?? '' }}">
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label for="">Pincode *</label>
@@ -601,37 +608,36 @@ Profile
                             </div>
 
                             <div class="col-md-6">
-                                <h4>Permanent Address <input type="checkbox" onclick="get_all_present_address_details()"
-                                        id="checkbox" {{ $checkedbox ?? '' }}>
+                                <h4>Permanent Address <input type="checkbox"
+                                        onclick="get_all_present_address_details()" id="checkbox"
+                                        {{ $checkedbox ?? '' }}>
                                     <small class="text-muted">Same as
                                         present address</small>
                                 </h4>
                                 <div class="row">
                                     <div class="col-md-12 form-group">
                                         <label for="">Address *</label>
-                                        <textarea class="form-control" type="text" name="p_address" id="p_address" {{
-                                            $inputDisabled ?? '' }}> {{ $permanent->address ?? '' }}</textarea>
+                                        <textarea class="form-control" type="text" name="p_address" id="p_address" {{ $inputDisabled ?? '' }}> {{ $permanent->address ?? '' }}</textarea>
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label for="">Country *</label>
-                                        <select class="form-control" id="p_country_id" name="p_country_id" {{
-                                            $inputDisabled ?? '' }}>
+                                        <select class="form-control" id="p_country_id" name="p_country_id"
+                                            {{ $inputDisabled ?? '' }}>
                                             <option value="">Please Select Country</option>
                                             @forelse ($allCountries as $countriesDetails)
-                                            <option {{ $permanent->address ?? old('p_country_id') ==
-                                                $countriesDetails->id ?
-                                                'selected' : '' }}
-                                                value="{{ $countriesDetails->id }}">
-                                                {{ $countriesDetails->name }}</option>
+                                                <option
+                                                    {{ $permanent->address ?? old('p_country_id') == $countriesDetails->id ? 'selected' : '' }}
+                                                    value="{{ $countriesDetails->id }}">
+                                                    {{ $countriesDetails->name }}</option>
                                             @empty
-                                            <option value="">No Country Found</option>
+                                                <option value="">No Country Found</option>
                                             @endforelse
                                         </select>
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label for="">State *</label>
-                                        <select name="p_state_id" class="form-control" id="p_state_id" {{ $inputDisabled
-                                            ?? '' }}></select>
+                                        <select name="p_state_id" class="form-control" id="p_state_id"
+                                            {{ $inputDisabled ?? '' }}></select>
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label for="">City *</label>
@@ -683,8 +689,8 @@ Profile
             </div>
             <!--begin::Modal header-->
             <!--begin::Modal body-->
-            <div class="modal-body scroll-y pt-0 pb-5 border-top">
-                @include('employee.change_password')
+            <div class="modal-body scroll-y border-top pb-5 pt-0">
+                @include('employee.account.change_password')
             </div>
             <!--end::Modal body-->
         </div>

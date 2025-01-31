@@ -2,128 +2,79 @@
 
 namespace App\Http\Services;
 
-use Illuminate\Support\Facades\Auth;
-
-use App\Mail\ResetPassword;
-use App\Models\UserCode;
-use Illuminate\Support\Facades\Hash;
-use App\Repositories\EmployeeRepository;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
+use App\Models\UserDetail;
+use App\Repositories\UserRepository;
 use Throwable;
+
+use Carbon\Carbon;
+use App\Models\UserCode;
+use App\Mail\ResetPassword;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Repositories\UserDetailRepository;
 
 class EmployeeServices
 {
-    private $employeeRepository;
+    private $userDetailRepository, $userRepository;
 
     private $companyBranchService;
     private $departmentService;
     private $designationService;
 
-    public function __construct(EmployeeRepository $employeeRepository, BranchServices $companyBranchService, DepartmentServices $departmentService, DesignationServices $designationService)
+    public function __construct(UserDetailRepository $userDetailRepository, BranchServices $companyBranchService, DepartmentServices $departmentService, DesignationServices $designationService, UserRepository $userRepository)
     {
-        $this->employeeRepository = $employeeRepository;
+        $this->userDetailRepository = $userDetailRepository;
         $this->companyBranchService = $companyBranchService;
         $this->departmentService = $departmentService;
         $this->designationService = $designationService;
+        $this->userRepository = $userRepository;
     }
-    public function all($request = null, $companyId)
-    {
-        $allEmployeeDetails = $this->employeeRepository->where('company_id', $companyId);
-        // //List Selected by Gender
-        if (isset($request->gender) && !empty($request->gender)) {
-            $allEmployeeDetails = $allEmployeeDetails->where('gender', $request->gender);
-        }
-        // //List Selected by Emp Status
-        if (isset($request->emp_status_id) && !empty($request->emp_status_id)) {
-            $allEmployeeDetails = $allEmployeeDetails->where('employee_status_id', $request->emp_status_id);
-        }
-        //List Selected by Marrital Status
-        if (isset($request->marital_status) && !empty($request->marital_status)) {
-            $allEmployeeDetails = $allEmployeeDetails->where('marital_status', $request->marital_status);
-        }
 
-        //List Selected by Employee Type
-        if (isset($request->emp_type_id) && !empty($request->emp_type_id)) {
-            $allEmployeeDetails = $allEmployeeDetails->where('employee_type_id', '=', $request->emp_type_id);
-        }
-
-        //List Selected by Department
-        if (isset($request->department_id) && !empty($request->department_id)) {
-            $allEmployeeDetails =  $allEmployeeDetails->where('department_id', '=', $request->department_id);
-        }
-        //List Selected by Shift
-        if (isset($request->shift_id) && !empty($request->shift_id)) {
-            $allEmployeeDetails = $allEmployeeDetails->where('shift_id', '=', $request->shift_id);
-        }
-        //List Selected by Branch
-        if (isset($request->branch_id) && !empty($request->branch_id)) {
-            $allEmployeeDetails = $allEmployeeDetails->where('company_branch_id', '=', $request->branch_id);
-        }
-        //List Selected by Qualification
-        if (isset($request->qualification_id) && !empty($request->qualification_id)) {
-            $allEmployeeDetails = $allEmployeeDetails->where('qualification_id', '=', $request->qualification_id);
-        }
-        //List Selected by Skill Id
-        if (isset($request->skill_id) && !empty($request->skill_id)) {
-            $skillId = $request->skill_id;
-            $allEmployeeDetails = $allEmployeeDetails->whereHas(
-                'skill',
-                function ($query) use ($skillId) {
-                    $query->where('skill_id', '=', $skillId);
-                }
-            );
-        }
-        //List Search Operation
-        if (isset($request->search) && !empty($request->search)) {
-            $searchKeyword = $request->search;
-            $allEmployeeDetails = $allEmployeeDetails->where('name', 'Like', '%' . $searchKeyword . '%')
-                ->orWhere('official_email_id', 'Like', '%' . $searchKeyword . '%')
-                ->orWhere('email', 'Like', '%' . $searchKeyword . '%')
-                ->orWhere('phone', 'Like', '%' . $searchKeyword . '%')
-                ->orWhere('emp_id', 'Like', '%' . $searchKeyword . '%')
-                ->orWhere('father_name', 'Like', '%' . $searchKeyword . '%')
-                ->orWhere('mother_name', 'Like', '%' . $searchKeyword . '%')
-                ->orWhere('offer_letter_id', 'Like', '%' . $searchKeyword . '%')
-                ->orWhere('official_mobile_no', 'Like', '%' . $searchKeyword . '%');
-        }
-        // added relationship data
-        return $allEmployeeDetails->with(['addressDetails', 'addressDetails.country', 'addressDetails.state', 'bankDetails'])->orderBy('id', 'DESC');
-    }
     public function create($data)
     {
-        if (isset($data['profile_image']) && !empty($data['profile_image'])) {
-            $data['profile_image'] = uploadingImageorFile($data['profile_image'], '/user_profile', removingSpaceMakingName($data['name']));
-        }
-        $data['last_login_ip'] = request()->ip();
-        if ($data['id'] !== null) {
-            $existingDetails = $this->employeeRepository->find($data['id']);
-            if ($existingDetails->profile_image != null) {
-                unlinkFileOrImage($existingDetails->profile_image);
+        try {
+            DB::beginTransaction();
+            if (!empty($data['profile_image'])) {
+                $data['profile_image'] = uploadingImageorFile(
+                    $data['profile_image'],
+                    '/user_profile',
+                    removingSpaceMakingName($data['name'])
+                );
             }
-            if (isset($data['skill_id']) && !empty($data['skill_id'])) {
-                $existingDetails->skill()->sync($data['skill_id']);
-                $this->syncEmployeeLanguages($existingDetails, $data['language']);
+            $data['last_login_ip'] = request()->ip();
+            if ($data['user_details_id'] !== null) {
+                $existingDetails = $this->userDetailRepository->find($data['user_details_id']);
+                if ($existingDetails->profile_image) {
+                    unlinkFileOrImage($existingDetails->profile_image);
+                }
+                if (!empty($data['skill_id'])) {
+                    $existingDetails->user->skill()->sync($data['skill_id']);
+                    $this->syncEmployeeLanguages($existingDetails->user, $data['language']);
+                }
+                $existingDetails->update($data);
+                $status = 'updatedData';
+                $id = $existingDetails->user_id;
+            } else {
+                $createdEmployee = $this->userDetailRepository->create($data);
+                $createdEmployee->user->skill()->sync($data['skill_id']);
+                $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
+                $status = 'createdEmployee';
+                $id = $createdEmployee->id;
             }
-            $existingDetails->update($data);
-        } else {
-            $data['company_id'] = Auth::guard('company')->user()->company_id;
-            $data['password'] = Hash::make($data['password'] ?? 'password');
-            $createData = $this->employeeRepository->create($data);
-            $createData->skill()->sync($data['skill_id']);
-            $this->syncEmployeeLanguages($createData, $data['language']);
-        }
-        if (isset($createData)) {
-            $status = 'createData';
-            $id = $createData->id;
-        }
-        $response =
-            [
-                'status' => $status ?? 'updateData',
-                'id'     => $id ?? ''
+            $response = [
+                'status' => $status,
+                'id' => $id ?? ''
             ];
-        return $response;
+            DB::commit();
+            return $response;
+        } catch (Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
+
     private function syncEmployeeLanguages($employee, $languages)
     {
         $languageData = [];
@@ -140,7 +91,7 @@ class EmployeeServices
 
     public function getUserDetailById($id)
     {
-        return $this->employeeRepository->find($id);
+        return $this->userRepository->find($id);
     }
 
     public function forgetPassword($request, $code)
@@ -148,8 +99,8 @@ class EmployeeServices
         try {
 
             UserCode::updateOrCreate(['email' => $request->email], [
-                'type'  => 'user',
-                'code'  => $code,
+                'type' => 'user',
+                'code' => $code,
             ]);
             $mailData = [
                 'email' => $request->email,
@@ -169,24 +120,26 @@ class EmployeeServices
 
     public function getAllEmployeeByCompanyId($companyId)
     {
-        return $this->employeeRepository->where('company_id', $companyId);
+        return $this->userRepository->where('type', 'user')->where('company_id', $companyId);
     }
+
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
     {
-        return $this->employeeRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('id', 'joining_date')->get();
+        return $this->userDetailRepository->where('company_branch_id', $companyBranchId)->where('employee_type_id', $employeeTypeId)->select('user_id', 'joining_date')->get();
     }
+
     public function getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds = null, $designationIds = null, $allCompanyBranches = null, $allDepartment = null, $allDesignation = null)
     {
         $allCompanyDepartment = $this->departmentService->getAllDepartmentsByCompanyId();
         $allDepartmentIds = $allCompanyDepartment->pluck('id');
         $selectedDepartments = $allDepartmentIds;
-        $baseQuery =  $this->employeeRepository;
+        $baseQuery = $this->userDetailRepository;
 
         /** Filter by Company Branch */
         if (isset($companyBranchIds) && count($companyBranchIds) > 0) {
             $baseQuery->whereIn('company_branch_id', $companyBranchIds);
         } else {
-            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
+            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
             $allCompanyBranchIds = $allCompanyBranchDetails->pluck('id');
             $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
         }
@@ -212,28 +165,45 @@ class EmployeeServices
         $usersDetails = $baseQuery->get()->toArray();
         return $usersDetails;
     }
+
     public function getEmployeeByNameByEmpIdFilter($companyId, $searchKey)
     {
-        return $this->employeeRepository->where('company_id', $companyId)->where('name', 'Like', '%' . $searchKey . '%')->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
+        return $this->userRepository
+            ->where('type', 'user')
+            ->where('company_id', $companyId)
+            ->whereHas('details', function ($query) use ($searchKey) {
+                $query->where('name', 'Like', '%' . $searchKey . '%');
+                $query->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
+            });
     }
+
     public function getExitEmployeeList($companyId)
     {
-        return $this->employeeRepository->where('company_id', $companyId)->onlyTrashed()->paginate(10);
+        return $this->userRepository->where('type', 'user')->where('company_id', $companyId)->whereHas('details', function ($query) {
+            $query->whereNotNull('exit_date');
+        })->paginate(10);
     }
 
     public function searchFilterForExitEmployee($companyId, $searchKey)
     {
-        $allEmployeeDetails = $this->employeeRepository
+        $allEmployeeDetails = $this->userRepository->where('type', 'user')
             ->where('company_id', $companyId)
-            ->onlyTrashed();
-        if (!empty($searchKey['search'])) {
+            ->whereHas('details', function ($query) {
+                $query->whereNotNull('exit_date');
+            });
+
+        if (isset($searchKey) && !empty($searchKey['search'])) {
             $searchTerm = '%' . $searchKey['search'] . '%';
+
             $allEmployeeDetails = $allEmployeeDetails->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'LIKE', $searchTerm)
-                    ->orWhere('official_email_id', 'LIKE', $searchTerm)
                     ->orWhere('email', 'LIKE', $searchTerm)
-                    ->orWhere('phone', 'LIKE', $searchTerm)
-                    ->orWhere('emp_id', 'LIKE', $searchTerm);
+                    ->orWhereHas('details', function ($q) use ($searchTerm) {
+                        $q->where('official_email_id', 'LIKE', $searchTerm)
+                            ->orWhere('phone', 'LIKE', $searchTerm)
+                            ->orWhere('emp_id', 'LIKE', $searchTerm)
+                            ->orWhere('official_mobile_no', 'LIKE', $searchTerm);
+                    });
             });
         }
         return $allEmployeeDetails->paginate(10);

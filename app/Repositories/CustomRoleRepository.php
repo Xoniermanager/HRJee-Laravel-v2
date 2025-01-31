@@ -2,8 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\CustomRole;
-use Spatie\Permission\Contracts\Role;
+use App\Models\Role;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -20,10 +19,11 @@ class CustomRoleRepository extends BaseRepository
      */
     public function model()
     {
-        return CustomRole::class;
+        return Role::class;
     }
+
     public function getRolesById($id)
     {
-       return $this->where('id', $id);
+        return $this->where('id', $id);
     }
 }

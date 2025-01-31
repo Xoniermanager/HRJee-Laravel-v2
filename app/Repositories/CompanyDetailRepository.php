@@ -2,8 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\AssetStatus;
-use App\Models\CompanyUser;
+use App\Models\CompanyDetail;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -11,7 +10,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
  *
  * @package namespace App\Repositories;
  */
-class CompanyUserRepository extends BaseRepository
+class CompanyDetailRepository extends BaseRepository
 {
     /**
      * Specify Model class name
@@ -20,6 +19,6 @@ class CompanyUserRepository extends BaseRepository
      */
     public function model()
     {
-        return CompanyUser::class;
+        return CompanyDetail::class;
     }
 }

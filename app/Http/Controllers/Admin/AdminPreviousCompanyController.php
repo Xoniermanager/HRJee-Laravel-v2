@@ -35,7 +35,7 @@ class AdminPreviousCompanyController extends Controller
     public function store(Request $request)
     {
         try {
-            $validator  = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:previous_companies,name'],
             ]);
             if ($validator->fails()) {
@@ -45,13 +45,13 @@ class AdminPreviousCompanyController extends Controller
             if ($this->previousCompanyService->create($data)) {
                 return response()->json([
                     'message' => 'Added Successfully!',
-                    'data'   =>  view('admin.previous_company.previous_company_list', [
+                    'data' => view('admin.previous_company.previous_company_list', [
                         'allPreviousCompanyDetails' => $this->previousCompanyService->all()
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -60,7 +60,7 @@ class AdminPreviousCompanyController extends Controller
      */
     public function update(Request $request)
     {
-        $validator  = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'unique:previous_companies,name,' . $request->id],
         ]);
 
@@ -73,7 +73,7 @@ class AdminPreviousCompanyController extends Controller
             return response()->json(
                 [
                     'message' => 'Updated Successfully!',
-                    'data'   =>  view('admin.previous_company.previous_company_list', [
+                    'data' => view('admin.previous_company.previous_company_list', [
                         'allPreviousCompanyDetails' => $this->previousCompanyService->all()
                     ])->render()
                 ]
@@ -91,7 +91,7 @@ class AdminPreviousCompanyController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Deleted Successfully',
-                'data'   =>  view('admin.previous_company.previous_company_list', [
+                'data' => view('admin.previous_company.previous_company_list', [
                     'allPreviousCompanyDetails' => $this->previousCompanyService->all()
                 ])->render()
             ]);
@@ -107,7 +107,7 @@ class AdminPreviousCompanyController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Status Successfully',
-                'data'   =>  view('admin.previous_company.previous_company_list', [
+                'data' => view('admin.previous_company.previous_company_list', [
                     'allPreviousCompanyDetails' => $this->previousCompanyService->all()
                 ])->render()
             ]);
@@ -119,17 +119,17 @@ class AdminPreviousCompanyController extends Controller
 
     public function get_all_previous_company_ajax_call()
     {
-       $data =  $this->previousCompanyService->get_previous_company_ajax_call();
-       return json_encode($data);
+        $data = $this->previousCompanyService->get_previous_company_ajax_call();
+        return json_encode($data);
     }
     public function ajax_store_previous_company(Request $request)
     {
         try {
             $dataTest = $request->all()['models'];
             $data = collect(json_decode($dataTest, true))->first();
-            $data['company_id'] = isset(Auth::guard('company')->user()->company_id)?Auth::guard('company')->user()->company_id:'';
-            $validatePreviousCompany  = Validator::make($data, [
-                'name'        => ['required', 'string', new UniqueForAdminOnly('previous_companies')],
+            $data['company_id'] = isset(Auth()->user()->company_id) ? Auth()->user()->company_id : '';
+            $validatePreviousCompany = Validator::make($data, [
+                'name' => ['required', 'string', new UniqueForAdminOnly('previous_companies')],
                 'description' => ['string']
             ]);
 
@@ -137,8 +137,8 @@ class AdminPreviousCompanyController extends Controller
                 return response()->json(['error' => $validatePreviousCompany->messages()], 400);
             }
 
-            if ($this->previousCompanyService->create($data)){
-                return  $this->previousCompanyService->get_previous_company_ajax_call();
+            if ($this->previousCompanyService->create($data)) {
+                return $this->previousCompanyService->get_previous_company_ajax_call();
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()()], 400);
@@ -152,7 +152,7 @@ class AdminPreviousCompanyController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view("admin.previous_company.previous_company_list", [
+                'data' => view("admin.previous_company.previous_company_list", [
                     'allPreviousCompanyDetails' => $searchedItems
                 ])->render()
             ]);

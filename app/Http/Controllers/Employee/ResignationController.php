@@ -8,6 +8,7 @@ use App\Http\Requests\ChangeResignationStatusRequest;
 use App\Http\Services\ResignationService;
 use App\Http\Services\ResignationStatusService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class ResignationController extends Controller
@@ -23,7 +24,7 @@ class ResignationController extends Controller
     public function index()
     {
         $resignationStatus = $this->resignationStatusService->all('all');
-        $userId = auth()->guard('employee')?->user()?->id;
+        $userId = auth()->user()->type == 'user' ? auth()->user()->id : '';
         $resignations = $this->resignationService->all($userId);
         $canApply = $userId
             ? !$this->resignationService->getResignationByResignationStatusIds(['pending', 'hold', 'approved'], $userId)->count()
@@ -35,9 +36,8 @@ class ResignationController extends Controller
     public function applyResignation(Request $request)
     {
         try {
-            $authUser = auth()->guard('employee')->user();
-            $userType = $authUser?->role?->name;
-            $userId = $authUser?->id;
+            DB::beginTransaction();
+            $userId = Auth()->user()->id;
             $data = $request->all();
 
             $canApply = $userId
@@ -49,14 +49,16 @@ class ResignationController extends Controller
 
             $checkStatus = $this->resignationService->resignation($data, $userId);
             if ($checkStatus) {
-                $data = view('employee.resignation.resignation-list', [
-                    'resignations' => $this->resignationService->all($userId),
-                    'userType' => $userType
-                ])->render();
+                $resignations = $this->resignationService->all($userId);
+                $data = view('employee.resignation.resignation-list', compact('resignations'))->render();
+                DB::commit();
                 return apiResponse('resignation_sbmitted', $data);
-            } else
+            } else {
+                DB::rollBack();
                 return errorMessage('null', 'something went wrong');
+            }
         } catch (Throwable $th) {
+            DB::rollBack();
             return exceptionErrorMessage($th);
         }
     }
@@ -64,7 +66,7 @@ class ResignationController extends Controller
     public function editResignation($id, Request $request)
     {
         try {
-            $authUser = auth()->guard('employee')->user();
+            $authUser = Auth()->user();
             $userType = $authUser?->role?->name;
             $userId = $authUser?->id;
             $data = $request->all();
@@ -98,10 +100,7 @@ class ResignationController extends Controller
     {
         try {
             $data = $request->validated();
-
-            $action_taken_by = auth()->guard('employee')->id()
-                ? auth()->guard('employee')->user()
-                : auth()->guard('company')->user();
+            $action_taken_by = Auth()->user();
 
             $resignationStatus = $this->resignationStatusService->changeStatus(
                 $id,
@@ -128,7 +127,7 @@ class ResignationController extends Controller
 
     public function destroy(Request $request)
     {
-        $userType = auth()->guard('employee')->user()->userDetails->roles->name;
+        $userType = Auth()->user()->userDetails->roles->name;
         $id = $request->id;
         $data = $this->resignationService->deleteDetails($id);
         if ($data) {
@@ -149,7 +148,7 @@ class ResignationController extends Controller
         try {
 
             $data = $request->validated();
-            $userType = auth()->guard('employee')->user()->userDetails->roles->name;
+            $userType = Auth()->user()->userDetails->roles->name;
 
             if ($userType == 'Employee')
                 $data['resignation_status_id'] = 4;
@@ -158,7 +157,7 @@ class ResignationController extends Controller
                 return errorMessage('', 'you have not permission to cancel resignation');
             }
 
-            $data['action_taken_by'] = auth()->guard('employee')->user()->id;
+            $data['action_taken_by'] = Auth()->user()->id;
             $resignationStatus = $this->resignationStatusService->changeStatus($data, $userType);
             if ($resignationStatus['status'] == true) {
                 $data = view('employee.resignation.resignation-list', [

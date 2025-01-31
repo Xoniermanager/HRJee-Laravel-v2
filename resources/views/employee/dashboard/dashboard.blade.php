@@ -1,5 +1,5 @@
 @extends('layouts.employee.main')
-@section('title', Auth()->guard('employee')->user()->name)
+@section('title', Auth()->user()->name)
 @section('content')
     <style>
         .punchinbar p {
@@ -17,7 +17,7 @@
             <div class="row gy-5 g-xl-10">
                 <!--begin::Col-->
                 <div class="col-md-12">
-                    <div class="mb-5 mb-xl-10">
+                    <div class="mb-xl-10 mb-5">
                         <div class="row g-5 g-xl-10 mb-3">
                             <div class="col-xl-3 col-sm-6">
                                 <!--begin::Card widget 3-->
@@ -25,11 +25,11 @@
                                     class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-xl-100"
                                     style="background-color: #1642b3;background-image:url('assets/media/wave-bg-purple.svg')">
                                     <!--begin::Header-->
-                                    <div class="card-header pt-5 mb-3">
+                                    <div class="card-header mb-3 pt-5">
                                         <!--begin::Icon-->
                                         <div class="d-flex flex-center rounded-circle h-80px w-80px"
                                             style="border: 1px dashed rgba(255, 255, 255, 0.4);background-color: #1642b3">
-                                            <i class="fa fa-calendar-days text-white fs-2qx lh-0"></i>
+                                            <i class="fa fa-calendar-days fs-2qx lh-0 text-white"></i>
                                         </div>
                                         <!--end::Icon-->
                                     </div>
@@ -38,7 +38,7 @@
                                     <div class="card-footer"
                                         style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
-                                        <div class="fw-bold text-white py-2">
+                                        <div class="fw-bold py-2 text-white">
 
                                             <span class="fs-2 opacity-50">Total Attendance
                                             </span>
@@ -55,11 +55,11 @@
                                     class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-xl-100"
                                     style="background-color: #1642b3;background-image:url('assets/media/wave-bg-purple.svg')">
                                     <!--begin::Header-->
-                                    <div class="card-header pt-5 mb-3">
+                                    <div class="card-header mb-3 pt-5">
                                         <!--begin::Icon-->
                                         <div class="d-flex flex-center rounded-circle h-80px w-80px"
                                             style="border: 1px dashed rgba(255, 255, 255, 0.4);background-color: #1642b3">
-                                            <i class="fa fa-newspaper text-white fs-2qx lh-0"></i>
+                                            <i class="fa fa-newspaper fs-2qx lh-0 text-white"></i>
                                         </div>
                                         <!--end::Icon-->
                                     </div>
@@ -70,7 +70,7 @@
                                         style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
                                     border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
-                                        <div class="fw-bold text-white py-2">
+                                        <div class="fw-bold py-2 text-white">
 
                                             <span class="fs-2 opacity-50">Monthly News</span>
                                         </div>
@@ -86,11 +86,11 @@
                                     class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-xl-100"
                                     style="background-color: #1642b3;background-image:url('assets/media/wave-bg-purple.svg')">
                                     <!--begin::Header-->
-                                    <div class="card-header pt-5 mb-3">
+                                    <div class="card-header mb-3 pt-5">
                                         <!--begin::Icon-->
                                         <div class="d-flex flex-center rounded-circle h-80px w-80px"
                                             style="border: 1px dashed rgba(255, 255, 255, 0.4);background-color: #1642b3">
-                                            <i class="fa fa-users-gear text-white fs-2qx lh-0"></i>
+                                            <i class="fa fa-users-gear fs-2qx lh-0 text-white"></i>
                                         </div>
                                         <!--end::Icon-->
                                     </div>
@@ -100,7 +100,7 @@
                                         style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
 border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
-                                        <div class="fw-bold text-white py-2">
+                                        <div class="fw-bold py-2 text-white">
 
                                             <span class="fs-2 opacity-50">HR Service </span>
                                         </div>
@@ -116,11 +116,11 @@ border-bottom-right-radius: 30px;">
                                     class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-xl-100"
                                     style="background-color: #1642b3;background-image:url('assets/media/wave-bg-purple.svg')">
                                     <!--begin::Header-->
-                                    <div class="card-header pt-5 mb-3">
+                                    <div class="card-header mb-3 pt-5">
                                         <!--begin::Icon-->
                                         <div class="d-flex flex-center rounded-circle h-80px w-80px"
                                             style="border: 1px dashed rgba(255, 255, 255, 0.4);background-color: #1642b3">
-                                            <i class="fa fa-headphones text-white fs-2qx lh-0"></i>
+                                            <i class="fa fa-headphones fs-2qx lh-0 text-white"></i>
                                         </div>
                                         <!--end::Icon-->
                                     </div>
@@ -131,7 +131,7 @@ border-bottom-right-radius: 30px;">
                                         style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
                                     border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
-                                        <div class="fw-bold text-white py-2">
+                                        <div class="fw-bold py-2 text-white">
 
                                             <span class="fs-2 opacity-50"> Support
                                             </span>
@@ -159,8 +159,9 @@ border-bottom-right-radius: 30px;">
                                     <div class="row">
                                         <div class="col-md-2" style="gap: 10px">
                                             <h5>{{ date('l') }}</h5>
-                                            <span class="text-primary-400 fw-bold fs-7 d-block mb-4">{{ getFormattedDate(date('d-m-Y')) }}</span>
-                                            <span class="text-primary-400 fw-bold fs-7 d-block " id="current-time"></span>
+                                            <span
+                                                class="text-primary-400 fw-bold fs-7 d-block mb-4">{{ getFormattedDate(date('d-m-Y')) }}</span>
+                                            <span class="text-primary-400 fw-bold fs-7 d-block" id="current-time"></span>
                                         </div>
                                         <div class="col-md-1">
                                             <span data-kt-element="bullet"
@@ -181,7 +182,6 @@ border-bottom-right-radius: 30px;">
                                                     style="width: 1px;height: 30px !important;"></span>
                                             @endif
 
-
                                             @if ($existingAttendanceDetail && !empty($existingAttendanceDetail))
                                                 <p> PunchIn Time :
                                                     <span>{{ date('H:i:s', strtotime($existingAttendanceDetail->punch_in)) }}</span>
@@ -190,7 +190,6 @@ border-bottom-right-radius: 30px;">
                                                     class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
                                                     style="width: 1px;height: 30px !important;"></span>
                                             @endif
-
 
                                             @if (!empty($existingAttendanceDetail) && $existingAttendanceDetail->punch_out != '')
                                                 <p> PunchOut Time :
@@ -204,17 +203,15 @@ border-bottom-right-radius: 30px;">
                                                 </p>
                                             @endif
 
-
                                             @if (
                                                 !empty($existingAttendanceDetail) &&
                                                     $existingAttendanceDetail->punch_in != '' &&
                                                     $existingAttendanceDetail->punch_out == '')
-                                                <p> Working Timer : <span id="punchin-timer"></span></p>
+                                                <p id="working-hours"> Working Timer : <span id="punchin-timer"></span></p>
                                             @endif
 
                                             @if ($existingAttendanceDetail == null)
-                                                <button class="btn btn-sm btn-primary align-self-center"
-                                                    id="start-timer">
+                                                <button class="btn btn-sm btn-primary align-self-center" id="start-timer">
                                                     Punch In
                                                 </button>
                                             @endif
@@ -255,11 +252,11 @@ border-bottom-right-radius: 30px;">
     <!-------------Modal----------------->
     <div class="modal" id="break" tabindex="-1" aria-modal="true" role="dialog">
         <!--begin::Modal dialog-->
-        <div class="modal-dialog p-9 w-550px">
+        <div class="modal-dialog w-550px p-9">
             <!--begin::Modal content-->
             <div class="modal-content modal-rounded">
                 <!--begin::Modal header-->
-                <div class="modal-header border d-flex justify-content-between">
+                <div class="modal-header d-flex justify-content-between border">
                     <!--begin::Modal title-->
                     <h2>Break Time</h2>
                     <!--end::Modal title-->
@@ -305,6 +302,8 @@ border-bottom-right-radius: 30px;">
     </div>
 
     <script>
+        var refreshIntervalId = '';
+        // $('#working-hours').hide();
         function startTimer(time) {
             // Parse the input time (e.g., "14:00:00")
             const parts = time.split(':');
@@ -325,7 +324,7 @@ border-bottom-right-radius: 30px;">
                 // Display the timer
                 $("#break_timer").text(
                     `${String(currentHours).padStart(2, '0')}:${String(currentMinutes).padStart(2, '0')}:${String(currentSeconds).padStart(2, '0')}`
-                    );
+                );
 
                 // Decrement the total seconds
                 totalSeconds++;
@@ -345,34 +344,28 @@ border-bottom-right-radius: 30px;">
         setInterval(updateCurrentTime, 1000);
         updateCurrentTime();
 
-        @if (!is_null($existingAttendanceDetail) && empty($takenBreakDetails)) // Check if $existingAttendanceDetail is not null
+        @if ($existingAttendanceDetail) // Check if $existingAttendanceDetail is not null
             // Pass PHP values to JavaScript and ensure proper JSON encoding
             var punchIn = @json($existingAttendanceDetail->punch_in);
             var punchOut = @json($existingAttendanceDetail->punch_out);
+
             get_timer_clock(punchIn, punchOut);
         @endif
 
         @if (!empty($takenBreakDetails) && $takenBreakDetails)
             var breakTime = @json($existingAttendanceDetail->totalBreakHour);
             startTimer(breakTime);
-            clearInterval(refreshIntervalId);
+            //clearInterval(refreshIntervalId);
         @endif
 
-        //var setCurrentInterval = '';
-
-        // @if (is_null($existingAttendanceDetail))
-        //     // Update the time every second
-        //     //setCurrentInterval = setInterval(updateCurrentTime, 1000);
-        //     // Call the function immediately to avoid 1-second delay
-
-        // @endif
-
-        function get_timer_clock(punch_in, punch_out) {
-            var refreshIntervalId = '';
-            if (punch_in != '' && punch_out == null) {
+        function get_timer_clock(punch_in, punch_out)
+        {
+            if (punch_in != '' && punch_out == null)
+            {
                 let timeLaps = '';
                 var StartedTime = new Date(punch_in).getTime();
-                refreshIntervalId = setInterval(() => {
+                refreshIntervalId = setInterval(() =>
+                {
                     var EndedTime = new Date().getTime();
                     var diff = EndedTime - StartedTime;
                     var hours = Math.floor(diff / 3.6e6);
@@ -385,10 +378,12 @@ border-bottom-right-radius: 30px;">
                     timeLaps = duration;
                     $("#punchin-timer").text(timeLaps);
                 }, 1000);
-            } else if (punch_out != '') {
-
+            }
+            else if (punch_out != '')
+            {
                 clearInterval(refreshIntervalId);
-                if (punch_out) {
+                if (punch_out)
+                {
                     var StartedTime = new Date(punch_in).getTime();
                     var EndedTime = new Date(punch_out).getTime();
 
@@ -402,7 +397,9 @@ border-bottom-right-radius: 30px;">
                     var duration = h + ":" + m + ":" + s;
                     timeLaps = duration;
                 }
-            } else {
+            }
+            else
+            {
                 console.log('hello');
             }
         }

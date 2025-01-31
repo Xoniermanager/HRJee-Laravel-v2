@@ -7,7 +7,7 @@
 			<thead>
 				<tr class="fw-bold">
 					<th>Sr. No.</th>
-					@if (Auth::guard('company')->id())
+					@if (Auth::user()->type == 'company')
 						<th class="min-w-150px">Employee Name</th>
 					@endif
 					<th>Apply Date</th>
@@ -20,7 +20,7 @@
 				<tbody class="">
 					<tr>
 						<td>{{ $key + 1 }}</td>
-						@if (Auth::guard('company')->id())
+						@if (Auth::user()->type == 'company')
 							<td>
 								<b>{{ $resignation->user->name }}</b>
 							</td>
@@ -57,7 +57,7 @@
 								</a>
 
 								@if ($resignation->status == 'pending')
-									@if (Auth::guard('employee')->id() == $resignation->user_id)
+									@if (Auth::user()->id == $resignation->user_id)
 										<a href="#" data-bs-toggle="modal" onClick="edit_resignation('{{ $resignation }}')"
 											class="btn btn-icon btn-bg-light text-danger btn-active-color-primary btn-sm me-1">
 											<i class="fa fa-edit" aria-hidden="true"></i>
@@ -65,7 +65,7 @@
 									@endif
 								@endif
 
-								@if (Auth::guard('company')->id())
+								@if (Auth::user()->type == 'company')
 									<a href="#" data-bs-toggle="modal" onClick="action_resignation('{{ $resignation }}')"
 										class="btn btn-icon btn-bg-light text-danger btn-active-color-primary btn-sm me-1">
 										<i class="fas fa-sync-alt"></i>
@@ -74,7 +74,7 @@
 
 								@if (
                                     ($resignation->status != 'withdrawn' && $resignation->status != 'approved') &&
-                                    Auth::guard('employee')->id() == $resignation->user_id
+                                    Auth::user()->id == $resignation->user_id
                                 )
 									<a href="#" data-bs-toggle="modal" onClick="action_resignation('{{ $resignation }}', true)"
 										class="btn btn-icon btn-bg-light text-danger btn-active-color-primary btn-sm me-1">

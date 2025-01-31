@@ -21,7 +21,7 @@ class UserAdvanceDetailsController extends Controller
     {
         try {
             $validateDetails  = Validator::make($request->all(), [
-                'aadhar_no'                => ['required','numeric'],
+                'aadhar_no'                => ['required', 'numeric'],
                 'pan_no'                   => ['required'],
             ]);
             if ($validateDetails->fails()) {
@@ -43,5 +43,4 @@ class UserAdvanceDetailsController extends Controller
         $data = $this->userAdvanceDetailsService->getDetailById($id);
         return response()->json(['data' => $data]);
     }
-
 }

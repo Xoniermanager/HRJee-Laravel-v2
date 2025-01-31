@@ -28,9 +28,10 @@ class CompanyDashboardController extends Controller
         $this->companyBranchService = $companyBranchService;
         $this->employeeService = $employeeService;
     }
+
     public function index()
     {
-        $companyId = Auth()->guard('company')->user()->company_id;
+        $companyId = Auth()->user()->id;
         $today = today();
         $dashboardData = [
             // Total office branches
@@ -45,11 +46,13 @@ class CompanyDashboardController extends Controller
             // Total active employees
             'total_active_employee' => User::where('company_id', $companyId)
                 ->where('status', '1') // Assuming STATUS_ACTIVE is defined in the User model
+                ->where('type', 'user')
                 ->count(),
 
             // Total inactive employees
             'total_inactive_employee' => User::where('company_id', $companyId)
                 ->where('status', '0') // Assuming STATUS_INACTIVE is defined in the User model
+                ->where('type', 'user')
                 ->count(),
 
             // Total leave taken today (approved)
@@ -65,9 +68,8 @@ class CompanyDashboardController extends Controller
                 ->where('leave_status_id', '1') // Assuming STATUS_PENDING is defined in Leave model
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
                 ->count(),
-
-            'all_users_details' => $this->employeeService->getAllEmployeeByCompanyId($companyId)->with(['designation'])->paginate(10)
-            
+            // 'all_users_details' => $this->employeeService->getAllEmployeeByCompanyId($companyId)->paginate(10)
+            'all_users_details' => []
         ];
         
         return view('company.dashboard.dashboard', compact('dashboardData'));

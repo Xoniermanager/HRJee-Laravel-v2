@@ -88,7 +88,8 @@ class ResignationStatusService
   public function create($data)
   {
 
-    $data['company_id'] = Auth::guard('company')->user()->company_id;
+    $data['company_id'] = Auth()->user()->company_id;
+    $data['created_by'] = Auth()->user()->id;
     return $this->resignationStatusRepository->create($data);
   }
 

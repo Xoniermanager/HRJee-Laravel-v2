@@ -1,4 +1,4 @@
-@extends(Auth::guard('company')->id() ? 'layouts.company.main' : 'layouts.employee.main')
+@extends(Auth::user()->type == 'company' ? 'layouts.company.main' : 'layouts.employee.main')
 @section('content')
 @section('title')
 	Resignation Detail
@@ -10,7 +10,7 @@
 				<div class="table-responsive">
 					<table class="table-row-dashed table-row-gray-300 gs-0 gy-4 table align-middle">
 						<tbody class="">
-							@if (Auth::guard('company')->id())
+							@if (Auth::user()->type == 'company')
 								<tr>
 									<th class="min-w-150px">Employee Name</th>
 									<td>
@@ -34,7 +34,7 @@
 								<th>Release Date</th>
 								<td>
 									<span class="btn btn-success btn-sm me-1">
-										{{ !empty($resignation->release_date) ? date('Y-m-d h:i A', strtotime($resignation->release_date)) : '--' }}
+										{{ !empty($resignation->release_date) ? date('Y-m-d', strtotime($resignation->release_date)) : 'N/A' }}
 									</span>
 								</td>
 							</tr>

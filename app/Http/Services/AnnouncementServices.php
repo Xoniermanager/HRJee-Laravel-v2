@@ -14,7 +14,7 @@ class AnnouncementServices
   private $companyBranchServices;
   private $departmentServices;
   private $designationServices;
-  public function __construct(AnnouncementRepository $announcementRepository,BranchServices $companyBranchServices, DepartmentServices $departmentServices, DesignationServices $designationServices)
+  public function __construct(AnnouncementRepository $announcementRepository, BranchServices $companyBranchServices, DepartmentServices $departmentServices, DesignationServices $designationServices)
   {
     $this->announcementRepository = $announcementRepository;
     $this->companyBranchServices = $companyBranchServices;
@@ -36,8 +36,9 @@ class AnnouncementServices
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('company')->user()->company_id;
-    $announcementDetails =  $this->announcementRepository->create($finalPayload);
+    $finalPayload['company_id'] = Auth()->user()->company_id;
+    $finalPayload['created_by'] = Auth()->user()->id;
+    $announcementDetails = $this->announcementRepository->create($finalPayload);
     if ($announcementDetails) {
       $announcementModelDetails = Announcement::find($announcementDetails->id);
       if ($announcementDetails->all_company_branch == 0) {
@@ -150,7 +151,7 @@ class AnnouncementServices
   }
   public function getAllAssignedAnnouncementForEmployee()
   {
-    $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
+    $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
     $allAnnouncementDetails = $this->announcementRepository->where('company_id', $userDetails->company_id)->where('status', 1)->where('start_date_time', '<=', date('Y-m-d'))
       ->where('expires_at_time', '>=', date('Y-m-d'))->get();
     $allAssignedAnnouncement = [];

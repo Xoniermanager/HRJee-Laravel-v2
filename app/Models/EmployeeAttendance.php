@@ -26,6 +26,8 @@ class EmployeeAttendance extends Model
         'late',
         'status',
         'remark',
+        'company_id',
+        'created_by',
         'is_short_attendance'
     ];
     public function user()

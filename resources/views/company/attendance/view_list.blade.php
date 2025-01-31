@@ -1,60 +1,59 @@
 <div id="view_list">
-    <div class="col-md-12">
-        <div class="row text-center clearfix" style="margin-top:20px;">
-            <div class="row">
-                <div class="col-4 col-md-3 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body ribbon">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="persent">{{ $employeeDetail['totalPresent'] }}</span></h1>
-                                <span>Total Present </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 col-md-3 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body ribbon">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="onleave">{{ $employeeDetail['totalLeave'] }}</span></h1>
-                                <span>Total Leave </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 col-md-3 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body ribbon">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="absent">{{ $employeeDetail['totalAbsent'] }}</span></h1>
-                                <span>Total Absent </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 col-md-3 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="holiday">{{ $employeeDetail['totalHoliday'] }}</span></h1>
-                                <span> Total Holidays</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+	<div class="col-md-12">
+		<div class="row clearfix text-center" style="margin-top:20px;">
+			<div class="row">
+				<div class="col-4 col-md-3 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body ribbon">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="persent">{{ $employeeDetail['totalPresent'] }}</span></h1>
+								<span>Total Present </span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-4 col-md-3 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body ribbon">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="onleave">{{ $employeeDetail['totalLeave'] }}</span></h1>
+								<span>Total Leave </span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-4 col-md-3 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body ribbon">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="absent">{{ $employeeDetail['totalAbsent'] }}</span></h1>
+								<span>Total Absent </span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-4 col-md-3 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="holiday">{{ $employeeDetail['totalHoliday'] }}</span></h1>
+								<span> Total Holidays</span>
+							</a>
+						</div>
+					</div>
+				</div>
 
-                <div class="col-4 col-md-4 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="shot_attendence" style="color:red;">{{
-                                        $employeeDetail['shortAttendance'] }}</span></h1>
-                                <span>Short Attendance</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+				<div class="col-4 col-md-4 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="shot_attendence" style="color:red;">{{ $employeeDetail['shortAttendance'] }}</span></h1>
+								<span>Short Attendance</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
 
         </div>
     </div>

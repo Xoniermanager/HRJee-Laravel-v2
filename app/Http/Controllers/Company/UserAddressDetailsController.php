@@ -33,6 +33,6 @@ class UserAddressDetailsController extends Controller
     public function getAddressDetails($id)
     {
         $data = $this->userAddressDetailsService->getDetailById($id);
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data->toArray()]);
     }
 }

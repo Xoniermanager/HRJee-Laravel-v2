@@ -16,20 +16,19 @@ class DepartmentServices
         return $this->departmentRepository->orderBy('id', 'DESC')->paginate(10);
     }
 
-    public function fetchByCompany()
+    public function getByCompanyId($companyID)
     {
-        return $this->departmentRepository->where('company_id', auth()->guard('company')->user()->company_id)->orderBy('id', 'DESC');
+        return $this->departmentRepository->where('company_id', $companyID)->orderBy('id', 'DESC')->paginate(10);
     }
 
     public function create(array $data)
-
     {
         return $this->departmentRepository->create($data);
     }
 
     public function getAllDepartmentsByCompanyId()
     {
-        return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', auth()->guard('company')->user()->company_id)->get();
+        return $this->departmentRepository->where('company_id', auth()->user()->company_id)->get();
     }
 
     public function updateDetails(array $data, $id)
@@ -41,12 +40,12 @@ class DepartmentServices
         return $this->departmentRepository->find($id)->delete();
     }
 
-    public function serachDepartmentFilterList($request)
+    public function serachDepartmentFilterList($request, $companyID)
     {
-        $departmentDetails = $this->departmentRepository;
+        $departmentDetails = $this->departmentRepository->where('company_id', $companyID);
         /**List By Search or Filter */
         if (isset($request['search']) && !empty($request['search'])) {
-            $departmentDetails = $departmentDetails->where('name', 'Like', '%' .$request['search'] . '%');
+            $departmentDetails = $departmentDetails->where('name', 'Like', '%' . $request['search'] . '%');
         }
         /**List By Status or Filter */
         if (isset($request['status'])) {

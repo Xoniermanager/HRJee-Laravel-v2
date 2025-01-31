@@ -75,7 +75,7 @@ class AdminAuthController extends Controller
             $data = $request->all();
             $data['email'] = auth()->guard('admin')->user()->email;
             $data['type'] = 'admin';
-            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data);
+            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'admin');
             if ($verifyOtpResponse)
                 return redirect('/admin/dashboard');
             else

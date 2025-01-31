@@ -18,7 +18,8 @@ class LeaveTypeService
   }
   public function create(array $data)
   {
-    $data['company_id'] = Auth::guard('company')->user()->company_id ?? '';
+    $data['company_id'] = Auth()->user()->company_id ?? '';
+    $data['created_by'] = Auth()->user()->id ?? '';
     return $this->leaveTypeRepository->create($data);
   }
   public function updateDetails(array $data, $id)
@@ -31,6 +32,6 @@ class LeaveTypeService
   }
   public function getAllActiveLeaveType()
   {
-    return $this->leaveTypeRepository->where('status','1')->get();
+    return $this->leaveTypeRepository->where('status', '1')->get();
   }
 }

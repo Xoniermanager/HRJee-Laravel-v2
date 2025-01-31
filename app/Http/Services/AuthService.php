@@ -73,6 +73,7 @@ class AuthService
        ];
        return $details;
     }
+    
     public function verifyOtp($request)
     {
        #Validation Logic

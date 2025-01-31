@@ -34,7 +34,7 @@ class QualificationController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateCompanyStatus  = Validator::make($request->all(), [
+            $validateCompanyStatus = Validator::make($request->all(), [
                 'name' => ['required', 'string', new UniqueForAdminOnly('qualifications')],
                 'description' => ['string']
             ]);
@@ -47,7 +47,7 @@ class QualificationController extends Controller
             if ($this->qualificationService->create($data)) {
                 return response()->json([
                     'message' => 'Qualification Created Successfully!',
-                    'data'   =>  view('admin.qualification.qualification_list', [
+                    'data' => view('admin.qualification.qualification_list', [
                         'allQualificationDetails' => $this->qualificationService->all()
                     ])->render()
                 ]);
@@ -62,7 +62,7 @@ class QualificationController extends Controller
      */
     public function update(Request $request)
     {
-        $validateCompanyStatus  = Validator::make($request->all(), [
+        $validateCompanyStatus = Validator::make($request->all(), [
             'name' => ['required', 'string', 'unique:qualifications,name,' . $request->id],
             'description' => ['string']
         ]);
@@ -75,7 +75,7 @@ class QualificationController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Qualification Updated Successfully!',
-                'data'   =>  view('admin.qualification.qualification_list', [
+                'data' => view('admin.qualification.qualification_list', [
                     'allQualificationDetails' => $this->qualificationService->all()
                 ])->render()
             ]);
@@ -92,7 +92,7 @@ class QualificationController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Qualification Deleted Successfully! ',
-                'data'   =>  view('admin.qualification.qualification_list', [
+                'data' => view('admin.qualification.qualification_list', [
                     'allQualificationDetails' => $this->qualificationService->all()
                 ])->render()
             ]);
@@ -109,7 +109,7 @@ class QualificationController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Qualification Status Updated Successfully! ',
-                'data'   =>  view('admin.qualification.qualification_list', [
+                'data' => view('admin.qualification.qualification_list', [
                     'allQualificationDetails' => $this->qualificationService->all()
                 ])->render()
             ]);
@@ -124,7 +124,7 @@ class QualificationController extends Controller
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view('admin.qualification.qualification_list', [
+                'data' => view('admin.qualification.qualification_list', [
                     'allQualificationDetails' => $searchedItems
                 ])->render()
             ]);
@@ -137,17 +137,17 @@ class QualificationController extends Controller
     public function get_all_qualification_ajax_call()
     {
 
-       $data =  $this->qualificationService->get_qualification_ajax_call();
-       return json_encode($data);
+        $data = $this->qualificationService->get_qualification_ajax_call();
+        return json_encode($data);
     }
     public function ajax_store_qualification(Request $request)
     {
         try {
             $dataTest = $request->all()['models'];
             $data = collect(json_decode($dataTest, true))->first();
-            $data['company_id'] = isset(Auth::guard('company')->user()->company_id)?Auth::guard('company')->user()->company_id:'';
-            $validateQualification  = Validator::make($data, [
-                'name'        => ['required', 'string', new UniqueForAdminOnly('qualifications')],
+            $data['company_id'] = isset(Auth()->user()->company_id) ? Auth()->user()->company_id : '';
+            $validateQualification = Validator::make($data, [
+                'name' => ['required', 'string', new UniqueForAdminOnly('qualifications')],
                 'description' => ['string']
             ]);
 
@@ -155,8 +155,8 @@ class QualificationController extends Controller
                 return response()->json(['error' => $validateQualification->messages()], 400);
             }
 
-            if ($this->qualificationService->create($data)){
-                return  $this->qualificationService->get_qualification_ajax_call();
+            if ($this->qualificationService->create($data)) {
+                return $this->qualificationService->get_qualification_ajax_call();
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()()], 400);

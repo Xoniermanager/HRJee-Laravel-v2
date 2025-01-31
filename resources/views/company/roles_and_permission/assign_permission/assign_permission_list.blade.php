@@ -15,16 +15,16 @@
             <tbody class="">
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    @foreach ($role as $roleDetail)
-                        @if ($loop->first)<td>{{ $roleDetail->role->name }} </td> @endif
-                    @endforeach
+                    
+                    <td>{{ $role->name }} </td>
                     <td>
-                        @forelse ($role as $roleDetail)
-                        {{ ucfirst($roleDetail->menu->title) }}
+                        @forelse ($role->menus as $menu)
+                        {{ ucfirst($menu->title) }}
                         @empty
-                        No menu available
+                        No Permission available
                         @endforelse
                     </td>
+                    
                 </tr>
             </tbody>
             @empty

@@ -20,6 +20,7 @@ class SendOtpService
   {
     $this->userOtpRepository = $userOtpRepository;
   }
+
   public function generateOTP($email, $type)
   {
     $checkOTPExists = ['email' => $email, 'type' => $type];
@@ -47,13 +48,14 @@ class SendOtpService
     $find = UserCode::where(['email' => $data['email'], 'code' => $data['otp'], 'type' => $data['type']])
       ->where('updated_at', '>=', now()->subMinutes(20))
       ->first();
+      
     if ($find) {
-      if (!empty($guardType))
-        $type = $guardType;
-      else
-        $type = $data['type'];
+      if($guardType){
+        Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+      }else{
+        Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+      }
 
-      Session::put('user_2fa', Auth::guard($type)->user()->id);
       return true;
     }
     else {
