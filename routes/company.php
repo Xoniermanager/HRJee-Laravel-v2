@@ -8,6 +8,7 @@ use App\Http\Controllers\Company\LeaveController;
 use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Company\PolicyController;
+use App\Http\Controllers\Company\SalaryController;
 use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
@@ -571,6 +572,15 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
         Route::get('/delete', 'destroy')->name('weekend.delete');
         Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
         Route::get('/get/weekend/details/companyId', 'getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
+    });
+
+    // Salary Management
+    Route::prefix('/salary')->controller(SalaryController::class)->group(function () {
+        Route::get('/', 'index')->name('salary.index');
+        Route::post('/create', 'store')->name('salary.create');
+        // Route::get('/delete', 'destroy')->name('weekend.delete');
+        // Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
+        // Route::get('/get/weekend/details/companyId', 'getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
