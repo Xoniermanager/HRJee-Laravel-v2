@@ -108,7 +108,7 @@ class EmployeeController extends Controller
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
-        $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(auth()->guard('company')->user()->company_id);
+        $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages = $this->languagesServices->defaultLanguages();
         $allBranches = $this->branchService->all(Auth()->user()->company_id);
@@ -142,10 +142,10 @@ class EmployeeController extends Controller
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
-        $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(auth()->guard('company')->user()->company_id);
+        $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $allBranches = $this->branchService->all(Auth()->user()->id);
-        $allRoles = $this->customRoleService->all(auth()->user()->company_id);
+        $allRoles = $this->customRoleService->all(Auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();

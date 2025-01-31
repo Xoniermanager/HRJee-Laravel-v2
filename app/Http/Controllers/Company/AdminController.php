@@ -122,7 +122,7 @@ class AdminController extends Controller
             if (!auth()->guard('company')->check()) {
                 return redirect('/company/signin');
             }
-            $email = auth()->guard('company')->user()->email;
+            $email = auth()->guard('admin')->user()->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'company');
             if ($otpResponse['status'] == true)
                 return redirect('company/verify/otp')->with('success', transLang($otpResponse['message']));

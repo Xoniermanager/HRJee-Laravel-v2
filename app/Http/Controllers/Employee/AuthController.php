@@ -53,11 +53,9 @@ class AuthController extends Controller
                 return Redirect::back()->with('error', 'invalid_credentials');
             } else {
                 $user = Auth::user();
-
-                if ($user->status === '0') {
-                    return redirect()->back()->with(['error' => 'Your account is not Active. Please Contact to Admin']);
+                if ($user->status == '0') {
+                    return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);
                 }
-
                 $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, $user->type);
 
                 if ($genrateOtpresponse['status'] == true)

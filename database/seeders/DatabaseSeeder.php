@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(NewsCategoriesTableSeeder::class);
         $this->call(LeaveTypesTableSeeder::class);
         $this->call(PolicyCategoriesTableSeeder::class);
-        $this->call(BreakTypesTableSeeder::class);
         $this->call(ResignationStatusTableSeeder::class);
         $this->call(ComplainStatusesTableSeeder::class);
         $this->call(ComplainCategoriesTableSeeder::class);
@@ -57,6 +56,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserQualificationDetailsTableSeeder::class);
         $this->call(UserRelativeDetailsTableSeeder::class);
         $this->call(UserAssetsTableSeeder::class);
+        $this->call(BreakTypesTableSeeder::class);
         // $this->call(RoleHasPermissionsTableSeeder::class);
         // $this->call(PermissionSeeder::class);
         // $this->call(HolidaysTableSeeder::class);

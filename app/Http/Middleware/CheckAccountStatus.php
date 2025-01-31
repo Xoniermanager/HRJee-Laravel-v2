@@ -5,15 +5,15 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class CheckEmployeeStatus
+class CheckAccountStatus
 {
     public function handle($request, Closure $next)
     {
-        $employeeDetails = Auth::user();
-        if ($employeeDetails && $employeeDetails->status == '0') {
+        $companyDetails = Auth()->user();
+        if ($companyDetails && $companyDetails->status == '0') {
             Auth::logout();
             session()->flush();
-            return redirect()->route('employee')->with(['error' => 'Your Account is Inactive. Please contact Admin.']);
+            return redirect()->route('base')->with(['error' => 'Your Account is Inactive. Please contact support.']);
         }
         return $next($request);
     }
