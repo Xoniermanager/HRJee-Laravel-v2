@@ -43,7 +43,7 @@ class EmployeesMenusSeeder extends Seeder
             [
                 'title' => 'Policies',
                 'slug' => '/employee/policy',
-                'icon' => '<i class="fa fa-file-contractr"></i>',
+                'icon' => '<i class="fa fa-file-contract"></i>',
                 'parent_id' => 19,
                 'order_no' => 4,
                 'role' => 'employee'

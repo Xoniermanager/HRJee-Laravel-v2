@@ -18,7 +18,7 @@ class ResignationService
 
   public function all($userId = '')
   {
-    $query = $this->resignationRepository->orderBy('id', 'DESC');
+    $query = $this->resignationRepository->where('company_id', auth()->user()->company_id)->orderBy('id', 'DESC');
     if (!empty($userId))
       $query = $query->where('user_id', $userId);
 
@@ -37,6 +37,7 @@ class ResignationService
   public function resignation($data, $userId)
   {
     $data['user_id'] = $userId;
+    $data['company_id'] = auth()->user()->company_id;
     $checkActionStatus = $this->resignationRepository->create($data);
     if ($checkActionStatus)
       return true;

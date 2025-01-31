@@ -27,7 +27,7 @@ class ChangeResignationStatusRequest extends FormRequest
         return [
             "status" => [
                 'required',
-                'in:pending,approved,rejected,withdrawn,hold',
+                'in:Pending,Approved,Rejected,Withdrawn,Hold',
 
                 function ($attribute, $value, $fail) use ($resignation) {
                     if ($resignation->status === $value) {

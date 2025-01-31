@@ -116,8 +116,8 @@ class MenusTableSeeder extends Seeder
             9 =>
             array(
                 'id' => 9,
-                'title' => 'Resignation Status',
-                'slug' => '/resignation/status',
+                'title' => 'Resignations',
+                'slug' => '/resignation',
                 'icon' => '<i class="fa fa-sign-out-alt"></i>',
                 'parent_id' => NULL,
                 'status' => 1,
