@@ -14,25 +14,27 @@ class AdminDashboard extends Controller
     public function index()
     {
         $dashboardData = [
-            'all_company' => Company::count(),
-            'all_employee' => User::count(),
-            'total_active_company' => Company::where('status', '1')->count(),
-            'total_inactive_company' => Company::where('status', '0')->count(),
-            'total_active_employee' => User::where('status', '1')->count(),
-            'total_inactive_employee' => User::where('status', '0')->count(),
+            'all_company' => User::where('type', 'company')->count(),
+            'total_active_company' => User::where(['type' => 'company','status' => 1])->count(),
+            'total_inactive_company' => User::where(['type' => 'company','status' => 0])->count(),
+            'all_employee' => User::where('type', 'user')->count(),
+            'total_active_employee' => User::where(['type' => 'user','status' => 1])->count(),
+            'total_inactive_employee' => User::where(['type' => 'user','status' => 0])->count(),
         ];
         $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::today();
+        $endDate = Carbon::today()->endOfDay();
         $dateRange = collect();
         $currentDate = $startDate->copy();
         while ($currentDate <= $endDate) {
             $dateRange->push($currentDate->format('Y-m-d'));
             $currentDate->addDay();
         }
+
         $attendanceData = EmployeeAttendance::whereBetween('punch_in', [$startDate, $endDate])
             ->selectRaw('DATE(punch_in) as date, COUNT(*) as total_punch_in')
             ->groupBy(DB::raw('DATE(punch_in)'))
             ->pluck('total_punch_in', 'date');
+
         $allAttendanceDetails = $dateRange->map(function ($date) use ($attendanceData) {
             return [
                 'date' => Carbon::parse($date)->format('dM'),  // Format date as '11 Jan'

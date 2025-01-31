@@ -45,13 +45,13 @@ class CompanyDashboardController extends Controller
 
             // Total active employees
             'total_active_employee' => User::where('company_id', $companyId)
-                ->where('status', '1') // Assuming STATUS_ACTIVE is defined in the User model
+                ->where('status', 1) // Assuming STATUS_ACTIVE is defined in the User model
                 ->where('type', 'user')
                 ->count(),
 
             // Total inactive employees
             'total_inactive_employee' => User::where('company_id', $companyId)
-                ->where('status', '0') // Assuming STATUS_INACTIVE is defined in the User model
+                ->where('status', 0) // Assuming STATUS_INACTIVE is defined in the User model
                 ->where('type', 'user')
                 ->count(),
 
@@ -68,8 +68,9 @@ class CompanyDashboardController extends Controller
                 ->where('leave_status_id', '1') // Assuming STATUS_PENDING is defined in Leave model
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
                 ->count(),
+
             // 'all_users_details' => $this->employeeService->getAllEmployeeByCompanyId($companyId)->paginate(10)
-            'all_users_details' => []
+            'all_users_details' => User::where(['company_id' => $companyId, 'status' => 1, 'type' => 'user'])->with(['details','details.designation'])->get(),
         ];
         
         return view('company.dashboard.dashboard', compact('dashboardData'));

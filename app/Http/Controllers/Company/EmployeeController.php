@@ -183,7 +183,7 @@ class EmployeeController extends Controller
                 $request['user_id'] = $userCreated->id;
             }
             if ($userCreated) {
-                $userDetails = $this->employeeService->create($request->except('name', 'password', 'email', '_token', 'company_id'));
+                $userDetails = $this->employeeService->create($request->except('password', 'email', '_token', 'company_id'));
                 DB::commit();
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
