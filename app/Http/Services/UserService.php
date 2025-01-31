@@ -131,8 +131,6 @@ class UserService
                 if (isset($request->qualification_id) && !empty($request->qualification_id)) {
                     $query->where('qualification_id', $request->qualification_id);
                 }
-
-                // Search operation inside the details relation
                 if (isset($request->search) && !empty($request->search)) {
                     $searchKeyword = $request->search;
                     $query->where(function ($query) use ($searchKeyword) {
