@@ -9,16 +9,20 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Services\LeaveTypeService;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\EmployeeLeaveAvailableService;
 use Throwable;
 
 class LeaveManagementApiController extends Controller
 {
     private $leaveTypeService;
     private $leaveService;
-    public function __construct(LeaveTypeService $leaveTypeService, LeaveService $leaveService)
+    private $employeeLeaveAvailableService;
+
+    public function __construct(EmployeeLeaveAvailableService $employeeLeaveAvailableService, LeaveTypeService $leaveTypeService, LeaveService $leaveService)
     {
         $this->leaveTypeService = $leaveTypeService;
         $this->leaveService = $leaveService;
+        $this->employeeLeaveAvailableService = $employeeLeaveAvailableService;
     }
 
     public function leaveType()
@@ -39,7 +43,18 @@ class LeaveManagementApiController extends Controller
         }
     }
 
-    public function storeApplyLeave(Request $request)
+    public function allLeaves()
+    {
+        $allLeaves = $this->leaveService->leavesByUserId(Auth()->user()->id);
+
+        return response()->json([
+            'status' => true,
+            'message' => '',
+            'data' => $allLeaves,
+        ], 200);
+    }
+
+    public function applyLeave(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -55,9 +70,29 @@ class LeaveManagementApiController extends Controller
                 return response()->json([
                     "error" => 'validation_error',
                     "message" => $validator->errors(),
-                ], 422);
+                ], 400);
             }
             $data = $request->all();
+            $userID = Auth()->user()->id;
+
+            $availableLeaves = $this->employeeLeaveAvailableService->getAvailableLeaveByUserIdTypeId($userID, $data['leave_type_id']);
+
+            if ($availableLeaves == NULL || $availableLeaves->available < 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Leaves not available"
+                ], 400);
+            }
+
+            $alreadyAppliedLeave = $this->leaveService->getUserConfirmLeaveByDate($userID, $data['from'], $data['to']);
+            if ($alreadyAppliedLeave) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "You have already applied leave for this date"
+                ], 400);
+            }
+
+
             if ($this->leaveService->create($data)) {
                 return response()->json([
                     'status' => true,
