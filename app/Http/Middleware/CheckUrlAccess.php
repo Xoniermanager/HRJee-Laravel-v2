@@ -17,7 +17,7 @@ class CheckUrlAccess
      */
     public function handle($request, Closure $next): Response
     {
-        if (Auth::guard('company')->check()) {
+        if (Auth::check()) {
             //$currentUrl = '/' . $request->path();
 
             $segments = request()->segments();
