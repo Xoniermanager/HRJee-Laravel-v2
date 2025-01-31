@@ -17,6 +17,7 @@ class AssetCategoryService
   }
   public function create(array $data)
   {
+    $data['created_by'] = Auth()->user()->id;
     return $this->assetCategoryRepository->create($data);
   }
 
@@ -32,6 +33,10 @@ class AssetCategoryService
   public function getAllActiveAssetCategory()
   {
     return $this->assetCategoryRepository->where('status', '1')->get();
+  }
+  public function getAllActiveAssetCategoryWithAsset()
+  {
+    return $this->assetCategoryRepository->with('assets')->where('status', '1')->get();
   }
 
   public function serachAssetCategoryFilterList($request)

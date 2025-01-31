@@ -27,7 +27,7 @@
                             </span>
                             <!--end::Svg Icon-->
                             <input class="form-control form-control-solid ps-14" placeholder="Search " type="text"
-                                value="{{ request()->get('search') }}" id="search">
+                                value="{{ request()->get('search') }}" id="search_branch">
                         </div>
                         <select class="me-2 form-control min-w-200px" id="status">
                             <option value="">Status</option>
@@ -372,7 +372,7 @@
         /**-------------End----------*/
 
         /** Filter By Search By Dropdown*/
-        jQuery("#search").on('blur', function() {
+        jQuery("#search_branch").on('input', function() {
             search_filter_results();
         });
         jQuery("#status").on('change', function() {
@@ -387,12 +387,13 @@
         });
 
         function search_filter_results() {
+            //alert($('#search').val());
             $.ajax({
                 type: 'GET',
                 url: company_ajax_base_url + '/company/branch/search',
                 data: {
                     'status': $('#status').val(),
-                    'search': $('#search').val(),
+                    'search': $('#search_branch').val(),
                     'country_id': $('#filter_country').val(),
                     'state_id': $('#filter_state_id').val(),
                 },
@@ -404,8 +405,7 @@
         /**-------------End----------*/
 
         /** Validation and Ajax Creation and Updated*/
-        jQuery(document).ready(function($) 
-        {
+        jQuery(document).ready(function($) {
             jQuery("#edit_company_branch_form").validate({
                 rules: {
                     name: "required",
@@ -535,7 +535,7 @@
             jQuery('#edit_company_branch').modal('show');
         }
 
-       
+
 
         function handleStatus(id) {
             var checked_value = $('#checked_value_' + id).prop('checked');
@@ -566,6 +566,34 @@
                     }
                 }
             })
+        }
+
+
+        function deleteFunction(id) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ route('company.branch.delete') }}` + "/" + id,
+                        type: "get",
+                        success: function(res) {
+                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            $('#company_branch_list').replaceWith(response.data);
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire("Error deleting!", "Please try again", "error");
+                        }
+                    });
+                }
+            });
         }
         /**-------------End----------*/
     </script>

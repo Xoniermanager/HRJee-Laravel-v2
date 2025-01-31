@@ -28,9 +28,11 @@ return new class extends Migration
             $table->boolean('apply_late_count')->default(0);
             $table->boolean('apply_early_checkout_count')->default(0);
             $table->boolean('lock_attendance')->default(0);
-            $table->timestamps();
             $table->foreign('office_timing_config_id')->references('id')->on('office_timing_configs');
-
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->timestamps();
         });
     }
 

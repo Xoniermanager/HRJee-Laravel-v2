@@ -12,21 +12,24 @@ class BranchServices
   {
     $this->branchRepository = $branchRepository;
   }
-  public function all()
+  public function all($companyId)
   {
-    return $this->branchRepository->with('country', 'state')->orderBy('id', 'DESC')->paginate(10);
+    return $this->branchRepository->with('country', 'state')->where('company_id', $companyId)->orderBy('id', 'DESC')->paginate(10);
   }
   public function allActiveBranches()
   {
     return $this->branchRepository->with('country', 'state')->where('status', 1)->orderBy('id', 'DESC')->get();
   }
-  public function allActiveCompanyBranchesByUsingCompanyId($companyId)
+  public function getAllCompanyBranchByCompanyId($companyId)
   {
-    return $this->branchRepository->where('company_id',$companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
+    return $this->branchRepository->where('company_id', $companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
   }
   public function create($data)
   {
-    $data['company_id'] = Auth::guard('admin')->user()->company_id;
+    
+    $data['company_id'] = Auth()->user()->company_id ?? $data['company_id'];
+    $data['created_by'] = Auth()->user()->id ?? $data['company_id'];
+    
     return $this->branchRepository->create($data);
   }
   public function deleteDetails($id)
@@ -40,10 +43,11 @@ class BranchServices
   public function searchInCompanyBranch($request)
   {
     $branchDetails = $this->branchRepository;
-
+    //dd($request);
     /**List By Search or Filter */
     if (isset($request->search) && !empty($request->search)) {
       $searchKey = $request->search;
+
       $branchDetails = $branchDetails->where(function ($query) use ($searchKey) {
         $query->where('name', 'LIKE', '%' . $searchKey . '%');
         $query->orWhere('email', 'LIKE', '%' . $searchKey . '%');
@@ -67,11 +71,11 @@ class BranchServices
     }
 
     /**List By Status or Filter */
-    if (isset($request->status) && !empty($request->status)) {
-      if ($request->status == 2) {
+    if (isset($request->status) && $request->status != '') {
+      if ($request->status == 2 || $request->status == "2") {
         $status = 0;
       } else {
-        $status = $request->status;
+        $status = (int) $request->status;
       }
       $branchDetails = $branchDetails->where('status', $status);
     }
@@ -79,9 +83,17 @@ class BranchServices
     return $branchDetails->orderBy('id', 'DESC')->paginate(10);
   }
 
-// if for this use already have created then let me know
+  // if for this use already have created then let me know
   public function getAllBranchByBranchId($ids)
   {
-    return $this->branchRepository->whereIn('id',$ids)->get();
+    return $this->branchRepository->whereIn('id', $ids)->get();
+  }
+  public function getAllAssignedCompanyBranches($data)
+  {
+    if ($data->all_company_branch == 1) {
+      return $this->getAllCompanyBranchByCompanyId($data->company_id)->pluck('id')->toArray();
+    } else {
+      return $data->companyBranches->pluck('id')->toArray();
+    }
   }
 }

@@ -22,11 +22,12 @@ class ValidateBranch extends FormRequest
     public function rules(): array
     {
         return [
+            'company_id'=> 'required',
             'name' => 'required|string',
             'type' => 'required|in:primary,secondary',
             'contact_no' => 'required|numeric',
             'email' => 'required|email|unique:company_branches,email',
-            'hr_email' => 'required|email|unique:company_branches,email',
+            'hr_email' => 'required|email|unique:company_branches,hr_email',
             'address' => 'required|string',
             'city' => 'required|string',
             'pincode' => 'required|string',

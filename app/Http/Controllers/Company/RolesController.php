@@ -3,55 +3,64 @@
 namespace App\Http\Controllers\Company;
 
 use Exception;
-use App\Models\roles;
-use App\Rules\OnlyString;
+use App\Models\MenuRole;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Http\Services\rolesServices;
+use App\Http\Services\CustomRoleService;
 use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
 {
-    private $rolesServices; 
-    public function __construct(RolesServices $rolesServices)
+    private $customRoleService;
+    public function __construct(CustomRoleService $customRoleService)
     {
-            $this->rolesServices = $rolesServices;
+        $this->customRoleService = $customRoleService;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $roles = $this->rolesServices->all();
-        return view('company.roles_and_permission.roles.index')->with(['roles'=> $roles]);
+        $roles = $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id);
+
+        return view('company.roles_and_permission.roles.index')->with(['roles' => $roles]);
     }
 
     public function role_form()
     {
         return view('company.roles_and_permission.create-roles-form');
     }
+
     public function store(Request $request)
     {
 
         try {
-            $validator  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:roles,name'],
+            $validator = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'unique:roles,name,NULL,id,company_id,' . auth()->user()->company_id],
             ]);
+
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->messages()], 400);
             }
+
             $data = $request->all();
-            if ($this->rolesServices->create($data)) {
+            $data = $request->except(['_token']);
+            $data['company_id'] = Auth()->user()->company_id;
+            $data['created_by'] = Auth()->user()->id;
+            $data['category'] = 'custom';
+            
+            if ($this->customRoleService->create($data)) {
+
                 return response()->json([
                     'message' => 'Role Created Successfully!',
-                    'data'   =>  view('company/roles_and_permission/roles/roles_list', [
-                        'roles' => $this->rolesServices->all()
+                    'data' => view('company/roles_and_permission/roles/roles_list', [
+                        'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -60,21 +69,22 @@ class RolesController extends Controller
      */
     public function update(Request $request)
     {
-        $validator  = Validator::make($request->all(), [
-            'name' => ['required', 'string', new OnlyString, 'unique:states,name,' . $request->id],
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'unique:roles,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->messages()], 400);
         }
         $updateRole = $request->except(['_token', 'id']);
-        $companyStatus = $this->rolesServices->updateDetails($updateRole, $request->id);
+        $companyStatus = $this->customRoleService->updateDetails($updateRole, $request->id);
         if ($companyStatus) {
+
             return response()->json(
                 [
                     'message' => 'Role Updated Successfully!',
-                    'data'   =>  view('company/roles_and_permission/roles/roles_list', [
-                        'roles' => $this->rolesServices->all()
+                    'data' => view('company/roles_and_permission/roles/roles_list', [
+                        'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
                     ])->render()
                 ]
             );
@@ -85,12 +95,12 @@ class RolesController extends Controller
     {
         $id = $request->id;
         $data['status'] = $request->status;
-        $statusDetails = $this->rolesServices->updateDetails($data, $id);
+        $statusDetails = $this->customRoleService->updateDetails($data, $id);
         if ($statusDetails) {
             return response()->json([
                 'message' => 'Role Status Updated Successfully!',
-                'data'   =>  view('company/roles_and_permission/roles/roles_list', [
-                    'roles' => $this->rolesServices->all()
+                'data' => view('company/roles_and_permission/roles/roles_list', [
+                    'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
                 ])->render()
             ]);
         } else {
@@ -104,12 +114,27 @@ class RolesController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
-        $data = $this->rolesServices->deleteDetails($id);
+
+        $role = $this->customRoleService->getDetails($id);
+        
+        if(count($role->users)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This role is already assigned to users',
+                'data' => view('company/roles_and_permission/roles/roles_list', [
+                    'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
+                ])->render()
+            ]);
+        }
+
+        $data = $this->customRoleService->deleteDetails($id);
+        MenuRole::where('role_id', $request->role_id)->delete();
         if ($data) {
             return response()->json([
+                'status' => true,
                 'message' => 'Role Deleted Successfully!',
-                'data'   =>  view('company/roles_and_permission/roles/roles_list', [
-                    'roles' => $this->rolesServices->all()
+                'data' => view('company/roles_and_permission/roles/roles_list', [
+                    'roles' => $this->customRoleService->getRolesByCompanyID(Auth()->user()->company_id)
                 ])->render()
             ]);
         } else {

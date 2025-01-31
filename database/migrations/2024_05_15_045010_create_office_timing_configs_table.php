@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('min_half_day_hours');
             $table->unsignedBigInteger('company_branch_id');
             $table->foreign('company_branch_id')->references('id')->on('company_branches');
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }

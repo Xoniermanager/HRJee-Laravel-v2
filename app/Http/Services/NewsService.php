@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use Throwable;
 use App\Models\News;
 use Illuminate\Support\Arr;
 use App\Repositories\NewsRepository;
@@ -10,9 +11,15 @@ use Illuminate\Support\Facades\Auth;
 class NewsService
 {
   private $newsRepository;
-  public function __construct(NewsRepository $newsRepository)
+  private $companyBranchServices;
+  private $departmentServices;
+  private $designationServices;
+  public function __construct(DesignationServices $designationServices, DepartmentServices $departmentServices, NewsRepository $newsRepository, BranchServices $companyBranchServices)
   {
     $this->newsRepository = $newsRepository;
+    $this->companyBranchServices = $companyBranchServices;
+    $this->departmentServices = $departmentServices;
+    $this->designationServices = $designationServices;
   }
   public function all()
   {
@@ -34,11 +41,10 @@ class NewsService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('admin')->user()->company_id;
-    // $finalPayload['company_branch_id'] = Auth::guard('admin')->user()->branch_id ?? 'NULL';
-    $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
-    if ($newsCreatedDetails) 
-    {
+    $finalPayload['company_id'] = Auth()->user()->company_id;
+    $finalPayload['created_by'] = Auth()->user()->id;
+    $newsCreatedDetails = $this->newsRepository->create($finalPayload);
+    if ($newsCreatedDetails) {
       $newsDetails = News::find($newsCreatedDetails->id);
       if ($newsCreatedDetails->all_company_branch == 0) {
         $newsDetails->companyBranches()->sync($data['company_branch_id']);
@@ -162,5 +168,22 @@ class NewsService
       );
     }
     return $newsDetails->orderBy('id', 'DESC')->paginate(10);
+  }
+  public function getAllAssignedNewsForEmployee()
+  {
+    $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
+    $allNewsDetails = $this->newsRepository->where('company_id', $userDetails->company_id)->where('status', 1)->where('start_date', '<=', date('Y-m-d'))
+      ->where('end_date', '>=', date('Y-m-d'))->get();
+    $allAssignedNews = [];
+    foreach ($allNewsDetails as $newsDetails) {
+      $assignedCompanyBranchesIds = $this->companyBranchServices->getAllAssignedCompanyBranches($newsDetails);
+      $assignedDepartmentIds = $this->departmentServices->getAllAssignedDepartment($newsDetails);
+      $assignedDesignationIds = $this->designationServices->getAllAssignedDesignation($newsDetails);
+
+      if (in_array($userDetails->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
+        $allAssignedNews[] = $newsDetails;
+      }
+    }
+    return $allAssignedNews;
   }
 }

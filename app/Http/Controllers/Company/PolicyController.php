@@ -30,17 +30,17 @@ class PolicyController extends Controller
     public function index()
     {
         $allPolicyDetails = $this->policyService->all();
-        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
-        $allCompanyBranchesDetails = $this->companyBranchService->allActiveCompanyBranchesByUsingCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
+        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         return view('company.policy.index', compact('allPolicyDetails', 'allPolicyCategoryDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
 
     public function add()
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->allActiveCompanyBranchesByUsingCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
-        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->id);
         return view('company.policy.add', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'allPolicyCategoryDetails'));
     }
     public function store(PolicyStoreRequest $request)
@@ -57,9 +57,9 @@ class PolicyController extends Controller
     public function edit($id)
     {
         $editPolicyDetails = $this->policyService->findByPolicyId($id);
-        $allCompanyBranchesDetails = $this->companyBranchService->allActiveCompanyBranchesByUsingCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
-        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->id);
         return view('company.policy.edit', compact('editPolicyDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails', 'allPolicyCategoryDetails'));
     }
     public function view($id)
@@ -87,7 +87,7 @@ class PolicyController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'News Deleted Successfully',
-                'data'   =>  view('company.policy.list', [
+                'data' => view('company.policy.list', [
                     'allPolicyDetails' => $this->policyService->all()
                 ])->render()
             ]);
@@ -113,7 +113,7 @@ class PolicyController extends Controller
         if ($allPolicyDetails) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view('company.policy.list', [
+                'data' => view('company.policy.list', [
                     'allPolicyDetails' => $allPolicyDetails
                 ])->render()
             ]);

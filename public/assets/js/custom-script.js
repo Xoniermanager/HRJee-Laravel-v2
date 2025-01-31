@@ -1,63 +1,3 @@
-
-// jQuery(document).ready(function() {
-//     var skillCrudServiceBaseUrl =  company_ajax_base_url;
-//     var skillDataSource = new kendo.data.DataSource({
-//         batch: true,
-//         transport: {
-//             read:  {
-//                 url: skillCrudServiceBaseUrl + "/skill_data",
-//                dataType: "json"
-//             },
-//             create: {
-//                 url: skillCrudServiceBaseUrl + "/skills/ajax_store_skills",
-//                 dataType: "json"
-//             },
-//             parameterMap: function(options, operation) {
-//                 if (operation !== "read" && options.models) {
-//                     return {models: kendo.stringify(options.models)};
-//                 }
-//             }
-//         },
-//         schema: {
-//             model: {
-//                 id: "id",
-//                 fields: {
-//                     id: { type: "number" },
-//                     name: { type: "string" }
-//                 }
-//             }
-//         }
-//     });
-
-//     jQuery("#Skill").kendoDropDownList({
-//         filter: "startswith",
-//         dataTextField: "name",
-//         dataValueField: "id",
-//         dataSource: skillDataSource,
-//         noDataTemplate: jQuery("#noSkillTemplate").html()
-//     });
-// });
-
-
-// function addNew(widgetId, value) {
-
-//     var widget = jQuery("#" + widgetId).getKendoDropDownList();
-//     var dataSource = widget.dataSource;
-//     // console.log(dataSource);
-//     // if (confirm("Are you sure?")) {
-//         dataSource.add({
-//             name: value
-//         });
-
-//         dataSource.one("sync", function() {
-//             widget.select(dataSource.view().length - 1);
-//         });
-
-//         dataSource.sync();
-//     // }
-// };
-
-
 function addNewSkill(widgetId, value) {
     var widget = $("#" + widgetId).getKendoMultiSelect();
     var dataSource = widget.dataSource;
@@ -124,7 +64,7 @@ $(document).ready(function () {
     });
 });
 
-// for active menu script 
+// for active menu script
 $(document).ready(function () {
     var currentUrl = window.location.pathname;
     var fullUrl = window.location.origin + currentUrl;
@@ -160,11 +100,11 @@ jQuery(document).ready(function () {
         batch: true,
         transport: {
             read: {
-                url: admin_ajax_base_url + "/qualifications/qualification_data",
+                url: company_ajax_base_url + "/qualifications/qualification_data",
                 dataType: "json"
             },
             create: {
-                url: admin_ajax_base_url + "/qualifications/ajax_store_qualification",
+                url: company_ajax_base_url + "/qualifications/ajax_store_qualification",
                 dataType: "json"
             },
             parameterMap: function (options, operation) {
@@ -215,8 +155,7 @@ function addNewPreviousCompany(widgetId, value) {
     // }
 };
 
-jQuery(document).ready(function () 
-{
+jQuery(document).ready(function () {
     var previousCompanyCrudServiceBaseUrl = company_ajax_base_url;
     var previousCompanyDataSource = new kendo.data.DataSource({
         batch: true,
@@ -254,20 +193,25 @@ jQuery(document).ready(function ()
         noDataTemplate: jQuery("#noPreviousCompanyTemplate").html()
     });
 });
-function get_designation_by_department_id(selectedDesignationId = null) {
+
+function get_designation_by_department_id(selectedDesignationId = null, all_departments = null, all_user = null) {
     var selectedValues = $('#department_id').val();
+    if (all_user == true) {
+        get_all_user();
+    }
     $.ajax({
         type: 'GET',
-        url: company_ajax_base_url + '/designation/get/all/designation',
+        url: '/company/designation/get-designation-by-departments',
         dataType: "json",
         data: {
             'department_id': selectedValues,
+            'all_departments': all_departments
         },
-        success: function(response) {
+        success: function (response) {
             var select = $('#designation_id');
             select.empty()
             if (response.status == true) {
-                $.each(response.data, function(key, value) {
+                $.each(response.data, function (key, value) {
                     select.append('<option value=' +
                         value.id + '>' + value.name + '</option>');
                 });
@@ -276,7 +220,7 @@ function get_designation_by_department_id(selectedDesignationId = null) {
                 return false;
             }
         },
-        error: function() {
+        error: function () {
             // Swal.fire({
             //     icon: "error",
             //     title: "Oops...",
@@ -285,16 +229,18 @@ function get_designation_by_department_id(selectedDesignationId = null) {
         }
     });
 };
-function get_checkedValue(type = null) {
+function get_checked_value(type = null) {
     if (type == 'company_branch') {
         var company_branches_checkbox = document.getElementById('company_branches_checkbox');
         if (company_branches_checkbox.checked != false) {
             $("#company_branch").val('').trigger('change');
             $('#company_branches_checkbox').val(1);
             $('#company_branch').prop('disabled', true);
+            get_all_user(true, '', '');
         } else {
             $('#company_branches_checkbox').val(0);
             $('#company_branch').prop('disabled', false);
+            get_all_user();
         }
     }
     if (type == 'department') {
@@ -303,9 +249,12 @@ function get_checkedValue(type = null) {
             $("#department_id").val('').trigger('change');
             $('#department_checkbox').val(1);
             $('#department_id').prop('disabled', true);
+            get_designation_by_department_id('', true);
+            get_all_user('', true, '');
         } else {
             $('#department_checkbox').val(0);
             $('#department_id').prop('disabled', false);
+            get_all_user();
         }
     }
     if (type == 'designation') {
@@ -314,13 +263,144 @@ function get_checkedValue(type = null) {
             $("#designation_id").val('').trigger('change');
             $('#designation_checkbox').val(1);
             $('#designation_id').prop('disabled', true);
-        } else {
+            get_all_user('', '', true);
+        }
+        else {
             $('#designation_checkbox').val(0);
             $('#designation_id').prop('disabled', false);
+            get_all_user();
         }
     }
 }
-
+function get_all_user(all_company_branch = false, all_department = false, all_designation = false) {
+    $.ajax({
+        url: '/company/announcement/get-all-user',
+        type: 'get',
+        data: {
+            'company_branch_id': $('#company_branch').val(),
+            'department_ids': $('#department_id').val(),
+            'designation_ids': $('#designation_id').val(),
+            'all_company_branch': all_company_branch,
+            'all_department': all_department,
+            'all_designation': all_designation,
+        },
+        success: function (response) {
+            if (response.status == true) {
+                let userDetailsHtml = '';
+                userDetailsHtml = `<div class="panel"><div class="panel-body listscroll"><div class="">`;
+                if (response.allUserDetails.length > 0) {
+                    $.each(response.allUserDetails, function (key, value) {
+                        userDetailsHtml += ` <div class="d-flex align-items-center mb-3">
+                                            <div class="symbol symbol-45px me-5">
+                                                <img src="${value.user.profile_image}" alt="">
+                                            </div>
+                                            <div class="d-flex justify-content-start flex-column">
+                                                <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
+                                                    ${value.user.name}</a>
+                                                <span
+                                                    class="text-muted fw-semibold text-muted d-block fs-7">${value.user.official_email_id}</span>
+                                            </div>
+                                        </div>`;
+                    });
+                }
+                else {
+                    userDetailsHtml += `<p>Users not found</p>`;
+                }
+                userDetailsHtml += `</div></div></div>`;
+                $('#user_listing').html(userDetailsHtml);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+}
+function assignAnnouncement(value) {
+    if (value == 1) {
+        $('#time').val('');
+        $('.notification_schedule_time').hide();
+    }
+    else {
+        $('.notification_schedule_time').show();
+    }
+}
+function exportAttendanceByUserId(empId, year, month) {
+    $("#export_button").prop("disabled", true);
+    $.ajax({
+        type: 'get',
+        url: '/export/employee/attendance',
+        data: {
+            'year': year,
+            'month': month,
+            'empId': empId
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (response, status, xhr) {
+            var blob = response;
+            var link = document.createElement('a');
+            var filename = xhr.getResponseHeader('Content-Disposition').split(
+                'filename=')[1].replace(/"/g, '');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            // SweetAlert notification after download is triggered
+            Swal.fire({
+                title: 'Download Complete',
+                text: 'Your file has been successfully downloaded!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+            $("#export_button").prop("disabled", false);
+        },
+        error: function () {
+            console.log("Export failed");
+            $("#export_button").prop("disabled", false);
+        }
+    });
+}
+function exportAttendanceByUserIdByToDateFromDate(empId,toDate,fromDate) {
+    $("#export_button").prop("disabled", true);
+    $.ajax({
+        type: 'get',
+        url: '/export/employee/attendance',
+        data: {
+            'to_date': toDate,
+            'from_date': fromDate,
+            'empId': empId,
+            'type' : "ByTwoDates"
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (response, status, xhr) {
+            var blob = response;
+            var link = document.createElement('a');
+            var filename = xhr.getResponseHeader('Content-Disposition').split(
+                'filename=')[1].replace(/"/g, '');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            // SweetAlert notification after download is triggered
+            Swal.fire({
+                title: 'Download Complete',
+                text: 'Your file has been successfully downloaded!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+            $("#export_button").prop("disabled", false);
+        },
+        error: function () {
+            console.log("Export failed");
+            $("#export_button").prop("disabled", false);
+        }
+    });
+}
 
 
 

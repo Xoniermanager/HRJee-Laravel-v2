@@ -2,34 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Announcement extends Model
 {
-    use HasFactory;
+    use HasFactory, CompanyScope;
     protected $guarded = ['id'];
-
-    protected $appends = ['announcement_image'];
-    public function getAnnouncementImageAttribute()
+    public function designations()
     {
-        return imageBasePath($this->image, 'originalAnnouncementImagePath');
-    }
-
-    public function branches()
-    {
-        return $this->belongsToMany(CompanyBranch::class, 'announcement_branch', 'announcement_id', 'branch_id');
+        return $this->belongsToMany(Designations::class, 'announcement_designation', 'announcement_id', 'designation_id');
     }
     public function departments()
     {
         return $this->belongsToMany(Department::class, 'announcement_department', 'announcement_id', 'department_id');
     }
-    public function designations()
+    public function companyBranches()
     {
-        return $this->belongsToMany(Designations::class, 'announcement_designation', 'announcement_id', 'designation_id');
+        return $this->belongsToMany(CompanyBranch::class, 'announcement_company_branch', 'announcement_id', 'company_branch_id');
     }
-
-    public function scopeActive($query) {
-        return $query->where('status', 'active');
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => url("storage/" .  $value)
+        );
     }
 }

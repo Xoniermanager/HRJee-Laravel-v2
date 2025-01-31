@@ -320,7 +320,7 @@
                     <div class="error">{{ $errors->first('otp') }}</div>
                 @endif
                 <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden" id="kt_sign_in_form"
-                    action="{{ route('super_admin.verifyOtpCheck') }}" method="POST">
+                    action="{{ route('admin.verifyOtpCheck') }}" method="POST">
 
                     @csrf
                     <input type="hidden" name='otp' id='otp'>
@@ -371,7 +371,7 @@
 
                 </form>
 
-                <a href="{{ route('super_admin.resendOtp') }}">resendOtp</a>
+                <a href="{{ route('admin.resendOtp') }}">resendOtp</a>
 
 
             </div><!-- endof col -->
@@ -400,7 +400,7 @@
 
                             <!--begin::Form-->
                             <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden"
-                                id="kt_sign_in_form" action="{{ route('super_admin.verifyOtpCheck') }}" method="POST">
+                                id="kt_sign_in_form" action="{{ route('admin.verifyOtpCheck') }}" method="POST">
                                 @csrf
                                 <div class="fv-row mb-8 fv-plugins-icon-container">
                                     <h2>Check your email!</h2>
@@ -419,21 +419,17 @@
                                     <!--begin::Input group-->
                                     <div class="d-flex flex-wrap flex-stack">
                                         <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
-                                            maxlength="1" id="first"
-                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
-                                            inputmode="text">
+                                            maxLength="1" id="n0" data-next="1"
+                                            class="form-control authInput bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2">
                                         <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
-                                            maxlength="1" id="second"
-                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
-                                            inputmode="text">
+                                            maxlength="1" id="n1" data-next="2"
+                                            class="form-control authInput bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2">
                                         <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
-                                            maxlength="1" id="third"
-                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
-                                            inputmode="text">
+                                            maxlength="1" id="n2" data-next="3"
+                                            class="form-control authInput bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2">
                                         <input type="text" data-inputmask="'mask': '9', 'placeholder': ''"
-                                            maxlength="1" id="fourth"
-                                            class="form-control bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2"
-                                            inputmode="text">
+                                            maxlength="1" id="n3" data-next="4"
+                                            class="form-control authInput bg-transparent h-60px w-60px fs-2qx text-center mx-1 my-2">
                                     </div>
                                     @if ($errors->has('otp'))
                                         <div class="error">{{ $errors->first('otp') }}</div>
@@ -461,7 +457,7 @@
                                     </button>
                                 </div>
                                 <!--end::Submit button-->
-                                <a href="{{ route('super_admin.resendOtp') }}" class="text-primary">
+                                <a href="{{ route('admin.resendOtp') }}" class="text-primary">
                                     Resend Code</a>
                             </form>
                             <!--end::Form-->
@@ -491,15 +487,22 @@
     <!--end::Custom Javascript-->
     <!--end::Custom Javascript-->
     <script>
-        $("#kt_sign_in_submit").on('click', function() {
-            let first = $('#first').val();
-            let second = $('#second').val();
-            let third = $('#third').val();
-            let fourth = $('#fourth').val();
+      $("#kt_sign_in_submit").on('click', function() {
+            let first = $('#n0').val();
+            let second = $('#n1').val();
+            let third = $('#n2').val();
+            let fourth = $('#n3').val();
             let otp = first + second + third + fourth;
             $('#otp').val(otp);
             $("#kt_sign_in_form").submit();
         })
+
+        $('.authInput').keyup(function(e) {
+            if (this.value.length === this.maxLength) {
+                let next = $(this).data('next');
+                $('#n' + next).focus();
+            }
+        });
     </script>
 </body>
 <!--end::Body-->

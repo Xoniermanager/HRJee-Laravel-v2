@@ -6,16 +6,24 @@ use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Services\AssetService;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\UserAssetDetailService;
+use Throwable;
+use App\Http\Services\EmployeeServices;
+use Illuminate\Support\Facades\Storage;
 
 class UserAssetDetailsController extends Controller
 {
 
     private $userAssetService;
-    public function __construct(UserAssetDetailService $userAssetService)
+    private $userAssetDetailService;
+    private $assetService;
+    public function __construct(AssetService $assetService, UserAssetDetailService $userAssetService,UserAssetDetailService $userAssetDetailService)
     {
         $this->userAssetService = $userAssetService;
+        $this->assetService = $assetService;
+        $this->userAssetDetailService = $userAssetDetailService;
     }
 
     public function store(Request $request)

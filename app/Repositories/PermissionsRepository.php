@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
+use Spatie\Permission\Models\Permission;
 use Prettus\Repository\Eloquent\BaseRepository;
-use App\Models\Permission;
 
 /**
  * Class permissionsRepositoryEloquent.
@@ -25,5 +25,5 @@ class PermissionsRepository extends BaseRepository
     {
        return $this->where('id',$id);
     }
-    
+
 }

@@ -19,7 +19,7 @@
                         <td><a href="#" data-bs-toggle="modal"
                                 onClick="edit_department_details('{{ $permission->id }}', '{{ $permission->name }}')">{{ $permission->name }}</a>
                         </td>
-    
+
                         </td>
                         <td data-order="Invalid date">
                             <label class="switch">
@@ -49,7 +49,7 @@
             @empty
                 <td colspan="3">
                     <span class="text-danger">
-                        <strong>No Office Time Found!</strong>
+                        <strong>No Permission Found!</strong>
                     </span>
                 </td>
             @endforelse

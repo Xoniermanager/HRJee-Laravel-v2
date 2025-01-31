@@ -21,10 +21,10 @@
                                         <label for="">Employee Leave *</label>
                                         <select name="leave_id" class="form-control"
                                             onchange="get_details_using_leave_id()" id="leave_details">
-                                            <option value="">Please Select the Types</option>
+                                            <option value="">Please Select Employee</option>
                                             @foreach ($allLeaveDetails as $leaveDetails)
                                                 <option value="{{ $leaveDetails->id }}">
-                                                    {{ $leaveDetails->user->name }}</option>
+                                                    {{ $leaveDetails->user->name }} ( {{$leaveDetails->from}} To {{$leaveDetails->to}})</option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('leave_type_id'))

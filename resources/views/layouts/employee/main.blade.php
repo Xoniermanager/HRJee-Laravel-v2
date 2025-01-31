@@ -21,10 +21,12 @@
     <meta name="description" property='og:description' content='' />
     <meta name="author" content="Jyoti Mishra Web Designer at Xonier">
     <!--begin::Fonts(mandatory for all pages)-->
-    {{-- <link rel="stylesheet" href="{{ asset('employee/assets/css/mark-pro.css') }}" /> --}}
+    {{--
+    <link rel="stylesheet" href="{{ asset('employee/assets/css/mark-pro.css') }}" /> --}}
     <!--end::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     <!--end::Fonts-->
     <!--begin::Vendor Stylesheets(used for this page only)-->
     <link href="{{ asset('employee/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet"
@@ -37,12 +39,18 @@
     <link href="{{ asset('employee/assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
     <link rel="icon" type="image/png" href="{{ asset('employee/assets/media/logos/favicon.png') }}">
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-
-
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        window.company_ajax_base_url = '{{ env('COMPANY_BASE_URL') }}';
+        window.admin_ajax_base_url = '{{ env('ADMIN_BASE_URL') }}';
+        window.employee_ajax_base_url = '{{ env('EMPLOYEE_BASE_URL') }}';
+        window.project_ajax_base_url = '{{ env('PROJECT_BASE_URL') }}';
+    </script>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -66,10 +74,9 @@
                 <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
                     <span class="svg-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1"
-                                transform="rotate(90 13 6)" fill="currentColor" />
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)"
+                                fill="currentColor" />
                             <path
                                 d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z"
                                 fill="currentColor" />
@@ -82,4 +89,5 @@
     </div>
 </body>
 @include('layouts.employee.footer')
+
 </html>

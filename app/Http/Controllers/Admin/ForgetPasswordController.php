@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Mail\WelcomeEmail;
-use App\Models\CompanyUser;
-use App\Models\SuperAdminAuthentication;
+use App\Models\Admin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +15,7 @@ class ForgetPasswordController extends Controller
 {
     public function index()
     {
-        return view('super_admin.account.forgetPassword');
+        return view('admin.account.forgetPassword');
     }
     public function submitForgetPasswordForm(Request $request)
     {
@@ -40,7 +39,7 @@ class ForgetPasswordController extends Controller
     }
     public function showResetPasswordForm($token)
     {
-        return view('super_admin.account.reset-password', ['token' => $token]);
+        return view('admin.account.reset-password', ['token' => $token]);
     }
 
     public function submitResetPasswordForm(Request $request)
@@ -59,7 +58,7 @@ class ForgetPasswordController extends Controller
         if (!$updatePassword) {
             return back()->withInput()->with('error', 'Not Allowed!! Your Password is Already Changed');
         }
-        $user = SuperAdminAuthentication::where('email', $request->email)
+        $user = Admin::where('email', $request->email)
             ->update(['password' => Hash::make($request->password)]);
         DB::table('password_reset_tokens')->where(['email' => $request->email])->delete();
         if ($user == 1) {

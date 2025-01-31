@@ -3,7 +3,7 @@
     <form id="family_details_form">
         @csrf
         <input type="hidden" name="user_id" class="id"
-            value="{{ $userfamilyDetails[0]['user_id'] ?? (Request::segment(3) ?? '') }}">
+            value="{{ $singleUserDetails->id ?? '' }}">
         {{-- <div class="row align-items-center panel panel-body mb-3">
             <div class="col-md-3 form-group">
                 <label for="">Relationship *</label>
@@ -24,7 +24,7 @@
             <div class="col-md-2 form-group mt-5">
                 <input type="checkbox" name="family_details[0]['nominee']" value="1">
                 <label for="">Nominee</label>
-                
+
             </div>
         </div> --}}
        <div class="row">
@@ -74,7 +74,7 @@
         <button class="btn btn-primary">Save & Continue</button>
     </form>
     <!--end::Wrapper-->
-    <button onclick="show_next_tab('permission_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
+    <button onclick="show_next_tab('past_work_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
         Previous</button>
     <button onclick="show_next_tab('asset_tab')" class="btn btn-primary float-right">Next <i
             class="fa fa-arrow-right"></i>
@@ -163,7 +163,7 @@
                     showConfirmButton: false,
                     timer: 1500
                 });
-                jQuery('.nav-pills a[href="#asset_tab"]').tab('show');
+                jQuery('.nav-pills a[href="#document_tab"]').tab('show');
                 // This variable is used on save all records button
                 all_data_saved = true;
             },

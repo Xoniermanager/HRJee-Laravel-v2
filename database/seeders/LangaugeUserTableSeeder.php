@@ -14,33 +14,33 @@ class LangaugeUserTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('langauge_user')->delete();
-        
+
         \DB::table('langauge_user')->insert(array (
-            0 => 
+            0 =>
             array (
-                'user_id' => 1,
+                'user_id' => 2,
                 'language_id' => 2,
-                'read' => 'e',
-                'write' => 'e',
-                'speak' => 'e',
+                'read' => 'b',
+                'write' => 'b',
+                'speak' => 'b',
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            1 => 
+            1 =>
             array (
-                'user_id' => 1,
+                'user_id' => 2,
                 'language_id' => 1,
-                'read' => 'i',
-                'write' => 'e',
-                'speak' => 'i',
+                'read' => 'b',
+                'write' => 'b',
+                'speak' => 'b',
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
         ));
-        
-        
+
+
     }
 }

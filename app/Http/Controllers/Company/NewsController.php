@@ -30,21 +30,22 @@ class NewsController extends Controller
     public function index()
     {
         $allNewsDetails = $this->newsService->all();
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
-        $allCompanyBranchesDetails = $this->companyBranchService->allActiveCompanyBranchesByUsingCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         return view('company.news.index', compact('allNewsDetails', 'allNewsCategoryDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
 
     public function add()
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->allActiveCompanyBranchesByUsingCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
         return view('company.news.add', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'allNewsCategoryDetails'));
     }
-    public function store(Request $request)
+    public function store(NewsStoreRequest $request)
     {
+
         try {
             $data = $request->all();
             if ($this->newsService->create($data)) {
@@ -57,9 +58,9 @@ class NewsController extends Controller
     public function edit($id)
     {
         $editNewsDetails = $this->newsService->findByNewsId($id);
-        $allCompanyBranchesDetails = $this->companyBranchService->allActiveCompanyBranchesByUsingCompanyId(Auth()->guard('admin')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryUsingByCompanyID(Auth()->guard('admin')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
         return view('company.news.edit', compact('editNewsDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails', 'allNewsCategoryDetails'));
     }
     public function view($id)
@@ -87,7 +88,7 @@ class NewsController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'News Deleted Successfully',
-                'data'   =>  view('company.news.list', [
+                'data' => view('company.news.list', [
                     'allNewsDetails' => $this->newsService->all()
                 ])->render()
             ]);
@@ -113,7 +114,7 @@ class NewsController extends Controller
         if ($allPolicyDetails) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view('company.news.list', [
+                'data' => view('company.news.list', [
                     'allNewsDetails' => $allPolicyDetails
                 ])->render()
             ]);

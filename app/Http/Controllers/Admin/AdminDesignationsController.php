@@ -25,7 +25,7 @@ class AdminDesignationsController extends Controller
      */
     public function index()
     {
-        return view('super_admin.designation.index', [
+        return view('admin.designation.index', [
             'allDesignationDetails' => $this->designationService->all(),
             'allDepartments' => $this->departmentService->all()->where('status', '1')
         ]);
@@ -48,7 +48,7 @@ class AdminDesignationsController extends Controller
                 return response()->json(
                     [
                         'message' => 'Designation Created Successfully!',
-                        'data'   =>  view('super_admin.designation.designation_list', [
+                        'data'   =>  view('admin.designation.designation_list', [
                             'allDesignationDetails' => $this->designationService->all()
                         ])->render()
                     ]
@@ -76,7 +76,7 @@ class AdminDesignationsController extends Controller
         if ($companyStatus) {
             return response()->json([
                 'message' => 'Designation Updated Successfully!',
-                'data'   =>  view('super_admin.designation.designation_list', [
+                'data'   =>  view('admin.designation.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
@@ -92,14 +92,14 @@ class AdminDesignationsController extends Controller
         if ($data) {
             return response()->json([
                 'success', 'Deleted Successfully!',
-                'data'   =>  view('super_admin.designation.designation_list', [
+                'data'   =>  view('admin.designation.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
         } else {
             return response()->json([
                 'error', 'Something Went Wrong! Please try Again',
-                'data'   =>  view('super_admin.designation.designation_list', [
+                'data'   =>  view('admin.designation.designation_list', [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
@@ -113,7 +113,7 @@ class AdminDesignationsController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Designation Status Updated Successfully',
-                'data'   =>  view("super_admin.designation.designation_list", [
+                'data'   =>  view("admin.designation.designation_list", [
                     'allDesignationDetails' => $this->designationService->all()
                 ])->render()
             ]);
@@ -125,7 +125,7 @@ class AdminDesignationsController extends Controller
     public function getAllDesignation(Request $request)
     {
         $department_id = $request->department_id;
-        $allDesignationDetails = $this->designationService->getAllDesignationUsingDepartmentID($department_id);
+        $allDesignationDetails = $this->designationService->getAllDesignationByDepartmentIds($department_id);
         if (count($allDesignationDetails) > 0 && isset($allDesignationDetails)) {
             $response = [
                 'status'    =>  true,
@@ -140,18 +140,18 @@ class AdminDesignationsController extends Controller
         return json_encode($response);
     }
     public function search(Request $request)
-    {   
-        $searchedItems = $this->designationService->searchInDesignation($request->all());
+    {
+        $searchedItems = $this->designationService->serachDesignationFilterList($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view("super_admin.designation.designation_list", [
-                    'allDesignationDetails' => $searchedItems 
+                'data'   =>  view("admin.designation.designation_list", [
+                    'allDesignationDetails' => $searchedItems
                 ])->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
-        
+
     }
 }

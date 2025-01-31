@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
+use Spatie\Permission\Contracts\Role;
 use Prettus\Repository\Eloquent\BaseRepository;
-use App\Models\Roles;
 
 /**
  * Class rolesRepositoryEloquent.
@@ -19,10 +19,10 @@ class RolesRepository extends BaseRepository
      */
     public function model()
     {
-        return Roles::class;
+        return Role::class;
     }
     public function getRolesById($id)
     {
        return $this->where('id',$id);
-    }    
+    }
 }

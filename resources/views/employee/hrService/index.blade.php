@@ -23,7 +23,7 @@
                                 <!--begin::Item-->
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 gy-10">
                                     <div class="col text-center mb-9">
-                                        <a href="{{ route('employee.attendance.service') }}"
+                                        <a href=""
                                             class="octagon d-flex flex-center bg-primary h-200px w-200px  mx-2">
                                             <!--begin::Content-->
                                             <div class="text-center">

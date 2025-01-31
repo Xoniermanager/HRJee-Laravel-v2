@@ -3,18 +3,27 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\NewsService;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
+    public $newsService;
+
+    public function __construct(NewsService $newsService)
+    {
+        $this->newsService = $newsService;
+    }
     public function index()
     {
-        return view('employee.news.index');
+        $allAssinedNewsDetails = $this->newsService->getAllAssignedNewsForEmployee();
+        return view('employee.news.index', compact('allAssinedNewsDetails'));
     }
 
-    public function viewDetails()
+    public function viewDetails($id)
     {
-        return view('employee.news.details');
+        $newsDetails = $this->newsService->findByNewsId($id);
+        $allAssinedNewsDetails = $this->newsService->getAllAssignedNewsForEmployee();
+        return view('employee.news.details', compact('newsDetails','allAssinedNewsDetails'));
     }
-    
 }

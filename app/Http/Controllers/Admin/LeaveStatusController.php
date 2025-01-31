@@ -21,7 +21,7 @@ class LeaveStatusController extends Controller
      */
     public function index()
     {
-        return view('super_admin.leave_status.index', [
+        return view('admin.leave_status.index', [
             'allLeaveStatusDetails' => $this->leaveStatusService->all()
         ]);
     }
@@ -42,8 +42,8 @@ class LeaveStatusController extends Controller
             $data = $request->all();
             if ($this->leaveStatusService->create($data)) {
                 return response()->json([
-                    'message' => 'Leave Type Created Successfully!',
-                    'data'   =>  view('super_admin.leave_status.leave_status_list', [
+                    'message' => 'Leave Status Created Successfully!',
+                    'data'   =>  view('admin.leave_status.leave_status_list', [
                         'allLeaveStatusDetails' => $this->leaveStatusService->all()
                     ])->render()
                 ]);
@@ -69,8 +69,8 @@ class LeaveStatusController extends Controller
         $leaveStatusDetails = $this->leaveStatusService->updateDetails($updateData, $request->id);
         if ($leaveStatusDetails) {
             return response()->json([
-                'message' => 'Leave Type Updated Successfully!',
-                'data'   =>  view('super_admin.leave_status.leave_status_list', [
+                'message' => 'Leave Status Updated Successfully!',
+                'data'   =>  view('admin.leave_status.leave_status_list', [
                     'allLeaveStatusDetails' => $this->leaveStatusService->all()
                 ])->render()
             ]);
@@ -86,8 +86,8 @@ class LeaveStatusController extends Controller
         $data = $this->leaveStatusService->deleteDetails($id);
         if ($data) {
             return response()->json([
-                'success' => 'Leave Type Deleted Successfully!',
-                'data'   =>  view('super_admin.leave_status.leave_status_list', [
+                'success' => 'Leave Status Deleted Successfully!',
+                'data'   =>  view('admin.leave_status.leave_status_list', [
                     'allLeaveStatusDetails' => $this->leaveStatusService->all()
                 ])->render()
             ]);

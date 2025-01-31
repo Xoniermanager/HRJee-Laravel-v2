@@ -1,4 +1,5 @@
 <div id="holidays_list" class="card-body py-3">
+    {{-- {{ dd($allHolidaysDetails) }} --}}
     <!--begin::Table container-->
     <div class="table-responsive">
         <!--begin::Table-->
@@ -8,6 +9,7 @@
                 <tr class="fw-bold">
                     <th>Sr. No.</th>
                     <th>Holiday</th>
+                    <th>Company Branches</th>
                     <th>Date</th>
                     <th>Year</th>
                     <th>Status</th>
@@ -19,7 +21,15 @@
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <td><a href="#" data-bs-toggle="modal"
-                                onClick="edit_holiday_details('{{ $holidaysDetails->id }}', '{{ $holidaysDetails->name }}','{{ $holidaysDetails->date }}','{{ $holidaysDetails->year }}')">{{ $holidaysDetails->name }}</a>
+                                onClick="edit_holiday_details('{{ $holidaysDetails->id }}', '{{ $holidaysDetails->name }}','{{ $holidaysDetails->date }}','{{ $holidaysDetails->year }}','{{ $holidaysDetails->companyBranch->pluck('id') }}')">{{ $holidaysDetails->name }}</a>
+                        </td>
+                        <td>
+                            @foreach ($holidaysDetails->companyBranch as $index => $companyBranch)
+                                <span class="btn btn-primary btn-sm me-1">{{ $companyBranch->name }}</span>
+                                @if (!$loop->last)
+                                    ,
+                                @endif
+                            @endforeach
                         </td>
                         <td>{{ $holidaysDetails->date }}</td>
                         <td>{{ $holidaysDetails->year }}</td>
@@ -30,11 +40,10 @@
                                 <span class="slider round"></span>
                             </label>
                         </td>
-
                         <td>
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <a href="#" data-bs-toggle="modal"
-                                    onClick="edit_holiday_details('{{ $holidaysDetails->id }}', '{{ $holidaysDetails->name }}', '{{ $holidaysDetails->date }}', '{{ $holidaysDetails->year }}')"
+                                    onClick="edit_holiday_details('{{ $holidaysDetails->id }}', '{{ $holidaysDetails->name }}', '{{ $holidaysDetails->date }}', '{{ $holidaysDetails->year }}','{{ $holidaysDetails->companyBranch->pluck('id') }}')"
                                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                     <i class="fa fa-edit"></i>
@@ -59,7 +68,5 @@
         </table>
         <!--end::Table-->
     </div>
-    <!--end::Table container-->
-
+    {{ $allHolidaysDetails->links() }}
 </div>
-{{ $allHolidaysDetails->links() }}

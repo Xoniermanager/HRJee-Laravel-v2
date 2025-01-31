@@ -13,13 +13,13 @@
 <!--end::Vendors Javascript-->
 <!--begin::Custom Javascript(used for this page only)-->
 <script src="{{ asset('employee/assets/js/widgets.bundle.js') }}"></script>
-
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="{{ asset('employee/assets/js/employee_custom.js') }}"></script>
+<script src="{{ asset('assets/js/add-employee-validation.js') }}"></script>
+<script src="{{ asset('assets/js/custom-script.js') }}"></script>
 <script>
     setTimeout(function() {
         jQuery(".alert-dismissible").remove();
     }, 3000);
-</script>
-<script type="text/javascript">
-    var jQuery_1_7_0 = $.noConflict(true);  // <- this
 </script>
 <!--end::Custom Javascript-->

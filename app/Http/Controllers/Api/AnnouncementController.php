@@ -2,33 +2,66 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
 use App\Http\Controllers\Controller;
-use App\Http\Services\AnnouncementAssignServices;
-use App\Http\Services\UserDetailServices;
-use App\Models\AnnouncementDesignation;
-use Illuminate\Http\Request;
+use App\Http\Services\AnnouncementServices;
 
 class AnnouncementController extends Controller
 {
-    private $announcementAssignServices;
-    private $userDetailServices;
-    public function __construct(UserDetailServices $userDetailServices, AnnouncementAssignServices $announcementAssignServices)
+    private $announcementServices;
+    public function __construct(AnnouncementServices $announcementServices)
     {
-        $this->userDetailServices = $userDetailServices;
-        $this->announcementAssignServices = $announcementAssignServices;
+        $this->announcementServices = $announcementServices;
     }
 
-    public function announcement(Request $request)
+    public function allAssignedAnnouncement()
     {
-        $userDetails = $this->userDetailServices->getDetailsByUserId(auth()->guard('employee_api')->user()->id);
-        $branchId = $userDetails->company_branch_id;
-        $companyId = $userDetails->user->company_id;
-        $assignAnnouncement = $this->announcementAssignServices->getAllAssignAnnouncement($companyId, $branchId);
-
-        return $assignAnnouncement;
-
-        // $announcement =  AnnouncementDesignation::where('designation_id', $userDetails->designation_id)->pluck('announcement_id')->toArray();
-        // dd($announcement);
-        // return $userDetails;
+        try {
+            $allAnnouncementDetails = $this->announcementServices->getAllAssignedAnnouncementForEmployee();
+            $announcementPayloadDetails = [];
+            foreach ($allAnnouncementDetails as $announcementDetails) {
+                $announcementPayloadDetails[] =
+                    [
+                        'id' => $announcementDetails->id,
+                        'date' =>  date('j F,Y', strtotime($announcementDetails->start_date_time)),
+                        'title' => $announcementDetails->title,
+                        'image' => $announcementDetails->image,
+                    ];
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Retried Announcement List Successfully',
+                'data' => $announcementPayloadDetails,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function viewAnnouncementDetails($id)
+    {
+        try {
+            $announcementDetails = $this->announcementServices->findById($id);
+            $viewDetails =
+                [
+                    'date' =>  date('j F,Y', strtotime($announcementDetails->start_date_time)),
+                    'title' => $announcementDetails->title,
+                    'image' => $announcementDetails->image,
+                    'description' => $announcementDetails->description,
+                    'file' => $announcementDetails->file
+                ];
+            return response()->json([
+                'status' => true,
+                'message' => 'Retried Announcement Details Successfully',
+                'data' => $viewDetails,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

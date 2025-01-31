@@ -37,7 +37,7 @@
                     <!--begin::Action-->
                     <a href="#" data-bs-toggle="modal" data-bs-target="#add_role"
                         class="btn btn-sm btn-primary align-self-center">
-                        Add Roles</a>
+                        Add Role</a>
 
                     <!--end::Action-->
                 </div>
@@ -93,7 +93,7 @@
                             </div>
                         </div>
 
-                            
+
                             <!--end::Input group-->
                         </div>
                         <!--end::Wrapper-->
@@ -149,7 +149,7 @@
                         @csrf
                         <!--begin::Wrapper-->
                         <div class="mw-lg-600px mx-auto p-4">
-                        
+
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Name<span style="color: red">*</span></label>
@@ -186,7 +186,7 @@
     <script>
         function edit_role_details(id,name) {
             $('#id').val(id);
-            $('#name').val(name); 
+            $('#name').val(name);
            jQuery('#edit_role').modal('show');
         }
         jQuery.noConflict();
@@ -311,7 +311,12 @@
                             id: id
                         },
                         success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            console.log("res => ", res);
+                            if(res.status ==  false) {
+                                Swal.fire("Error deleting!", res.message, "error");
+                            } else {
+                                Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            }
                             $('#office_time_list').replaceWith(res.data);
                         },
                         error: function(xhr, ajaxOptions, thrownError) {

@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    State
+State
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -15,10 +15,10 @@
                         <div class="d-flex align-items-center position-relative my-1">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                             <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none">
-                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
-                                        rx="1" transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none">
+                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1"
+                                        transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
                                     <path
                                         d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
                                         fill="black"></path>
@@ -33,16 +33,17 @@
                         <select class="form-control min-w-200px me-2" id="filter_country">
                             <option value="">Select County</option>
                             @forelse ($allcountryDetails as $countryDetail)
-                                <option value="{{$countryDetail->id }}" {{request()->get('country_id') == $countryDetail->id ? 'selected' : '' }}>{{ $countryDetail->name }}</option>
+                            <option value="{{$countryDetail->id }}" {{request()->get('country_id') == $countryDetail->id
+                                ? 'selected' : '' }}>{{ $countryDetail->name }}</option>
                             @empty
-                                <option value="">No Country Available</option>
+                            <option value="">No Country Available</option>
                             @endforelse
                         </select>
                         <select class="form-control min-w-200px me-2" id="status">
                             <option value="">Status</option>
                             <option {{ request()->get('status') == '1' ? 'selected' : '' }} value="1">Active
                             </option>
-                            <option {{ request()->get('status') == '2' ? 'selected' : '' }} value="2">Inactive
+                            <option {{ request()->get('status') == '0' ? 'selected' : '' }} value="0">Inactive
                             </option>
                         </select>
 
@@ -85,12 +86,11 @@
                 <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                     <span class="svg-icon svg-icon-1">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                 transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                            <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                fill="currentColor"></rect>
                         </svg>
                     </span>
                     <!--end::Svg Icon-->
@@ -110,9 +110,9 @@
                             <select class="form-control mb-3" name="country_id" id="country_id">
                                 <option value="">Select Country</option>
                                 @forelse ($allcountryDetails as $countryDetails)
-                                    <option value="{{ $countryDetails->id }}">{{ $countryDetails->name }}</option>
+                                <option value="{{ $countryDetails->id }}">{{ $countryDetails->name }}</option>
                                 @empty
-                                    <option value="">No Country Available</option>
+                                <option value="">No Country Available</option>
                                 @endforelse
                             </select>
                         </div>
@@ -159,12 +159,11 @@
                 <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                     <span class="svg-icon svg-icon-1">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
                                 transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                            <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                fill="currentColor"></rect>
                         </svg>
                     </span>
                     <!--end::Svg Icon-->
@@ -184,9 +183,9 @@
                             <select class="form-control mb-3" name="country_id">
                                 <option value="">Select County</option>
                                 @forelse ($allcountryDetails as $countryDetail)
-                                    <option value="{{ $countryDetail->id }}">{{ $countryDetail->name }}</option>
+                                <option value="{{ $countryDetail->id }}">{{ $countryDetail->name }}</option>
                                 @empty
-                                    <option value="">No Country Available</option>
+                                <option value="">No Country Available</option>
                                 @endforelse
                             </select>
                         </div>
@@ -361,7 +360,7 @@
     }
 
     /** Filter By Search By Dropdown*/
-    jQuery("#search").on('blur', function() {
+    jQuery("#search").on('input', function() {
         search_filter_results();
     });
     jQuery("#status").on('change', function() {
@@ -370,7 +369,6 @@
     jQuery("#filter_country").on('change', function() {
         search_filter_results();
     });
-
     function search_filter_results() {
         $.ajax({
             type: 'GET',

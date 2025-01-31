@@ -5,10 +5,10 @@
 @endsection
 @php
     if ($editPolicyDetails->all_company_branch == 0) {
-        $selectedDepartmentId = $editPolicyDetails->departments->pluck('id');
+        $selectedCompanyBranchId = $editPolicyDetails->companyBranches->pluck('id');
     }
     if ($editPolicyDetails->all_department == 0) {
-        $selectedCompanyBranchId = $editPolicyDetails->companyBranches->pluck('id');
+        $selectedDepartmentId = $editPolicyDetails->departments->pluck('id');
     }
     if ($editPolicyDetails->all_designation == 0) {
         $selectedDesignationId = $editPolicyDetails->designations->pluck('id');
@@ -27,17 +27,82 @@
                         <form action="{{ route('policy.update', $editPolicyDetails->id) }}" method="post"
                             enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="all_company_branch" value="0"> 
-                            <input type="hidden" name="all_department" value="0"> 
-                            <input type="hidden" name="all_designation" value="0"> 
+                            <input type="hidden" name="all_company_branch" value="0">
+                            <input type="hidden" name="all_department" value="0">
+                            <input type="hidden" name="all_designation" value="0">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-6 form-group">
+                                    <div class="col-md-4 form-group">
                                         <label for="">Title *</label>
                                         <input class="form-control" name="title" type="text"
                                             value="{{ $editPolicyDetails->title }}">
                                         @if ($errors->has('title'))
                                             <div class="text-danger">{{ $errors->first('title') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <label for="">Start Date *</label>
+                                        <input class="form-control" name="start_date" type="date"
+                                            value="{{ $editPolicyDetails->start_date }}">
+                                        @if ($errors->has('start_date'))
+                                            <div class="text-danger">{{ $errors->first('start_date') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <label for="">End Date *</label>
+                                        <input class="form-control" name="end_date" type="date"
+                                            value="{{ $editPolicyDetails->end_date }}">
+                                        @if ($errors->has('end_date'))
+                                            <div class="text-danger">{{ $errors->first('end_date') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">News Category *</label>
+                                        <select class="form-control" name="policy_category_id">
+                                            <option value="">Select the News Category</option>
+                                            @foreach ($allPolicyCategoryDetails as $policyCategoryDetails)
+                                                <option value="{{ $policyCategoryDetails->id }}"
+                                                    {{ $editPolicyDetails->policy_category_id == $policyCategoryDetails->id ? 'selected' : '' }}>
+                                                    {{ $policyCategoryDetails->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if ($errors->has('policy_category_id'))
+                                            <div class="text-danger">{{ $errors->first('policy_category_id') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">Image *</label>
+                                        <div class="image-input image-input-outline" data-kt-image-input="true">
+                                            <!--begin::Col-->
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <input type="file" class="form-control" name="image"
+                                                        accept=".png, .jpg, .jpeg">
+                                                    @if ($errors->has('image'))
+                                                        <div class="text-danger">{{ $errors->first('image') }}</div>
+                                                    @endif
+                                                    <!--end::Col-->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <!--begin::Preview existing avatar-->
+                                                    <div class="image-input-wrapper w-125px h-125px"></div>
+                                                    <!--end::Preview existing avatar-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">Attachment File </label>
+                                        <input class="form-control" name="file" type="file" accept="pdf">
+                                        @if ($errors->has('file'))
+                                            <div class="text-danger">{{ $errors->first('file') }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label for="">Description </label>
+                                        <textarea class="form-control" name="description">{{ $editPolicyDetails->description }}</textarea>
+                                        @if ($errors->has('description'))
+                                            <div class="text-danger">{{ $errors->first('description') }}</div>
                                         @endif
                                     </div>
                                     <div class="col-md-6 form-group">
@@ -50,9 +115,10 @@
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_company_branch"
-                                                        onchange="get_checkedValue('company_branch')"
+                                                        onchange="get_checked_value('company_branch')"
                                                         id="company_branches_checkbox"
-                                                        {{ $editPolicyDetails->all_company_branch == 1 ? 'checked' : '' }} value="1">
+                                                        {{ $editPolicyDetails->all_company_branch == 1 ? 'checked' : '' }}
+                                                        value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -93,9 +159,10 @@
                                                         All
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
-                                                        name="all_department" onchange="get_checkedValue('department')"
+                                                        name="all_department" onchange="get_checked_value('department')"
                                                         id="department_checkbox"
-                                                        {{ $editPolicyDetails->all_department == 1 ? 'checked' : '' }} value="1">
+                                                        {{ $editPolicyDetails->all_department == 1 ? 'checked' : '' }}
+                                                        value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -136,9 +203,10 @@
                                                     </span>
                                                     <input class="form-check-input m-4" type="checkbox"
                                                         name="all_designation"
-                                                        onchange="get_checkedValue('designation')"
+                                                        onchange="get_checked_value('designation')"
                                                         id="designation_checkbox"
-                                                        {{ $editPolicyDetails->all_designation == 1 ? 'checked' : '' }} value="1">
+                                                        {{ $editPolicyDetails->all_designation == 1 ? 'checked' : '' }}
+                                                        value="1">
                                                 </label>
                                             </div>
                                             <div class="col-md-10 form-group">
@@ -156,71 +224,6 @@
                                                 @endif
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">News Category *</label>
-                                        <select class="form-control" name="policy_category_id">
-                                            <option value="">Select the News Category</option>
-                                            @foreach ($allPolicyCategoryDetails as $policyCategoryDetails)
-                                                <option value="{{ $policyCategoryDetails->id }}"
-                                                    {{ $editPolicyDetails->policy_category_id == $policyCategoryDetails->id ? 'selected' : '' }}>
-                                                    {{ $policyCategoryDetails->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('policy_category_id'))
-                                            <div class="text-danger">{{ $errors->first('policy_category_id') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">Start Date *</label>
-                                        <input class="form-control" name="start_date" type="date"
-                                            min="{{ date('Y-m-d') }}" value="{{ $editPolicyDetails->start_date }}">
-                                        @if ($errors->has('start_date'))
-                                            <div class="text-danger">{{ $errors->first('start_date') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">End Date *</label>
-                                        <input class="form-control" name="end_date" type="date"
-                                            min="{{ date('Y-m-d') }}" value="{{ $editPolicyDetails->end_date }}">
-                                        @if ($errors->has('end_date'))
-                                            <div class="text-danger">{{ $errors->first('end_date') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">Image *</label>
-                                        <div class="image-input image-input-outline" data-kt-image-input="true">
-                                            <!--begin::Col-->
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    <input type="file" class="form-control" name="image"
-                                                        accept=".png, .jpg, .jpeg">
-                                                    @if ($errors->has('image'))
-                                                        <div class="text-danger">{{ $errors->first('image') }}</div>
-                                                    @endif
-                                                    <!--end::Col-->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <!--begin::Preview existing avatar-->
-                                                    <div class="image-input-wrapper w-125px h-125px"></div>
-                                                    <!--end::Preview existing avatar-->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="">Attachment File </label>
-                                        <input class="form-control" name="file" type="file" accept="pdf">
-                                        @if ($errors->has('file'))
-                                            <div class="text-danger">{{ $errors->first('file') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-12 form-group">
-                                        <label for="">Description </label>
-                                        <textarea id="editor" name="description">{{ $editPolicyDetails->description }}</textarea>
-                                        @if ($errors->has('description'))
-                                            <div class="text-danger">{{ $errors->first('description') }}</div>
-                                        @endif
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Submit</button>

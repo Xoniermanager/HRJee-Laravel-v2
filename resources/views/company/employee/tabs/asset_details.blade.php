@@ -42,7 +42,7 @@
             <div class="modal-body scroll-y p-5">
                 <form id="allocated_from">
                     @csrf
-                    <input type="hidden" name="user_id" value="{{ Request::segment(3) ?? '' }}">
+                    <input type="hidden" name="user_id" value="{{ $singleUserDetails->id ?? '' }}">
                     <div class="col-md-12">
                         <label>Asset Type *</label>
                         <select name="asset_category_id" class="form-control" onchange="get_all_asset_by_category_id()"
@@ -102,7 +102,7 @@
             <div class="modal-body scroll-y p-5">
                 <form id="deallocated_from">
                     @csrf
-                    <input type="hidden" name="user_id" value="{{ Request::segment(3) ?? '' }}">
+                    <input type="hidden" name="user_id" value="{{ $singleUserDetails->id ?? '' }}">
                     <input type="hidden" name="id" id="user_asset_id">
                     <div class="col-md-12">
                         <label>Asset Type *</label>

@@ -21,7 +21,7 @@ class LeaveTypeController extends Controller
      */
     public function index()
     {
-        return view('super_admin.leave_type.index', [
+        return view('admin.leave_type.index', [
             'allLeaveTypeDetails' => $this->leaveTypeService->all()
         ]);
     }
@@ -43,7 +43,7 @@ class LeaveTypeController extends Controller
             if ($this->leaveTypeService->create($data)) {
                 return response()->json([
                     'message' => 'Leave Type Created Successfully!',
-                    'data'   =>  view('super_admin.leave_type.leave_type_list', [
+                    'data'   =>  view('admin.leave_type.leave_type_list', [
                         'allLeaveTypeDetails' => $this->leaveTypeService->all()
                     ])->render()
                 ]);
@@ -70,7 +70,7 @@ class LeaveTypeController extends Controller
         if ($updatedDetails) {
             return response()->json([
                 'message' => 'Leave Type Updated Successfully!',
-                'data'   =>  view('super_admin.leave_type.leave_type_list', [
+                'data'   =>  view('admin.leave_type.leave_type_list', [
                     'allLeaveTypeDetails' => $this->leaveTypeService->all()
                 ])->render()
             ]);
@@ -87,7 +87,7 @@ class LeaveTypeController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Leave Type Deleted Successfully!',
-                'data'   =>  view('super_admin.leave_type.leave_type_list', [
+                'data'   =>  view('admin.leave_type.leave_type_list', [
                     'allLeaveTypeDetails' => $this->leaveTypeService->all()
                 ])->render()
             ]);
@@ -95,7 +95,7 @@ class LeaveTypeController extends Controller
             return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
         }
     }
-    
+
     public function statusUpdate(Request $request)
     {
         $id = $request->id;

@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    permissions
+    Permissions
 @endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -37,7 +37,7 @@
                     <!--begin::Action-->
                     <a href="#" data-bs-toggle="modal" data-bs-target="#add_permission"
                         class="btn btn-sm btn-primary align-self-center">
-                        Add permissions</a>
+                        Add Permissions</a>
 
                     <!--end::Action-->
                 </div>
@@ -78,7 +78,7 @@
                 <!--begin::Modal header-->
                 <!--begin::Modal body-->
                 <div class="modal-body scroll-y pt-0 pb-5 border-top">
-                    <form id="office_time_config_update_form">
+                    <form id="edit_permission">
                         @csrf
                         <!--begin::Wrapper-->
                         <div class="mw-lg-600px mx-auto p-4">
@@ -93,7 +93,7 @@
                             </div>
                         </div>
 
-                            
+
                             <!--end::Input group-->
                         </div>
                         <!--end::Wrapper-->
@@ -149,7 +149,7 @@
                         @csrf
                         <!--begin::Wrapper-->
                         <div class="mw-lg-600px mx-auto p-4">
-                        
+
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Name<span style="color: red">*</span></label>
@@ -186,7 +186,7 @@
     <script>
         function edit_permission_details(id,name) {
             $('#id').val(id);
-            $('#name').val(name); 
+            $('#name').val(name);
            jQuery('#edit_permission').modal('show');
         }
         jQuery.noConflict();
@@ -228,7 +228,7 @@
             });
         });
 
-        jQuery("#office_time_config_update_form").validate({
+        jQuery("#edit_permission").validate({
             rules: {
                 name: "required",
             },
@@ -275,7 +275,7 @@
                 status_name = 'Inactive';
             }
             $.ajax({
-                url: "{{ route('office_time_config.statusUpdate') }}",
+                url: "{{ route('permission.statusUpdate') }}",
                 type: 'get',
                 data: {
                     'id': id,

@@ -18,10 +18,10 @@ class AdminLanguagesController extends Controller
     ) {
         $this->languageServices  = $languageServices;
     }
-    
+
     public function index()
     {
-        return view('super_admin.languages.index', [
+        return view('admin.languages.index', [
             'allLanguagesDetails' => $this->languageServices->all()
         ]);
     }
@@ -42,7 +42,7 @@ class AdminLanguagesController extends Controller
                 return response()->json(
                     [
                         'message' => 'Language Created Successfully!',
-                        'data'   =>  view('super_admin.languages.language_list', [
+                        'data'   =>  view('admin.languages.language_list', [
                             'allLanguagesDetails' => $this->languageServices->all()
                         ])->render()
                     ]
@@ -69,7 +69,7 @@ class AdminLanguagesController extends Controller
             return response()->json(
                 [
                     'message' => 'Updated Successfully!',
-                    'data'   =>  view('super_admin.languages.language_list', [
+                    'data'   =>  view('admin.languages.language_list', [
                         'allLanguagesDetails' => $this->languageServices->all()
                     ])->render()
                 ]
@@ -83,7 +83,7 @@ class AdminLanguagesController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Deleted Successfully',
-                'data'   =>  view('super_admin.languages.language_list', [
+                'data'   =>  view('admin.languages.language_list', [
                     'allLanguagesDetails' => $this->languageServices->all()
                 ])->render()
             ]);
@@ -100,7 +100,7 @@ class AdminLanguagesController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Country Status Updated Successfully',
-                'data'   =>  view('super_admin.languages.language_list', [
+                'data'   =>  view('admin.languages.language_list', [
                     'allLanguagesDetails' => $this->languageServices->all()
                 ])->render()
             ]);
@@ -110,12 +110,12 @@ class AdminLanguagesController extends Controller
     }
 
     public function search(Request $request)
-    {   
+    {
         $searchedItems = $this->languageServices->searchInLanguages($request->all());
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view('super_admin.languages.language_list', [
+                'data'   =>  view('admin.languages.language_list', [
                     'allLanguagesDetails' => $searchedItems
                 ])->render()
             ]);

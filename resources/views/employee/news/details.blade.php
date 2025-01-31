@@ -3,53 +3,88 @@
 @section('title')
     News Details
 @endsection
-<!--begin::Header-->
-<!--end::Header-->
-<!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
-        <div class="row gy-5 g-xl-10">
+        <div class="row">
             <!--begin::Col-->
-            <div class="card card-body col-md-12">
-								<div class="row g-10">
-									<!--begin::Col-->
-									<div class="col-md-12">
-										<!--begin::Feature post-->
-										<div class="card-xl-stretch me-md-6">
-											<!--begin::Image-->
-											<img src="{{asset('employee/assets/media/news/11.png')}}" class="card-rounded min-h-175px mb-5">
-											
-											<!--end::Image-->
-											<!--begin::Body-->
-											<div class="m-0">
-												<!--begin::Title-->
-												<a href="#" class="fs-4 text-dark fw-bold text-hover-primary text-dark lh-base">Scrum Meeting</a>
-												<!--end::Title-->
-												<!--begin::Text-->
-												<div class="fw-semibold fs-5 text-gray-600 text-dark my-4">
-													<i class="fa fa-calendar-days"></i> March 27,2024
-												</div>
-												<!--end::Text-->
-												<div class="fw-semibold fs-5 text-gray-600 text-dark my-4">We’ve been focused on making a the from also not been afraid to and step away been focused create eye</div>
-											
-											</div>
-											<!--end::Body-->
-										</div>
-										<!--end::Feature post-->
-									</div>
-									<!--end::Col-->
-								
-								
-								</div>
-							</div>
+            <div class="col-md-9">
+                <div class="card card-body col-md-12">
+                    <div class="row">
+                        <!--begin::Col-->
+                        <div class="col-md-12">
+                            <!--begin::Feature post-->
+                            <div class="card-xl-stretch">
+                                <!--begin::Image-->
+                                <img src="{{ $newsDetails->image }}" class="card-rounded img-fluid mb-5">
+
+                                <!--end::Image-->
+                                <!--begin::Body-->
+                                <div class="m-0">
+                                    <!--begin::Title-->
+                                    <h5>
+                                        <span class="category">{{ $newsDetails->newsCategories->name }}</span>
+                                        {{ $newsDetails->title }}
+                                    </h5>
+                                    <!--end::Title-->
+                                    <!--begin::Text-->
+                                    <div class="fw-semibold fs-5 text-gray-900 text-dark my-4">
+                                        <i class="fa fa-calendar-days"></i>
+                                        {{ date('j F,Y', strtotime($newsDetails->created_at)) }}
+                                    </div>
+                                    <!--end::Text-->
+                                    <div class="fw-semibold fs-5 text-gray-900 text-dark my-4">
+                                        {!! $newsDetails->description !!} </div>
+
+                                </div>
+                                <!--end::Body-->
+
+                                <object data="{{ $newsDetails->file }}" type="application/pdf" width="100%"
+                                    height="200">
+                                </object>
+                            </div>
+                            <!--end::Feature post-->
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                </div>
+            </div>
             <!--end::Col-->
+            <div class="col-md-3">
+                <div class="card mb-3">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5> Recent News</h5>
+                        </div>
+                    </div>
+                    <div class="card mb-3 scrollbar-news">
+                        <div class="card-body">
+                            <table class="table m-0">
+                                @foreach ($allAssinedNewsDetails as $allNewsDetails)
+                                    @if ($allNewsDetails->id != $newsDetails->id)
+                                        <div class="small-post">
+                                            <div class="eblog-post-list-style">
+                                                <div class="image-area">
+                                                    <a href="#"><img src="{{ $allNewsDetails->image }}"
+                                                            alt=""></a>
+                                                </div>
+                                                <div class="blog-content">
+                                                    <h4 class="heading-title">
+                                                        <a class="title-animation"
+                                                            href="{{ route('employee.news.details', $allNewsDetails->id) }}">
+                                                            {{ $allNewsDetails->title }}</a>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+                                @endforeach
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!--end::Row-->
     </div>
-    <!--end::Container-->
-</div>
-<!--end::Content-->
-</div>
 @endsection

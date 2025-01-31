@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Exception;
+use DateTimeZone;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CountryServices;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Exception;
 
 class AdminCountryController extends Controller
 {
@@ -22,8 +23,9 @@ class AdminCountryController extends Controller
      */
     public function index()
     {
-        return view('super_admin.country.index', [
-            'allCountryDetails' => $this->countryService->all()
+        return view('admin.country.index', [
+            'allCountryDetails' => $this->countryService->all(),
+            'timezones' => DateTimeZone::listIdentifiers()
         ]);
     }
 
@@ -34,7 +36,8 @@ class AdminCountryController extends Controller
     {
         try {
             $validateCountryData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:countries,name'],
+                'name' => 'required|string|unique:countries,name',
+                'timezone' => 'required|timezone',
             ]);
             if ($validateCountryData->fails()) {
                 return response()->json(['error' => $validateCountryData->messages()], 400);
@@ -43,7 +46,7 @@ class AdminCountryController extends Controller
             if ($this->countryService->create($data)) {
                 return response()->json([
                     'message' => 'Country Created Successfully!',
-                    'data'   =>  view('super_admin.country.country_list', [
+                    'data'   =>  view('admin.country.country_list', [
                         'allCountryDetails' => $this->countryService->all()
                     ])->render()
                 ]);
@@ -59,7 +62,8 @@ class AdminCountryController extends Controller
     public function update(Request $request)
     {
         $validateCountryData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:countries,name,' . $request->company_id],
+            'name' => 'required|string|unique:countries,name,' . $request->company_id,
+            'timezone' => 'required|timezone',
         ]);
 
         if ($validateCountryData->fails()) {
@@ -71,7 +75,7 @@ class AdminCountryController extends Controller
             return response()->json(
                 [
                     'message' => 'Country Updated Successfully!',
-                    'data'   =>  view('super_admin.country.country_list', [
+                    'data'   =>  view('admin.country.country_list', [
                         'allCountryDetails' => $this->countryService->all()
                     ])->render()
                 ]
@@ -89,7 +93,7 @@ class AdminCountryController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Country Deleted Successfully',
-                'data'   =>  view('super_admin.country.country_list', [
+                'data'   =>  view('admin.country.country_list', [
                     'allCountryDetails' => $this->countryService->all()
                 ])->render()
             ]);
@@ -105,7 +109,7 @@ class AdminCountryController extends Controller
         if ($statusDetails) {
             return response()->json([
                 'success' => 'Country Status Updated Successfully',
-                'data'   =>  view("super_admin.country.country_list", [
+                'data'   =>  view("admin.country.country_list", [
                     'allCountryDetails' => $this->countryService->all()
                 ])->render()
             ]);
@@ -115,12 +119,12 @@ class AdminCountryController extends Controller
     }
 
     public function search(Request $request)
-    {   
-        $searchedItems = $this->countryService->searchInCountry($request->all());
+    {
+        $searchedItems = $this->countryService->serachFilterList($request);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view("super_admin.country.country_list", [
+                'data'   =>  view("admin.country.country_list", [
                     'allCountryDetails' => $searchedItems
                 ])->render()
             ]);

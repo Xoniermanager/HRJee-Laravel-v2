@@ -34,8 +34,8 @@
                             <option value="">Status</option>
                             <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
                                 value="1">Active</option>
-                            <option {{ old('status') == '2' || request()->get('status') == '2' ? 'selected' : '' }}
-                                value="2">Inactive</option>
+                            <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
+                                value="0">Inactive</option>
                         </select>
                         <select class="form-control min-w-150px me-2" id="filter_department">
                             <option value="">Select Development</option>
@@ -227,7 +227,7 @@
         jQuery('#edit_designation').modal('show');
     }
     jQuery.noConflict();
-    jQuery(document).ready(function($) 
+    jQuery(document).ready(function($)
     {
         jQuery("#designation_form").validate({
             rules: {

@@ -14,12 +14,12 @@ class OfficeTimingConfigsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('office_timing_configs')->delete();
-        
+
         \DB::table('office_timing_configs')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
                 'name' => 'Moises Abernathy',
@@ -30,9 +30,11 @@ class OfficeTimingConfigsTableSeeder extends Seeder
                 'company_branch_id' => 1,
                 'created_at' => '2024-06-21 15:01:00',
                 'updated_at' => '2024-06-21 15:01:00',
+                'company_id' => 1,
+                'created_by' => 1
             ),
         ));
-        
-        
+
+
     }
 }
