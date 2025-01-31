@@ -24,7 +24,7 @@ class DepartmentController extends Controller
     public function index()
     {
         return view("company.department.index", [
-            'allDepartmentDetails' => $this->departmentService->all()
+            'allDepartmentDetails' => $this->departmentService->fetchByCompany()->paginate(10)
         ]);
     }
 
@@ -36,7 +36,8 @@ class DepartmentController extends Controller
     {
         try {
             $validateDepartments  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:departments,name'],
+                //'name' => ['required', 'string', 'unique:departments,name'], //here unique constrant won't work as diff company has same dept
+                'name' => ['required', 'string', 'unique:departments,name,NULL,id,company_id,' . Auth::guard('company')->user()->company_id], 
             ]);
             if ($validateDepartments->fails()) {
                 return response()->json(['error' => $validateDepartments->messages()], 400);
@@ -47,7 +48,7 @@ class DepartmentController extends Controller
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
                     'data'   =>  view("company.department.department_list", [
-                        'allDepartmentDetails' => $this->departmentService->all()
+                        'allDepartmentDetails' => $this->departmentService->fetchByCompany()->paginate(10)
                     ])->render()
                 ]);
             }
@@ -62,7 +63,7 @@ class DepartmentController extends Controller
     public function update(Request $request)
     {
         $validateDepartments  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:departments,name,' . $request->id],
+            'name' => ['required', 'string', 'unique:departments,name,' . $request->id . ',id,company_id,' . Auth::guard('company')->user()->company_id],
         ]);
 
         if ($validateDepartments->fails()) {
@@ -75,7 +76,7 @@ class DepartmentController extends Controller
                 [
                     'message' => 'Departments Updated Successfully!',
                     'data'   =>  view('company.department.department_list', [
-                        'allDepartmentDetails' => $this->departmentService->all()
+                        'allDepartmentDetails' => $this->departmentService->fetchByCompany()->paginate(10)
                     ])->render()
                 ]
             );
@@ -93,7 +94,7 @@ class DepartmentController extends Controller
             return response()->json([
                 'success' => 'Departments Deleted Successfully',
                 'data'   =>  view("company.department.department_list", [
-                    'allDepartmentDetails' => $this->departmentService->all()
+                    'allDepartmentDetails' => $this->departmentService->fetchByCompany()->paginate(10)
                 ])->render()
             ]);
         } else {
@@ -109,7 +110,7 @@ class DepartmentController extends Controller
             return response()->json([
                 'success' => 'Departments Status Updated Successfully',
                 'data'   =>  view("company.department.department_list", [
-                    'allDepartmentDetails' => $this->departmentService->all()
+                    'allDepartmentDetails' => $this->departmentService->fetchByCompany()->paginate(10)
                 ])->render()
             ]);
         } else {

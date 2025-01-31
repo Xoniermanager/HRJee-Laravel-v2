@@ -15,6 +15,12 @@ class DepartmentServices
     {
         return $this->departmentRepository->orderBy('id', 'DESC')->paginate(10);
     }
+
+    public function fetchByCompany()
+    {
+        return $this->departmentRepository->where('company_id', auth()->guard('company')->user()->company_id)->orderBy('id', 'DESC');
+    }
+
     public function create(array $data)
 
     {
@@ -55,7 +61,7 @@ class DepartmentServices
     }
     public function getAllActiveDepartmentsByCompanyId($companyId)
     {
-        return $this->departmentRepository->where('company_id', $companyId)->orwhere('company_id', NUll)->where('status', '1')->get();
+        return $this->departmentRepository->where('company_id', $companyId)->where('status', '1')->get();
     }
     public function getAllAssignedDepartment($data)
     {

@@ -103,7 +103,7 @@ class EmployeeController extends Controller
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
-        $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
+        $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(auth()->guard('company')->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages = $this->languagesServices->defaultLanguages();
         $allBranches = $this->branchService->all(Auth()->guard('company')->user()->company_id);
@@ -138,7 +138,7 @@ class EmployeeController extends Controller
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
-        $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
+        $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(auth()->guard('company')->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $allBranches = $this->branchService->all(Auth()->guard('company')->user()->company_id);
         // $allRoles = $this->roleService->all();
