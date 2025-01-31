@@ -508,31 +508,7 @@ class MenusTableSeeder extends Seeder
                 'order_no' => 30,
                 'created_at' => '2025-01-15 17:54:47',
                 'updated_at' => '2025-01-23 12:27:40',
-            ),
-            42 => 
-            array (
-                'id' => 43,
-                'title' => 'Department',
-                'slug' => '/company/department',
-                'icon' => '<i class="fa fa-user-times" aria-hidden="true"></i>',
-                'parent_id' => NULL,
-                'status' => 1,
-                'order_no' => 30,
-                'created_at' => '2025-01-15 17:54:47',
-                'updated_at' => '2025-01-23 12:27:40',
-            ),
-            44 => 
-            array (
-                'id' => 44,
-                'title' => 'Designation',
-                'slug' => '/company/designation',
-                'icon' => '<i class="fa fa-user-times" aria-hidden="true"></i>',
-                'parent_id' => NULL,
-                'status' => 1,
-                'order_no' => 30,
-                'created_at' => '2025-01-15 17:54:47',
-                'updated_at' => '2025-01-23 12:27:40',
-            ),
+            )
         ));
     }
 }
