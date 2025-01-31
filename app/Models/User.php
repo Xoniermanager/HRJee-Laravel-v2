@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -54,6 +55,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
             return [];
         }
+    }
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => ucfirst($value),
+        );
     }
 
     public function details()
