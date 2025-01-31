@@ -87,7 +87,7 @@
                                     style="border-top: 1px solid rgba(255, 255, 255, 0.3); background: rgba(0, 0, 0, 0.15); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;">
                                     <div class="fw-bold text-white py-2">
                                         <span class="fs-1 d-block">{{ $dashboardData['total_leave'] }}</span>
-                                        <span class="opacity-50">Total Today on Leave</span>
+                                        <span class="opacity-50">Total Approved Leave</span>
                                     </div>
                                 </div>
                                 <!--end::Card footer-->

@@ -28,6 +28,7 @@ return new class extends Migration
             $table->boolean('jiofence_auto_check_out')->default(false);
             $table->string('total_break_time')->nullable();
             $table->boolean('late')->default(false);
+            $table->boolean('is_short_attendance')->default(false);
             $table->enum('status', [1,2])->default('1')->comment('Status: NORMAL=1, HALF=2');
             $table->string('remark')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();

@@ -71,6 +71,7 @@ class CompanyDashboardController extends Controller
             // 'all_users_details' => $this->employeeService->getAllEmployeeByCompanyId($companyId)->paginate(10)
             'all_users_details' => []
         ];
+        
         return view('company.dashboard.dashboard', compact('dashboardData'));
     }
 
