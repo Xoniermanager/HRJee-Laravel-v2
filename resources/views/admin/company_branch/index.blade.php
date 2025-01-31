@@ -363,16 +363,16 @@
         $('#id').val(companyBranchDetails.id);
         $('#name').val(companyBranchDetails.name);
         $('#address').val(companyBranchDetails.address);
-        $('#branch_type').val(companyBranchDetails.branch_type);
+        $('#branch_type').val(companyBranchDetails.type);
         $('#contact_no').val(companyBranchDetails.contact_no);
         $('#email').val(companyBranchDetails.email);
         $('#hr_email').val(companyBranchDetails.hr_email);
         $('#address').val(companyBranchDetails.address);
         $('#city').val(companyBranchDetails.city);
         $('#pincode').val(companyBranchDetails.pincode);
-        $('#state').val(companyBranchDetails.state);
+        $('#state').val(companyBranchDetails.state_id);
         $('#country_id').val(companyBranchDetails.country_id);
-        $('#description').val(companyBranchDetails.description);
+        $('#text-area').text(companyBranchDetails.description);
         jQuery('#edit_company_branch').modal('show');
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Mail\WelcomeEmail;
-use App\Models\CompanyUser;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +20,7 @@ class ForgetPasswordController extends Controller
     public function submitForgetPasswordForm(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:company_users',
+            'email' => 'required|email',
         ]);
 
         $token = Str::random(64);
@@ -45,7 +45,7 @@ class ForgetPasswordController extends Controller
     public function submitResetPasswordForm(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:company_users',
+            'email' => 'required|email',
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required'
         ]);
@@ -58,7 +58,7 @@ class ForgetPasswordController extends Controller
         if (!$updatePassword) {
             return back()->withInput()->with('error', 'Not Allowed!! Your Password is Already Changed');
         }
-        $user = CompanyUser::where('email', $request->email)
+        $user = User::where('email', $request->email)
             ->update(['password' => Hash::make($request->password)]);
         DB::table('password_reset_tokens')->where(['email' => $request->email])->delete();
         if ($user == 1) {

@@ -6,21 +6,18 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Services\BreakTypeService;
-use App\Http\Services\CompanyUserService;
 use App\Http\Services\EmployeeAttendanceService;
 use App\Http\Services\EmployeeBreakHistoryService;
 
 class DashboardController extends Controller
 {
-    private $companyUserService;
     private $employeeAttendanceService;
     private $breakTypeService;
 
     private $employeeBreakHistoryService;
 
-    public function __construct(CompanyUserService $companyUserService, EmployeeAttendanceService $employeeAttendanceService, BreakTypeService $breakTypeService, EmployeeBreakHistoryService $employeeBreakHistoryService)
+    public function __construct(EmployeeAttendanceService $employeeAttendanceService, BreakTypeService $breakTypeService, EmployeeBreakHistoryService $employeeBreakHistoryService)
     {
-        $this->companyUserService = $companyUserService;
         $this->employeeAttendanceService = $employeeAttendanceService;
         $this->breakTypeService = $breakTypeService;
         $this->employeeBreakHistoryService = $employeeBreakHistoryService;

@@ -15,7 +15,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ValidateCompany;
 use App\Http\Services\CompanyTypeService;
-use App\Http\Services\CompanyUserService;
 use App\Http\Services\CompanyDetailService;
 
 class AdminCompanyController extends Controller
@@ -23,15 +22,10 @@ class AdminCompanyController extends Controller
 
     private $companyDetailService;
     private $userService;
-    private $companyUserService;
-    private $menuServices;
-    private $companyRepository;
     private $companyTypeService;
-    public function __construct(CompanyDetailService $companyDetailService, CompanyUserService $companyUserService, MenuService $menuServices, CompanyTypeService $companyTypeService, UserService $userService)
+    public function __construct(CompanyDetailService $companyDetailService, CompanyTypeService $companyTypeService, UserService $userService)
     {
         $this->companyDetailService = $companyDetailService;
-        $this->companyUserService = $companyUserService;
-        $this->menuServices = $menuServices;
         $this->companyTypeService = $companyTypeService;
         $this->userService = $userService;
     }

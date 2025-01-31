@@ -29,7 +29,6 @@ class BranchServices
     
     $data['company_id'] = Auth()->user()->company_id ?? $data['company_id'];
     $data['created_by'] = Auth()->user()->id ?? $data['company_id'];
-    //dd($data);
     
     return $this->branchRepository->create($data);
   }

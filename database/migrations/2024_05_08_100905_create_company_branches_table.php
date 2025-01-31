@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('address')->unique();
             $table->string('city');
             $table->string('pincode');
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('country_id');
             $table->unsignedBigInteger('state_id');

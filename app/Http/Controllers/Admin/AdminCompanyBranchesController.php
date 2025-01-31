@@ -46,15 +46,6 @@ class AdminCompanyBranchesController extends Controller
 
     public function store(ValidateBranch $request)
     {
-
-        // $validator  = Validator::make($request->all(), [
-        //     'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return response()->json(['error' => $validator->messages()], 400);
-        // }
-        
         $companyStatus = $this->branch_services->create($request->all());
         if ($companyStatus) {
             return response()->json(
