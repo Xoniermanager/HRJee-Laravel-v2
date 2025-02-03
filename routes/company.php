@@ -276,6 +276,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::post('/update', 'update')->name('role.update');
             Route::get('/delete', 'destroy')->name('role.delete');
             Route::get('/status/update', 'statusUpdate')->name('role.statusUpdate');
+            Route::get('/search/filter', 'serachRoleFilterList');
         });
 
         Route::prefix('/permissions')->controller(PermissionsController::class)->group(function () {
