@@ -67,7 +67,7 @@ Route::get('/company/state/get/all/state', [StateController::class, 'getAllState
 Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
-        Route::post('update/{id}', 'update_company')->name('update.company');
+        Route::post('profile/update', 'update_company')->name('company.profile.update');
         Route::post('change/password', 'company_change_password')->name('company.change.password');
     });
     Route::controller(CompanyDashboardController::class)->group(function () {
@@ -276,6 +276,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::post('/update', 'update')->name('role.update');
             Route::get('/delete', 'destroy')->name('role.delete');
             Route::get('/status/update', 'statusUpdate')->name('role.statusUpdate');
+            Route::get('/search/filter', 'serachRoleFilterList');
         });
 
         Route::prefix('/permissions')->controller(PermissionsController::class)->group(function () {

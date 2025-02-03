@@ -49,7 +49,7 @@ class CompanyController extends Controller
             $data = request()->except(['_token']);
 
 
-            $this->userService->updateDetail(['name' => $data['name'],'email' => $data['email']], auth()->id());
+            $this->userService->updateDetail(['name' => $data['name']], auth()->id());
             $detailPayload = [
                 'username' => $data['username'],
                 'contact_no' => $data['contact_no'],

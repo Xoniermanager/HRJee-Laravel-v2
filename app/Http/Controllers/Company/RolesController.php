@@ -141,4 +141,19 @@ class RolesController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
+
+    public function serachRoleFilterList(Request $request)
+    {
+        $searchedItems = $this->customRoleService->serachRoleFilterList($request, auth()->user()->company_id);
+        if ($searchedItems) {
+            return response()->json([
+                'success' => 'Searching',
+                'data' => view("company/roles_and_permission/roles/roles_list", [
+                    'roles' => $searchedItems
+                ])->render()
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
 }

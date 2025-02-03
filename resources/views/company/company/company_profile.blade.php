@@ -187,46 +187,6 @@
                     <!--end::Info-->
                 </div>
                 <!--end::Details-->
-                <ul class="nav nav-pills nav-pills-custom mb-3 mt-10" role="tablist">
-                    <!--begin::Item-->
-                    <li class="nav-item  me-3 me-lg-6" role="presentation">
-                        <!--begin::Link-->
-                        <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden  h-55px py-4 active"
-                            data-bs-toggle="pill" href="#kt_profile_details_view" aria-selected="false" role="tab"
-                            tabindex="-1">
-
-                            <!--begin::Subtitle-->
-                            <span class="nav-text text-gray-700 fw-bold fs-6 ">Personal Details</span>
-                            <!--end::Subtitle-->
-                            <!--begin::Bullet-->
-                            <span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span>
-                            <!--end::Bullet-->
-
-                        </a>
-                        <!--end::Link-->
-                    </li>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <li class="nav-item  me-3 me-lg-6" role="presentation">
-                        <!--begin::Link-->
-                        <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden  h-55px py-4"
-                            data-bs-toggle="pill" href="#company_detail" aria-selected="false" role="tab" tabindex="-1">
-
-                            <!--begin::Subtitle-->
-                            <span class="nav-text text-gray-700 fw-bold fs-6 ">Company Details</span>
-                            <!--end::Subtitle-->
-                            <!--begin::Bullet-->
-                            <span class="bullet-custom position-absolute bottom-0 w-100 h-4px bg-primary"></span>
-                            <!--end::Bullet-->
-
-                        </a>
-                        <!--end::Link-->
-                    </li>
-                    <!--end::Item-->
-
-
-                </ul>
-
             </div>
         </div>
         <!--end::Navbar-->
@@ -239,7 +199,7 @@
                     </div>
                 </div>
                 <div class="card-body p-9">
-                    <form method="post" action="" enctype="multipart/form-data">
+                    <form method="post" action="{{route("company.profile.update")}}" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6 form-group">

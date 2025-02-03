@@ -19,14 +19,14 @@ class AssignPermissionController extends Controller
      */
     public function index()
     {
-        $roles = Role::where('category', 'custom')->with(['menus'])->get();
+        $roles = Role::where('category', 'custom')->where('status', 1)->with(['menus'])->get();
         
         return view('company.roles_and_permission.assign_permission.index', compact('roles'));
     }
 
     public function add()
     {
-        $roles = Role::where('category', 'custom')->orderBy('id', 'DESC')->get();
+        $roles = Role::where('category', 'custom')->where('status', 1)->orderBy('id', 'DESC')->get();
        
         $allMenus = auth()->user()->menu->where('parent_id', null);
         
