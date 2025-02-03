@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Http\FormRequest;
 
-class EmployeeChangePasswordRequest extends FormRequest
+class UserChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

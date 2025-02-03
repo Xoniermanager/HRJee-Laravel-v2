@@ -466,7 +466,7 @@
                         } else {
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'Something Went Wrong! Please try Again!',
+                                text: response.message,
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             });

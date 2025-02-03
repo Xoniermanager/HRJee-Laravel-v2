@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Employee;
 
-use App\Http\Requests\EmployeeChangePasswordRequest;
+use App\Http\Requests\UserChangePasswordRequest;
 use App\Models\User;
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
@@ -45,7 +45,7 @@ class AccountController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
         $data = $request->except('_token');
-        
+
         $user = User::find(Auth::user()->id);
         $user->update($data);
 
@@ -86,8 +86,8 @@ class AccountController extends Controller
             return redirect()->back()->with(['error' => 'Please try Again']);
         }
     }
-    
-    public function updateChangePassword(EmployeeChangePasswordRequest $request)
+
+    public function updateChangePassword(UserChangePasswordRequest $request)
     {
         $credential = $request->validated();
         try {

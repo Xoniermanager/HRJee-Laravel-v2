@@ -4,7 +4,7 @@
 		@csrf
 		<input type="hidden" name="id" value="{{ $singleUserDetails->id ?? '' }}">
 		<input type="hidden" name="user_details_id" value="{{ $singleUserDetails->details->id ?? '' }}">
-\		<input type="hidden" id="highest_qualification_id" value="{{ $singleUserDetails->details->qualification_id ?? '' }}">
+        <input type="hidden" id="highest_qualification_id" value="{{ $singleUserDetails->details->qualification_id ?? '' }}">
 		<p id="get_skills_id" style="display: none">{{ $userSkills ?? '' }}</p>
 		<div class="row m-0 mb-6">
 			<!--begin::Label-->
@@ -209,7 +209,7 @@
 					<option value="">Select The Department</option>
 					@forelse ($alldepartmentDetails as $departmentDetails)
 						<option value="{{ $departmentDetails->id }}"
-							{{ $singleUserDetails->details->department_id  == $departmentDetails->id ? 'selected' : '' }}>
+							{{ $singleUserDetails->details->department_id  ?? '' == $departmentDetails->id ? 'selected' : '' }}>
 							{{ $departmentDetails->name }}</option>
 					@empty
 						<option value="">No Department Found</option>

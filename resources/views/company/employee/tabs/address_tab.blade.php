@@ -39,7 +39,7 @@ $addressTypeValue = '1';
                         <select class="form-control alldetails" id="l_country_id" name="l_country_id">
                             <option value="">Please Select Country</option>
                             @forelse ($allCountries as $countriesDetails)
-                            <option {{ $local->country_id == $countriesDetails->id ? 'selected' : '' }}
+                            <option {{ $local->country_id ?? '' == $countriesDetails->id ? 'selected' : '' }}
                                 value="{{ $countriesDetails->id }}">
                                 {{ $countriesDetails->name }}</option>
                             @empty
@@ -83,7 +83,7 @@ $addressTypeValue = '1';
                         <select class="form-control" id="p_country_id" name="p_country_id" {{ $inputDisabled ?? '' }}>
                             <option value="">Please Select Country</option>
                             @forelse ($allCountries as $countriesDetails)
-                            <option {{ $permanent->country_id == $countriesDetails->id ? 'selected' : '' }}
+                            <option {{ $permanent->country_id ?? '' == $countriesDetails->id ? 'selected' : '' }}
                                 value="{{ $countriesDetails->id }}">
                                 {{ $countriesDetails->name }}</option>
                             @empty

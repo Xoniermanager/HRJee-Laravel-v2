@@ -33,10 +33,9 @@ class BreakTypeController extends Controller
     {
         try {
             $validateCompanyStatus  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:break_types,name'],
-                'description' => ['required', 'string']
+                'name' => 'required|unique:break_types,name,NULL,NULL,company_id,' . Auth()->user()->company_id,
+                'description' => ['required', 'string', 'max:255']
             ]);
-
             if ($validateCompanyStatus->fails()) {
                 return response()->json(['error' => $validateCompanyStatus->messages()], 400);
             }
@@ -60,8 +59,8 @@ class BreakTypeController extends Controller
     public function update(Request $request)
     {
         $validateCompanyStatus  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:break_types,name,' . $request->id],
-            'description' => ['required', 'string']
+            'name' => 'required|unique:break_types,name,NULL,NULL,company_id,' . Auth()->user()->company_id,
+            'description' => 'required|string|max:255'
         ]);
 
         if ($validateCompanyStatus->fails()) {
