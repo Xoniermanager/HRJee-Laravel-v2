@@ -76,9 +76,21 @@ class CompanyController extends Controller
     public function company_change_password(Request $request)
     {
         $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|min:6|confirmed', // Ensure new password matches the confirmation field
+            // 'old_password' => 'required',
+            // 'new_password' => 'required|min:6|confirmed', // Ensure new password matches the confirmation field
+
+            'new_password'     => 'required|min:5|max:30|different:old_password',
+            'new_password_confirmation' => 'required|same:new_password',
+            'old_password'     => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!Hash::check($value, Auth()->user()->password)) {
+                        $fail('Old Password didn\'t match');
+                    }
+                },
+            ],
         ]);
+
         $companyUser = Auth()->user();
         if (!Hash::check($request->old_password, $companyUser->password)) {
             smilify('success', 'The old password is incorrect.');

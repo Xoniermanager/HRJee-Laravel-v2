@@ -157,7 +157,7 @@
                                                                     <button type="reset" class="btn btn-light me-3"
                                                                         data-bs-dismiss="modal">Cancel</button>
                                                                     <button type="submit"
-                                                                        class="btn btn-primary">submit</button>
+                                                                        class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <!--end::Switch-->
                                                         </div>
@@ -202,7 +202,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="nav-item  me-3 me-lg-6" role="presentation">
+                        {{-- <li class="nav-item  me-3 me-lg-6" role="presentation">
                             <!--begin::Link-->
                             <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden  h-55px py-4"
                                 data-bs-toggle="pill" href="#company_detail" aria-selected="false" role="tab"
@@ -217,7 +217,7 @@
 
                             </a>
                             <!--end::Link-->
-                        </li>
+                        </li> --}}
                         <!--end::Item-->
 
 
@@ -412,7 +412,8 @@
                         location.reload();
                     },
                     error: function(xhr, status, error) {
-
+                        alert(xhr.responseJSON.message)
+                        console.log("dfds => ", xhr.responseJSON)
                         console.error(xhr.responseText);
                     }
                 });
