@@ -69,7 +69,7 @@
                     event.preventDefault(); // Prevent default form submission
                     var formData = new FormData(form);
                     $.ajax({
-                        url: "<?= route('employee.update.password') ?>",
+                        url: "<?= route('user.update.password') ?>",
                         type: 'post',
                         data: formData,
                         processData: false,
