@@ -31,6 +31,11 @@ class Role extends Model
             ->withTimestamps();
     }
 
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
     public function users()
     {
         return $this->hasMany(User::class);

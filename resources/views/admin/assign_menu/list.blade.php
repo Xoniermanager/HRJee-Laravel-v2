@@ -5,7 +5,7 @@
 				<thead>
 					<tr>
 						<th>
-							<span class="f-light f-w-600">SrNo.</span>
+							<span class="f-light f-w-600">Sr No.</span>
 						</th>
 						<th>
 							<span class="f-light f-w-600">Company</span>
@@ -26,8 +26,8 @@
 						</td>
 
 						<td>
-							@forelse ($companyDetails->menu as $menu)
-								{{ ucfirst($menu->title) }}@if (!$loop->last)
+							@forelse ($companyDetails->menus() as $menu)
+								{{ ucfirst($menu['title']) }}@if (!$loop->last)
 									,
 								@endif
 							@empty

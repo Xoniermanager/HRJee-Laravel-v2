@@ -1,4 +1,4 @@
-@extends(Auth::guard('company')->id() ? 'layouts.company.main' : 'layouts.employee.main')
+@extends(Auth::user()->type == "company" ? 'layouts.company.main' : 'layouts.employee.main')
 @section('content')
 @section('title')
 	Resignation
@@ -178,13 +178,13 @@
 		if (withdraw) {
 			$('#modal_heading').text('Withdraw Resignation');
 			$('#status_wrapper').addClass('d-none');
-			$('#resignation_status').val('withdrawn');
+			$('#resignation_status').val('Withdrawn');
 		} else {
 			$('#resignation_status').val(resignation.status);
 			$('#release_date').val(resignation.release_date);
 		}
 
-		if ($('#resignation_status').val() == 'approved') {
+		if ($('#resignation_status').val() == 'Approved') {
 			$('#release_date_wrapper').removeClass('d-none');
 		} else {
 			$('#release_date_wrapper').addClass('d-none');
@@ -202,7 +202,7 @@
 
 
 	$('#resignation_status').on('change', function() {
-		if ($(this).val() == 'approved') {
+		if ($(this).val() == 'Approved') {
 			$('#release_date_wrapper').removeClass('d-none');
 		} else {
 			$('#release_date_wrapper').addClass('d-none');
@@ -215,7 +215,7 @@
 			release_date: {
 				required: function() {
 					return $('#resignation_status').val() ===
-						'approved';
+						'Approved';
 				}
 			}
 		},

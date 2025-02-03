@@ -27,7 +27,7 @@
                             </span>
                             <!--end::Svg Icon-->
                             <input class="form-control form-control-solid ps-14" placeholder="Search " type="text"
-                                value="{{ request()->get('search') }}" id="search">
+                                value="{{ request()->get('search') }}" id="search_branch">
                         </div>
                         <select class="me-2 form-control min-w-200px" id="status">
                             <option value="">Status</option>
@@ -372,7 +372,7 @@
         /**-------------End----------*/
 
         /** Filter By Search By Dropdown*/
-        jQuery("#search").on('blur', function() {
+        jQuery("#search_branch").on('input', function() {
             search_filter_results();
         });
         jQuery("#status").on('change', function() {
@@ -387,12 +387,13 @@
         });
 
         function search_filter_results() {
+            //alert($('#search').val());
             $.ajax({
                 type: 'GET',
                 url: company_ajax_base_url + '/company/branch/search',
                 data: {
                     'status': $('#status').val(),
-                    'search': $('#search').val(),
+                    'search': $('#search_branch').val(),
                     'country_id': $('#filter_country').val(),
                     'state_id': $('#filter_state_id').val(),
                 },

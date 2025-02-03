@@ -46,4 +46,23 @@ class CustomRoleService
     return $this->customRoleRepository->find($id)->update($data);
   }
 
+  public function getDetails($id)
+  {
+    return $this->customRoleRepository->with(['users'])->find($id);
+  }
+
+  public function serachRoleFilterList($request, $companyID)
+    {
+        $roleDetails = $this->customRoleRepository->where('company_id', $companyID)->where('category', 'custom');
+        /**List By Search or Filter */
+        if (isset($request['search']) && !empty($request['search'])) {
+            $roleDetails = $roleDetails->where('name', 'Like', '%' . $request['search'] . '%');
+        }
+        /**List By Status or Filter */
+        if (isset($request['status']) && $request['status'] != "") {
+            $roleDetails = $roleDetails->where('status', $request['status']);
+        }
+        return $roleDetails->orderBy('id', 'DESC')->paginate(10);
+    }
+
 }

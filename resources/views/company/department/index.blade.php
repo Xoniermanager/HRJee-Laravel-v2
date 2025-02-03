@@ -317,7 +317,7 @@
                 }
             });
         }
-        jQuery("#search").on('blur', function() {
+        jQuery("#search").on('keyup', function() {
             search_filter_results();
         });
         jQuery("#status").on('change', function() {

@@ -26,8 +26,10 @@ class BranchServices
   }
   public function create($data)
   {
-    $data['company_id'] = Auth()->user()->company_id;
-    $data['created_by'] = Auth()->user()->id;
+    
+    $data['company_id'] = Auth()->user()->company_id ?? $data['company_id'];
+    $data['created_by'] = Auth()->user()->id ?? $data['company_id'];
+    
     return $this->branchRepository->create($data);
   }
   public function deleteDetails($id)
@@ -41,10 +43,11 @@ class BranchServices
   public function searchInCompanyBranch($request)
   {
     $branchDetails = $this->branchRepository;
-
+    //dd($request);
     /**List By Search or Filter */
     if (isset($request->search) && !empty($request->search)) {
       $searchKey = $request->search;
+
       $branchDetails = $branchDetails->where(function ($query) use ($searchKey) {
         $query->where('name', 'LIKE', '%' . $searchKey . '%');
         $query->orWhere('email', 'LIKE', '%' . $searchKey . '%');
@@ -68,11 +71,11 @@ class BranchServices
     }
 
     /**List By Status or Filter */
-    if (isset($request->status) && !empty($request->status)) {
-      if ($request->status == 2) {
+    if (isset($request->status) && $request->status != '') {
+      if ($request->status == 2 || $request->status == "2") {
         $status = 0;
       } else {
-        $status = $request->status;
+        $status = (int) $request->status;
       }
       $branchDetails = $branchDetails->where('status', $status);
     }

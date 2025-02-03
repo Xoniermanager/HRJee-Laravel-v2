@@ -66,19 +66,21 @@ Route::prefix('admin')->controller(AdminForgetPasswordController::class)->group(
 
 // /** ----------------- Super Admin Started -------------------- **/
 Route::prefix('/admin')->controller(AdminAuthController::class)->group(function () {
-    Route::get('/login', 'login')->name('admin.login.form');
-    Route::get('/verify/otp', 'verifyOtp')->name('admin.verifyOtp');
-    Route::get('/resend/otp', 'resendOtp')->name('admin.resendOtp');
-    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('admin.verifyOtpCheck');
-    Route::post('/admin_login', 'admin_login')->name('super.admin.login');
+    // Route::middleware('guest')->group(function () {
+        Route::get('/login', 'login')->name('admin.login.form');
+        Route::get('/verify/otp', 'verifyOtp')->name('admin.verifyOtp');
+        Route::get('/resend/otp', 'resendOtp')->name('admin.resendOtp');
+        Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('admin.verifyOtpCheck');
+        Route::post('/admin_login', 'admin_login')->name('super.admin.login');
+    // });
     Route::get('/logout', 'adminLogout')->name('admin.logout');
 });
 // /**---------------End Super Admin Auth Route----------------*/
 
 // /** Employee Complain */
-// Route::prefix('employee')->controller(EmployeeComplainController::class)->group(function () {
-//     Route::post('/send/message/{employee_complains:id}', 'sendMessage')->name('send.message');
-// });
+Route::prefix('employee')->controller(EmployeeComplainController::class)->group(function () {
+    Route::post('/send/message/{employee_complains:id}', 'sendMessage')->name('send.message');
+});
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('base');
     Route::post('/login', 'login')->name('login');
@@ -86,5 +88,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
     Route::get('/resend/otp', 'resendOtp')->name('resendOtp');
-    Route::post('/change/password', 'changePassword')->name('change.password');
+    Route::post('/change/password', 'adminChangePassword')->name('change.password');
+    Route::post('/update/change/password', 'userUpdateChangePassword')->name('user.update.password');
 });

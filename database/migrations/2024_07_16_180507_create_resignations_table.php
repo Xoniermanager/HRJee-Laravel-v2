@@ -17,12 +17,15 @@ return new class extends Migration {
             $table->text('remark');
             $table->date('release_date')->nullable();
             $table->enum('status', [
-                'pending',
-                'approved',
-                'rejected',
-                'withdrawn',
-                'hold'
-            ])->default('pending');
+                'Pending',
+                'Approved',
+                'Rejected',
+                'Withdrawn',
+                'Hold'
+            ])->default('Pending');
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }

@@ -36,6 +36,7 @@ class CompanyBranchesTableSeeder extends Seeder
                 'created_by' => 1,
                 'status' => 1,
                 'deleted_at' => NULL,
+                'description' => NULL,
                 'created_at' => '2024-06-21 14:52:45',
                 'updated_at' => '2024-06-21 14:52:45',
             ),

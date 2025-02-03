@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,14 +45,34 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role->belongsToMany(Menu::class)->with(['children']);
     }
 
-    public function details()
+    public function menus()
     {
-        if ($this->type == 'company') {
-            return $this->hasOne(CompanyDetail::class, 'user_id');
+        if($this->role_id) {
+            $menusIDs = MenuRole::where('role_id', $this->role_id)->pluck('menu_id')->toArray();
+
+            return Menu::whereIn('id', $menusIDs)->with(['children'])->get()->toArray();
         } else {
-            return $this->hasOne(UserDetail::class, 'user_id');
+
+            return [];
         }
     }
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => ucfirst($value),
+        );
+    }
+
+    public function details()
+    {
+        return $this->hasOne(UserDetail::class, 'user_id');
+    }
+    public function companyDetails()
+    {
+        return $this->hasOne(CompanyDetail::class, 'user_id');
+    }
+
     public function addressDetails()
     {
         return $this->hasMany(UserAddressDetail::class, 'user_id');
@@ -72,36 +93,40 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(UserPastWorkDetail::class, 'user_id');
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(User::class, 'company_id');
+    }
+
     public function documentDetails()
     {
         return $this->hasMany(UserDocumentDetail::class, 'user_id', 'id');
     }
+
     public function qualificationDetails()
     {
         return $this->hasMany(UserQualificationDetail::class, 'user_id', 'id');
     }
+
     public function familyDetails()
     {
         return $this->hasMany(UserRelativeDetail::class, 'user_id', 'id');
-    }
-    protected function profileImage(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => url("storage" . $value)
-        );
     }
     public function skill()
     {
         return $this->belongsToMany(Skill::class, 'user_skill', 'user_id', 'skill_id');
     }
+
     public function language()
     {
         return $this->belongsToMany(Languages::class, 'langauge_user', 'user_id', 'language_id')->withPivot('read', 'write', 'speak');
     }
+
     public function assetDetails()
     {
         return $this->hasMany(UserAsset::class, 'user_id', 'id')->where('returned_date', '=', null);
     }
+
     public function hasPermission($permissionName)
     {
         return $this->role->permissions()->where('name', $permissionName)->exists();

@@ -19,14 +19,14 @@ class AssignPermissionController extends Controller
      */
     public function index()
     {
-        $roles = Role::where('category', 'custom')->with(['menus'])->get();
+        $roles = Role::where('category', 'custom')->where('status', 1)->with(['menus'])->get();
         
         return view('company.roles_and_permission.assign_permission.index', compact('roles'));
     }
 
     public function add()
     {
-        $roles = Role::where('category', 'custom')->orderBy('id', 'DESC')->get();
+        $roles = Role::where('category', 'custom')->where('status', 1)->orderBy('id', 'DESC')->get();
        
         $allMenus = auth()->user()->menu->where('parent_id', null);
         
@@ -37,25 +37,29 @@ class AssignPermissionController extends Controller
     {
         $request->validate([
             'role_id' => 'required|exists:roles,id',
-            'menu_id'    => 'required|array',
+            'menu_id'    => 'sometimes|array',
             'menu_id.*'    => 'required|exists:menus,id',
         ]);
 
         try {
             $syncData = [];
-            foreach($request->menu_id as $menu_id) {
-                $syncData[$menu_id] = [
-                    'can_create' => true,
-                    'can_read' => true,
-                    'can_update' => true,
-                    'can_delete' => true,
-                ];
+            if($request->menu_id) {
+                foreach($request->menu_id as $menu_id) {
+                    $syncData[$menu_id] = [
+                        'can_create' => true,
+                        'can_read' => true,
+                        'can_update' => true,
+                        'can_delete' => true,
+                    ];
+                }
+    
+                $adminRole = Role::where('id', $request->role_id)->first();
+                $adminRole->menus()->sync($syncData);
+            } else {
+                MenuRole::where('role_id', $request->role_id)->delete();
             }
-            $adminRole = Role::where('id', $request->role_id)->first();
-            $adminRole->menus()->sync($syncData);
 
-            return redirect('/company/roles/assign_permissions')->with('success', 'Assigned Permissions Successfully!');
-
+            return redirect('/company/roles/assign_permissions')->with('success', 'Permissions updated successfully!');
         } catch (Exception $e) {
             return $e->getMessage();
         }

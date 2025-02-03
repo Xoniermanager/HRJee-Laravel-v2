@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Employee;
 
-use App\Http\Requests\EmployeeChangePasswordRequest;
+use App\Http\Requests\UserChangePasswordRequest;
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use App\Models\UserBankDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Services\CountryServices;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UserAddressDetailsAddRequest;
@@ -43,7 +45,11 @@ class AccountController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
         $data = $request->except('_token');
-        $userDetails = User::find(Auth::user()->id);
+
+        $user = User::find(Auth::user()->id);
+        $user->update($data);
+
+        $userDetails = UserDetail::where('user_id', Auth::user()->id)->first();
         if (isset($data['profile_image']) && !empty($data['profile_image'])) {
             if ($userDetails->getRawOriginal('profile_image') != null) {
                 unlinkFileOrImage($userDetails->profile_image);
@@ -51,6 +57,7 @@ class AccountController extends Controller
             $data['profile_image'] = uploadingImageorFile($data['profile_image'], '/user_profile', removingSpaceMakingName($userDetails->name));
         }
         $userDetails->update($data);
+
         return redirect()->back()->with(['success' => 'Updated Successfully']);
     }
 
@@ -79,11 +86,12 @@ class AccountController extends Controller
             return redirect()->back()->with(['error' => 'Please try Again']);
         }
     }
-    public function updateChangePassword(EmployeeChangePasswordRequest $request)
+
+    public function updateChangePassword(UserChangePasswordRequest $request)
     {
         $credential = $request->validated();
         try {
-            $response = User::find(Auth()->user()->id)->update(['password' => $credential['password']]);
+            $response = User::find(Auth()->user()->id)->update(['password' => Hash::make($credential['password'])]);
             if ($response == true) {
                 return response()->json([
                     'status' => 200,

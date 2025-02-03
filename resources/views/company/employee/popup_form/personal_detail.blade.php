@@ -27,6 +27,7 @@
                 <form id="basic_create_form" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" id="id">
+                    <input type="hidden" name="user_details_id" id="user_details_id">
                     <div class="row mb-6 m-0">
                         <!--begin::Label-->
                         <label class="col-lg-4 col-form-label fw-semibold fs-6">
@@ -80,7 +81,7 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="">Email *</label>
-                            <input class="form-control" type="email" name="email" value="{{ old('email') }}" id="email">
+                            <input class="form-control" type="email" name="email" id="email" readonly>
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="">Official Email *</label>
@@ -103,7 +104,7 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="">Blood Group *</label>
-                            <select class="form-control" name="blood_group" id="blood_group">
+                            <select class="form-control" name="blood_group" id="edit_blood_group">
                                 <option value="">Select the Blood Group</option>
                                 <option {{ old('blood_group')=='A-' ? 'selected' : '' }} value="A-">A-
                                 </option>
@@ -121,8 +122,7 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="">Gender *</label>
-                            <select class="form-control" name="gender" id="gender">
-                                <option value="">Select the Gender</option>
+                            <select class="form-control" name="gender" id="edit_gender">
                                 <option {{ old('gender')=='M' ? 'selected' : '' }} value="M">
                                     Male</option>
                                 <option {{ old('gender')=='F' ? 'selected' : '' }} value="F">
@@ -134,7 +134,7 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="">Marital Status *</label>
-                            <select class="form-control" name="marital_status" id="marital_status">
+                            <select class="form-control" name="marital_status" id="edit_marital_status">
                                 <option value="">Select the Marital Status</option>
                                 <option {{ old('marital_status')=='M' ? 'selected' : '' }} value="M">
                                     Married</option>
@@ -144,7 +144,7 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="">Emp Status *</label>
-                            <select class="form-control" name="employee_status_id" id="employee_status_id">
+                            <select class="form-control" name="employee_status_id" id="edit_employee_status_id">
                                 <option value="">Select The Employee Status</option>
                                 @forelse ($allEmployeeStatus as $employeeStatus)
                                 <option {{ old('employee_status_id')==$employeeStatus->id ? 'selected' : '' }}
@@ -192,22 +192,23 @@
                     type: 'get',
                     success: function(response) {
                         $('#id').val(response.data.id);
-                        $('#emp_id').val(response.data.emp_id);
+                        $('#user_details_id').val(response.details.id);
+                        $('#emp_id').val(response.details.emp_id);
                         $('#name').val(response.data.name);
-                        $('#father_name').val(response.data.father_name);
-                        $('#mother_name').val(response.data.mother_name);
-                        $('#official_email_id').val(response.data.official_email_id);
-                        $('#phone').val(response.data.phone);
-                        $('#marital_status').val(response.data.marital_status);
-                        $('#employee_status_id').val(response.data.employee_status_id);
+                        $('#father_name').val(response.details.father_name);
+                        $('#mother_name').val(response.details.mother_name);
+                        $('#official_email_id').val(response.details.official_email_id);
+                        $('#phone').val(response.details.phone);
+                        $('#edit_marital_status').val(response.details.marital_status);
+                        $('#edit_employee_status_id').val(response.details.employee_status_id);
                         $('#email').val(response.data.email);
-                        $('#date_of_birth').val(response.data.date_of_birth);
-                        $('#joining_date').val(response.data.joining_date);
-                        $('#blood_group').val(response.data.blood_group)
-                        $('#gender').val(response.data.gender)
-                        if (response.data.profile_image != null) {
+                        $('#date_of_birth').val(response.details.date_of_birth);
+                        $('#joining_date').val(response.details.joining_date);
+                        $('#edit_blood_group').val(response.details.blood_group)
+                        $('#edit_gender').val(response.details.gender)
+                        if (response.details.profile_image != null) {
                             document.getElementById("profile_picture").style.backgroundImage = "url("+ response
-                                .data.profile_image + " )";
+                                .details.profile_image + " )";
                         } else {
                             document.getElementById("profile_picture").style.backgroundImage =
                                 "url('/assets/media/user.jpg')";

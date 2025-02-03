@@ -28,7 +28,7 @@ class DepartmentServices
 
     public function getAllDepartmentsByCompanyId()
     {
-        return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', Auth()->user()->id)->get();
+        return $this->departmentRepository->where('company_id', auth()->user()->company_id)->get();
     }
 
     public function updateDetails(array $data, $id)
@@ -48,7 +48,7 @@ class DepartmentServices
             $departmentDetails = $departmentDetails->where('name', 'Like', '%' . $request['search'] . '%');
         }
         /**List By Status or Filter */
-        if (isset($request['status'])) {
+        if (isset($request['status']) && $request['status'] != "") {
             $departmentDetails = $departmentDetails->where('status', $request['status']);
         }
         return $departmentDetails->orderBy('id', 'DESC')->paginate(10);
@@ -60,7 +60,7 @@ class DepartmentServices
     }
     public function getAllActiveDepartmentsByCompanyId($companyId)
     {
-        return $this->departmentRepository->where('company_id', $companyId)->orwhere('company_id', NUll)->where('status', '1')->get();
+        return $this->departmentRepository->where('company_id', $companyId)->where('status', '1')->get();
     }
     public function getAllAssignedDepartment($data)
     {

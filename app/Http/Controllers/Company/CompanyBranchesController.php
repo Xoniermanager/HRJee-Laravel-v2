@@ -49,6 +49,11 @@ class CompanyBranchesController extends Controller
     public function store(ValidateBranch $request)
     {
         try {
+            $payload = $request->all();
+            
+            if(!isset($payload['company_id'])){
+                $payload['company_id'] = auth()->user()->company_id;
+            }
             $companyBranches = $this->branch_services->create($request->all());
             if ($companyBranches) {
                 return response()->json(

@@ -18,12 +18,12 @@ return new class extends Migration {
             $table->foreign('resignation_id')->references('id')->on('resignations')->onDelete('cascade');
             $table->text('remark');
             $table->enum('status', [
-                'pending',
-                'approved',
-                'rejected',
-                'withdrawn',
-                'hold'
-            ])->default('pending');
+                'Pending',
+                'Approved',
+                'Rejected',
+                'Withdrawn',
+                'Hold'
+            ])->default('Pending');
             $table->timestamps();
         });
     }

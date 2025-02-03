@@ -37,6 +37,12 @@ class UserDetail extends Model
         'start_time',
         'status'
     ];
+    protected function profileImage(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => url("storage" . $value)
+        );
+    }
 
     public function user()
     {
@@ -51,14 +57,17 @@ class UserDetail extends Model
     {
         return $this->belongsTo(Designations::class, 'designation_id', 'id');
     }
+
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id', 'id');
     }
+
     public function employeeType()
     {
         return $this->belongsTo(EmployeeType::class, 'employee_type_id', 'id');
     }
+    
     public function officeShift()
     {
         return $this->belongsTo(OfficeShift::class, 'shift_id', 'id');

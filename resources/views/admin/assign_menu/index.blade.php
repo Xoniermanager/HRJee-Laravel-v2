@@ -52,16 +52,16 @@
 </div>
 <script>
     function search_company(ele) {
-            $.ajax({
-                url: "{{ route('admin.filter.company_menu') }}",
-                type: 'get',
-                data: {
-                    'searchKey': ele.value,
-                },
-                success: function(res) {
-                    jQuery('#assign_menu_list').replaceWith(res.data);
-                }
-            })
-        }
+        $.ajax({
+            url: "{{ route('admin.filter.company_menu') }}",
+            type: 'get',
+            data: {
+                'searchKey': ele.value,
+            },
+            success: function(res) {
+                jQuery('#assign_menu_list').replaceWith(res.data);
+            }
+        })
+    }
 </script>
 @endsection

@@ -35,6 +35,7 @@ class AttendanceController extends Controller
     public function index()
     {
         $allEmployeeDetails = $this->searchFilterDetails(Carbon::now()->month, Carbon::now()->year);
+
         return view('company.attendance.index', compact('allEmployeeDetails'));
     }
 
@@ -55,6 +56,7 @@ class AttendanceController extends Controller
         } else {
             $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->paginate(10);
         }
+
         foreach ($allEmployeeDetails as $employee) {
             $employee['totalPresent'] = $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employee->id, $year)->count();
             $employee['totalLeave'] = $this->leaveService->getTotalLeaveByUserIdByMonth($employee->id, $month, $year);
@@ -68,6 +70,7 @@ class AttendanceController extends Controller
         $encryptId = getDecryptId($userId);
         $userDetail = $this->employeeService->getUserDetailById($encryptId);
         $employeeDetail = $this->viewsearchFilterDetails(Carbon::now()->month, date('Y'), $userDetail);
+        
         return view('company.attendance.view', compact('employeeDetail'));
     }
 
@@ -85,21 +88,25 @@ class AttendanceController extends Controller
             if (isset($checkWeekend) && !empty($checkWeekend)) {
                 $weekendStatus = true;
             }
+            $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeDetails->id, date('Y-m-d', strtotime($startDate)), $endDate);
+            
             $allAttendanceDetails[date('d F Y', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByDateByUserId($employeeDetails->id, $startDate)->first();
             $allAttendanceDetails[date('d F Y', strtotime($startDate))]['weekend'] = $weekendStatus;
+            $allAttendanceDetails[date('d F Y', strtotime($startDate))]['leave'] = $checkLeave;
             $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
         }
         return
             [
                 'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
-                'totalLeave' => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
-                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth()->user()->company_id, $month, $year, $employeeDetails->company_branch_id)->count(),
+                'totalLeave'   => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
+                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::guard('company')->user()->company_id, $month, $year, $employeeDetails->company_branch_id)->count(),
                 'shortAttendance' => '0',
                 'totalAbsent' => '0',
-                'emp_id' => $employeeDetails->id,
+                'emp_id'    => $employeeDetails->id,
                 'allAttendanceDetails' => $allAttendanceDetails
             ];
     }
+
     public function searchFilterByEmployeeId(Request $request, $empId)
     {
         $userDetail = $this->employeeService->getUserDetailById($empId);
@@ -115,6 +122,8 @@ class AttendanceController extends Controller
     {
         $request['punch_in_using'] = 'Web';
         $request['punch_in_by'] = 'Company';
+        $request['company_id'] = Auth()->user()->company_id;
+        $request['created_by'] = Auth()->user()->id;
         $attendance = $this->employeeAttendanceService->editAttendanceByUserId($request->all());
         if ($attendance) {
             return response()->json(['status' => true, 'message' => 'Attendance Updated']);
@@ -140,19 +149,27 @@ class AttendanceController extends Controller
             'punch_out' => 'required|date_format:H:i|after:punch_in',
             'remark' => 'required|string|max:255',
         ]);
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        DB::beginTransaction(); // Start the transaction
+
         try {
+            DB::beginTransaction();
             $request['punch_in_using'] = 'Web';
             $request['punch_in_by'] = 'Company';
+            $request['company_id'] = Auth()->user()->company_id;
+            $request['created_by'] = Auth()->user()->id;
+
             $response = $this->employeeAttendanceService->addBulkAttendance($request->all());
-            DB::commit();
-            if ($response == true)
+
+            if ($response == true){
+                DB::commit();
                 return redirect()->route('attendance.index')->with('success', 'Attendance created successfully!');
-            else
+            }
+            else{
                 return back()->with(['error' => 'Attendance already exists for the respective dates or might be a company holiday.']);
+            }
         } catch (Exception $e) {
             DB::rollBack();
             return back()->with(['error' => 'An unexpected error occurred. Please try again.']);

@@ -72,9 +72,10 @@ class EmployeeAttendanceService
     public function create($data)
     {
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
-        $attendanceTime = date('Y/m/d H:i:s');
-        $officeStartTime = $userDetails->officeShift->start_time;
-        $officeEndTime = $userDetails->officeShift->end_time;
+        $attendanceTime = date(format: 'Y/m/d H:i:s');
+        $officeShiftDetails = $userDetails->details->officeShift;
+        $officeStartTime = $officeShiftDetails->start_time;
+        $officeEndTime = $officeShiftDetails->end_time;
         $payload = [];
         $payload =
             [
@@ -84,14 +85,30 @@ class EmployeeAttendanceService
         /** If Data Exit in Table Soo we Implement for Puch Out  */
         $existingDetails = $this->getAttendanceByDateByUserId($userDetails->id, date('Y-m-d'))->first();
         if (isset($existingDetails) && !empty($existingDetails)) {
+
+            //check if user is in short attendance
+            if ($officeShiftDetails->check_out_buffer > 0) {
+                $bufferTime = ' -' .  $officeShiftDetails->check_out_buffer . ' minutes';
+                $officeShortAttendanceTime  = date('H:i:s', strtotime($officeEndTime . $bufferTime));
+                if (date('H:i:s') < $officeShortAttendanceTime) {
+                    return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
+                } elseif ((date('H:i:s') >= $officeShortAttendanceTime) && (date('H:i:s') < date('H:i:s', strtotime($officeEndTime)))) {
+                    $payload['is_short_attendance'] = 1;
+                }
+            } else {
+                if (date('H:i:s') < date('H:i:s', strtotime($officeEndTime))) {
+                    return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
+                }
+            }
+
             $payload['punch_out'] = $attendanceTime;
             $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
             return ['data' => 'Punch Out', 'status' => true];
         } else {
             $payload['punch_in'] = $attendanceTime;
-            if ($userDetails->officeShift->login_before_shift_time > 0) {
-                $beforTime = ' -' . $userDetails->officeShift->login_before_shift_time . ' minutes';
-                $loginBeforeShiftTime = date('H:i:s', strtotime($userDetails->officeShift->start_time . $beforTime));
+            if ($officeShiftDetails->login_before_shift_time > 0) {
+                $beforTime = ' -' .  $officeShiftDetails->login_before_shift_time . ' minutes';
+                $loginBeforeShiftTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $beforTime));
                 if (date('H:i:s') < $loginBeforeShiftTime) {
                     return array('status' => false, 'message' => 'You are punching before your shift time. ' . $loginBeforeShiftTime);
                 }
@@ -115,28 +132,28 @@ class EmployeeAttendanceService
             $todayConfirmLeaveDeatils = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, date('Y-m-d'));
             $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDeatils);
 
-            if ($userDetails->officeShift->check_in_buffer > 0) {
-                $bufferTime = ' +' . $userDetails->officeShift->check_in_buffer . ' minutes';
-                $officeStartTime = date('H:i:s', strtotime($userDetails->officeShift->start_time . $bufferTime));
+            if ($officeShiftDetails->check_in_buffer > 0) {
+                $bufferTime = ' +' .  $officeShiftDetails->check_in_buffer . ' minutes';
+                $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $bufferTime));
             }
             //dd($checkLeaveDetails);
             if ($checkLeaveDetails['success']) {
                 if ($checkLeaveDetails['status'] == 'Full') {
                     return array('status' => false, 'message' => 'Today you are on leave');
                 } else if ($checkLeaveDetails['status'] == '1 Half') {
-                    if (date('H:i:s', strtotime($userDetails->officeShift->half_day_login)) > date('H:i:s')) {
-                        return array('status' => false, 'message' => 'Today you are on half day. So please punch in on second half ' . $userDetails->officeShift->half_day_login);
+                    if (date('H:i:s', strtotime($officeShiftDetails->half_day_login)) > date('H:i:s')) {
+                        return array('status' => false, 'message' => 'Today you are on half day. So please punch in on second half ' .  $officeShiftDetails->half_day_login);
                     }
-                    if ($userDetails->officeShift->check_in_buffer > 0) {
-                        $bufferTime = ' +' . $userDetails->officeShift->check_in_buffer . ' minutes';
-                        $officeStartTime = date('H:i:s', strtotime($userDetails->officeShift->half_day_login . $bufferTime));
+                    if ($officeShiftDetails->check_in_buffer > 0) {
+                        $bufferTime = ' +' .  $officeShiftDetails->check_in_buffer . ' minutes';
+                        $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->half_day_login . $bufferTime));
                     } else {
-                        $officeStartTime = $userDetails->officeShift->half_day_login;
+                        $officeStartTime =  $officeShiftDetails->half_day_login;
                     }
                     $payload['status'] = 2;
                 } else {
-                    //dd($userDetails->officeShift->half_day_login);
-                    if (date('H:i:s') >= date('H:i:s', strtotime($userDetails->officeShift->half_day_login))) {
+                    //dd( $officeShiftDetails->half_day_login);
+                    if (date('H:i:s') >= date('H:i:s', strtotime($officeShiftDetails->half_day_login))) {
                         return array('status' => false, 'message' => 'Today you are on half day');
                     }
                     $payload['status'] = 2;
@@ -213,6 +230,11 @@ class EmployeeAttendanceService
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year);
     }
 
+    public function getShortAttendanceByMonthByUserId($month, $userId, $year)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year)->where('is_short_attendance', 1);
+    }
+
     public function getAttendanceByDateByUserId($userId, $date)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', '=', $date);
@@ -261,6 +283,9 @@ class EmployeeAttendanceService
                         'user_id' => $employeeId,
                         'remark' => $data['remark'],
                         'punch_in_using' => $data['punch_in_using'],
+                        'punch_in_by' => $data['punch_in_by'],
+                        'company_id' => $data['company_id'],
+                        'created_by' => $data['created_by'],
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ];

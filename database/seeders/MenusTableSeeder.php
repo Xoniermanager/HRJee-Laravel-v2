@@ -116,8 +116,8 @@ class MenusTableSeeder extends Seeder
             9 =>
             array(
                 'id' => 9,
-                'title' => 'Resignation Status',
-                'slug' => '/resignation/status',
+                'title' => 'Resignations',
+                'slug' => '/resignation',
                 'icon' => '<i class="fa fa-sign-out-alt"></i>',
                 'parent_id' => NULL,
                 'status' => 1,
@@ -508,7 +508,7 @@ class MenusTableSeeder extends Seeder
                 'order_no' => 30,
                 'created_at' => '2025-01-15 17:54:47',
                 'updated_at' => '2025-01-23 12:27:40',
-            ),
+            )
         ));
     }
 }

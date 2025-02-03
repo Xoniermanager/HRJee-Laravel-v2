@@ -60,7 +60,7 @@ class EmployeeAttendanceExport implements FromCollection, WithHeadings, WithMapp
             $serialNumber++,
             $date,
             $attendance->user->name,
-            $attendance->user->emp_id,
+            $attendance->user->details->emp_id,
             $punchInTime,
             $punchOutTime,
             $workingHours,

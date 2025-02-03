@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\User;
+use App\Models\UserDetail;
 use App\Models\EmployeeType;
 use App\Models\CompanyBranch;
 use App\Models\EmployeeStatus;
@@ -31,50 +32,62 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
     public function collection(Collection $collection)
     {
         $data = $collection->skip(1);
+
         foreach ($data as $row) {
-            $row['password'] = Hash::make(trim($row['password'] ?? '123456'));
+            // Process the password for the users table
+            $password = Hash::make(trim($row['password'] ?? 'password'));
+
+            // Create user data for the 'users' table
+            $userData = [
+                'name' => $row['name'],
+                'password' => $password,
+                'email' => $row['email'],
+                'company_id' => Auth()->user()->company_id,
+            ];
+
+            // Insert the user data into the users table
+            $user = User::create($userData);
+
+            // Prepare data for the 'user_details' table
             $genderMap = [
                 'Male' => 'M',
                 'Female' => 'F',
                 'Other' => 'O',
             ];
-            $row['gender'] = $genderMap[$row['gender']];
 
-
-            //default value for employee import payload
-            $row['created_at'] = now();
-            $row['updated_at'] = now();
-            $row['blood_group'] = 'N/A';
-            $row['marital_status'] = 'N/A';
-            $row['last_login_ip'] = request()->ip();
-            $row['company_id'] = Auth()->user()->company_id;
-            $row['employee_type_id'] = EmployeeType::NEWJOINEE;
-            $row['role_id'] = '2';
-            $companyBranch = CompanyBranch::where('name', $row['company_branch'])->first();
-            $row['employee_status_id'] = EmployeeStatus::CURRENT;
-            $row['company_branch_id'] = $companyBranch->id;
-            unset($row['sr_no']);
-            unset($row['company_branch']);
+            $userDetailData = [
+                'phone' => $row['phone'],
+                'emp_id' => $row['emp_id'],
+                'date_of_birth' => $row['date_of_birth'],
+                'joining_date' => $row['joining_date'],
+                'user_id' => $user->id,  // Link user details to the newly created user
+                'official_email_id' => $row['official_email_id'],
+                'father_name' => $row['father_name'],
+                'mother_name' => $row['mother_name'],
+                'gender' => $genderMap[$row['gender']], // Default to 'Other' if gender is missing
+                'blood_group' => 'N/A',  // Default value for blood group
+                'marital_status' => 'N/A',  // Default value for marital status
+                'last_login_ip' => request()->ip(),
+                'employee_type_id' => EmployeeType::NEWJOINEE,
+                'employee_status_id' => EmployeeStatus::CURRENT,
+                'company_branch_id' => CompanyBranch::where('name', $row['company_branch'])->first()->id,
+            ];
+            // Insert the user details into the user_details table
+            UserDetail::create($userDetailData);
         }
-        $this->insertData($data);
     }
-
-    protected function insertData($payload)
-    {
-        return User::insert($payload->toArray());
-    }
-
     public function rules(): array
     {
         return [
             'sr_no' => 'required|integer',
             'name' => 'required|string|max:255',
-            'emp_id' => 'required|unique:users,emp_id',
+            'emp_id' => 'required|unique:user_details,emp_id',
             'email' => 'required|email|unique:users,email',
-            'official_email_id' => 'nullable|email|unique:users,official_email_id',
+            'official_email_id' => 'nullable|email|unique:user_details,official_email_id',
             'father_name' => 'nullable|string|max:255',
             'mother_name' => 'nullable|string|max:255',
             'gender' => 'required|in:Male,Female,Other',
+            'phone' => 'nullable|unique:user_details,phone',
             'date_of_birth' => 'required|date_format:Y-m-d|before:today',
             'joining_date' => 'required|date_format:Y-m-d|before:today',
             'password' => 'required|string|min:8',

@@ -1,60 +1,59 @@
 <div id="view_list">
-    <div class="col-md-12">
-        <div class="row text-center clearfix" style="margin-top:20px;">
-            <div class="row">
-                <div class="col-4 col-md-3 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body ribbon">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="persent">{{ $employeeDetail['totalPresent'] }}</span></h1>
-                                <span>Total Present </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 col-md-3 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body ribbon">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="onleave">{{ $employeeDetail['totalLeave'] }}</span></h1>
-                                <span>Total Leave </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 col-md-3 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body ribbon">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="absent">{{ $employeeDetail['totalAbsent'] }}</span></h1>
-                                <span>Total Absent </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 col-md-3 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="holiday">{{ $employeeDetail['totalHoliday'] }}</span></h1>
-                                <span> Total Holidays</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+	<div class="col-md-12">
+		<div class="row clearfix text-center" style="margin-top:20px;">
+			<div class="row">
+				<div class="col-4 col-md-3 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body ribbon">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="persent">{{ $employeeDetail['totalPresent'] }}</span></h1>
+								<span>Total Present </span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-4 col-md-3 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body ribbon">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="onleave">{{ $employeeDetail['totalLeave'] }}</span></h1>
+								<span>Total Leave </span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-4 col-md-3 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body ribbon">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="absent">{{ $employeeDetail['totalAbsent'] }}</span></h1>
+								<span>Total Absent </span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-4 col-md-3 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="holiday">{{ $employeeDetail['totalHoliday'] }}</span></h1>
+								<span> Total Holidays</span>
+							</a>
+						</div>
+					</div>
+				</div>
 
-                <div class="col-4 col-md-4 col-xl-3">
-                    <div class="blue-card card">
-                        <div class="card-body">
-                            <a href="#" class="my_sort_cut text-muted">
-                                <h1><span id="shot_attendence" style="color:red;">{{
-                                        $employeeDetail['shortAttendance'] }}</span></h1>
-                                <span>Short Attendance</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+				<div class="col-4 col-md-4 col-xl-3">
+					<div class="blue-card card">
+						<div class="card-body">
+							<a href="#" class="my_sort_cut text-muted">
+								<h1><span id="shot_attendence" style="color:red;">{{ $employeeDetail['shortAttendance'] }}</span></h1>
+								<span>Short Attendance</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
 
         </div>
     </div>
@@ -69,7 +68,7 @@
                         <th>Punch In</th>
                         <th>Punch Out</th>
                         <th>Working Hour</th>
-                        <th>Leave</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -80,11 +79,13 @@
                     $workingHour = '';
                     $punchIn = '';
                     $punchOut = '';
+                    $status = 'Absent';
                     if(!empty($item->punch_in) && !empty($item->punch_out))
                     {
                     $workingHour = getTotalWorkingHour($item->punch_in,$item->punch_out);
                     $punchIn = date('h:i A',strtotime($item->punch_in));
                     $punchOut = date('h:i A',strtotime($item->punch_out));
+                    $status =  ($item->is_short_attendance ? 'Short Attendance' : ($item->late ? 'Late' : 'Present'));
                     }
                     @endphp
                     @if($item['weekend'] == true)
@@ -95,10 +96,10 @@
                     <tr>
                         <td>{{ $i }}</td>
                         <td>{{ $key }}</td>
-                        <td>{{$punchIn}}</td>
-                        <td>{{$punchOut}}</td>
-                        <td>{{$workingHour}}</td>
-                        <td>N/A</td>
+                        <td>{{$item['leave'] ? 'N/A' : $punchIn}}</td>
+                        <td>{{$item['leave'] ? 'N/A' : $punchOut}}</td>
+                        <td>{{$item['leave'] ? 'N/A' : $workingHour}}</td>
+                        <td>{{($item['leave'] ? 'Leave' : $status)}}</td>
                         <td>
                             <a href="" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 onClick="edit_attendance('{{ isset($item->id) ? $item->id : '' }}', '{{ isset($item->punch_in) ? date('H:i', strtotime($item->punch_in)) : date('H:i') }}', '{{ isset($item->punch_out) ? date('H:i', strtotime($item->punch_out)) : date('H:i') }}', '{{ $key }}')"

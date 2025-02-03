@@ -65,10 +65,10 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
-Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'checkUrlAcess'])->group(function () {
+Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
-        Route::post('update/{id}', 'update_company')->name('update.company');
+        Route::post('profile/update', 'update_company')->name('company.profile.update');
         Route::post('change/password', 'company_change_password')->name('company.change.password');
     });
     Route::controller(CompanyDashboardController::class)->group(function () {
@@ -133,9 +133,9 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
 
     // Resignation Management
     Route::prefix('resignation')->name('resignation.')->controller(ResignationController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/{id}', 'view')->name('view');
-        Route::post('/{id}/status', 'changeStatus')->name('change-status');
+        Route::get('/', 'index')->name('rindex');
+        Route::get('/{id}', 'view')->name('rview');
+        Route::post('/{id}/status', 'changeStatus')->name('rchange-status');
     });
 
     //Country Module
@@ -188,7 +188,7 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
         Route::get('/delete/{user:id}', 'deleteEmployee')->name('employee.delete');
         Route::get('/status/update/{user:id}', 'statusUpdate')->name('employee.status_update');
         Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
-        Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('employee.exit.employeelist');
+        Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
         Route::post('/export-file',  'uploadImport')->name('upload.file');
     });
@@ -277,6 +277,7 @@ Route::prefix('company')->middleware(['check.company.status', 'Check2FA', 'check
             Route::post('/update', 'update')->name('role.update');
             Route::get('/delete', 'destroy')->name('role.delete');
             Route::get('/status/update', 'statusUpdate')->name('role.statusUpdate');
+            Route::get('/search/filter', 'serachRoleFilterList');
         });
 
         Route::prefix('/permissions')->controller(PermissionsController::class)->group(function () {
