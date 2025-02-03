@@ -47,14 +47,16 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     Route::get('applied/leave/history', [LeaveManagementApiController::class, 'appliedLeaveHistory']);
 
     /**For Leave Management API */
-    Route::get('/leave/type', [LeaveManagementApiController::class, 'leaveType']);
-    Route::post('/apply/leave', [LeaveManagementApiController::class, 'storeApplyLeave']);
+    Route::get('/leave-types', [LeaveManagementApiController::class, 'leaveType']);
+    Route::get('/leaves', [LeaveManagementApiController::class, 'allLeaves']);
+    Route::post('/apply/leave', [LeaveManagementApiController::class, 'applyLeave']);
+    Route::get('/available-leaves', [LeaveAvailableApiController::class, 'getAllLeaveAvailableByUserId']);
 
     /** For Holiday Management API */
     Route::get('/holiday/list', [HolidayApiController::class, 'list']);
 
     /** Get All Leave Avaialble of Employee */
-    Route::get('/get/leave/available', [LeaveAvailableApiController::class, 'getAllLeaveAvailableByUserId']);
+    
 
     /** Punch In */
     Route::controller(AttendanceController::class)->group(function () {
