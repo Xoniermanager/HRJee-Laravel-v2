@@ -43,6 +43,10 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     Route::get('logout', [AuthController::class, 'logout']);
     Route::get('profile', [AuthController::class, 'profile']);
     Route::get('user/details', [AuthController::class, 'userAllDetails']);
+
+    Route::get('company-details', [AuthController::class, 'getCompanyDetails']);
+    Route::get('menu-access', [AuthController::class, 'getMenuAccess']);
+
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::put('update/address', [AddressController::class, 'updateAddress']);
