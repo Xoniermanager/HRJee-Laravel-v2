@@ -69,7 +69,6 @@ class CompanyDashboardController extends Controller
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
                 ->count(),
 
-            // 'all_users_details' => $this->employeeService->getAllEmployeeByCompanyId($companyId)->paginate(10)
             'all_users_details' => User::where(['company_id' => $companyId, 'status' => 1, 'type' => 'user'])->with(['details','details.designation'])->get(),
         ];
         

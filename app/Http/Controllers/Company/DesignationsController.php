@@ -38,7 +38,7 @@ class DesignationsController extends Controller
     {
         try {
             $validateDesignation = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'alpha', 'unique:designations,name,NULL,id,company_id,' . auth()->user()->company_id],
+                'name' => ['required', 'string', 'regex:/^[A-Za-z\s]+$/', 'unique:designations,name,NULL,id,company_id,' . auth()->user()->company_id],
             ]);
             if ($validateDesignation->fails()) {
                 return response()->json(['error' => $validateDesignation->messages()], 400);
@@ -67,7 +67,7 @@ class DesignationsController extends Controller
     public function update(Request $request)
     {
         $validateDesignation = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'alpha', 'unique:designations,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
+            'name' => ['required', 'string', 'regex:/^[A-Za-z\s]+$/', 'unique:designations,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
         ]);
 
         if ($validateDesignation->fails()) {
