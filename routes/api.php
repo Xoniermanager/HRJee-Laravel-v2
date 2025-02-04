@@ -32,7 +32,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:30,1');
 Route::post('sendOtp', [AuthController::class, 'sendOtp']);
 
-Route::post('password/forgot', [ForgotPasswordController::class, 'forgotPassword']);
+Route::post('forgot/password', [ForgotPasswordController::class, 'forgotPassword']);
+Route::post('reset/password', [ForgotPasswordController::class, 'resetPassword']);
+
+
 Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']);
 Route::post('verify/otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:30,1');
 
