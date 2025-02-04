@@ -64,9 +64,11 @@ class CompanyController extends Controller
             }
             $updatedCompany = $this->companyDetailService->updateCompanyDetails($detailPayload, auth()->id());
             if ($updatedCompany) {
-                smilify('success', 'Profile Updated Successfully!');
+                return redirect(route('company.profile'))->with('success', 'Profile Updated Successfully!');
 
-                return redirect()->route('company.profile');
+                // smilify('success', 'Profile Updated Successfully!');
+
+                // return redirect()->route('company.profile');
             }
         } catch (\Exception $e) {
             return $e->getMessage();
