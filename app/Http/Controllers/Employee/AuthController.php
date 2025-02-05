@@ -46,14 +46,13 @@ class AuthController extends Controller
             ]);
 
             if ($validateUser->fails()) {
-                return redirect(route('base'))->withErrors($validateUser)->withInput();
+                return back()->withErrors($validateUser)->withInput();
             }
-
             $credentials = $request->only('email', 'password');
-
             if (!Auth::attempt($credentials)) {
-                return Redirect::back()->with('error', 'invalid_credentials');
-            } else {
+                return Redirect::back()->with('error', 'Your credentials are not correct. Please enter valid credentials.');
+            }
+            else {
                 $user = Auth::user();
                 if ($user->status == '0') {
                     return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);

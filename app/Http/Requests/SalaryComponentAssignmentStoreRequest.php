@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SalaryComponentAssignmentStoreRequest extends FormRequest
@@ -22,13 +23,23 @@ class SalaryComponentAssignmentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'salary_id'             =>  ['required', 'integer', 'exists:salaries,id'],
-            'salary_component_id'   =>  ['sometimes', 'exists:salary_components,id'],
-            'value'                 =>  ['required'],
-            'is_taxable'            =>  ['required','boolean'],
-            'value_type'            =>  ['required', Rule::in(['fixed', 'percentage'])],
-            'parent_component'      =>  ['sometimes', 'exists:salary_component_assignments,id'],
-            'earning_or_deduction'  =>  ['required', Rule::in(['earning','deduction'])]
+            'name' => ['required', 'unique:salary_components,name,NULL,id,company_id,' . auth()->user()->company_id],
+            'default_value' => [
+                'required',
+                'numeric',
+                function ($attribute, $value, $fail) {
+                    if (request()->input('value_type') === 'percentage' && ($value < 10 || $value > 70)) {
+                        $fail('The Default Value must be between 10% to 70% when value type is percentage.');
+                    }
+                    if (request()->input('value_type') === 'fixed' && !is_numeric($value)) {
+                        $fail('The Default Value must be a valid number when value type is fixed.');
+                    }
+                }
+            ],
+            'value_type' => ['required', Rule::in(['fixed', 'percentage'])],
+            'parent_component' => ['nullable', 'required_if:value_type,percentage', 'exists:salary_components,id'],
+            'is_default' => ['required', 'boolean'],
+            'earning_or_deduction' => ['required', Rule::in(['earning', 'deduction'])]
         ];
     }
 }

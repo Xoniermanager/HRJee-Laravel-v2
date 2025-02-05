@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Salary;
+use App\Models\SalaryComponent;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -10,7 +10,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
  *
  * @package namespace App\Repositories;
  */
-class SalaryRepository extends BaseRepository
+class SalaryComponentRepository extends BaseRepository
 {
     /**
      * Specify Model class name
@@ -19,6 +19,6 @@ class SalaryRepository extends BaseRepository
      */
     public function model()
     {
-        return Salary::class;
+        return SalaryComponent::class;
     }
 }

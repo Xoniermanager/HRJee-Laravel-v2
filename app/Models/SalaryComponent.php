@@ -17,6 +17,9 @@ class SalaryComponent extends Model
         'parent_component',
         'is_default',
         'earning_or_deduction',
+        'company_id',
+        'created_by',
+        'status'
     ];
 
     /**
@@ -24,6 +27,6 @@ class SalaryComponent extends Model
      */
     public function parentSalaryComponent()
     {
-        return $this->belongsTo(SalaryComponent::class, 'parent_component','id');
+        return $this->belongsTo(SalaryComponent::class, 'parent_component', 'id');
     }
 }

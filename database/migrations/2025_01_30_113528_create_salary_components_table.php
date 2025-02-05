@@ -16,11 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->float('default_value')->default('0.0');
             $table->boolean('is_taxable')->default(true);
-            $table->enum('value_type',['fixed','percentage']);
+            $table->enum('value_type', ['fixed', 'percentage']);
             $table->unsignedBigInteger('parent_component')->nullable();
             $table->boolean('is_default')->default(false);
-            $table->enum('earning_or_deduction',['earning', 'deduction']);
+            $table->enum('earning_or_deduction', ['earning', 'deduction']);
             $table->foreign('parent_component')->references('id')->on('salary_components');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

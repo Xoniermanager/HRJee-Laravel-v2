@@ -17,6 +17,8 @@ class SalaryComponentAssignment extends Model
         'value_type',
         'parent_component',
         'earning_or_deduction',
+        'created_by',
+        'company_id'
     ];
 
     /**

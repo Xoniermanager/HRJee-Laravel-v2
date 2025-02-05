@@ -14,505 +14,553 @@ class MenuRoleTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('menu_role')->delete();
-        
+
         \DB::table('menu_role')->insert(array (
-            0 => 
+            0 =>
             array (
-                'id' => 1,
+                'id' => 42,
                 'menu_id' => 1,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            1 => 
+            1 =>
             array (
-                'id' => 2,
+                'id' => 43,
                 'menu_id' => 2,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            2 => 
+            2 =>
             array (
-                'id' => 3,
+                'id' => 44,
                 'menu_id' => 3,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            3 => 
+            3 =>
             array (
-                'id' => 4,
+                'id' => 45,
                 'menu_id' => 4,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            4 => 
+            4 =>
             array (
-                'id' => 5,
+                'id' => 46,
                 'menu_id' => 5,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            5 => 
+            5 =>
             array (
-                'id' => 6,
+                'id' => 47,
                 'menu_id' => 6,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            6 => 
+            6 =>
             array (
-                'id' => 7,
+                'id' => 48,
                 'menu_id' => 7,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            7 => 
+            7 =>
             array (
-                'id' => 8,
+                'id' => 49,
                 'menu_id' => 8,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            8 => 
+            8 =>
             array (
-                'id' => 9,
+                'id' => 50,
                 'menu_id' => 9,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            9 => 
+            9 =>
             array (
-                'id' => 10,
+                'id' => 51,
                 'menu_id' => 10,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            10 => 
+            10 =>
             array (
-                'id' => 11,
+                'id' => 52,
                 'menu_id' => 11,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            11 => 
+            11 =>
             array (
-                'id' => 12,
+                'id' => 53,
                 'menu_id' => 12,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            12 => 
+            12 =>
             array (
-                'id' => 13,
+                'id' => 54,
                 'menu_id' => 13,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            13 => 
+            13 =>
             array (
-                'id' => 14,
+                'id' => 55,
                 'menu_id' => 14,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            14 => 
+            14 =>
             array (
-                'id' => 15,
+                'id' => 56,
                 'menu_id' => 15,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            15 => 
+            15 =>
             array (
-                'id' => 16,
+                'id' => 57,
                 'menu_id' => 16,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            16 => 
+            16 =>
             array (
-                'id' => 17,
+                'id' => 58,
                 'menu_id' => 17,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            17 => 
+            17 =>
             array (
-                'id' => 18,
+                'id' => 59,
                 'menu_id' => 18,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            18 => 
+            18 =>
             array (
-                'id' => 19,
+                'id' => 60,
                 'menu_id' => 19,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            19 => 
+            19 =>
             array (
-                'id' => 20,
+                'id' => 61,
                 'menu_id' => 20,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            20 => 
+            20 =>
             array (
-                'id' => 21,
+                'id' => 62,
                 'menu_id' => 21,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            21 => 
+            21 =>
             array (
-                'id' => 22,
+                'id' => 63,
                 'menu_id' => 22,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            22 => 
+            22 =>
             array (
-                'id' => 23,
+                'id' => 64,
                 'menu_id' => 23,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            23 => 
+            23 =>
             array (
-                'id' => 24,
+                'id' => 65,
                 'menu_id' => 24,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            24 => 
+            24 =>
             array (
-                'id' => 25,
+                'id' => 66,
                 'menu_id' => 25,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            25 => 
+            25 =>
             array (
-                'id' => 26,
+                'id' => 67,
                 'menu_id' => 26,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            26 => 
+            26 =>
             array (
-                'id' => 27,
+                'id' => 68,
                 'menu_id' => 27,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            27 => 
+            27 =>
             array (
-                'id' => 28,
+                'id' => 69,
                 'menu_id' => 28,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            28 => 
+            28 =>
             array (
-                'id' => 29,
+                'id' => 70,
                 'menu_id' => 29,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            29 => 
+            29 =>
             array (
-                'id' => 30,
+                'id' => 71,
                 'menu_id' => 30,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            30 => 
+            30 =>
             array (
-                'id' => 31,
+                'id' => 72,
                 'menu_id' => 31,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            31 => 
+            31 =>
             array (
-                'id' => 32,
+                'id' => 73,
                 'menu_id' => 32,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            32 => 
+            32 =>
             array (
-                'id' => 33,
+                'id' => 74,
                 'menu_id' => 33,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            33 => 
+            33 =>
             array (
-                'id' => 34,
+                'id' => 75,
                 'menu_id' => 34,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            34 => 
+            34 =>
             array (
-                'id' => 35,
+                'id' => 76,
                 'menu_id' => 35,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            35 => 
+            35 =>
             array (
-                'id' => 36,
+                'id' => 77,
                 'menu_id' => 36,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            36 => 
+            36 =>
             array (
-                'id' => 37,
+                'id' => 78,
                 'menu_id' => 37,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            37 => 
+            37 =>
             array (
-                'id' => 38,
+                'id' => 79,
                 'menu_id' => 38,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            38 => 
+            38 =>
             array (
-                'id' => 39,
+                'id' => 80,
                 'menu_id' => 39,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            39 => 
+            39 =>
             array (
-                'id' => 40,
+                'id' => 81,
                 'menu_id' => 40,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
-            40 => 
+            40 =>
             array (
-                'id' => 41,
+                'id' => 82,
                 'menu_id' => 41,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
                 'can_update' => 1,
                 'can_delete' => 1,
-                'created_at' => '2025-01-29 11:17:24',
-                'updated_at' => '2025-01-29 11:17:24',
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            41 =>
+            array (
+                'id' => 83,
+                'menu_id' => 42,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            42 =>
+            array (
+                'id' => 84,
+                'menu_id' => 43,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            43 =>
+            array (
+                'id' => 85,
+                'menu_id' => 44,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            44 =>
+            array (
+                'id' => 86,
+                'menu_id' => 45,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
             ),
         ));
-        
-        
+
+
     }
 }

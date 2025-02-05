@@ -22,8 +22,8 @@ class SalaryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      =>  'required|string',
-            'details'   =>  'string'
+            'name' => ['required', 'string', 'unique:salaries,name,NULL,id,company_id,' . auth()->user()->company_id],
+            'description' => 'nullable|sometimes|max:255'
         ];
     }
 }

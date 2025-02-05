@@ -47,7 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function menus()
     {
-        if($this->role_id) {
+        if ($this->role_id) {
             $menusIDs = MenuRole::where('role_id', $this->role_id)->pluck('menu_id')->toArray();
 
             return Menu::whereIn('id', $menusIDs)->with(['children'])->get()->toArray();
@@ -60,7 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => ucfirst($value),
+            get: fn(string $value) => ucfirst($value),
         );
     }
 
@@ -135,5 +135,48 @@ class User extends Authenticatable implements MustVerifyEmail
     public function resignationLogs()
     {
         return $this->morphMany(ResignationLog::class, 'actionTakenBy');
+    }
+
+    protected static function booted()
+    {
+        parent::booted();
+
+        static::created(function ($companyCreated) {
+            // \Log::info("New Company Created: " . $companyCreated);
+            if ($companyCreated->type == 'company') {
+                $companyCreated->handlePostCreationActions();
+            }
+        });
+    }
+    public function handlePostCreationActions()
+    {
+        // When Company is Created So we created the salary component entry
+        $payload = [
+            [
+                'name' => 'Basic pay',
+                'default_value' => '50',
+                'is_taxable' => '1',
+                'value_type' => 'percentage',
+                'is_default' => '1',
+                'earning_or_deduction' => 'earning',
+                'company_id' => $this->id,  // Use $this->id for the current company
+                'created_by' => $this->id,   // Use $this->id for the current company
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'name' => 'Special allowance',
+                'default_value' => '0',
+                'is_taxable' => '1',
+                'value_type' => 'fixed',
+                'is_default' => '1',
+                'earning_or_deduction' => 'earning',
+                'company_id' => $this->id,  // Use $this->id for the current company
+                'created_by' => $this->id,  // Use $this->id for the current company
+                'created_at' => now(),
+                'updated_at' => now()
+            ]
+        ];
+        SalaryComponent::insert($payload);
     }
 }

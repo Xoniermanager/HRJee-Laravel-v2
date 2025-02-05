@@ -40,6 +40,7 @@ use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
+use App\Http\Controllers\Company\SalaryComponentController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
@@ -57,6 +58,7 @@ use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
+use App\Http\Controllers\Company\SalaryComponentAssignmentController;
 
 // Route::get('/test',function()
 // {
@@ -190,7 +192,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
-        Route::post('/export-file',  'uploadImport')->name('upload.file');
+        Route::post('/export-file', 'uploadImport')->name('upload.file');
     });
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
@@ -578,10 +580,32 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     // Salary Management
     Route::prefix('/salary')->controller(SalaryController::class)->group(function () {
         Route::get('/', 'index')->name('salary.index');
-        Route::post('/create', 'store')->name('salary.create');
-        // Route::get('/delete', 'destroy')->name('weekend.delete');
-        // Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
-        // Route::get('/get/weekend/details/companyId', 'getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
+        Route::post('/create', 'store')->name('salary.store');
+        Route::post('/update', 'update')->name('salary.update');
+        Route::get('/delete', 'destroy')->name('salary.delete');
+        Route::get('/status/update', 'statusUpdate')->name('salary.statusUpdate');
+        Route::get('/search/filter', 'serachSalaryFilterList');
+    });
+    // Salary Component Management
+    Route::prefix('/salary-component')->controller(SalaryComponentController::class)->group(function () {
+        Route::get('/', 'index')->name('salary.component.index');
+        Route::get('/add', 'add')->name('salary.component.add');
+        Route::post('/create', 'store')->name('salary.component.store');
+        Route::get('/edit/{id}', 'edit')->name('salary.component.edit');
+        Route::post('/update/{id}', 'update')->name('salary.component.update');
+        Route::get('/delete', 'destroy')->name('salary.component.delete');
+        Route::get('/search/filter', 'serachSalaryComponentFilterList');
+    });
+
+    // Salary Component Assignment Management
+    Route::prefix('/salary-component-assignment')->controller(SalaryComponentAssignmentController::class)->group(function () {
+        Route::get('/', 'index')->name('salary.component_assign.index');
+        Route::get('/add', 'add')->name('salary.component_assign.add');
+        Route::post('/create', 'store')->name('salary.component_assign.store');
+        Route::get('/edit/{id}', 'edit')->name('salary.component_assign.edit');
+        Route::post('/update/{id}', 'update')->name('salary.component_assign.update');
+        Route::get('/delete', 'destroy')->name('salary.component_assign.delete');
+        Route::get('/search/filter', 'serachSalaryComponentAssignmentFilterList');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
