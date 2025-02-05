@@ -43,23 +43,37 @@ class SendOtpService
     }
   }
 
-  public function verifyOTP($data, $guardType = '')
+  public function verifyOTP($data, $guardType = '', $requestType = "")
   {
     $find = UserCode::where(['email' => $data['email'], 'code' => $data['otp'], 'type' => $data['type']])
       ->where('updated_at', '>=', now()->subMinutes(20))
       ->first();
       
     if ($find) {
-      if($guardType){
-        Session::put('user_2fa', Auth::guard($guardType)->user()->id);
-      }else{
-        Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+      if($requestType == "api") {
+        return ['status' => true, 'message' => 'otp_sent_on_mail'];
+      } else {
+        if($guardType){
+          Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+        }else{
+          Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+        }
+  
+        return true;
       }
-
-      return true;
+      
     }
     else {
       return false;
     }
   }
+
+  public function update($email,$type, $code)
+  {
+    UserCode::where('email', $email)->delete();
+    UserCode::create(['email' => $email, 'code' => $code, 'type' => $type]);
+      
+    return true;
+  }
+  
 }

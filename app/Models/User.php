@@ -137,6 +137,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->morphMany(ResignationLog::class, 'actionTakenBy');
     }
 
+    public function todaysAttendance() {
+        $attendance = EmployeeAttendance::where('user_id', $this->id)->whereDate('punch_in', date('Y-m-d'))->first();
+
+        return $attendance;
+    }
+
+    public function todaysLeave() {
+        $leave = Leave::where('user_id', $this->id)->whereDate('from', '<=', date('Y-m-d'))
+        ->whereDate('to', '>=', date('Y-m-d'))->first();
+
+        return $leave;
+    }
+
     protected static function booted()
     {
         parent::booted();

@@ -28,7 +28,7 @@
                                         <a href="#"
                                             class="text-dark fw-bold text-hover-primary fs-6">{{ $item->name }}</a>
                                         <span
-                                            class="text-muted fw-semibold text-muted d-block fs-7">{{ $item->details->designation->name }}</span>
+                                            class="text-muted fw-semibold text-muted d-block fs-7">{{ $item->details->designation ? $item->details->designation->name : 'N/A' }}</span>
                                     </div>
                                 </div>
                             </td>
@@ -45,7 +45,7 @@
 
                             </td>
                             <td> <span class="badge py-3 px-4 fs-7 badge-light-danger">
-                                    Leave</span> </td>
+                                {{ ($item->todaysLeave() ? 'Leave' : ($item->todaysAttendance() ? date('H:i A', strtotime($item->todaysAttendance()->punch_in)) : 'N/A')) }}</span> </td>
 
                         </tr>
                     @empty

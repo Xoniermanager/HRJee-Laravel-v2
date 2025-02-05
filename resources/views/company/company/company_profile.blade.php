@@ -6,6 +6,7 @@
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
+        
         <!--begin::Navbar-->
         <div class="card mb-5 mb-xl-10">
             <div class="card-body pt-9 pb-0">
@@ -198,6 +199,16 @@
                         <h3 class="fw-bold m-0">Personal Details</h3>
                     </div>
                 </div>
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <div class="card-body p-9">
                     <form method="post" action="{{route("company.profile.update")}}" enctype="multipart/form-data">
                         @csrf
