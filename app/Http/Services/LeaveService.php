@@ -24,7 +24,7 @@ class LeaveService
 
     public function leavesByUserId($userId)
     {
-        return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->paginate(10);
+        return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->with(['leaveStatus'])->paginate(10);
     }
 
     public function create(array $data)

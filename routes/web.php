@@ -85,9 +85,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::post('/update/basic/details', 'basicDetailsUpdate')->name('update.basicDetails.employee');
         Route::post('/update/bank/details', 'bankDetailsUpdate')->name('update.bankDetails.employee');
         Route::post('/update/address/details', 'addressDetailsUpdate')->name('update.addressDetails.employee');
-        Route::post('/update/change/password', 'updateChangePassword')->name('employee.update.password');
     });
-
 
     //HR Service Module
     Route::get('/hr/service', [HRServiceController::class, 'index'])->name('employee.hr.service');

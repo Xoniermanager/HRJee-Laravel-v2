@@ -48,7 +48,7 @@ class DepartmentServices
             $departmentDetails = $departmentDetails->where('name', 'Like', '%' . $request['search'] . '%');
         }
         /**List By Status or Filter */
-        if (isset($request['status'])) {
+        if (isset($request['status']) && $request['status'] != "") {
             $departmentDetails = $departmentDetails->where('status', $request['status']);
         }
         return $departmentDetails->orderBy('id', 'DESC')->paginate(10);

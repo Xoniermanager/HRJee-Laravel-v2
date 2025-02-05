@@ -88,5 +88,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
     Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
     Route::get('/resend/otp', 'resendOtp')->name('resendOtp');
-    Route::post('/change/password', 'changePassword')->name('change.password');
+    Route::post('/change/password', 'adminChangePassword')->name('change.password');
+    Route::post('/update/change/password', 'userUpdateChangePassword')->name('user.update.password');
 });

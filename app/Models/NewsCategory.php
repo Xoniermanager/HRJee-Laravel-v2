@@ -9,5 +9,7 @@ class NewsCategory extends Model
 {
     use HasFactory;
 
+    protected $table = "news_categories";
+
     protected $fillable =['name','status','company_id'];
 }

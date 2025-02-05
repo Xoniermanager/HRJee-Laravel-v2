@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Employee;
 
 use Throwable;
+use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,7 @@ use App\Http\Requests\VerifyOtpRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\UserChangePasswordRequest;
 
 class AuthController extends Controller
 {
@@ -44,14 +46,13 @@ class AuthController extends Controller
             ]);
 
             if ($validateUser->fails()) {
-                return redirect(route('base'))->withErrors($validateUser)->withInput();
+                return back()->withErrors($validateUser)->withInput();
             }
-
             $credentials = $request->only('email', 'password');
-
             if (!Auth::attempt($credentials)) {
-                return Redirect::back()->with('error', 'invalid_credentials');
-            } else {
+                return Redirect::back()->with('error', 'Your credentials are not correct. Please enter valid credentials.');
+            }
+            else {
                 $user = Auth::user();
                 if ($user->status == '0') {
                     return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);
@@ -130,14 +131,32 @@ class AuthController extends Controller
             return exceptionErrorMessage($th);
         }
     }
-
-    public function changePassword(ChangePasswordRequest $request)
+    public function adminChangePassword(ChangePasswordRequest $request)
     {
         $updatePassword = Admin::find(Auth()->guard('admin')->user()->id)->update(['password' => Hash::make($request['new_password'])]);
         if ($updatePassword) {
             return back()->with(['success' => 'Password Updated Successfully']);
         } else {
             return back()->with(['error' => 'Something Went Wrong! Please try Again']);
+        }
+    }
+    public function userUpdateChangePassword(UserChangePasswordRequest $request)
+    {
+        $credential = $request->validated();
+        try {
+            $response = User::find(Auth()->user()->id)->update(['password' => Hash::make($credential['password'])]);
+            if ($response == true) {
+                return response()->json([
+                    'status' => 200,
+                    'success' => true,
+                    'message' => "Password has been changed successfully"
+                ], 200);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 }

@@ -115,23 +115,9 @@ class EmployeeController extends Controller
         $allRoles = $this->customRoleService->all(auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
-
         return view(
             'company.employee.add_employee',
-            compact(
-                'allCountries',
-                'allPreviousCompany',
-                'allQualification',
-                'allEmployeeType',
-                'allEmployeeStatus',
-                'alldepartmentDetails',
-                'allDocumentTypeDetails',
-                'languages',
-                'allBranches',
-                'allRoles',
-                'allShifts',
-                'allAssetCategory'
-            )
+            compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails', 'languages', 'allBranches', 'allRoles', 'allShifts', 'allAssetCategory')
         );
     }
 
@@ -183,7 +169,7 @@ class EmployeeController extends Controller
                 $request['user_id'] = $userCreated->id;
             }
             if ($userCreated) {
-                $userDetails = $this->employeeService->create($request->except('name', 'password', 'email', '_token', 'company_id'));
+                $userDetails = $this->employeeService->create($request->except('password', 'email', '_token', 'company_id'));
                 DB::commit();
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
@@ -288,17 +274,21 @@ class EmployeeController extends Controller
     {
         try {
             $allEmployeeDetails = $this->userService->searchFilterEmployee($request, Auth()->user()->company_id)->get();
-            // dd($allEmployeeDetails->toArray());
-            $userEmail = Auth()->user()->email;
-            // $userEmail = "arjun@xoniertechnologies.com";
-            $userName = Auth()->user()->name;
-            EmployeeExportFileJob::dispatch($userEmail, $userName, $allEmployeeDetails);
-            return response()->json([
-                'status' => true,
-                'message' => 'The file is being processed and will be sent to your email shortly.'
-            ]);
+            if (isset($allEmployeeDetails) && count($allEmployeeDetails) > 0) {
+                $userEmail = Auth()->user()->email;
+                $userName = Auth()->user()->name;
+                EmployeeExportFileJob::dispatch($userEmail, $userName, $allEmployeeDetails);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'The file is being processed and will be sent to your email shortly.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No Employee Available'
+                ]);
+            }
         } catch (Exception $e) {
-            // Return error response if there is an exception
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
@@ -332,8 +322,6 @@ class EmployeeController extends Controller
                 'data' => view('company.employee.list', compact('allUserDetails'))->render()
             ]);
         } catch (\Exception $e) {
-            // Catch any general exceptions and return an error message
-            dd($e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while importing the file.',
