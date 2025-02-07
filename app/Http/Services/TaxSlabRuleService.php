@@ -15,6 +15,10 @@ class TaxSlabRuleService
     {
         return $this->taxSlabRuleRepository->where('company_id', $companyId)->orderBy('id', 'DESC');
     }
+    public function getActiveTaxSlab($companyId)
+    {
+        return $this->taxSlabRuleRepository->where('company_id', $companyId)->where('status',1)->get();
+    }
     public function create(array $data)
     {
         return $this->taxSlabRuleRepository->create($data);

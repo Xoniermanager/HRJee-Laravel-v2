@@ -559,6 +559,18 @@ class MenuRoleTableSeeder extends Seeder
                 'created_at' => '2025-02-03 15:07:08',
                 'updated_at' => '2025-02-03 15:07:08',
             ),
+            45 =>
+            array (
+                'id' => 87,
+                'menu_id' => 46,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
         ));
 
 

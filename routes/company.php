@@ -36,6 +36,7 @@ use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Company\ComplainStatusController;
+use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
@@ -612,6 +613,12 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/delete', 'destroy')->name('taxslab.delete');
         Route::get('/status/update', 'statusUpdate')->name('taxslab.statusUpdate');
         Route::get('/search/filter', 'serachTaxSlabFilterList');
+    });
+    // Employee Salary
+    Route::prefix('/employee-salary')->controller(EmployeeSalaryController::class)->group(function () {
+        Route::get('/', 'index')->name('employee_salary.index');
+        Route::get('/view/{id}', 'viewSalary')->name('employee_salary.viewSalary');
+        Route::get('/generate-pdf/{id}', 'generatePDF')->name('employee_salary.generatePDF');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {

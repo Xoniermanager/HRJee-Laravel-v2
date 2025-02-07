@@ -581,7 +581,7 @@ class MenusTableSeeder extends Seeder
             44 =>
                 array(
                     'id' => 44,
-                    'title' => 'Salary',
+                    'title' => 'Salary Structured',
                     'slug' => '/salary',
                     'icon' => '<i class="fas fa-money-bill-wave"></i>',
                     'parent_id' => 42,
@@ -596,6 +596,19 @@ class MenusTableSeeder extends Seeder
                     'id' => 45,
                     'title' => 'Tax Slab Rule',
                     'slug' => '/tax-slab',
+                    'icon' => '<i class="fas fa-money-bill-wave"></i>',
+                    'parent_id' => 42,
+                    'status' => 1,
+                    'order_no' => 31,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            46 =>
+                array(
+                    'id' => 46,
+                    'title' => 'Employee Salary',
+                    'slug' => '/employee-salary',
                     'icon' => '<i class="fas fa-money-bill-wave"></i>',
                     'parent_id' => 42,
                     'status' => 1,

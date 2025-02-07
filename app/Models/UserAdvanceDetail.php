@@ -19,7 +19,11 @@ class UserAdvanceDetail extends Model
         'insurance_no',
         'driving_licence_no',
         'probation_period',
-        'ctc_monthly_in_probation',
-        'ctc_monthly_after_probation'
+        'ctc_value',
+        'salary_id'
     ];
+    public function salary()
+    {
+        return $this->belongsTo(Salary::class);
+    }
 }
