@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\DB;
 use App\Jobs\EmployeeExportFileJob;
 use App\Http\Controllers\Controller;
 use App\Http\Services\RolesServices;
+use App\Http\Services\SalaryService;
 use App\Http\Services\ShiftServices;
 use App\Http\Services\SkillsService;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
@@ -48,6 +48,7 @@ class EmployeeController extends Controller
     private $languagesServices;
     private $skillServices;
     private $assetCategoryServices;
+    private $salaryService;
     public function __construct(
         CountryServices $countryService,
         PreviousCompanyService $previousCompanyService,
@@ -64,7 +65,8 @@ class EmployeeController extends Controller
         SkillsService $skillServices,
         AssetCategoryService $assetCategoryServices,
         CustomRoleService $customRoleService,
-        UserService $userService
+        UserService $userService,
+        SalaryService $salaryService
 
     ) {
         $this->countryService = $countryService;
@@ -83,6 +85,7 @@ class EmployeeController extends Controller
         $this->skillServices = $skillServices;
         $this->assetCategoryServices = $assetCategoryServices;
         $this->userService = $userService;
+        $this->salaryService = $salaryService;
     }
     /**
      * Display a listing of the resource.
@@ -98,7 +101,8 @@ class EmployeeController extends Controller
         $allBranches = $this->branchService->all(Auth()->user()->id);
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
-        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills'));
+        $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
+        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills','allSalaryStructured'));
     }
 
     public function add()
@@ -115,9 +119,10 @@ class EmployeeController extends Controller
         $allRoles = $this->customRoleService->all(auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
+        $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
         return view(
             'company.employee.add_employee',
-            compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails', 'languages', 'allBranches', 'allRoles', 'allShifts', 'allAssetCategory')
+            compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails', 'languages', 'allBranches', 'allRoles', 'allShifts', 'allAssetCategory','allSalaryStructured')
         );
     }
 
@@ -135,6 +140,7 @@ class EmployeeController extends Controller
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
+        $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
         $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
         // dd($singleUserDetails->toArray());
         return view(
@@ -152,7 +158,8 @@ class EmployeeController extends Controller
                 'allRoles',
                 'allShifts',
                 'languages',
-                'allAssetCategory'
+                'allAssetCategory',
+                'allSalaryStructured'
             )
         );
     }

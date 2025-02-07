@@ -61,20 +61,22 @@
                                 <input class="form-control" type="text" name="pf_no" id="pf_no">
                             </div>
                             <div class="col-md-4 form-group">
-                                <label for="">CTC Monthly (In Probation)</label>
-                                <input class="form-control" type="text" name="ctc_monthly_in_probation"
-                                    id="ctc_monthly_in_probation">
-                            </div>
-                            <div class="col-md-4 form-group">
                                 <label for="">Probation Period (Days) </label>
                                 <input class="form-control" type="text" name="probation_period"
                                     id="probation_period">
                             </div>
-
                             <div class="col-md-4 form-group">
-                                <label for="">CTC Monthly (After Probation) </label>
-                                <input class="form-control" type="text" name="ctc_monthly_after_probation"
-                                    id="ctc_monthly_after_probation">
+                                <label for="">CTC Vaue</label>
+                                <input class="form-control" type="number" name="ctc_value" id="ctc_value">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label for="">Salary Structured</label>
+                                <select name="salary_id" id="salary_id" class="form-control">
+                                    <option value="">Please Select Salary Structured</option>
+                                    @foreach ($allSalaryStructured as $item)
+                                    <option value="{{ $item->id }}" >{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <button class="btn btn-primary">Update</button>
@@ -96,8 +98,8 @@
                 if (response.data != null) {
                     $('#advance_details_id').val(response.data.id);
                     $('#aadhar_no').val(response.data.aadhar_no);
-                    $('#ctc_monthly_after_probation').val(response.data.ctc_monthly_after_probation);
-                    $('#ctc_monthly_in_probation').val(response.data.ctc_monthly_in_probation);
+                    $('#ctc_value').val(response.data.ctc_value);
+                    $('#salary_id').val(response.data.salary_id);
                     $('#driving_licence_no').val(response.data.driving_licence_no);
                     $('#insurance_no').val(response.data.insurance_no);
                     $('#esic_no').val(response.data.esic_no);
