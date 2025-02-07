@@ -31,10 +31,10 @@ class UserAdvanceDetailsTableSeeder extends Seeder
                 'insurance_no' => '234567',
                 'driving_licence_no' => '234567',
                 'probation_period' => 23456,
-                'ctc_monthly_in_probation' => '234567',
-                'ctc_monthly_after_probation' => '23456',
+                'ctc_value' => '400000',
+                'salary_id' => 1,
                 'created_at' => '2024-06-21 14:57:49',
-                'updated_at' => '2025-01-30 12:51:22',
+                'updated_at' => '2025-02-07 15:26:58',
             ),
         ));
         

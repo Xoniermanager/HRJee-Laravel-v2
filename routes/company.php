@@ -8,6 +8,7 @@ use App\Http\Controllers\Company\LeaveController;
 use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Company\PolicyController;
+use App\Http\Controllers\Company\SalaryController;
 use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
@@ -28,17 +29,20 @@ use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\Company\TaxSlabRuleController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Company\ComplainStatusController;
+use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
+use App\Http\Controllers\Company\SalaryComponentController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
@@ -56,6 +60,7 @@ use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
+use App\Http\Controllers\Company\SalaryComponentAssignmentController;
 
 // Route::get('/test',function()
 // {
@@ -67,7 +72,7 @@ Route::get('/company/state/get/all/state', [StateController::class, 'getAllState
 Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
-        Route::post('update/{id}', 'update_company')->name('update.company');
+        Route::post('profile/update', 'update_company')->name('company.profile.update');
         Route::post('change/password', 'company_change_password')->name('company.change.password');
     });
     Route::controller(CompanyDashboardController::class)->group(function () {
@@ -189,7 +194,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
-        Route::post('/export-file',  'uploadImport')->name('upload.file');
+        Route::post('/export-file', 'uploadImport')->name('upload.file');
     });
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
@@ -276,6 +281,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::post('/update', 'update')->name('role.update');
             Route::get('/delete', 'destroy')->name('role.delete');
             Route::get('/status/update', 'statusUpdate')->name('role.statusUpdate');
+            Route::get('/search/filter', 'serachRoleFilterList');
         });
 
         Route::prefix('/permissions')->controller(PermissionsController::class)->group(function () {
@@ -571,6 +577,48 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/delete', 'destroy')->name('weekend.delete');
         Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
         Route::get('/get/weekend/details/companyId', 'getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
+    });
+
+    // Salary Management
+    Route::prefix('/salary')->controller(SalaryController::class)->group(function () {
+        Route::get('/', 'index')->name('salary.index');
+        Route::get('/add', 'add')->name('salary.add');
+        Route::get('/view/{id}', 'view')->name('salary.view');
+        Route::post('/create', 'store')->name('salary.store');
+        Route::get('/edit/{id}', 'edit')->name('salary.edit');
+        Route::post('/update/{id}', 'update')->name('salary.update');
+        Route::get('/delete', 'destroy')->name('salary.delete');
+        Route::get('/status/update', 'statusUpdate')->name('salary.statusUpdate');
+        Route::get('/search/filter', 'serachSalaryFilterList');
+    });
+    // Salary Component Management
+    Route::prefix('/salary-component')->controller(SalaryComponentController::class)->group(function () {
+        Route::get('/', 'index')->name('salary.component.index');
+        Route::get('/add', 'add')->name('salary.component.add');
+        Route::post('/create', 'store')->name('salary.component.store');
+        Route::get('/edit/{id}', 'edit')->name('salary.component.edit');
+        Route::post('/update/{id}', 'update')->name('salary.component.update');
+        Route::get('/delete', 'destroy')->name('salary.component.delete');
+        Route::get('/search/filter', 'serachSalaryComponentFilterList');
+    });
+
+    // Tax Slab Module
+    Route::prefix('/tax-slab')->controller(TaxSlabRuleController::class)->group(function () {
+        Route::get('/', 'index')->name('taxslab.index');
+        Route::get('/add', 'add')->name('taxslab.add');
+        Route::post('/create', 'store')->name('taxslab.store');
+        Route::get('/edit/{news:id}', 'edit')->name('taxslab.edit');
+        Route::get('/view/{news:id}', 'view')->name('taxslab.view');
+        Route::post('/update', 'update')->name('taxslab.update');
+        Route::get('/delete', 'destroy')->name('taxslab.delete');
+        Route::get('/status/update', 'statusUpdate')->name('taxslab.statusUpdate');
+        Route::get('/search/filter', 'serachTaxSlabFilterList');
+    });
+    // Employee Salary
+    Route::prefix('/employee-salary')->controller(EmployeeSalaryController::class)->group(function () {
+        Route::get('/', 'index')->name('employee_salary.index');
+        Route::get('/view/{id}', 'viewSalary')->name('employee_salary.viewSalary');
+        Route::get('/generate-pdf/{id}', 'generatePDF')->name('employee_salary.generatePDF');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {

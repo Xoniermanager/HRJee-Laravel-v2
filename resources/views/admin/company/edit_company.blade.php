@@ -173,8 +173,8 @@
                                                         <div class="row">
                                                             <div class="col-12">
                                                                 <div class="image-input">
-                                                                    <input type="file" accept="image/*"
-                                                                        id="imageInput" class="form-control">
+                                                                    <input type="file" id="logo" name="logo"
+                                                                        class="form-control">
                                                                     <p for="imageInput" class="image-button"> Choose
                                                                         Logo</p>
                                                                     <img src="" class="image-preview">

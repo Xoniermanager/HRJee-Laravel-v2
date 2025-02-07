@@ -21,7 +21,7 @@
                         <div class="row g-5 g-xl-10 mb-3">
                             <div class="col-xl-3 col-sm-6">
                                 <!--begin::Card widget 3-->
-                                <a href="#"
+                                <a href="/employee/attendance/service"
                                     class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-xl-100"
                                     style="background-color: #1642b3;background-image:url('assets/media/wave-bg-purple.svg')">
                                     <!--begin::Header-->
@@ -51,7 +51,7 @@
                             </div>
                             <div class="col-xl-3 col-sm-6">
                                 <!--begin::Card widget 3-->
-                                <a href="#"
+                                <a href="/employee/news"
                                     class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-xl-100"
                                     style="background-color: #1642b3;background-image:url('assets/media/wave-bg-purple.svg')">
                                     <!--begin::Header-->
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-xl-3 col-sm-6">
                                 <!--begin::Card widget 3-->
-                                <a href="#"
+                                <a href="/employee/hr-complain/index"
                                     class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-xl-100"
                                     style="background-color: #1642b3;background-image:url('assets/media/wave-bg-purple.svg')">
                                     <!--begin::Header-->
@@ -112,7 +112,7 @@ border-bottom-right-radius: 30px;">
                             </div>
                             <div class="col-xl-3 col-sm-6">
                                 <!--begin::Card widget 3-->
-                                <a href="#"
+                                <a href="/employee/contact-us"
                                     class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-xl-100"
                                     style="background-color: #1642b3;background-image:url('assets/media/wave-bg-purple.svg')">
                                     <!--begin::Header-->

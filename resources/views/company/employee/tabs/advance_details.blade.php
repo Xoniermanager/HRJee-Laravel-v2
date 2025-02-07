@@ -13,18 +13,15 @@
             </div>
             <div class="col-md-4 form-group">
                 <label for="">PAN Number *</label>
-                <input class="form-control" type="text" name="pan_no"
-                    value="{{ $userAdvanceDetails->pan_no ?? '' }}">
+                <input class="form-control" type="text" name="pan_no" value="{{ $userAdvanceDetails->pan_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">UAN No</label>
-                <input class="form-control" name="uan_no" type="text"
-                    value="{{ $userAdvanceDetails->uan_no ?? '' }}">
+                <input class="form-control" name="uan_no" type="text" value="{{ $userAdvanceDetails->uan_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">ESIC Number </label>
-                <input class="form-control" name="esic_no" type="text"
-                    value="{{ $userAdvanceDetails->esic_no ?? '' }}">
+                <input class="form-control" name="esic_no" type="text" value="{{ $userAdvanceDetails->esic_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Insurance Number </label>
@@ -39,24 +36,26 @@
 
             <div class="col-md-4 form-group">
                 <label for="">PF Number </label>
-                <input class="form-control" type="text" name="pf_no"
-                    value="{{ $userAdvanceDetails->pf_no ?? '' }}">
-            </div>
-            <div class="col-md-4 form-group">
-                <label for="">CTC Monthly (In Probation)</label>
-                <input class="form-control" type="text" name="ctc_monthly_in_probation"
-                    value="{{ $userAdvanceDetails->ctc_monthly_in_probation ?? '' }}">
+                <input class="form-control" type="text" name="pf_no" value="{{ $userAdvanceDetails->pf_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Probation Period (Days) </label>
                 <input class="form-control" type="text" name="probation_period"
                     value="{{ $userAdvanceDetails->probation_period ?? '' }}">
             </div>
-
             <div class="col-md-4 form-group">
-                <label for="">CTC Monthly (After Probation) </label>
-                <input class="form-control" type="text" name="ctc_monthly_after_probation"
-                    value="{{ $userAdvanceDetails->ctc_monthly_after_probation ?? '' }}">
+                <label for="">CTC Vaue</label>
+                <input class="form-control" type="number" name="ctc_value"
+                    value="{{ $userAdvanceDetails->ctc_value ?? '' }}">
+            </div>
+            <div class="col-md-4 form-group">
+                <label for="">Salary Structured</label>
+                <select name="salary_id" id="" class="form-control">
+                    <option value="">Please Select Salary Structured</option>
+                    @foreach ($allSalaryStructured as $item)
+                    <option value="{{ $item->id }}" {{ ($userAdvanceDetails->salary_id ?? '') ==  $item->id ? 'selected' : ''}}>{{ $item->name }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
         <button id="submit_advance_details" class="btn btn-primary">Save & Continue</button>

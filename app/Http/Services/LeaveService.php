@@ -24,7 +24,7 @@ class LeaveService
 
     public function leavesByUserId($userId)
     {
-        return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->paginate(10);
+        return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->with(['leaveStatus'])->paginate(10);
     }
 
     public function create(array $data)
@@ -153,5 +153,13 @@ class LeaveService
     public function getTotalLeaveByUserIdByMonth($userId, $month, $year)
     {
         return $this->leaveRepository->getTotalLeaveByUserIDByMonth($userId, $month, $year);
+    }
+
+    public function getConfirmedLeaveByUserIDAndDate($date, $userID) {
+
+        return $this->leaveRepository->where('user_id', $userID)->where('from', '<=', $date)
+            ->where('to', '>=', $date)
+            ->where('leave_status_id', 2)
+            ->first();
     }
 }

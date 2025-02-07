@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('insurance_no')->unique()->nullable();
             $table->string('driving_licence_no')->unique()->nullable();
             $table->integer('probation_period')->nullable();
-            $table->string('ctc_monthly_in_probation')->nullable();
-            $table->string('ctc_monthly_after_probation')->nullable();
+            $table->string('ctc_value')->nullable();
+            $table->unsignedBigInteger('salary_id')->nullable();
             $table->timestamps();
         });
     }

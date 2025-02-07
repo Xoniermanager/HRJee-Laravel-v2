@@ -120,7 +120,11 @@ class EmployeeServices
 
     public function getAllEmployeeByCompanyId($companyId)
     {
-        return $this->userRepository->where('type', 'user')->where('company_id', $companyId);
+        return $this->userRepository->where('type', 'user')
+        ->where('company_id', $companyId)
+        ->whereHas('details', function ($query) {
+            $query->whereNull('exit_date');
+        });;
     }
 
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)

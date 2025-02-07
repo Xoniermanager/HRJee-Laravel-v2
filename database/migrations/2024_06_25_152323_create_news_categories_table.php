@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('status')->default(true);
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->foreign('company_id')->references('id')->on('companies');
+            // $table->foreign('company_id')->references('id')->on('companies');
             $table->timestamps();
         });
     }
