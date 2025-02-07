@@ -174,6 +174,7 @@ class EmployeeAttendanceService
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', Carbon::today())->first();
     }
+
     public function getAttendanceByFromAndToDate($fromDate, $toDate, $userId)
     {
         $fromDate = Carbon::parse($fromDate)->startOfDay();
@@ -182,6 +183,7 @@ class EmployeeAttendanceService
             ->where('user_id', $userId)
             ->whereBetween('punch_in', [$fromDate, $toDate]);
     }
+
     public function getLastTenDaysAttendance()
     {
         $userId = Auth()->user()->id ?? auth()->guard('employee_api')->user()->id;
@@ -217,6 +219,7 @@ class EmployeeAttendanceService
     //         return '00:00:00';
     //     }
     // }
+
     public function getAllAttendanceByCompanyId($companyId)
     {
         return $this->employeeAttendanceRepository
@@ -304,15 +307,12 @@ class EmployeeAttendanceService
     {
         $attendanceDetails = $this->employeeAttendanceRepository->where('id', $breakDetails->employee_attendance_id)->first();
 
-        //dd($attendanceDetails);
         $totalBreak = '00:00:00';
-        //dd($attendanceDetails);
         if ($attendanceDetails->total_break_time == null) {
             // Calculate the time difference between break start and break hour
             $time1 = new DateTime($breakDetails->start_time);
             $time2 = new DateTime($breakHourValue);
             $time_diff = $time1->diff($time2);
-            //dd($time_diff);
             // Format the difference as HH:mm:ss
             $totalBreak = $time_diff->format('%H:%I:%S');
         } else {
@@ -328,7 +328,59 @@ class EmployeeAttendanceService
             // Format the new total break time as HH:mm:ss
             $totalBreak = $time3->format('H:i:s');
         }
-        //dd($totalBreak);
+
         return $attendanceDetails->update(['total_break_time' => $totalBreak]);
+    }
+
+    public function getAttendanceByByDate($date, $userID)
+    {
+        $attendance = $this->employeeAttendanceRepository->where('user_id', $userID)->whereDate('punch_in', $date)->first();
+
+        $leave = $this->leaveService->getConfirmedLeaveByUserIDAndDate('user_id', $userID);
+
+        $response = [
+            'punch_in' => null,
+            'punch_out' => null,
+            'total_working_hours' => 'N/A',
+            'status' => null,
+
+        ];
+
+
+        if($leave) {
+            if($leave->is_half_day) {
+                $response['status'] = 'Half Day';
+            } else  {
+                $response['status'] = 'Leave';
+            }
+        } elseif($attendance) {
+            $response['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
+            $response['punch_out'] = date('H:i A', strtotime($attendance->punch_out));
+            if($attendance->punch_out) {
+
+                $punchIn = Carbon::parse($attendance->punch_in);
+                $punchOut = Carbon::parse($attendance->punch_out);
+                $totalBreakTime = Carbon::parse($attendance->total_break_time); // 45 minutes break
+
+                // Calculate total work duration (without break)
+                $totalWorkDuration = $punchOut->diffInSeconds($punchIn);
+
+                // Subtract total break time
+                $totalBreakSeconds = $totalBreakTime->hour * 3600 + $totalBreakTime->minute * 60 + $totalBreakTime->second;
+                $actualWorkSeconds = $totalWorkDuration - $totalBreakSeconds;
+
+                // Convert back to hours, minutes, seconds
+                $hours = floor($actualWorkSeconds / 3600);
+                $minutes = floor(($actualWorkSeconds % 3600) / 60);
+                $seconds = $actualWorkSeconds % 60;
+                // Format the output
+                $response['total_working_hours'] = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+            }
+            $response['status'] = 'Present';
+        } else {
+            $response['status'] = 'Absent';
+        }
+
+        return $response;
     }
 }
