@@ -119,6 +119,7 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
+
     public function getLastTenDaysAttendance()
     {
         try {
@@ -139,6 +140,25 @@ class AttendanceController extends Controller
                 'status' => true,
                 'data' => $finalData,
             ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getParticularDateAttendance(Request $request)
+    {
+        try {
+            $date = $request->has('date') ? $request->get('date') : date('Y-m-d');
+            $response = $this->employeeAttendanceService->getAttendanceByByDate($date, auth()->user()->id);
+            
+            return response()->json([
+                'status' => true,
+                'data' => $response,
+            ], 200);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

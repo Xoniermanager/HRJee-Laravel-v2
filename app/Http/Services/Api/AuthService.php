@@ -65,11 +65,13 @@ class AuthService
         try {
             $user = auth()->guard('employee_api')->user();
 
-            $countries = $this->countryServices->getAllActiveCountry();
-            $states = $this->stateServices->getAllStates();
-            $singleUserDetails = $user->load('bankDetails', 'addressDetails', 'assetDetails', 'documentDetails:id,document_type_id,user_id,document', 'documentDetails.documentTypes:id,name');
-            $singleUserDetails->countries = $countries;
-            $singleUserDetails->states = $states;
+            // $countries = $this->countryServices->getAllActiveCountry();
+            // $states = $this->stateServices->getAllStates();
+
+            $singleUserDetails = $user->load('details', 'bankDetails', 'addressDetails', 'assetDetails', 'documentDetails:id,document_type_id,user_id,document', 'documentDetails.documentTypes:id,name');
+            
+            // $singleUserDetails->countries = $countries;
+            // $singleUserDetails->states = $states;
             return apiResponse('user_details', $singleUserDetails);
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
@@ -140,8 +142,12 @@ class AuthService
     public function updateProfile($request)
     {
         try {
+            $data = $request->except('name');
 
-            $data = $request->validated();
+            $user = User::whereId(auth()->user()->id)->update([
+                'name' => $request->name
+            ]);
+
             $date = date_create($request->date_of_birth);
             $data['date_of_birth'] = date_format($date, "Y/m/d");
 
@@ -150,7 +156,9 @@ class AuthService
                 $filePath = uploadingImageorFile($data['profile_image'], $upload_path);
                 $data['profile_image'] = $filePath;
             }
-            User::whereId(auth()->user()->id)->update($data);
+
+            $user->details->update($data);
+
             return apiResponse('profile_updated');
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);

@@ -154,4 +154,12 @@ class LeaveService
     {
         return $this->leaveRepository->getTotalLeaveByUserIDByMonth($userId, $month, $year);
     }
+
+    public function getConfirmedLeaveByUserIDAndDate($date, $userID) {
+
+        return $this->leaveRepository->where('user_id', $userID)->where('from', '<=', $date)
+            ->where('to', '>=', $date)
+            ->where('leave_status_id', 2)
+            ->first();
+    }
 }

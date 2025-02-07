@@ -71,6 +71,7 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
         Route::post('/search/filter/attendance', 'getAttendanceByFromAndToDate');
         Route::get('/get-today-attendance', 'getTodayAttendance');
         Route::get('/get-last-attendance', 'getLastTenDaysAttendance');
+        Route::get('/attendance', 'getParticularDateAttendance');
     });
 
     /** News Module  */
