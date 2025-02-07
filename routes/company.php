@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\Company\TaxSlabRuleController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
@@ -580,8 +581,11 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     // Salary Management
     Route::prefix('/salary')->controller(SalaryController::class)->group(function () {
         Route::get('/', 'index')->name('salary.index');
+        Route::get('/add', 'add')->name('salary.add');
+        Route::get('/view/{id}', 'view')->name('salary.view');
         Route::post('/create', 'store')->name('salary.store');
-        Route::post('/update', 'update')->name('salary.update');
+        Route::get('/edit/{id}', 'edit')->name('salary.edit');
+        Route::post('/update/{id}', 'update')->name('salary.update');
         Route::get('/delete', 'destroy')->name('salary.delete');
         Route::get('/status/update', 'statusUpdate')->name('salary.statusUpdate');
         Route::get('/search/filter', 'serachSalaryFilterList');
@@ -597,15 +601,17 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachSalaryComponentFilterList');
     });
 
-    // Salary Component Assignment Management
-    Route::prefix('/salary-component-assignment')->controller(SalaryComponentAssignmentController::class)->group(function () {
-        Route::get('/', 'index')->name('salary.component_assign.index');
-        Route::get('/add', 'add')->name('salary.component_assign.add');
-        Route::post('/create', 'store')->name('salary.component_assign.store');
-        Route::get('/edit/{id}', 'edit')->name('salary.component_assign.edit');
-        Route::post('/update/{id}', 'update')->name('salary.component_assign.update');
-        Route::get('/delete', 'destroy')->name('salary.component_assign.delete');
-        Route::get('/search/filter', 'serachSalaryComponentAssignmentFilterList');
+    // Tax Slab Module
+    Route::prefix('/tax-slab')->controller(TaxSlabRuleController::class)->group(function () {
+        Route::get('/', 'index')->name('taxslab.index');
+        Route::get('/add', 'add')->name('taxslab.add');
+        Route::post('/create', 'store')->name('taxslab.store');
+        Route::get('/edit/{news:id}', 'edit')->name('taxslab.edit');
+        Route::get('/view/{news:id}', 'view')->name('taxslab.view');
+        Route::post('/update', 'update')->name('taxslab.update');
+        Route::get('/delete', 'destroy')->name('taxslab.delete');
+        Route::get('/status/update', 'statusUpdate')->name('taxslab.statusUpdate');
+        Route::get('/search/filter', 'serachTaxSlabFilterList');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {

@@ -68,5 +68,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SalariesTableSeeder::class);
         $this->call(SalaryComponentsTableSeeder::class);
         $this->call(SalaryComponentAssignmentsTableSeeder::class);
+        $this->call(TaxSlabRulesTableSeeder::class);
     }
 } 

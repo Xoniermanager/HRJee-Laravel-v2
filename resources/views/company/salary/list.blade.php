@@ -1,3 +1,4 @@
+{{-- {{dd($allSalaryDetails->toArray());}} --}}
 <div id="salary_list" class="card-body py-3">
     <!--begin::Table container-->
     <div class="table-responsive">
@@ -8,6 +9,7 @@
                 <tr class="fw-bold">
                     <th>Sr. No.</th>
                     <th>Name</th>
+                    <th>Salary Component Assignment</th>
                     <th>Description</th>
                     <th>Status</th>
                     <th class="float-right">Action</th>
@@ -17,9 +19,11 @@
             <tbody class="">
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td><a href="#" data-bs-toggle="modal"
-                            onClick="salary_details('{{ $item->id }}', '{{ $item->name }}', '{{ $item->description }}')">{{$item->name
-                            }}</a>
+                    <td>{{$item->name}} </td>
+                    <td>
+                        @foreach ($item->salaryComponentAssignments as $component)
+                        <span class="badge bg-primary ml-1">{{ $component->salaryComponent->name}}</span>
+                        @endforeach
                     </td>
                     <td>{{ $item->description }}</td>
                     <td data-order="Invalid date">
@@ -30,20 +34,21 @@
                             <span class="slider round"></span>
                         </label>
                     </td>
-
                     <td>
                         <div class="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" data-bs-toggle="modal"
-                                onClick="salary_details('{{ $item->id }}', '{{ $item->name }}', '{{ $item->description }}')"
-                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                            <a href="{{ route('salary.view',$item->id) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                <i class="fa fa-eye"></i>
+                            <a href="{{ route('salary.edit',$item->id) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                 <i class="fa fa-edit"></i>
                                 <!--end::Svg Icon-->
                             </a>
-                            {{-- <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                            <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                                 onclick="deleteFunction('{{ $item->id }}')">
                                 <i class="fa fa-trash"></i>
-                            </a> --}}
+                            </a>
+
+                        </a>
                         </div>
                     </td>
                 </tr>
