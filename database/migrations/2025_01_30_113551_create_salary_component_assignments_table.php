@@ -21,10 +21,11 @@ return new class extends Migration {
             $table->enum('earning_or_deduction', ['earning', 'deduction']);
             $table->foreign('salary_id')->references('id')->on('salaries');
             $table->foreign('salary_component_id')->references('id')->on('salary_components');
-            $table->foreign('parent_component')->references('id')->on('salary_component_assignments');
+            $table->foreign('parent_component')->references('id')->on('salary_components');
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

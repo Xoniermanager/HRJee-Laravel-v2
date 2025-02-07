@@ -594,8 +594,8 @@ class MenusTableSeeder extends Seeder
             45 =>
                 array(
                     'id' => 45,
-                    'title' => 'Salary Component Assignment',
-                    'slug' => '/salary-component-assignment',
+                    'title' => 'Tax Slab Rule',
+                    'slug' => '/tax-slab',
                     'icon' => '<i class="fas fa-money-bill-wave"></i>',
                     'parent_id' => 42,
                     'status' => 1,

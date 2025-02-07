@@ -18,32 +18,36 @@ class Salary extends Model
         'status'
     ];
 
-    protected static function booted()
-    {
-        parent::booted();
-        static::created(function ($entry) {
-            $entry->handlePostCreationActions();
-        });
-    }
+    // protected static function booted()
+    // {
+    //     parent::booted();
+    //     static::created(function ($entry) {
+    //         $entry->handlePostCreationActions();
+    //     });
+    // }
 
-    public function handlePostCreationActions()
+    // public function handlePostCreationActions()
+    // {
+    //     $defaultSalaryComponents = SalaryComponent::where('company_id', $this->company_id)
+    //         ->where('created_by', $this->created_by)
+    //         ->where('is_default', true)
+    //         ->get();
+    //     $this->createSalaryComponentAssignment($defaultSalaryComponents);
+    // }
+    public function createSalaryComponentAssignment($salaryComponentsId)
     {
-        $defaultSalaryComponents = SalaryComponent::where('company_id', $this->company_id)
-            ->where('created_by', $this->created_by)
-            ->where('is_default', true)
-            ->get();
-
-        foreach ($defaultSalaryComponents as $defaultSalaryComponent) {
-            $data = $defaultSalaryComponent->toArray();
-            $data['value'] = $defaultSalaryComponent->default_value;
-            $data['salary_id'] = $this->id;
-            $data['salary_component_id'] = $defaultSalaryComponent->id;
-            SalaryComponentAssignment::create(Arr::except($data, ['id', 'name']));
+        SalaryComponentAssignment::where('salary_id', $this->id)->delete();
+        foreach ($salaryComponentsId as $key => $item) {
+            $item['salary_id'] = $this->id;
+            $item['salary_component_id'] = $key;
+            $item['company_id'] = $this->company_id;
+            $item['created_by'] = $this->created_by;
+            SalaryComponentAssignment::create(Arr::except($item, ['id']));
         }
     }
 
-    public function salaryComponentAssignment()
+    public function salaryComponentAssignments()
     {
-        return $this->belongsTo(SalaryComponentAssignment::class,'salary_id','');
+        return $this->hasMany(SalaryComponentAssignment::class);
     }
 }

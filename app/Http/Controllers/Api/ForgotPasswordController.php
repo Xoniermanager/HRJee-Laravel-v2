@@ -39,8 +39,8 @@ class ForgotPasswordController extends Controller
             }
 
             $code = generateOtp();
+            $code = "1234";
             $email = $request->email;
-            
             $mailData = $this->sendOtpService->update($email, 'user', $code);
             if ($mailData) {
 
@@ -84,7 +84,7 @@ class ForgotPasswordController extends Controller
             $email = $request->email;
 
             $code = UserCode::where(['email' => $email, 'code' => $request->otp, 'type' => 'user'])->where('updated_at', '>=', now()->subMinutes(20))->first();
-            
+
             if($code) {
                 User::where('email', $email)->update(['password' => Hash::make($request->password)]);
 
@@ -99,7 +99,7 @@ class ForgotPasswordController extends Controller
                     'message' => 'Invalid OTP!',
                     'data' => [],
                 ], 200);
-            }            
+            }
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }

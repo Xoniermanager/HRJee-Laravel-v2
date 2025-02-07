@@ -15,23 +15,29 @@ class SalaryService
 
     public function getAllSalariesByCompanyId($companyId)
     {
-        return $this->salaryRepository->where('company_id',$companyId)->orderBy('id', 'DESC');
+        return $this->salaryRepository->where('company_id', $companyId)->orderBy('id', 'DESC');
     }
     public function getAllActiveSalaries($companyId)
     {
-        return $this->salaryRepository->where('company_id',$companyId)->where('status','1')->get();
+        return $this->salaryRepository->where('company_id', $companyId)->where('status', '1')->get();
     }
     public function create(array $data)
     {
-        return $this->salaryRepository->create($data);
+        $createdSalary = $this->salaryRepository->create($data);
+        $createdSalary->createSalaryComponentAssignment($data['componentDetails']);
+        return true;
     }
     public function updateDetails(array $data, $id)
     {
-        return $this->salaryRepository->find($id)->update($data);
+        $salariesDetails = $this->salaryRepository->find($id);
+        $salariesDetails->createSalaryComponentAssignment($data['componentDetails']);
+        return $salariesDetails->update($data);
     }
     public function deleteDetails($id)
     {
-        return $this->salaryRepository->find($id)->delete();
+        $salaryDetails = $this->salaryRepository->find($id);
+        $salaryDetails->salaryComponentAssignments()->delete();
+        return $salaryDetails->delete();
     }
 
     public function serachSalaryFilterList($request, $companyID)
@@ -46,5 +52,10 @@ class SalaryService
             $salaryDetails = $salaryDetails->where('status', $request['status']);
         }
         return $salaryDetails->orderBy('id', 'DESC')->paginate(10);
+    }
+
+    public function getSalaryIdById($salaryId)
+    {
+        return $this->salaryRepository->find($salaryId);
     }
 }

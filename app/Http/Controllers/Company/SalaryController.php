@@ -7,15 +7,19 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\SalaryService;
 use App\Http\Requests\SalaryStoreRequest;
+use App\Http\Requests\SalaryUpdateRequest;
+use App\Http\Services\SalaryComponentService;
 use Illuminate\Support\Facades\Validator;
 
 class SalaryController extends Controller
 {
     private $salaryService;
+    private $salaryComponentService;
 
-    public function __construct(SalaryService $salaryService)
+    public function __construct(SalaryService $salaryService, SalaryComponentService $salaryComponentService)
     {
         $this->salaryService = $salaryService;
+        $this->salaryComponentService = $salaryComponentService;
     }
 
     /**
@@ -23,10 +27,21 @@ class SalaryController extends Controller
      */
     public function index()
     {
-        $allSalaryDetails = $this->salaryService->getAllSalariesByCompanyId(Auth()->user()->company_id)->paginate(10);
-        return view('company.salary.index', compact('allSalaryDetails'));
+        $allSalaryDetails = $this->salaryService->getAllSalariesByCompanyId(Auth()->user()->company_id)->with('salaryComponentAssignments')->paginate(10);
+        $allSalaryComponentDetails = $this->salaryComponentService->getActiveSalaryComponentByCompanyId(Auth()->user()->company_id);
+        return view('company.salary.index', compact('allSalaryDetails', 'allSalaryComponentDetails'));
     }
-
+    public function add()
+    {
+        $allSalaryComponentDetails = $this->salaryComponentService->getActiveSalaryComponentByCompanyId(Auth()->user()->company_id);
+        $basicDetails = $this->salaryComponentService->getBasicPayDetails(Auth()->user()->company_id);
+        return view('company.salary.add', compact('allSalaryComponentDetails', 'basicDetails'));
+    }
+    public function view($salaryId)
+    {
+        $salariesDetails = $this->salaryService->getSalaryIdById($salaryId);
+        return view('company.salary.view', compact('salariesDetails'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -37,39 +52,39 @@ class SalaryController extends Controller
             $data = $request->all();
             $data['company_id'] = auth()->user()->company_id;
             $data['created_by'] = auth()->user()->id;
-            if ($this->salaryService->create($data)) {
-                $allSalaryDetails = $this->salaryService->getAllSalariesByCompanyId(Auth()->user()->company_id)->paginate(10);
-                return response()->json([
-                    'message' => 'Salary Created Successfully!',
-                    'data' => view("company.salary.list", compact('allSalaryDetails'))->render()
-                ]);
-            }
+            $this->salaryService->create($data);
+            return redirect(route('salary.index'))->with(['success' => 'Salary Structured Added Successfully']);
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return back()->with(['error' => $e->getMessage()]);
         }
     }
 
+    public function edit($salaryId)
+    {
+        $salariesDetails = $this->salaryService->getSalaryIdById($salaryId);
+        $allSalaryComponentDetails = $this->salaryComponentService->getActiveSalaryComponentByCompanyId(Auth()->user()->company_id);
+        $assignedComponentIds = $salariesDetails->salaryComponentAssignments->pluck('salary_component_id')->toArray();
+        $allSalaryComponentDetails = $allSalaryComponentDetails->filter(function ($parentComponent) use ($assignedComponentIds) {
+            return !in_array($parentComponent->id, $assignedComponentIds);
+        })->values();
+        $basicDetails = $this->salaryComponentService->getBasicPayDetails(Auth()->user()->company_id);
+        return view('company.salary.edit', compact('salariesDetails', 'basicDetails', 'allSalaryComponentDetails'));
+    }
+
     /**
+     *
+     "
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(SalaryUpdateRequest $request)
     {
-        $validateDepartments = Validator::make($request->all(), [
-            'name' => ['required', 'string','unique:salaries,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
-            'description' => 'nullable|sometimes|max:255'
-        ]);
-
-        if ($validateDepartments->fails()) {
-            return response()->json(['error' => $validateDepartments->messages()], 400);
+        try {
+            $updateData = $request->except(['_token', 'id']);
+            $this->salaryService->updateDetails($updateData, $request->id);
+            return redirect(route('salary.index'))->with(['success' => 'Salary Structured Updated Successfully']);
         }
-        $updateData = $request->except(['_token', 'id']);
-        $companyStatus = $this->salaryService->updateDetails($updateData, $request->id);
-        if ($companyStatus) {
-            $allSalaryDetails = $this->salaryService->getAllSalariesByCompanyId(Auth()->user()->company_id)->paginate(10);
-            return response()->json([
-                'message' => 'Salary Updated Successfully!',
-                'data' => view("company.salary.list", compact('allSalaryDetails'))->render()
-            ]);
+        catch (Exception $e) {
+            return back()->with(['error' => $e->getMessage()]);
         }
     }
 
