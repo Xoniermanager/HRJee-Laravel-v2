@@ -18,6 +18,7 @@ class LeaveAvailableApiController extends Controller
     public function getAllLeaveAvailableByUserId()
     {
         try {
+            $data = [];
             $getAllLeaveAvailableDetails = $this->employeeAvailableLeaveService->getAllLeaveAvailableByUserId(auth()->guard('employee_api')->user()->id);
             foreach ($getAllLeaveAvailableDetails as $getLeaveDetails) {
                 foreach ($getLeaveDetails as $leaveDetails) {
@@ -30,7 +31,7 @@ class LeaveAvailableApiController extends Controller
             }
             return response()->json([
                 'status' => true,
-                'message' => 'Retried list of Leave Available',
+                'message' => '',
                 'data' => $data,
             ], 200);
         } catch (Exception $e) {
