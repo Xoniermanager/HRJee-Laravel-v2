@@ -63,83 +63,21 @@
         </div>
         <!--end::Container-->
     </div>
-    {{-- <script>
-        function handleStatus(id) {
-            var checked_value = $('#checked_value_' + id).prop('checked');
-            let status;
-            let status_name;
-            if (checked_value == true) {
-                status = 1;
-                status_name = 'Active';
-            } else {
-                status = 0;
-                status_name = 'Inactive';
-            }
-            $.ajax({
-                url: "{{ route('salary.statusUpdate') }}",
-                type: 'get',
-                data: {
-                    'id': id,
-                    'status': status,
-                },
-                success: function(res) {
-                    if (res) {
-                        swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
-                    } else {
-                        swal.fire("Oops!", 'Something Went Wrong', "error");
-                    }
-                }
-            })
-        }
-
-        function deleteFunction(id) {
-            event.preventDefault();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "<?= route('salary.delete') ?>",
-                        type: "get",
-                        data: {
-                            id: id
-                        },
-                        success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            $('#salary_list').replaceWith(res.data);
-                        },
-                        error: function(xhr, ajaxOptions, thrownError) {
-                            Swal.fire("Error deleting!", "Please try again", "error");
-                        }
-                    });
-                }
-            });
-        }
+    <script>
         jQuery("#search").on('input', function() {
             search_filter_results();
         });
-        jQuery("#status").on('change', function() {
-            search_filter_results();
-        });
-
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/salary/search/filter',
+                url: company_ajax_base_url + '/employee-salary/search/filter',
                 data: {
-                    'status': $('#status').val(),
                     'search': $('#search').val()
                 },
                 success: function(response) {
-                    $('#salary_list').replaceWith(response.data);
+                    $('#employee_list').replaceWith(response.data);
                 }
             });
         }
-    </script> --}}
+    </script>
     @endsection

@@ -144,8 +144,8 @@ class UserService
                     });
                 }
             });
-
         if (isset($request->search) && !empty($request->search)) {
+
             $searchKeyword = $request->search;
             // Main search filter for the users table
             $allEmployeeDetails->where(function ($query) use ($searchKeyword) {
@@ -153,7 +153,6 @@ class UserService
                     ->orWhere('email', 'LIKE', '%' . $searchKeyword . '%');
             });
         }
-
         // Filtering by skill_id
         if (isset($request->skill_id) && !empty($request->skill_id)) {
             $skillId = $request->skill_id;

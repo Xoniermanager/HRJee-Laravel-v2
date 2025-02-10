@@ -1,4 +1,4 @@
-<div id="salary_list" class="card-body py-3">
+<div id="employee_list" class="card-body py-3">
     <!--begin::Table container-->
     <div class="table-responsive">
         <!--begin::Table-->
@@ -20,7 +20,7 @@
                     <td>{{$item->email}} </td>
                     <td>
                         <div class="d-flex justify-content-end flex-shrink-0">
-                            <a href="{{ route('employee_salary.viewSalary',$item->id) }}"
+                            <a href="{{ route('employee_salary.viewSalary',getEncryptId($item->id)) }}"
                                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <i class="fa fa-eye"></i>
                             </a>

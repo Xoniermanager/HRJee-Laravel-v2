@@ -619,6 +619,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/', 'index')->name('employee_salary.index');
         Route::get('/view/{id}', 'viewSalary')->name('employee_salary.viewSalary');
         Route::get('/generate-pdf/{id}', 'generatePDF')->name('employee_salary.generatePDF');
+        Route::get('/search/filter', 'serachEmployeeSalaryFilterList');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
