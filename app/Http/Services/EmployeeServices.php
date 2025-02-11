@@ -8,10 +8,9 @@ use Throwable;
 
 use Carbon\Carbon;
 use App\Models\UserCode;
+use App\Models\EmployeeManager;
 use App\Mail\ResetPassword;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Repositories\UserDetailRepository;
 
@@ -179,6 +178,27 @@ class EmployeeServices
                 $query->where('name', 'Like', '%' . $searchKey . '%');
                 $query->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
             });
+    }
+
+
+    public function addManagers($userId, $managerIDs)
+    {
+        EmployeeManager::where('user_id', $userId)->delete();
+        if($managerIDs) {
+            $payload = [];
+
+            foreach ($managerIDs as $manager) {
+                $payload[] = [
+                    'manager_id' => $manager,
+                    'user_id' => $userId,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ];
+            }
+            EmployeeManager::insert($payload); 
+        } 
+
+        return true;
     }
 
     public function getExitEmployeeList($companyId)

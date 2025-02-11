@@ -92,7 +92,12 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
+        if(Auth()->user()->type == "user") {
+            $allUserDetails = $this->userService->getManagedUsers($request == null, Auth()->user()->id)->paginate(10);
+        } else {
+            $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
+        }
+
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
@@ -102,6 +107,7 @@ class EmployeeController extends Controller
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
+        
         return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills','allSalaryStructured'));
     }
 
@@ -142,6 +148,8 @@ class EmployeeController extends Controller
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
         $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
+        $allManagers = $this->qualificationService->getAllActiveQualification();
+        
         // dd($singleUserDetails->toArray());
         return view(
             'company.employee.add_employee',
@@ -171,12 +179,16 @@ class EmployeeController extends Controller
             $request['company_id'] = Auth()->user()->company_id;
             if (isset($request->id) && !empty($request->id)) {
                 $userCreated = $this->userService->updateDetail($request->only('name', 'role_id'), $request->id);
+                $request['user_id'] = $request->id;
             } else {
                 $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'company_id'));
                 $request['user_id'] = $userCreated->id;
             }
             if ($userCreated) {
+                
                 $userDetails = $this->employeeService->create($request->except('password', 'email', '_token', 'company_id'));
+                $this->employeeService->addManagers($request['user_id'], $request->get('manager_id'));
+
                 DB::commit();
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
