@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\HolidayServices;
 
-class HolidayApiController extends Controller
+class HolidayController extends Controller
 {
     public $holidayService;
 
@@ -15,17 +15,23 @@ class HolidayApiController extends Controller
     {
         $this->holidayService = $holidayService;
     }
-    public function list()
+    
+    public function getHolidays(Request $request)
     {
         try {
-            $companyID = auth()->guard('employee_api')->user()->company_id;
-            $getHolidayList = $this->holidayService->getListByCompanyId($companyID);
+            $companyID = auth()->user()->company_id;
+            $month = $request->has('month') ? $request->get('month') : NULL;
+            $date = $request->has('date') ? $request->get('date') : NULL;
+
+            $getHolidayList = $this->holidayService->getListByCompanyId($companyID, date('Y'), $month, $date);
+
             return response()->json([
                 'status' => true,
-                'message' => 'Retried Holiday List Successfully',
+                'message' => NULL,
                 'data' => $getHolidayList,
             ], 200);
         } catch (Exception $e) {
+
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
