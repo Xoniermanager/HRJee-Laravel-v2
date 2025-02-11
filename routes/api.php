@@ -100,4 +100,9 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
         Route::put('/{id}', 'edit');
         Route::put('/{id}/withdraw', 'withdraw');
     });
+
+
+    Route::prefix('assets')->controller(AssetController::class)->group(function () {
+        Route::get('/', 'assetDetails');
+    });
 });

@@ -70,7 +70,7 @@ class AttendanceController extends Controller
         $encryptId = getDecryptId($userId);
         $userDetail = $this->employeeService->getUserDetailById($encryptId);
         $employeeDetail = $this->viewsearchFilterDetails(Carbon::now()->month, date('Y'), $userDetail);
-        
+
         return view('company.attendance.view', compact('employeeDetail'));
     }
 
@@ -89,7 +89,7 @@ class AttendanceController extends Controller
                 $weekendStatus = true;
             }
             $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeDetails->id, date('Y-m-d', strtotime($startDate)), $endDate);
-            
+
             $allAttendanceDetails[date('d F Y', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByDateByUserId($employeeDetails->id, $startDate)->first();
             $allAttendanceDetails[date('d F Y', strtotime($startDate))]['weekend'] = $weekendStatus;
             $allAttendanceDetails[date('d F Y', strtotime($startDate))]['leave'] = $checkLeave;
@@ -99,7 +99,7 @@ class AttendanceController extends Controller
             [
                 'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
                 'totalLeave'   => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
-                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::guard('company')->user()->company_id, $month, $year, $employeeDetails->company_branch_id)->count(),
+                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->company_branch_id)->count(),
                 'shortAttendance' => '0',
                 'totalAbsent' => '0',
                 'emp_id'    => $employeeDetails->id,

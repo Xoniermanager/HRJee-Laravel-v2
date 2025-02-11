@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ValidateBranch;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
+use App\Http\Services\UserService;
 use Illuminate\Support\Facades\Validator;
 
 class CompanyBranchesController extends Controller
@@ -19,11 +20,13 @@ class CompanyBranchesController extends Controller
     private $branch_services;
     private $countryService;
     private $stateService;
-    public function __construct(BranchServices $branch_services, CountryServices $countryService, StateServices $stateService)
+    private $userService;
+    public function __construct(BranchServices $branch_services, CountryServices $countryService, UserService $userService, StateServices $stateService)
     {
         $this->branch_services = $branch_services;
         $this->countryService = $countryService;
         $this->stateService = $stateService;
+        $this->userService = $userService;
     }
     /**
      * Display a listing of the resource.
@@ -176,5 +179,18 @@ class CompanyBranchesController extends Controller
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
+    }
+
+    public function getAllManagers(Request $request)
+    {
+        $branchIds = $request->branch_id;
+        $allManagers = $this->userService->getManagersByBranchId($branchIds);
+
+        $response = [
+            'status' => true,
+            'data' => $allManagers
+        ];
+        
+        return json_encode($response);
     }
 }

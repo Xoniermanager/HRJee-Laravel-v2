@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employee_salaries', function (Blueprint $table) {
+        Schema::create('employee_managers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('salary_id');
-            $table->float('ctc_value');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('salary_id')->references('id')->on('salaries');
+            $table->unsignedBigInteger('manager_id');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employee_salaries');
+        Schema::dropIfExists('employee_managers');
     }
 };

@@ -86,6 +86,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/update', 'update')->name('company.branch.update');
         Route::get('/delete/{id?}', 'destroy')->name('company.branch.delete');
         Route::get('/status/update', 'statusUpdate')->name('company.branch.statusUpdate');
+        Route::get('/get-managers-by-branch', 'getAllManagers')->name('get.all.managers');
         Route::get('/company/branch/search', 'searchBranchFilter')->name('company.branch.search');
     });
 
@@ -619,6 +620,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/', 'index')->name('employee_salary.index');
         Route::get('/view/{id}', 'viewSalary')->name('employee_salary.viewSalary');
         Route::get('/generate-pdf/{id}', 'generatePDF')->name('employee_salary.generatePDF');
+        Route::get('/search/filter', 'serachEmployeeSalaryFilterList');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {

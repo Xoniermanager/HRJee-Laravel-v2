@@ -17,7 +17,7 @@ class GenerateSalaryService
         $ctcValue = $employeeDetails->advanceDetails->ctc_value;
         $salaryComponents = $employeeDetails->advanceDetails->salary->salaryComponentAssignments;
         $applicableTaxRates = $this->taxSlabRateService->getActiveTaxSlab(Auth()->user()->company_id);
-        $totalWorking = '31';
+        $totalWorking = '30';
         $lossOfPay = '0';
         $getEmployeeMonthlySalary = $this->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
         $getEmployeeCtcComponents = $this->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);

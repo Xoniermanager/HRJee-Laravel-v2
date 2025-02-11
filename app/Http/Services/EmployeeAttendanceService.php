@@ -335,7 +335,7 @@ class EmployeeAttendanceService
     public function getAttendanceByByDate($date, $userID)
     {
         $attendance = $this->employeeAttendanceRepository->where('user_id', $userID)->whereDate('punch_in', $date)->first();
-
+    
         $leave = $this->leaveService->getConfirmedLeaveByUserIDAndDate('user_id', $userID);
 
         $response = [
@@ -360,13 +360,16 @@ class EmployeeAttendanceService
 
                 $punchIn = Carbon::parse($attendance->punch_in);
                 $punchOut = Carbon::parse($attendance->punch_out);
-                $totalBreakTime = Carbon::parse($attendance->total_break_time); // 45 minutes break
-
+                $totalBreakSeconds = 0;
+                if($attendance->total_break_time) {
+                    $totalBreakTime = Carbon::parse($attendance->total_break_time); // 45 minutes break
+                    $totalBreakSeconds = $totalBreakTime->hour * 3600 + $totalBreakTime->minute * 60 + $totalBreakTime->second;
+                }
+               
                 // Calculate total work duration (without break)
                 $totalWorkDuration = $punchOut->diffInSeconds($punchIn);
 
                 // Subtract total break time
-                $totalBreakSeconds = $totalBreakTime->hour * 3600 + $totalBreakTime->minute * 60 + $totalBreakTime->second;
                 $actualWorkSeconds = $totalWorkDuration - $totalBreakSeconds;
 
                 // Convert back to hours, minutes, seconds

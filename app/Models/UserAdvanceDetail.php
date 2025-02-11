@@ -26,4 +26,18 @@ class UserAdvanceDetail extends Model
     {
         return $this->belongsTo(Salary::class);
     }
+    protected static function booted()
+    {
+        static::updated(function ($user) {
+            $oldValue = $user->getOriginal(); // Old values before the update
+            $newValue = $user->getChanges();  // New values after the update
+            // Log changes to the database
+            Log::create([
+                'action' => 'updated',
+                'model' => 'User',
+                'old_value' => json_encode($oldValue),
+                'new_value' => json_encode($newValue),
+            ]);
+        });
+    }
 }
