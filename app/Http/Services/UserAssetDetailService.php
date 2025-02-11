@@ -45,6 +45,6 @@ class UserAssetDetailService
 
     public function getAllAssignedAsset()
     {
-        return  $this->userAssetDetailRepository->with('asset:id,name')->where('user_id', auth()->guard('employee_api')->user()->id)->get();
+        return  $this->userAssetDetailRepository->with('asset:id,name')->where('user_id', auth()->user()->id)->get();
     }
 }
