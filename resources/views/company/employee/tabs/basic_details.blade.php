@@ -208,7 +208,7 @@
                     <option value="">Select Role</option>
                     @forelse ($allRoles as $role)
                         <option
-                            {{ ($singleUserDetails->details->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
+                            {{ ($singleUserDetails->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
                             value="{{ $role->id }}">{{ $role->name }}</option>
                     @empty
                         <option value="">No Roles Found</option>
