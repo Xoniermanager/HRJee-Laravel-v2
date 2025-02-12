@@ -151,7 +151,7 @@ function getFormattedDate($date)
 
 function getWorkDateFromate($joiningDate)
 {
-    if($joiningDate) {
+    if ($joiningDate) {
         $joiningDate = Carbon::createFromFormat('Y-m-d', $joiningDate);
         $currentDate = Carbon::now();
         $diff = $joiningDate->diff($currentDate);
@@ -209,7 +209,7 @@ function getCompanyMenuHtml($companyId)
     $user = Auth::user();
     $companyMenuIDs = [];
 
-    if($user->type == 'company' || session()->has('impersonation')) {
+    if ($user->type == 'company' || session()->has('impersonation')) {
         $urlPrefix = 'company';
     } else {
         $urlPrefix = 'employee';
@@ -218,7 +218,8 @@ function getCompanyMenuHtml($companyId)
     foreach ($user->menu as $menu) {
         // Check if the menu has children
         if ($menu->children && $menu->children->isNotEmpty()) {
-            $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+            if ($menu->status == 1) {
+                $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                         <span class="menu-link">
                             <span class="menu-icon">
                                 <span class="svg-icon svg-icon-5">
@@ -228,13 +229,15 @@ function getCompanyMenuHtml($companyId)
                             <span class="menu-title">' . $menu->title . '</span>
                             <span class="menu-arrow"></span>
                         </span>';
+            }
+
 
             // Iterate over the children
             foreach ($menu->children as $children) {
-                if($children->role == "company") {
+                if ($children->role == "company" && $children->status == 1) {
                     $url = "/$urlPrefix$children->slug";
 
-                $html .= '<div class="menu-sub menu-sub-accordion">
+                    $html .= '<div class="menu-sub menu-sub-accordion">
                             <div class="menu-item" data-url="' . $url . '">
                                 <a class="menu-link" href="' . $url . '">
                                     <span class="menu-bullet">
@@ -245,16 +248,16 @@ function getCompanyMenuHtml($companyId)
                             </div>
                             </div>';
                 }
-
             }
 
             $html .= '</div>';  // Close the menu-item (accordion)
         }
         if ($menu->parent_id == null && $menu->children->isEmpty()) {
-            $url = "/$urlPrefix$menu->slug";
+            if ($menu->status == 1) {
+                $url = "/$urlPrefix$menu->slug";
 
-            // If no children, just a simple menu item
-            $html .= '<div class="menu-item" data-url="' . $url . '">
+                // If no children, just a simple menu item
+                $html .= '<div class="menu-item" data-url="' . $url . '">
                         <a class="menu-link" href="' . $url . '">
                             <span class="menu-icon">
                                 <span class="svg-icon svg-icon-5">
@@ -264,6 +267,7 @@ function getCompanyMenuHtml($companyId)
                             <span class="menu-title">' . $menu->title . '</span>
                         </a>
                         </div>';
+            }
         }
     }
 
@@ -296,20 +300,45 @@ function getEmployeeMenuHtml()
 
     return $html;
 }
-function numberToWords($num) {
+function numberToWords($num)
+{
     $ones = array(
-        0 => 'Zero', 1 => 'One', 2 => 'Two', 3 => 'Three', 4 => 'Four', 5 => 'Five',
-        6 => 'Six', 7 => 'Seven', 8 => 'Eight', 9 => 'Nine', 10 => 'Ten',
-        11 => 'Eleven', 12 => 'Twelve', 13 => 'Thirteen', 14 => 'Fourteen',
-        15 => 'Fifteen', 16 => 'Sixteen', 17 => 'Seventeen', 18 => 'Eighteen',
+        0 => 'Zero',
+        1 => 'One',
+        2 => 'Two',
+        3 => 'Three',
+        4 => 'Four',
+        5 => 'Five',
+        6 => 'Six',
+        7 => 'Seven',
+        8 => 'Eight',
+        9 => 'Nine',
+        10 => 'Ten',
+        11 => 'Eleven',
+        12 => 'Twelve',
+        13 => 'Thirteen',
+        14 => 'Fourteen',
+        15 => 'Fifteen',
+        16 => 'Sixteen',
+        17 => 'Seventeen',
+        18 => 'Eighteen',
         19 => 'Nineteen'
     );
     $tens = array(
-        2 => 'Twenty', 3 => 'Thirty', 4 => 'Forty', 5 => 'Fifty', 6 => 'Sixty',
-        7 => 'Seventy', 8 => 'Eighty', 9 => 'Ninety'
+        2 => 'Twenty',
+        3 => 'Thirty',
+        4 => 'Forty',
+        5 => 'Fifty',
+        6 => 'Sixty',
+        7 => 'Seventy',
+        8 => 'Eighty',
+        9 => 'Ninety'
     );
     $hundreds = array(
-        1 => 'Hundred', 1000 => 'Thousand', 1000000 => 'Million', 1000000000 => 'Billion'
+        1 => 'Hundred',
+        1000 => 'Thousand',
+        1000000 => 'Million',
+        1000000000 => 'Billion'
     );
 
     if ($num == 0) {

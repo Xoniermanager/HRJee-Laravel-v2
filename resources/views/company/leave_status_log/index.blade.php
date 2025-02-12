@@ -60,8 +60,10 @@
                                     <tr class="fw-bold">
                                         <th>Sr. No.</th>
                                         <th>Employee Name</th>
-                                        <th>Leave Status </th>
-                                        <th>Remarks</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Final Status </th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <!--end::Table head-->
@@ -75,8 +77,14 @@
                                                      '{{ $leaveStatusLog->leave->to }}','{{ $leaveStatusLog->leave->is_half_day }}',
                                                      '{{ $leaveStatusLog->leave->from_half_day }}','{{ $leaveStatusLog->leave->to_half_day }}',
                                                      '{{$leaveStatusLog->leaveStatus->name}}')">{{ $leaveStatusLog->leave->user->name }}</a></td>
-                                            <td>{{ $leaveStatusLog->leaveStatus->name }}</td>
-                                            <td>{{ $leaveStatusLog->remarks }}</td>
+                                            <td>{{ $leaveStatusLog->leave->from }}</td>
+                                            <td>{{ $leaveStatusLog->leave->to }}</td>
+                                            <td>{{ $leaveStatusLog->leave->leaveStatus->name }}</td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="leavetracking" data-id="{{ $leaveStatusLog->leave_id }}">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/3273/3273365.png" class="h-35px" alt="Leave Tracking">
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -165,6 +173,40 @@
         </div>
         <!--end::Modal dialog-->
     </div>
+
+    <!-- Modal for Edit  form-->
+    <div class="modal" id="leaveTrackingModal" tabindex="-1" aria-modal="true" role="dialog">
+        <!--begin::Modal dialog-->
+        <div class="modal-dialog modal-dialog-centered mw-500px">
+            <!--begin::Modal content-->
+            <div class="modal-content">
+                <!--begin::Modal header-->
+                <div class="modal-header pb-0">
+                    <h2>Leave Tracking</h2>
+                    <!--begin::Close-->
+                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                    transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
+                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-body scroll-y pb-5 border-top">
+                    <!-- Dynamic content will be loaded here -->
+                    <div id="modalContent">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function getEmployeeLeaveDetails(appliedDate,from,to,halfDay,fromHalfDay,ToHalfday,leaveStatus) {
             var fromHalfDayValue = '';
@@ -221,5 +263,25 @@
             jQuery('#employee_leave_details').modal('show');
 
         }
+        jQuery.noConflict();
+        jQuery(document).ready(function($) {
+            $('.leavetracking').on('click', function () {
+                const leaveId = $(this).data('id');
+                $('#modalContent').html('<p>Loading...</p>'); // Show loading state
+                jQuery('#leaveTrackingModal').modal('show'); // Show modal
+
+                // Fetch data using AJAX
+                $.ajax({
+                    url: '/employee/leave-tracking/'+leaveId, // Update to the correct route
+                    method: 'GET',
+                    success: function (response) {
+                        $('#modalContent').html(response);
+                    },
+                    error: function () {
+                        $('#modalContent').html('<p class="text-danger">An error occurred. Please try again.</p>');
+                    }
+                });
+            });
+        });
     </script>
 @endsection
