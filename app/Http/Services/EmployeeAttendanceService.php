@@ -76,12 +76,10 @@ class EmployeeAttendanceService
         $officeShiftDetails = $userDetails->details->officeShift;
         $officeStartTime = $officeShiftDetails->start_time;
         $officeEndTime = $officeShiftDetails->end_time;
-        $payload = [];
-        $payload =
-            [
-                'user_id' => $userDetails->id,
-                'punch_in_using' => $data['punch_in_using']
-            ];
+        $payload = [
+            'user_id' => $userDetails->id,
+            'punch_in_using' => $data['punch_in_using']
+        ];
         /** If Data Exit in Table Soo we Implement for Puch Out  */
         $existingDetails = $this->getAttendanceByDateByUserId($userDetails->id, date('Y-m-d'))->first();
         if (isset($existingDetails) && !empty($existingDetails)) {
@@ -122,7 +120,7 @@ class EmployeeAttendanceService
             if ($todayHoliday) {
                 return array('status' => false, 'message' => 'Today is ' . $todayHoliday->name . ' holiday');
             }
-            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->company_branch_id, $userDetails->department_id, date('N'));
+            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->company_branch_id, $userDetails->department_id, date('Y-m-d'));
             if ($checkWeekend) {
                 return array('status' => false, 'message' => 'Punch-in cannot be processed today as it is your weekend.');
             }
@@ -262,7 +260,9 @@ class EmployeeAttendanceService
         $payload = [];
         for ($date = $startDate; $date <= $endDate; $date->addDay()) {
             $mainDate = $date->toDateString();
-            $weekDayNumber = $date->dayOfWeekIso;
+            // $weekDayNumber = $date->dayOfWeekIso;
+            $weekDayNumber = $date;
+
             foreach ($data['employee_id'] as $employeeId) {
                 //Get Employee Details By User Id
                 $employeeDetails = $this->employeeService->getUserDetailById($employeeId);
