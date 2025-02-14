@@ -1,5 +1,4 @@
 <div class="tab-pane fade" id="advance_details_tab">
-
     <!--begin::Wrapper-->
     <form id="advance_details_form">
         @csrf
@@ -43,26 +42,16 @@
                 <input class="form-control" type="text" name="probation_period"
                     value="{{ $userAdvanceDetails->probation_period ?? '' }}">
             </div>
-            <div class="col-md-4 form-group">
-                <label for="">CTC Vaue</label>
-                <input class="form-control" type="number" name="ctc_value"
-                    value="{{ $userAdvanceDetails->ctc_value ?? '' }}">
-            </div>
-            <div class="col-md-4 form-group">
-                <label for="">Salary Structured</label>
-                <select name="salary_id" id="" class="form-control">
-                    <option value="">Please Select Salary Structured</option>
-                    @foreach ($allSalaryStructured as $item)
-                    <option value="{{ $item->id }}" {{ ($userAdvanceDetails->salary_id ?? '') ==  $item->id ? 'selected' : ''}}>{{ $item->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+
         </div>
-        <button id="submit_advance_details" class="btn btn-primary">Save & Continue</button>
+        <div class="m-auto text-center">
+            <button id="submit_advance_details" class="btn btn-primary">Save & Continue</button>
+        </div>
     </form>
-    <button onclick="show_next_tab('basic_Details_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
+    <button onclick="show_next_tab('basic_Details_tab')" class="tab-btn-inline btn btn-primary"><i
+            class="fa fa-arrow-left"></i>
         Previous</button>
-    <button onclick="show_next_tab('address_tab')" class="btn btn-primary float-right">Next <i
+    <button onclick="show_next_tab('address_tab')" class="tab-btn-inline btnnext btn btn-primary float-right">Next <i
             class="fa fa-arrow-right"></i> </button>
 </div>
 <script>
@@ -72,7 +61,7 @@
             url: "{{ route('employee.advance.details') }}",
             type: 'POST',
             data: advance_details_details,
-            success: function(response) {
+            success: function (response) {
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -84,7 +73,7 @@
                 // This variable is used on save all records button
                 all_data_saved = true;
             },
-            error: function(error_messages) {
+            error: function (error_messages) {
                 // This variable is used on save all records button
                 all_data_saved = false;
 
@@ -94,8 +83,8 @@
                     $(document).find('[name=' + error_key + ']').after(
                         '<span class="' + error_key +
                         '_error text text-danger">' + errors[
-                            error_key] + '</span>');
-                    setTimeout(function() {
+                        error_key] + '</span>');
+                    setTimeout(function () {
                         jQuery("." + error_key + "_error").remove();
                     }, 5000);
                 }

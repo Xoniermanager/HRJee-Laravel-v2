@@ -63,6 +63,9 @@
                                         class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4 text-center">
                                         <thead>
                                             <tr>
+                                                <td><h3>Assigned Component</h3></td>
+                                            </tr>
+                                            <tr>
                                                 <th>Salary Component</th>
                                                 <th> Value</th>
                                                 <th>Earning Or Deduction</th>
@@ -120,35 +123,38 @@
                                                 @endif
                                             </tr>
                                             @endforeach
+                                            <tr>
+                                                <td><h3>New Component Assignment</h3></td>
+                                            </tr>
                                             @foreach ($allSalaryComponentDetails as $item)
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center gap-1">
-                                                        <input type="checkbox" name="componentDetails[{{ $item->id }}][id]" value="{{ $item->id }}" class="h-25px w-25px" checked>
+                                                        <input type="checkbox" name="componentDetails[{{ $item->id }}][id]" value="{{ $item->id }}" class="h-25px w-25px">
                                                         {{ $item->name }}
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="number" class="form-control" value="{{ $item->default_value }}" name="componentDetails[{{ $item->id }}][value]">
+                                                    <input type="number" class="form-control" value="{{ $item->default_value }}" name="componentDetails[{{ $item->id }}][value]" disabled>
                                                 </td>
                                                 <td>
                                                     <div class="mt-2">
-                                                        <input type="radio" name="componentDetails[{{ $item->id }}][earning_or_deduction]" value="earning" class="ml-2" {{ $item->earning_or_deduction == 'earning' ? 'checked' : '' }}>
+                                                        <input type="radio" name="componentDetails[{{ $item->id }}][earning_or_deduction]" value="earning" class="ml-2" {{ $item->earning_or_deduction == 'earning' ? 'checked' : '' }} disabled>
                                                         <label class="ml-1">Earning</label>
-                                                        <input type="radio" name="componentDetails[{{ $item->id }}][earning_or_deduction]" value="deduction" class="ml-2" {{ $item->earning_or_deduction == 'deduction' ? 'checked' : '' }}>
+                                                        <input type="radio" name="componentDetails[{{ $item->id }}][earning_or_deduction]" value="deduction" class="ml-2" {{ $item->earning_or_deduction == 'deduction' ? 'checked' : '' }} disabled>
                                                         <label class="ml-1">Deduction</label>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="mt-2">
-                                                        <input type="radio" name="componentDetails[{{ $item->id }}][value_type]" value="fixed" class="ml-2" {{ $item->value_type == 'fixed' ? 'checked' : '' }}>
+                                                        <input type="radio" name="componentDetails[{{ $item->id }}][value_type]" value="fixed" class="ml-2" {{ $item->value_type == 'fixed' ? 'checked' : '' }} disabled>
                                                         <label class="ml-1">Fixed</label>
-                                                        <input type="radio" name="componentDetails[{{ $item->id }}][value_type]" value="percentage" class="ml-2" {{ $item->value_type == 'percentage' ? 'checked' : '' }}>
+                                                        <input type="radio" name="componentDetails[{{ $item->id }}][value_type]" value="percentage" class="ml-2" {{ $item->value_type == 'percentage' ? 'checked' : '' }} disabled>
                                                         <label class="ml-1">Percentage</label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <select name="componentDetails[{{ $item->id }}][parent_component]" class="form-control">
+                                                    <select name="componentDetails[{{ $item->id }}][parent_component]" class="form-control" disabled>
                                                         <option value="">Select Parent Component</option>
                                                         <option value="{{ $basicDetails->id }}" {{ $item->parent_component == $basicDetails->id ? 'selected' : '' }}>{{ $basicDetails->name }}</option>
                                                     </select>

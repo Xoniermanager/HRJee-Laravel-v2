@@ -75,7 +75,7 @@
 </style>
 @php
 $employeeMonthlySalary = $data['getEmployeeMonthlySalary'];
-$employeeCtcComponents = $data['getEmployeeCtcComponents'];
+// $employeeCtcComponents = $data['getEmployeeCtcComponents'];
 $employeeSalary = $data['employeeSalary'];
 @endphp
 <div class="container-fluid">
@@ -86,7 +86,7 @@ $employeeSalary = $data['employeeSalary'];
                 <th class="w-25"> Name:</th>
                 <td> {{ $employeeSalary->name }}</td>
                 <th class="w-25"> Monthly CTC:</th>
-                <td> {{ bcdiv($employeeSalary->advanceDetails->ctc_value, 12, 2) }}</td>
+                <td> {{ $employeeMonthlySalary['monthlyCtc'] }}</td>
             </tr>
             <tr>
                 <th class="w-25"> Total Working Days in Month:</th>
@@ -186,14 +186,14 @@ $employeeSalary = $data['employeeSalary'];
             numberToWords($employeeMonthlySalary['others']['monthly_earnings']) }}</p>
     </div>
 
-    <div class="card">
+    {{-- <div class="card">
         <h2><b>Yearly CTC Components Breakdown</b></h2>
         <table>
             <tr>
                 <th class="w-25"> Name:</th>
                 <td> {{ $employeeSalary->name }}</td>
                 <th class="w-25">CTC:</th>
-                <td> {{ $employeeSalary->advanceDetails->ctc_value }}</td>
+                <td> {{ $employeeCtcComponents['yearlyCtc'] }}</td>
             </tr>
         </table>
 
@@ -272,5 +272,5 @@ $employeeSalary = $data['employeeSalary'];
         </table>
         <p><strong>Total In-Hand Salary in Words (Yearly): </strong> {{
             numberToWords($employeeCtcComponents['others']['yearly_earnings']) }}</p>
-    </div>
+    </div> --}}
 </div>

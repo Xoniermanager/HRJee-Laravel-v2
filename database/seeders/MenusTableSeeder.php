@@ -396,19 +396,19 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:43:54',
                     'updated_at' => '2025-01-15 17:43:54',
                 ),
-            29 =>
-                array(
-                    'id' => 30,
-                    'title' => 'Attendance Status',
-                    'slug' => '/attendance/attendance-status',
-                    'icon' => 'NA',
-                    'parent_id' => 28,
-                    'status' => 1,
-                    'order_no' => 27,
-                    'role' => 'company',
-                    'created_at' => '2025-01-15 17:44:23',
-                    'updated_at' => '2025-01-15 17:44:23',
-                ),
+            // 29 =>
+            //     array(
+            //         'id' => 30,
+            //         'title' => 'Attendance Status',
+            //         'slug' => '/attendance/attendance-status',
+            //         'icon' => 'NA',
+            //         'parent_id' => 28,
+            //         'status' => 1,
+            //         'order_no' => 27,
+            //         'role' => 'company',
+            //         'created_at' => '2025-01-15 17:44:23',
+            //         'updated_at' => '2025-01-15 17:44:23',
+            //     ),
             30 =>
                 array(
                     'id' => 31,

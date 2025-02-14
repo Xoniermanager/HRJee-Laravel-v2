@@ -14,6 +14,7 @@
         $userAssetsDetails = [];
         $userdocumentDetails = [];
         $userDetails = [];
+        $userctcDetails = [];
         $userSkills = '';
         $userLanguages = [];
         if (isset($singleUserDetails)) {
@@ -26,6 +27,7 @@
             $userfamilyDetails = $singleUserDetails['familyDetails'];
             $userAssetsDetails = $singleUserDetails['assetDetails'];
             $userdocumentDetails = $singleUserDetails['documentDetails'];
+            $userctcDetails = $singleUserDetails['ctcDetails'];
             $userSkills = $singleUserDetails['skill']->pluck('id');
             $userLanguages = $singleUserDetails['language'];
         }
@@ -152,6 +154,14 @@
                                 </a>
                                 <!--end::Date-->
                             </li>
+                            <li class="nav-item p-0 ms-0">
+                                <!--begin::Date-->
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
+                                    data-bs-toggle="tab" href="#ctc_tab">
+                                    <span class="fs-7 fw-semibold">CTC Salary Structured </span>
+                                </a>
+                                <!--end::Date-->
+                            </li>
                             <!--end::Nav item-->
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
@@ -207,7 +217,7 @@
                             <!--begin::Tap pane Asset Tab-->
                             @include('company.employee.tabs.asset_details')
                             <!--end::Tap pane-->
-
+                            @include('company.employee.tabs.ctc_tab')
                             <!--begin::Tap pane Document Tab-->
                             @include('company.employee.tabs.document_tab')
                             <!--end::Tap pane-->

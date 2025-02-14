@@ -17,23 +17,6 @@ class Salary extends Model
         'created_by',
         'status'
     ];
-
-    // protected static function booted()
-    // {
-    //     parent::booted();
-    //     static::created(function ($entry) {
-    //         $entry->handlePostCreationActions();
-    //     });
-    // }
-
-    // public function handlePostCreationActions()
-    // {
-    //     $defaultSalaryComponents = SalaryComponent::where('company_id', $this->company_id)
-    //         ->where('created_by', $this->created_by)
-    //         ->where('is_default', true)
-    //         ->get();
-    //     $this->createSalaryComponentAssignment($defaultSalaryComponents);
-    // }
     public function createSalaryComponentAssignment($salaryComponentsId)
     {
         SalaryComponentAssignment::where('salary_id', $this->id)->delete();
