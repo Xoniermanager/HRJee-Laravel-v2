@@ -7,14 +7,17 @@ use Carbon\Carbon;
 use App\Models\LeaveStatus;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\LeaveRepository;
+use App\Repositories\LeaveManagerUpdateRepository;
 
 class LeaveService
 {
     private $leaveRepository;
+    private $leaveManagerUpdateRepository;
     private $employeeLeaveAvailableService;
-    public function __construct(LeaveRepository $leaveRepository, EmployeeLeaveAvailableService $employeeLeaveAvailableService)
+    public function __construct(LeaveRepository $leaveRepository, EmployeeLeaveAvailableService $employeeLeaveAvailableService, LeaveManagerUpdateRepository $leaveManagerUpdateRepository)
     {
         $this->leaveRepository = $leaveRepository;
+        $this->leaveManagerUpdateRepository = $leaveManagerUpdateRepository;
         $this->employeeLeaveAvailableService = $employeeLeaveAvailableService;
     }
     public function all()
@@ -27,6 +30,12 @@ class LeaveService
         return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->with(['leaveStatus'])->paginate(10);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         $payload = array();
@@ -45,7 +54,6 @@ class LeaveService
             $payload['leave_applied_by'] = Auth()->user()->company_id ?? Auth::user()->id ?? Auth()->user()->id;
             //$payload['user_id'] = Auth()->user()->company_id ?? Auth::user()->id ?? Auth()->user()->id;
             $payload['user_id'] = Auth::user()->id;
-
         }
         if (isset($data['is_half_day']) && !empty($data['is_half_day'])) {
             $payload['is_half_day'] = $data['is_half_day'];
@@ -53,7 +61,21 @@ class LeaveService
             $payload['to_half_day'] = $data['to_half_day'] ?? '';
         }
         $appliedLeaveDetails = $this->leaveRepository->create($payload);
-        //dd($appliedLeaveDetails);
+        
+        $leaveManagerPayload = [];
+        $managers = auth()->user()->managers;
+        foreach($managers as $manager) {
+            $leaveManagerPayload[] = [
+                'manager_id' => $manager->manager_id,
+                'leave_id' => $appliedLeaveDetails->id,
+                'leave_status_id' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
+        }
+
+        $this->leaveManagerUpdateRepository->insert($leaveManagerPayload);
+
         $response = array('status' => true, 'message' => 'Leave Apply successfully', 'data' => []);
         if ($appliedLeaveDetails) {
             $startDate = Carbon::parse($data['from']);
@@ -66,6 +88,7 @@ class LeaveService
         }
         return $response;
     }
+
     public function updateDetails(array $data, $id)
     {
         $existingUpdateDetails = $this->leaveRepository->find($id);
@@ -155,7 +178,8 @@ class LeaveService
         return $this->leaveRepository->getTotalLeaveByUserIDByMonth($userId, $month, $year);
     }
 
-    public function getConfirmedLeaveByUserIDAndDate($date, $userID) {
+    public function getConfirmedLeaveByUserIDAndDate($date, $userID)
+    {
 
         return $this->leaveRepository->where('user_id', $userID)->where('from', '<=', $date)
             ->where('to', '>=', $date)

@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('week_days', function (Blueprint $table) {
+        Schema::create('leave_manager_updates', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('manager_id')->nullable();
+            $table->unsignedBigInteger('leave_id');
+            $table->unsignedBigInteger('leave_status_id')->nullable();
+            $table->text('remark')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('week_days');
+        Schema::dropIfExists('leave_manager_updates');
     }
 };

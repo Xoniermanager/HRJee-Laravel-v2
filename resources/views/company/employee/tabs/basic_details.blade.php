@@ -207,8 +207,7 @@
                 <select class="form-control" name="role_id">
                     <option value="">Select Role</option>
                     @forelse ($allRoles as $role)
-                        <option
-                            {{ ($singleUserDetails->details->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
+                        <option {{ ($singleUserDetails->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
                             value="{{ $role->id }}">{{ $role->name }}</option>
                     @empty
                         <option value="">No Roles Found</option>
@@ -261,12 +260,13 @@
                 </select>
 
             </div>
-			<div class="col-md-4 form-group">
+            <div class="col-md-4 form-group">
                 <div>
                     <label>Manager IDs</label>
-                    <select id="manager_id" class="form-control" data-control="select2"
-					data-close-on-select="false" data-placeholder="Select managers"
-					data-allow-clear="true" multiple="multiple" name="manager_id[]"></select>
+                    <select id="manager_id" class="form-control" data-control="select2" data-close-on-select="false"
+                        data-placeholder="Select managers" data-allow-clear="true" multiple="multiple"
+                        name="manager_id[]">
+                    </select>
                 </div>
             </div>
             <div class="col-md-4 form-group">
@@ -444,7 +444,7 @@
     /** end get all Designation Using Department Id*/
 
 
-	/** get all managers using branch Id*/
+    /** get all managers using branch Id*/
     jQuery('#company_branch_id').on('change', function() {
         var company_branch_id = $(this).val();
         const all_company_branch_id = [company_branch_id];
@@ -467,7 +467,8 @@
                         $('#manager_id').append(
                             '<option>Select The Manager</option>');
                         $.each(response.data, function(key, value) {
-                            select.append('<option value=' + value.id + '>' + value.name + '</option>');
+                            select.append('<option value=' + value.id + '>' + value.name +
+                                '</option>');
                         });
                     } else {
                         select.append('<option value="">' + response.error +
