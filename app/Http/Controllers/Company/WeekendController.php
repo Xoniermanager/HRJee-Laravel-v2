@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Company;
 
-use App\Models\WeekDay;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,11 +27,11 @@ class WeekendController extends Controller
      */
     public function index()
     {
-        // dd($this->weekendService->all());
+        
         return view('company.weekend.index', [
             'allWeekendDetails' => $this->weekendService->all(Auth()->user()->id),
             'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->user()->id),
-            'allWeekDay' => WeekDay::get(),
+            'allWeekDay' => [],
             'allDepartments' => $this->departmentService->getAllDepartmentsByCompanyId()
         ]);
     }
@@ -46,12 +45,13 @@ class WeekendController extends Controller
             $validateWeekendData = Validator::make($request->all(), [
                 'company_branch_id' => 'required|exists:company_branches,id',
                 'department_id' => 'required|exists:departments,id',
-                'weekday_id' => 'required|array',
-                'weekday_id.*' => 'required'
+                'weekend_dates' => 'required'
             ]);
+
             if ($validateWeekendData->fails()) {
                 return response()->json(['error' => $validateWeekendData->messages()], 400);
             }
+
             $data = $request->all();
             if ($this->weekendService->create($data)) {
                 return response()->json([
@@ -100,7 +100,7 @@ class WeekendController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => $data,
-                'weekdayId' => $data->weekday->pluck('id')->toArray(),
+                'weekdayId' => $data->weekend_dates,
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

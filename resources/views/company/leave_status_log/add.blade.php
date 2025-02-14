@@ -22,10 +22,21 @@
                                         <select name="leave_id" class="form-control"
                                             onchange="get_details_using_leave_id()" id="leave_details">
                                             <option value="">Please Select Employee</option>
-                                            @foreach ($allLeaveDetails as $leaveDetails)
-                                                <option value="{{ $leaveDetails->id }}">
-                                                    {{ $leaveDetails->user->name }} ( {{$leaveDetails->from}} To {{$leaveDetails->to}})</option>
-                                            @endforeach
+                                            @if (auth()->user()->type == 'company')
+                                                @foreach ($allLeaveDetails as $leaveDetails)
+                                                    <option value="{{ $leaveDetails->id }}">
+                                                        {{ $leaveDetails->user->name }} ( {{ $leaveDetails->from }} To
+                                                        {{ $leaveDetails->to }})</option>
+                                                @endforeach
+                                            @else
+                                                @foreach ($allLeaveDetails as $leaveDetails)
+                                                    @if(in_array(auth()->user()->id, $leaveDetails->user->managers->pluck('manager_id')->toArray()))
+                                                    <option value="{{ $leaveDetails->id }}">
+                                                        {{ $leaveDetails->user->name }} ( {{ $leaveDetails->from }} To
+                                                        {{ $leaveDetails->to }})</option>
+                                                    @endif  
+                                                @endforeach
+                                            @endif
                                         </select>
                                         @if ($errors->has('leave_type_id'))
                                             <div class="text-danger">{{ $errors->first('leave_type_id') }}</div>
@@ -64,8 +75,7 @@
     </div>
 </div>
 <script>
-    $(document).ready(function()
-    {
+    $(document).ready(function() {
         jQuery("#leave_management").validate({
             rules: {
                 leave_id: "required",
@@ -80,6 +90,7 @@
         });
 
     });
+
     function get_details_using_leave_id() {
         var leaveID = $('#leave_details').find(':selected').val();
         if (leaveID) {

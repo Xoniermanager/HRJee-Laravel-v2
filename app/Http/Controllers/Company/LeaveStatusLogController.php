@@ -27,18 +27,38 @@ class LeaveStatusLogController extends Controller
         $this->leaveStatusLogService = $leaveStatusLogService;
         $this->employeeLeaveAvailableService = $employeeLeaveAvailableService;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function index()
     {
         $leaveStatusLogDetails = $this->leaveStatusLogService->all();
+        
         return view('company.leave_status_log.index', compact('leaveStatusLogDetails'));
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function add()
     {
         $allLeaveDetails = $this->leaveService->getPendingLeavesByUserId();
         $allLeaveStatusDetails = $this->leaveStatusService->getAllActiveLeaveStatus()->where('id', '!=', '1');
-        
+
         return view('company.leave_status_log.add', compact('allLeaveDetails', 'allLeaveStatusDetails'));
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getLeaveAppliedDetailsbyId(Request $request)
     {
         $appliedLeaveDetail = $this->leaveService->getAppliedLeaveDetailsUsingId($request->leaveID);
@@ -80,17 +100,21 @@ class LeaveStatusLogController extends Controller
             $leaveDetailsHtml .= '<tr><th>From Half Day</th><td>' . $fromHalfDay . '</td></tr>';
             $leaveDetailsHtml .= '<tr><th>To Half Day</th><td>' . $toHalfDay . '</td></tr>';
             $leaveDetailsHtml .= '</tbody></table></div>';
-        }
-        else
-        {
+        } else {
             $leaveDetailsHtml = '<div class="panel panel-body table-responsive text-center border-radiusxl">';
             $leaveDetailsHtml .= '<table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-2"><tbody>';
-            $leaveDetailsHtml .='<p>No Leave Available for Approved or Reject</p>';
+            $leaveDetailsHtml .= '<p>No Leave Available for Approved or Reject</p>';
             $leaveDetailsHtml .= '</tbody></table></div>';
         }
         return  $leaveDetailsHtml;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function create(Request $request)
     {
         try {
@@ -102,9 +126,9 @@ class LeaveStatusLogController extends Controller
             ]);
             $data = $request->all();
             if ($this->leaveStatusLogService->create($data)) {
-                if($data['leave_status_id'] == 2) {
-                    $leave = $this->leaveService->getDetailsById($data['leave_id']);  
-                    
+                if ($data['leave_status_id'] == 2) {
+                    $leave = $this->leaveService->getDetailsById($data['leave_id']);
+
                     $startDate = Carbon::parse($leave->from);
                     $endDate = Carbon::parse($leave->to);
                     $days = $startDate->diffInDays($endDate);

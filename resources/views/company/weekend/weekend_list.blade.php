@@ -19,15 +19,15 @@
                 <tr>
                     <td>{{ $key + 1 }}</td>
                     <td><a href="#" data-bs-toggle="modal"
-                            onClick="edit_weekend_details('{{ $weekendDetails->id }}','{{ $weekendDetails->company_branch_id }}','{{ $weekendDetails->department_id }}','{{ $weekendDetails->weekday->pluck('id')}}')">{{
+                            onClick="edit_weekend_details('{{ $weekendDetails->id }}','{{ $weekendDetails->company_branch_id }}','{{ $weekendDetails->department_id }}','{{ json_encode($weekendDetails->weekend_dates)}}')">{{
                             $weekendDetails->companyBranch->name }}</a>
                     </td>
                     <td>
                         <span class="btn btn-primary btn-sm">{{ $weekendDetails->department->name }}</span>
                     </td>
                     <td>
-                        @foreach ($weekendDetails->weekday as $index => $weekday)
-                        <span class="btn btn-primary btn-sm">{{ $weekday->name }}</span>
+                        @foreach ($weekendDetails->weekend_dates as $index => $weekday)
+                        <span class="btn btn-primary btn-sm">{{ $weekday }}</span>
                         @if (!$loop->last), @endif
                         @endforeach
                     </td>
@@ -42,7 +42,7 @@
                     <td>
                         <div class="d-flex justify-content-end flex-shrink-0">
                             <a href="#" data-bs-toggle="modal"
-                                onClick="edit_weekend_details('{{ $weekendDetails->id }}','{{ $weekendDetails->company_branch_id }}','{{ $weekendDetails->department_id }}','{{ $weekendDetails->weekday->pluck('id')}}')"
+                                onClick="edit_weekend_details('{{ $weekendDetails->id }}','{{ $weekendDetails->company_branch_id }}','{{ $weekendDetails->department_id }}','{{ json_encode($weekendDetails->weekend_dates)}}')"
                                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                 <i class="fa fa-edit"></i>

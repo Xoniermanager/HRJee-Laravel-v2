@@ -83,8 +83,10 @@ class AttendanceController extends Controller
         $allAttendanceDetails = [];
         while (strtotime($startDate) <= strtotime($endDate)) {
             $weekendStatus = false;
-            $weekDayNumber = date('N', strtotime($startDate));
-            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->company_branch_id, $employeeDetails->department_id, $weekDayNumber);
+            //$weekDayNumber = date('N', strtotime($startDate));
+            $weekDayNumber = date('Y-m-d', strtotime($startDate));
+            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->details->company_branch_id, $employeeDetails->details->department_id, $weekDayNumber);
+            
             if (isset($checkWeekend) && !empty($checkWeekend)) {
                 $weekendStatus = true;
             }

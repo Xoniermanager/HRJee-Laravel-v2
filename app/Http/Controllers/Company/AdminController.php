@@ -77,14 +77,31 @@ class AdminController extends Controller
         return redirect(route('signin'));
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function signup()
     {
         return view('company.signup');
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function signin()
     {
         return view('company.signin');
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function verifyOtp()
     {
         if (!auth()->guard('company')->check()) {
@@ -93,6 +110,12 @@ class AdminController extends Controller
         return view('company-verify-otp');
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param VerifyOtpRequest $request
+     * @return void
+     */
     public function verifyOtpCheck(VerifyOtpRequest $request)
     {
         try {
@@ -110,12 +133,22 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function admin_login_form()
     {
         return view('admin.account.login');
     }
 
-
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function resendOtp(Request $request)
     {
         try {

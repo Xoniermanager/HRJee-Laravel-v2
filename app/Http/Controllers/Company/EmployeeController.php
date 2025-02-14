@@ -181,7 +181,7 @@ class EmployeeController extends Controller
                 $userCreated = $this->userService->updateDetail($request->only('name', 'role_id'), $request->id);
                 $request['user_id'] = $request->id;
             } else {
-                $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'company_id'));
+                $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'company_id', 'role_id'));
                 $request['user_id'] = $userCreated->id;
             }
             if ($userCreated) {
