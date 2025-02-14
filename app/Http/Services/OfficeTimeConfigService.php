@@ -2,12 +2,12 @@
 
 namespace App\Http\Services;
 
-use App\Repositories\officeTimeConfigRepository;
+use App\Repositories\OfficeTimeConfigRepository;
 
 class OfficeTimeConfigService
 {
   private $officeTimeConfigRepository;
-  public function __construct(officeTimeConfigRepository $officeTimeConfigRepository)
+  public function __construct(OfficeTimeConfigRepository $officeTimeConfigRepository)
   {
     $this->officeTimeConfigRepository = $officeTimeConfigRepository;
   }

@@ -6,6 +6,7 @@ use App\Http\Services\EmployeeServices;
 use App\Http\Services\HolidayServices;
 use App\Http\Services\LeaveService;
 use App\Http\Services\WeekendService;
+use App\Models\EmployeeAttendance;
 use App\Repositories\EmployeeAttendanceRepository;
 use Carbon\Carbon;
 use DateInterval;
@@ -86,8 +87,8 @@ class EmployeeAttendanceService
 
             //check if user is in short attendance
             if ($officeShiftDetails->check_out_buffer > 0) {
-                $bufferTime = ' -' .  $officeShiftDetails->check_out_buffer . ' minutes';
-                $officeShortAttendanceTime  = date('H:i:s', strtotime($officeEndTime . $bufferTime));
+                $bufferTime = ' -' . $officeShiftDetails->check_out_buffer . ' minutes';
+                $officeShortAttendanceTime = date('H:i:s', strtotime($officeEndTime . $bufferTime));
                 if (date('H:i:s') < $officeShortAttendanceTime) {
                     return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
                 } elseif ((date('H:i:s') >= $officeShortAttendanceTime) && (date('H:i:s') < date('H:i:s', strtotime($officeEndTime)))) {
@@ -105,7 +106,7 @@ class EmployeeAttendanceService
         } else {
             $payload['punch_in'] = $attendanceTime;
             if ($officeShiftDetails->login_before_shift_time > 0) {
-                $beforTime = ' -' .  $officeShiftDetails->login_before_shift_time . ' minutes';
+                $beforTime = ' -' . $officeShiftDetails->login_before_shift_time . ' minutes';
                 $loginBeforeShiftTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $beforTime));
                 if (date('H:i:s') < $loginBeforeShiftTime) {
                     return array('status' => false, 'message' => 'You are punching before your shift time. ' . $loginBeforeShiftTime);
@@ -131,7 +132,7 @@ class EmployeeAttendanceService
             $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDeatils);
 
             if ($officeShiftDetails->check_in_buffer > 0) {
-                $bufferTime = ' +' .  $officeShiftDetails->check_in_buffer . ' minutes';
+                $bufferTime = ' +' . $officeShiftDetails->check_in_buffer . ' minutes';
                 $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $bufferTime));
             }
             //dd($checkLeaveDetails);
@@ -140,13 +141,13 @@ class EmployeeAttendanceService
                     return array('status' => false, 'message' => 'Today you are on leave');
                 } else if ($checkLeaveDetails['status'] == '1 Half') {
                     if (date('H:i:s', strtotime($officeShiftDetails->half_day_login)) > date('H:i:s')) {
-                        return array('status' => false, 'message' => 'Today you are on half day. So please punch in on second half ' .  $officeShiftDetails->half_day_login);
+                        return array('status' => false, 'message' => 'Today you are on half day. So please punch in on second half ' . $officeShiftDetails->half_day_login);
                     }
                     if ($officeShiftDetails->check_in_buffer > 0) {
-                        $bufferTime = ' +' .  $officeShiftDetails->check_in_buffer . ' minutes';
+                        $bufferTime = ' +' . $officeShiftDetails->check_in_buffer . ' minutes';
                         $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->half_day_login . $bufferTime));
                     } else {
-                        $officeStartTime =  $officeShiftDetails->half_day_login;
+                        $officeStartTime = $officeShiftDetails->half_day_login;
                     }
                     $payload['status'] = 2;
                 } else {
@@ -187,36 +188,6 @@ class EmployeeAttendanceService
         $userId = Auth()->user()->id ?? auth()->guard('employee_api')->user()->id;
         return $this->employeeAttendanceRepository->where('user_id', $userId)->where('punch_in', '>', now()->subDays(10)->endOfDay())->orderBy('id', 'DESC')->get();
     }
-    // public function getWorkingHours($attendanceDetails)
-    // {
-    //     if ($attendanceDetails) {
-    //         $punch_in = $attendanceDetails->punch_in;
-    //         $punch_out = $attendanceDetails->punch_out;
-    //         if ($punch_in != '' && $punch_out != '') {
-    //             $startTime = strtotime($punch_in);
-    //             $endTime = strtotime($punch_out);
-
-    //             // Calculate the difference in seconds
-    //             $timeDiff = $endTime - $startTime;
-
-    //             // Calculate hours, minutes, and seconds
-    //             $hours = floor($timeDiff / 3600);
-    //             $minutes = floor(($timeDiff % 3600) / 60);
-    //             $seconds = $timeDiff % 60;
-
-    //             // Display the result
-    //             $hours = $hours > 9 ? $hours : '0' . $hours;
-    //             $minutes = $minutes > 9 ? $minutes : '0' . $minutes;
-    //             $seconds = $seconds > 9 ? $seconds : '0' . $seconds;
-    //             $time = $hours . ':' . $minutes . ':' . $seconds;
-    //             return $time;
-    //         } else {
-    //             return '00:00:00';
-    //         }
-    //     } else {
-    //         return '00:00:00';
-    //     }
-    // }
 
     public function getAllAttendanceByCompanyId($companyId)
     {
@@ -266,32 +237,32 @@ class EmployeeAttendanceService
             foreach ($data['employee_id'] as $employeeId) {
                 //Get Employee Details By User Id
                 $employeeDetails = $this->employeeService->getUserDetailById($employeeId);
+                if ($employeeDetails->details->joining_date <= $mainDate) {
+                    // Check Holiday for Particular date
+                    $checkHoliday = $this->holidayService->getHolidayByCompanyBranchId($employeeDetails->company_id, $mainDate, $employeeDetails->details->company_branch_id);
+                    // Check Attendance if employee existing
+                    $checkExistingAttendance = $this->getAttendanceByDateByUserId($employeeId, $mainDate)->first();
 
-                // Check Holiday for Particular date
-                $checkHoliday = $this->holidayService->getHolidayByCompanyBranchId($employeeDetails->company_id, $mainDate, $employeeDetails->company_branch_id);
+                    //Check Leave if employee applied and status was approved
+                    $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeId, $mainDate);
 
-                // Check Attendance if employee existing
-                $checkExistingAttendance = $this->getAttendanceByDateByUserId($employeeId, $mainDate)->first();
+                    //Check Weekend if Existing
+                    $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->details->company_branch_id, $employeeDetails->details->department_id, $weekDayNumber);
 
-                //Check Leave if employee applied and status was approved
-                $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeId, $mainDate);
-
-                //Check Weekend if Existing
-                $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->company_branch_id, $employeeDetails->department_id, $weekDayNumber);
-
-                if ($checkHoliday == null && $checkExistingAttendance == null && $checkLeave == null && $checkWeekend == null) {
-                    $payload[] = [
-                        'punch_in' => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
-                        'punch_out' => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),
-                        'user_id' => $employeeId,
-                        'remark' => $data['remark'],
-                        'punch_in_using' => $data['punch_in_using'],
-                        'punch_in_by' => $data['punch_in_by'],
-                        'company_id' => $data['company_id'],
-                        'created_by' => $data['created_by'],
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now()
-                    ];
+                    if ($checkHoliday == null && $checkExistingAttendance == null && $checkLeave == null && $checkWeekend == null) {
+                        $payload[] = [
+                            'punch_in' => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
+                            'punch_out' => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),
+                            'user_id' => $employeeId,
+                            'remark' => $data['remark'],
+                            'punch_in_using' => $data['punch_in_using'],
+                            'punch_in_by' => $data['punch_in_by'],
+                            'company_id' => $data['company_id'],
+                            'created_by' => $data['created_by'],
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now()
+                        ];
+                    }
                 }
             }
         }
@@ -335,7 +306,7 @@ class EmployeeAttendanceService
     public function getAttendanceByByDate($date, $userID)
     {
         $attendance = $this->employeeAttendanceRepository->where('user_id', $userID)->whereDate('punch_in', $date)->first();
-    
+
         $leave = $this->leaveService->getConfirmedLeaveByUserIDAndDate('user_id', $userID);
 
         $response = [
@@ -347,25 +318,25 @@ class EmployeeAttendanceService
         ];
 
 
-        if($leave) {
-            if($leave->is_half_day) {
+        if ($leave) {
+            if ($leave->is_half_day) {
                 $response['status'] = 'Half Day';
-            } else  {
+            } else {
                 $response['status'] = 'Leave';
             }
-        } elseif($attendance) {
+        } elseif ($attendance) {
             $response['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
             $response['punch_out'] = date('H:i A', strtotime($attendance->punch_out));
-            if($attendance->punch_out) {
+            if ($attendance->punch_out) {
 
                 $punchIn = Carbon::parse($attendance->punch_in);
                 $punchOut = Carbon::parse($attendance->punch_out);
                 $totalBreakSeconds = 0;
-                if($attendance->total_break_time) {
+                if ($attendance->total_break_time) {
                     $totalBreakTime = Carbon::parse($attendance->total_break_time); // 45 minutes break
                     $totalBreakSeconds = $totalBreakTime->hour * 3600 + $totalBreakTime->minute * 60 + $totalBreakTime->second;
                 }
-               
+
                 // Calculate total work duration (without break)
                 $totalWorkDuration = $punchOut->diffInSeconds($punchIn);
 
@@ -385,5 +356,16 @@ class EmployeeAttendanceService
         }
 
         return $response;
+    }
+
+    public function getTotalWorkingDaysByUserId($year, $month, $userId)
+    {
+        $fromDate = Carbon::create($year, $month, 1)->startOfMonth();
+        $toDate = Carbon::create($year, $month, 1)->endOfMonth();
+        return $this->employeeAttendanceRepository
+            ->where('user_id', $userId)
+            ->whereBetween('punch_in', [$fromDate, $toDate])
+            ->selectRaw('SUM(status = 1) + (SUM(status = 2) / 2) as total_present')
+            ->selectRaw('SUM(late = 1) as late_count');  // Count late days;
     }
 }

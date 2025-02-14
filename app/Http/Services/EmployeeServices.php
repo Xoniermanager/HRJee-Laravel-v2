@@ -195,8 +195,8 @@ class EmployeeServices
                     'updated_at' => date('Y-m-d H:i:s'),
                 ];
             }
-            EmployeeManager::insert($payload); 
-        } 
+            EmployeeManager::insert($payload);
+        }
 
         return true;
     }
