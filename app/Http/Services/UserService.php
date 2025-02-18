@@ -42,6 +42,14 @@ class UserService
         return $userDetails->update(['status' => $statusValue]);
     }
 
+    public function updateFaceRecognitionStatus($userId, $statusValue)
+    {
+        $userDetails = $this->userRepository->find($userId);
+        $userDetails->details()->update(['allow_face_recognition' => $statusValue]);
+
+        return true;
+    }
+
     public function deleteUserById($userId)
     {
         $userDetails = $this->userRepository->find($userId);

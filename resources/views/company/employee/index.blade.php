@@ -448,6 +448,44 @@
                 })
             }
 
+            function handleFaceRecognition(id) {
+                var checked_value = $('#checked_face_value_' + id).prop('checked');
+                let status;
+
+                let status_name;
+                console.log();
+                if (checked_value == true) {
+                    status = 1;
+                    status_name = 'Active';
+                } else {
+                    status = 0;
+                    status_name = 'Inactive';
+                }
+                $.ajax({
+                    url: "{{ route('admin.company.facerecognitionUpdate') }}",
+                    type: 'get',
+                    data: {
+                        'id': id,
+                        'status': status,
+                    },
+                    success: function (res) {
+                        console.log("res => ", res)
+                        if (res) {
+                            if(res.status == 200) {
+                                swal.fire("Done!", '', "success");
+                                jQuery('#company_branch_list').replaceWith(res.data);
+                            } else {
+                                swal.fire("", res.error, "error");
+                            }
+                            
+                            
+                        } else {
+                            swal.fire("Oops!", 'Something Went Wrong', "error");
+                        }
+                    }
+                })
+            }
+
 
             jQuery('#export_button').on('click', function() {
                 var filteredData = $('#filter_id').serialize();
