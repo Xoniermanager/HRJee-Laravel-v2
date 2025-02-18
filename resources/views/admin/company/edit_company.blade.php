@@ -152,24 +152,24 @@
 
                                                         </div>
                                                     </div>
-
-                                                    {{-- <div class="col-12">
-                                                          <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
-                                                              <div class="col-12">
-
-                                                              </div>
-                                                              <div class="col-md-6 col-sm-6">
-                                                                  <input class="form-control" id="password" name="password"
-                                                                      type="password" placeholder="Enter Password">
-                                                              </div>
-                                                              <div class="col-md-6 col-sm-6">
-                                                                  <input class="form-control" id="password_confirmation" name="password_confirmation"
-                                                                      type="password" placeholder="Enter Confirm Password">
-                                                              </div>
-                                                          </div>
-                                                      </div> --}}
-
-                                                    <div class="col-12">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control" id="username" name="username" value="{{$companyDetails->companyDetails->username}}"
+                                                            type="text" placeholder="UsernName">
+                                                    </div>
+                                                    <!-- Face Recognition Dropdown -->
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <select class="form-control" id="face_recognition" name="allow_face_recognition" onchange="toggleUserLimit()">
+                                                            <option value="" disabled>Allow Face Recognition</option>
+                                                            <option value="0">No</option>
+                                                            <option value="1" {{$companyDetails->companyDetails->allow_face_recognition == 1 ? "selected" : ""}}>Yes</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <!-- User Limit (Hidden by Default) -->
+                                                    <div class="col-md-6 col-sm-6" id="face_recognition_user_limit_container" style="display: {{$companyDetails->companyDetails->allow_face_recognition == 1 ? "block" : "none"}};">
+                                                        <input class="form-control" id="face_recognition_user_limit" name="face_recognition_user_limit" type="number" placeholder="Enter User Limit for Face Recgnition" value="{{$companyDetails->companyDetails->face_recognition_user_limit}}">
+                                                    </div>
+                                                    <div class="col-6">
                                                         <div class="row">
                                                             <div class="col-12">
                                                                 <div class="image-input">
@@ -303,6 +303,16 @@
 </div>
 
 <script>
+    function toggleUserLimit() {
+        var dropdown = document.getElementById("face_recognition");
+        var userLimitField = document.getElementById("face_recognition_user_limit_container");
+        
+        if (dropdown.value === "1") {
+            userLimitField.style.display = "block";
+        } else {
+            userLimitField.style.display = "none";
+        }
+    }
     // next button script
     $(document).ready(function() {
 
@@ -475,6 +485,8 @@
             e.preventDefault();
             $('#add-product-pills-tab a[href="#detail-product"]').tab('show');
         });
+
+        
     });
 </script>
 <style>

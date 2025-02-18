@@ -362,7 +362,6 @@
                 },
                 submitHandler: function(form) {
                     var department_data = $(form).serialize();
-                    console.log(department_data);
                     $.ajax({
                         url: "<?= route('office_time_config.update') ?>",
                         type: 'post',

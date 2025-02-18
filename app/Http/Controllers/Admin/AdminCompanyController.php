@@ -128,6 +128,7 @@ class AdminCompanyController extends Controller
 
     public function update_company(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'username' => 'sometimes|required|string|max:255',
