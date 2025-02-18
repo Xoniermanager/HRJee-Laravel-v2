@@ -23,6 +23,7 @@ class AdminCountryController extends Controller
      */
     public function index()
     {
+        
         return view('admin.country.index', [
             'allCountryDetails' => $this->countryService->all(),
             'timezones' => DateTimeZone::listIdentifiers()
@@ -40,10 +41,12 @@ class AdminCountryController extends Controller
                 'timezone' => 'required|timezone',
             ]);
             if ($validateCountryData->fails()) {
+
                 return response()->json(['error' => $validateCountryData->messages()], 400);
             }
             $data = $request->all();
             if ($this->countryService->create($data)) {
+
                 return response()->json([
                     'message' => 'Country Created Successfully!',
                     'data'   =>  view('admin.country.country_list', [
@@ -67,11 +70,13 @@ class AdminCountryController extends Controller
         ]);
 
         if ($validateCountryData->fails()) {
+
             return response()->json(['error' => $validateCountryData->messages()], 400);
         }
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->countryService->updateDetails($updateData, $request->company_id);
         if ($companyStatus) {
+
             return response()->json(
                 [
                     'message' => 'Country Updated Successfully!',
@@ -91,6 +96,7 @@ class AdminCountryController extends Controller
         $id = $request->id;
         $data = $this->countryService->deleteDetails($id);
         if ($data) {
+
             return response()->json([
                 'success' => 'Country Deleted Successfully',
                 'data'   =>  view('admin.country.country_list', [
@@ -98,6 +104,7 @@ class AdminCountryController extends Controller
                 ])->render()
             ]);
         } else {
+
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
@@ -107,6 +114,7 @@ class AdminCountryController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->countryService->updateDetails($data, $id);
         if ($statusDetails) {
+
             return response()->json([
                 'success' => 'Country Status Updated Successfully',
                 'data'   =>  view("admin.country.country_list", [
@@ -114,6 +122,7 @@ class AdminCountryController extends Controller
                 ])->render()
             ]);
         } else {
+
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
@@ -122,6 +131,7 @@ class AdminCountryController extends Controller
     {
         $searchedItems = $this->countryService->serachFilterList($request);
         if ($searchedItems) {
+
             return response()->json([
                 'success' => 'Searching...',
                 'data'   =>  view("admin.country.country_list", [
@@ -129,6 +139,7 @@ class AdminCountryController extends Controller
                 ])->render()
             ]);
         } else {
+
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }

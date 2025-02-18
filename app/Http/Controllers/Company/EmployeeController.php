@@ -206,6 +206,7 @@ class EmployeeController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+
     public function getPersonalDetails($id)
     {
         $data = $this->userService->getUserById($id);
@@ -229,6 +230,7 @@ class EmployeeController extends Controller
     public function view(User $user)
     {
         $singleViewEmployeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
+
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
 
@@ -240,6 +242,7 @@ class EmployeeController extends Controller
             $updateDetails = $user->details->update(['exit_date' => now()->format('Y-m-d'), 'status' => $statusValue]);
             if ($updateDetails) {
                 $allUserDetails = $this->userService->searchFilterEmployee('', Auth()->user()->company_id)->paginate(10);
+                
                 return response()->json([
                     'data' => view('company.employee.list', compact('allUserDetails'))->render()
                 ]);

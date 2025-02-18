@@ -24,7 +24,9 @@ class CompanyDetail extends Model
         'subscription_id',
         'status',
         'company_type_id',
-        'user_id'
+        'user_id',
+        'face_recognition_user_limit',
+        'location_tracking_user_limit'
     ];
     protected function logo(): Attribute
     {
