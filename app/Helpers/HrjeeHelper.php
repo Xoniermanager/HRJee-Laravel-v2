@@ -203,11 +203,10 @@ function getDecryptId($id)
     return false;
 }
 
-function getCompanyMenuHtml($companyId)
+function getCompanyMenuHtml()
 {
     $html = '';
     $user = Auth::user();
-    $companyMenuIDs = [];
 
     if ($user->type == 'company' || session()->has('impersonation')) {
         $urlPrefix = 'company';
@@ -287,15 +286,15 @@ function getEmployeeMenuHtml()
     foreach ($childMenus as $menu) {
         // If no children, just a simple menu item
         $html .= '<div class="menu-item" data-url="' . $menu->slug . '">
-                    <a class="menu-link" href="' . $menu->slug . '">
-                        <span class="menu-icon">
-                            <span class="svg-icon svg-icon-5">
-                                ' . $menu->icon . '
-                            </span>
-                        </span>
-                        <span class="menu-title">' . $menu->title . '</span>
-                    </a>
-                    </div>';
+        <a class="menu-link" href="' . $menu->slug . '">
+            <span class="menu-icon">
+                <span class="svg-icon svg-icon-5">
+                    ' . $menu->icon . '
+                </span>
+            </span>
+            <span class="menu-title">' . $menu->title . '</span>
+        </a>
+        </div>';
     }
 
     return $html;

@@ -257,7 +257,6 @@
         function edit_resignationStatus_details(resignationStatus) {
 
             resignationStatus = JSON.parse(resignationStatus);
-            console.log(resignationStatus);
             $('#id').val(resignationStatus.id);
             $('#name').val(resignationStatus.name);
             jQuery('#edit_resignation_status').modal('show');

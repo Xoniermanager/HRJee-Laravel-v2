@@ -237,7 +237,6 @@
             },
             submitHandler: function(form) {
                 var permission = $(form).serialize();
-                console.log(permission);
                 $.ajax({
                     url: "<?= route('permission.update') ?>",
                     type: 'post',
