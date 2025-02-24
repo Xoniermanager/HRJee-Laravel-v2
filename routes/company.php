@@ -624,7 +624,6 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::prefix('/employee-salary')->controller(EmployeeSalaryController::class)->group(function () {
         Route::get('/', 'index')->name('employee_salary.index');
         Route::get('/view/{id}', 'viewSalary')->name('employee_salary.viewSalary');
-        Route::get('/generate-pdf', 'generatePDF')->name('employee_salary.generatePDF');
         Route::get('/search/filter', 'serachEmployeeSalaryFilterList');
         Route::get('/show/payslip', 'showEmployeePayslip');
         Route::get('/generate/previous/month/payslip', 'generatePayslipPreviousMonth');

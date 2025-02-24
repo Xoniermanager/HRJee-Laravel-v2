@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserCtcHistory;
 use App\Models\UserMonthlySalary;
@@ -19,11 +20,8 @@ class GenerateSalaryService
     }
     public function generateSalaryByEmployeeDetails($request)
     {
+        $date = Carbon::create($request['year'], $request['month'], 1);
         $employeeDetails = User::find($request['user_id']);
-        // $totalDayPresent = $this->employeeAttendanceService->getTotalWorkingDaysByUserId($request['year'], $request['month'], $employeeDetails->id)->first();
-        // $totalWorking = round($totalDayPresent->total_present,2);
-        // $lossOfPay = round(($totalDayPresent->late_count / $employeeDetails->details->officeShift->total_late_count) * $employeeDetails->details->officeShift->total_leave_deduction, 2);
-        // dd($totalDayPresent->toArray(),$totalWorking,$lossOfPay);
         $checkExistingMonthDetails = $this->checkExistingMonthDetails($request);
         if (isset($checkExistingMonthDetails) && !empty($checkExistingMonthDetails)) {
             $data['getEmployeeMonthlySalary']['others'] = $checkExistingMonthDetails->toArray();
@@ -45,21 +43,17 @@ class GenerateSalaryService
                 $salaryComponents = $userCTCDetails->userCtcComponentHistory;
                 $applicableTaxRates = $this->taxSlabRateService->getActiveTaxSlab($employeeDetails->company_id);
                 $totalDayPresent = $this->employeeAttendanceService->getTotalWorkingDaysByUserId($request['year'], $request['month'], $employeeDetails->id)->first();
-                $totalWorking = round($totalDayPresent->total_present,2);
-                $lossOfPay = round(($totalDayPresent->late_count / $employeeDetails->details->officeShift->total_late_count) * $employeeDetails->details->officeShift->total_leave_deduction, 2);
-                if ($totalWorking > 0) {
-                    $getEmployeeMonthlySalary = $this->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
-                    $getEmployeeCtcComponents = $this->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);
-                    $userMonthlySalary = $this->createUserMonthlySalary($getEmployeeMonthlySalary, $request);
-                    return ['status' => true, 'getEmployeeMonthlySalary' => $getEmployeeMonthlySalary, 'getEmployeeCtcComponents' => $getEmployeeCtcComponents, 'employeeSalary' => $employeeDetails, 'mail' => $userMonthlySalary->mail_send];
-                } else {
-                    return ['status' => false];
-
-                }
+                $totalWorking = $date->daysInMonth;
+                $working = round($totalWorking - $totalDayPresent->total_present, 2);
+                $lossOfPay = round((($totalDayPresent->late_count / $employeeDetails->details->officeShift->total_late_count) * $employeeDetails->details->officeShift->total_leave_deduction) + $working, 2);
+                $getEmployeeMonthlySalary = $this->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
+                $getEmployeeCtcComponents = $this->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);
+                $userMonthlySalary = $this->createUserMonthlySalary($getEmployeeMonthlySalary, $request);
+                return ['status' => true, 'getEmployeeMonthlySalary' => $getEmployeeMonthlySalary, 'getEmployeeCtcComponents' => $getEmployeeCtcComponents, 'employeeSalary' => $employeeDetails, 'mail' => $userMonthlySalary->mail_send];
             } else {
                 return ['status' => false];
             }
-        }
+         }
     }
 
     public function getEmployeeMonthlySalary($ctc, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay)
