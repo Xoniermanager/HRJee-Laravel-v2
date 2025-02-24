@@ -89,6 +89,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
 
     //HR Service Module
     Route::get('/hr/service', [HRServiceController::class, 'index'])->name('employee.hr.service');
+    Route::get('/show/payslip', [HRServiceController::class, 'salaryIndex'])->name('employee.salary.index');
 
     //Support Module
     Route::get('/support', [SupportController::class, 'index'])->name('employee.support');

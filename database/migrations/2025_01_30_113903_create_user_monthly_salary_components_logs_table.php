@@ -20,9 +20,6 @@ return new class extends Migration
             $table->enum('type',['earning', 'deduction']);
             $table->foreign('component_id')->references('id')->on('salary_components');
             $table->foreign('monthly_salary_id')->references('id')->on('user_monthly_salaries');
-            $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }
