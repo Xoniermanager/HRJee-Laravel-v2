@@ -242,7 +242,7 @@ class EmployeeController extends Controller
             $updateDetails = $user->details->update(['exit_date' => now()->format('Y-m-d'), 'status' => $statusValue]);
             if ($updateDetails) {
                 $allUserDetails = $this->userService->searchFilterEmployee('', Auth()->user()->company_id)->paginate(10);
-                
+
                 return response()->json([
                     'data' => view('company.employee.list', compact('allUserDetails'))->render()
                 ]);
