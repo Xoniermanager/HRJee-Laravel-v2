@@ -326,7 +326,7 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/asset-manufacturer/search/filter',
+                url: company_ajax_base_url + '/asset/asset-manufacturer/search/filter',
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val()
