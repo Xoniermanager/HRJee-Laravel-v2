@@ -270,6 +270,19 @@ function getCompanyMenuHtml()
         }
     }
 
+    if($user->companyDetails->allow_face_recognition ) {
+        $html .= '<div class="menu-item" data-url="/company/face-recognition">
+                        <a class="menu-link" href="/company/face-recognition">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-5">
+                                    <i class="fas fa-smile"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">Face Recognition</span>
+                        </a>
+                        </div>';
+    }
+
     return $html;
 }
 

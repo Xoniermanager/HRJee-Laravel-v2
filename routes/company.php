@@ -15,6 +15,7 @@ use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
+use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
@@ -179,6 +180,11 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::prefix('/language')->controller(LanguagesController::class)->group(function () {
         Route::post('/create', 'store')->name('language.create');
         Route::get('/delete', 'destroy')->name('language.delete');
+    });
+
+    //Face Recognition Module
+    Route::prefix('/face-recognition')->controller(FaceRecognitionController::class)->group(function () {
+        Route::get('/', 'index')->name('face-recognition.index');
     });
 
     //Employee Module

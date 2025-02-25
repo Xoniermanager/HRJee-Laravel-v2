@@ -177,7 +177,7 @@ class UserService
 
     public function getManagersByBranchId($branchIDs)
     {
-        $allManagers = $this->userRepository->where('role_id', '!=', null)->where('type', 'user')->with(['details' => function ($query) use($branchIDs) {
+        $allManagers = $this->userRepository->where('role_id', '!=', null)->where('type', 'user')->with(['details' => function ($query) use ($branchIDs) {
             $query->whereIn('company_branch_id', $branchIDs);
         }])->get();
 
@@ -264,5 +264,15 @@ class UserService
         return $allEmployeeDetails->orderBy('id', 'DESC');
     }
 
+    public function getFaceRecognitionUsers($companyId)
+    {
+        $allEmployeeDetails = $this->userRepository
+        ->where('type', 'user')
+        ->where('company_id', $companyId)
+        ->whereHas('details', function ($query) {
+            $query->where('allow_face_recognition', 1);
+        });
 
+        return $allEmployeeDetails->orderBy('id', 'DESC');
+    }
 }
