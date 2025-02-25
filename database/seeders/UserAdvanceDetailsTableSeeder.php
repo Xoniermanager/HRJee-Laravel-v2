@@ -14,12 +14,12 @@ class UserAdvanceDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('user_advance_details')->delete();
-        
+
         \DB::table('user_advance_details')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
                 'user_id' => 2,
@@ -31,13 +31,11 @@ class UserAdvanceDetailsTableSeeder extends Seeder
                 'insurance_no' => '234567',
                 'driving_licence_no' => '234567',
                 'probation_period' => 23456,
-                'ctc_value' => '400000',
-                'salary_id' => 1,
                 'created_at' => '2024-06-21 14:57:49',
                 'updated_at' => '2025-02-07 15:26:58',
             ),
         ));
-        
-        
+
+
     }
 }

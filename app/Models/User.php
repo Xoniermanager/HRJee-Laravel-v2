@@ -87,6 +87,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserAdvanceDetail::class, 'user_id');
     }
+    public function ctcDetails()
+    {
+        return $this->hasOne(UserCtcDetail::class, 'user_id');
+    }
 
     public function managers()
     {

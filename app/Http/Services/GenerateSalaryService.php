@@ -2,33 +2,63 @@
 
 namespace App\Http\Services;
 
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\UserCtcHistory;
+use App\Models\UserMonthlySalary;
+use App\Models\UserMonthlySalaryComponentsLog;
+
 class GenerateSalaryService
 {
     protected $taxSlabRateService;
+    protected $employeeAttendanceService;
 
-    public function __construct(TaxSlabRuleService $taxSlabRateService)
+    public function __construct(TaxSlabRuleService $taxSlabRateService, EmployeeAttendanceService $employeeAttendanceService)
     {
         $this->taxSlabRateService = $taxSlabRateService;
+        $this->employeeAttendanceService = $employeeAttendanceService;
     }
-
-    // Removed the static keyword to allow access to $this
-    public function generateSalaryByEmployeeDetails($employeeDetails)
+    public function generateSalaryByEmployeeDetails($request)
     {
-        $ctcValue = $employeeDetails->advanceDetails->ctc_value;
-        $salaryComponents = $employeeDetails->advanceDetails->salary->salaryComponentAssignments;
-        $applicableTaxRates = $this->taxSlabRateService->getActiveTaxSlab(Auth()->user()->company_id);
-        $totalWorking = '31';
-        $lossOfPay = '0';
-        $getEmployeeMonthlySalary = $this->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
-        $getEmployeeCtcComponents = $this->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);
-        return ['getEmployeeMonthlySalary' => $getEmployeeMonthlySalary, 'getEmployeeCtcComponents' => $getEmployeeCtcComponents,'employeeSalary' => $employeeDetails];
-        // dd($getEmployeeMonthlySalary,$getEmployeeCtcComponents);
+        $date = Carbon::create($request['year'], $request['month'], 1);
+        $employeeDetails = User::find($request['user_id']);
+        $checkExistingMonthDetails = $this->checkExistingMonthDetails($request);
+        if (isset($checkExistingMonthDetails) && !empty($checkExistingMonthDetails)) {
+            $data['getEmployeeMonthlySalary']['others'] = $checkExistingMonthDetails->toArray();
+            $data['getEmployeeMonthlySalary']['monthlyCtc'] = $checkExistingMonthDetails->monthly_ctc;
+            $data['getEmployeeMonthlySalary']['components'] = $checkExistingMonthDetails->userMonthlySalaryComponentLog->toArray();
+            $data['employeeSalary'] = $employeeDetails;
+            $data['status'] = true;
+            $data['mail'] = $checkExistingMonthDetails->mail_send;
+            return $data;
+        }
+        if (!isset($checkExistingMonthDetails)) {
+            $userCTCDetails = UserCtcHistory::where('user_id', $request['user_id'])
+                ->whereDate('effective_date', '<=', date($request['year'] . '-' . $request['month'] . '-01'))
+                ->orderBy('id', 'DESC')
+                ->limit(1)
+                ->first();
+            if ($userCTCDetails) {
+                $ctcValue = $userCTCDetails->ctc_value;
+                $salaryComponents = $userCTCDetails->userCtcComponentHistory;
+                $applicableTaxRates = $this->taxSlabRateService->getActiveTaxSlab($employeeDetails->company_id);
+                $totalDayPresent = $this->employeeAttendanceService->getTotalWorkingDaysByUserId($request['year'], $request['month'], $employeeDetails->id)->first();
+                $totalWorking = $date->daysInMonth;
+                $working = round($totalWorking - $totalDayPresent->total_present, 2);
+                $lossOfPay = round((($totalDayPresent->late_count / $employeeDetails->details->officeShift->total_late_count) * $employeeDetails->details->officeShift->total_leave_deduction) + $working, 2);
+                $getEmployeeMonthlySalary = $this->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
+                $getEmployeeCtcComponents = $this->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);
+                $userMonthlySalary = $this->createUserMonthlySalary($getEmployeeMonthlySalary, $request);
+                return ['status' => true, 'getEmployeeMonthlySalary' => $getEmployeeMonthlySalary, 'getEmployeeCtcComponents' => $getEmployeeCtcComponents, 'employeeSalary' => $employeeDetails, 'mail' => $userMonthlySalary->mail_send];
+            } else {
+                return ['status' => false];
+            }
+         }
     }
 
     public function getEmployeeMonthlySalary($ctc, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay)
     {
         $monthlyCtc = bcdiv($ctc, 12, 2);
-
         $totalLossOfPayAmount = 0;
         // Reduce for the loss of pays days if provided
         if ($lossOfPay > 0) {
@@ -72,6 +102,7 @@ class GenerateSalaryService
             $componentDetails['name'] = $componentName;
             $componentDetails['monthly'] = $monthly;
             $componentDetails['type'] = $component->earning_or_deduction;
+            $componentDetails['component_id'] = $salaryComponentId;
             $allComponentsWithValues[$salaryComponentId] = $componentDetails;
             $componentsSumValue = bcadd($componentsSumValue, $monthly, 2);
 
@@ -119,7 +150,8 @@ class GenerateSalaryService
 
         return [
             'components' => $allComponentsWithValues,
-            'others' => $otherValues
+            'others' => $otherValues,
+            'monthlyCtc' => bcdiv($ctc, 12, 2)
         ];
     }
 
@@ -221,11 +253,29 @@ class GenerateSalaryService
         $otherValues['yearly_earnings'] = $yearlyEarnings;
         $otherValues['yearly_deductions'] = $yearlyDeductions;
         $otherValues['yearlyTaxValue'] = $yearlyTaxValue;
-
         return [
             'components' => $allComponentsWithValues,
-            'others' => $otherValues
+            'others' => $otherValues,
+            'yearlyCtc' => $ctc
         ];
     }
 
+    public function createUserMonthlySalary($getEmployeeMonthlySalary, $request)
+    {
+        $getEmployeeMonthlySalary['others']['user_id'] = $request['user_id'];
+        $getEmployeeMonthlySalary['others']['month'] = $request['month'];
+        $getEmployeeMonthlySalary['others']['year'] = $request['year'];
+        $getEmployeeMonthlySalary['others']['monthly_ctc'] = $getEmployeeMonthlySalary['monthlyCtc'];
+        $userMonthlySalary = UserMonthlySalary::create($getEmployeeMonthlySalary['others']);
+        foreach ($getEmployeeMonthlySalary['components'] as $item) {
+            $item['monthly_salary_id'] = $userMonthlySalary->id;
+            UserMonthlySalaryComponentsLog::create($item);
+        }
+        return $userMonthlySalary;
+    }
+
+    public function checkExistingMonthDetails($request)
+    {
+        return UserMonthlySalary::where('user_id', $request['user_id'])->where('year', $request['year'])->where('month', $request['month'])->first();
+    }
 }

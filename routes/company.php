@@ -40,6 +40,7 @@ use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
+use App\Http\Controllers\Company\UserCtcDetailsController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\PreviousCompanyController;
@@ -206,6 +207,10 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
         Route::get('/get/advance/details/{id}', 'getAdvanceDetails');
+    });
+    Route::controller(UserCtcDetailsController::class)->group(function () {
+        Route::post('/employee/ctc/details', 'store')->name('employee.ctc.details');
+        Route::get('/salary/component/details','getComponentsDetail');
     });
 
     //Address Details for employee
@@ -625,7 +630,9 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::prefix('/employee-salary')->controller(EmployeeSalaryController::class)->group(function () {
         Route::get('/', 'index')->name('employee_salary.index');
         Route::get('/view/{id}', 'viewSalary')->name('employee_salary.viewSalary');
-        Route::get('/generate-pdf/{id}', 'generatePDF')->name('employee_salary.generatePDF');
+        Route::get('/search/filter', 'serachEmployeeSalaryFilterList');
+        Route::get('/show/payslip', 'showEmployeePayslip');
+        Route::get('/generate/previous/month/payslip', 'generatePayslipPreviousMonth');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {

@@ -19,11 +19,10 @@ class UserAdvanceDetail extends Model
         'insurance_no',
         'driving_licence_no',
         'probation_period',
-        'ctc_value',
-        'salary_id'
     ];
-    public function salary()
+
+    public function user()
     {
-        return $this->belongsTo(Salary::class);
+        return $this->belongsTo(user::class);
     }
 }

@@ -19,7 +19,7 @@ class SalaryService
     }
     public function getAllActiveSalaries($companyId)
     {
-        return $this->salaryRepository->where('company_id', $companyId)->where('status', '1')->get();
+        return $this->salaryRepository->where('company_id', $companyId)->where('status', '1')->with('salaryComponentAssignments')->get();
     }
     public function create(array $data)
     {

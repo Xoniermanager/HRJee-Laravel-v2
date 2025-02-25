@@ -107,7 +107,7 @@ class EmployeeController extends Controller
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
-        
+
         return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills','allSalaryStructured'));
     }
 
@@ -147,10 +147,10 @@ class EmployeeController extends Controller
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
-        $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
+        $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails','ctcDetails');
         $allManagers = $this->qualificationService->getAllActiveQualification();
-        
-        // dd($singleUserDetails->toArray());
+
+        //  dd($singleUserDetails->ctcDetails);
         return view(
             'company.employee.add_employee',
             compact(
@@ -185,7 +185,7 @@ class EmployeeController extends Controller
                 $request['user_id'] = $userCreated->id;
             }
             if ($userCreated) {
-                
+
                 $userDetails = $this->employeeService->create($request->except('password', 'email', '_token', 'company_id'));
                 $this->employeeService->addManagers($request['user_id'], $request->get('manager_id'));
 

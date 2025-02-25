@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OfficeShift extends Model
 {
-    use HasFactory,CompanyScope;
+    use HasFactory, CompanyScope;
 
     protected $table = 'shifts';
     protected $fillable = [
@@ -28,7 +28,9 @@ class OfficeShift extends Model
         'apply_late_count',
         'apply_early_checkout_count',
         'lock_attendance',
-        'login_before_shift_time'
+        'login_before_shift_time',
+        'total_late_count',
+        'total_leave_deduction',
     ];
 
     public function officeTimingConfigs()

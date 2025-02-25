@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\Admin\ForgetPasswordController as AdminForgetPasswordController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Company\ForgetPasswordController as CompanyForgetPasswordController;
-use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\EmployeeComplainController;
-use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\Company\EmployeeSalaryController;
+use App\Http\Controllers\Employee\ForgetPasswordController;
+use App\Http\Controllers\Admin\ForgetPasswordController as AdminForgetPasswordController;
+use App\Http\Controllers\Company\ForgetPasswordController as CompanyForgetPasswordController;
 
 // /**---------------Reset And Forget Password Route----------------*/
 Route::controller(ForgetPasswordController::class)->group(function () {
@@ -91,3 +92,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/change/password', 'adminChangePassword')->name('change.password');
     Route::post('/update/change/password', 'userUpdateChangePassword')->name('user.update.password');
 });
+
+// Route::get('/', [AuthController::class, 'index'])->name('employee');
+
+Route::get('/employee/payslip/generate-pdf', [EmployeeSalaryController::class,'generatePDF']);
