@@ -11,24 +11,58 @@ class LeaveCreditManagementServices
     {
         $this->leaveCreditManagementRepository = $leaveCreditManagementRepository;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function all()
     {
         return $this->leaveCreditManagementRepository->where('company_id', Auth()->user()->company_id)->orderBy('id', 'DESC')->paginate(10);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         $data['company_id'] = Auth()->user()->company_id;
         $data['created_by'] = Auth()->user()->id;
         return $this->leaveCreditManagementRepository->create($data);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function updateDetails($data)
     {
         return $this->leaveCreditManagementRepository->find($data['id'])->update($data);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function deleteDetails($id)
     {
         return $this->leaveCreditManagementRepository->find($id)->delete();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $request
+     * @return void
+     */
     public function serachLeaveCreditFilterList($request)
     {
         $leaveCreditManagementDetails = $this->leaveCreditManagementRepository;
@@ -51,10 +85,22 @@ class LeaveCreditManagementServices
         return $leaveCreditManagementDetails->orderBy('id', 'DESC')->paginate(10);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getAllActiveLeaveCreditManagementDetails()
     {
         return $this->leaveCreditManagementRepository->where('status', '1')->get();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $currentDay
+     * @return void
+     */
     public function getAllLeaveCreditManagementDetailsBasedOnCurrentDay($currentDay)
     {
         return $this->leaveCreditManagementRepository->where('credit_leave_on_day', $currentDay)->where('status', '1')->get();

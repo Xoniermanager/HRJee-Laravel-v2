@@ -33,8 +33,10 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
+        $companyIDs = getCompanyIDs();
+
         $allAnnouncementDetails = $this->announcementService->all();
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
         $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         return view('company.announcements.index', compact('allAnnouncementDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
@@ -64,7 +66,9 @@ class AnnouncementController extends Controller
      */
     public function add()
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $companyIDs = getCompanyIDs();
+
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
         $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         return view('company.announcements.create', compact('allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
@@ -95,7 +99,9 @@ class AnnouncementController extends Controller
      */
     public function edit($id)
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+        $companyIDs = getCompanyIDs();
+
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
         $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         $editAnnouncementDetails = $this->announcementService->findById($id);
         return view('company.announcements.edit', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'editAnnouncementDetails'));

@@ -18,7 +18,7 @@ class DepartmentServices
 
     public function getByCompanyId($companyID)
     {
-        return $this->departmentRepository->where('company_id', $companyID)->orderBy('id', 'DESC')->paginate(10);
+        return $this->departmentRepository->whereIn('created_by', $companyID)->orderBy('id', 'DESC')->paginate(10);
     }
 
     public function create(array $data)
@@ -26,9 +26,9 @@ class DepartmentServices
         return $this->departmentRepository->create($data);
     }
 
-    public function getAllDepartmentsByCompanyId()
+    public function getAllDepartmentsByCompanyId($companyID)
     {
-        return $this->departmentRepository->where('company_id', auth()->user()->company_id)->get();
+        return $this->departmentRepository->whereIn('created_by', $companyID)->get();
     }
 
     public function updateDetails(array $data, $id)

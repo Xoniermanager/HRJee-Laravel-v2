@@ -21,6 +21,13 @@ class SendOtpService
     $this->userOtpRepository = $userOtpRepository;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $email
+   * @param [type] $type
+   * @return void
+   */
   public function generateOTP($email, $type)
   {
     $checkOTPExists = ['email' => $email, 'type' => $type];
@@ -43,6 +50,14 @@ class SendOtpService
     }
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @param string $guardType
+   * @param string $requestType
+   * @return void
+   */
   public function verifyOTP($data, $guardType = '', $requestType = "")
   {
     $find = UserCode::where(['email' => $data['email'], 'code' => $data['otp'], 'type' => $data['type']])
@@ -68,6 +83,14 @@ class SendOtpService
     }
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $email
+   * @param [type] $type
+   * @param [type] $code
+   * @return void
+   */
   public function update($email,$type, $code)
   {
     UserCode::where('email', $email)->delete();

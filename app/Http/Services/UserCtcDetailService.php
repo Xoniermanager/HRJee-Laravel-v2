@@ -12,6 +12,12 @@ class UserCtcDetailService
         $this->userCtcDetailsRepository = $userCtcDetailsRepository;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         $user_id = $data['user_id'];
@@ -27,6 +33,13 @@ class UserCtcDetailService
             return $userCtcDetails;
         }
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function getDetailById($id)
     {
         return $this->userCtcDetailsRepository->where('user_id', $id)->first();

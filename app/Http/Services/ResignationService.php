@@ -15,7 +15,12 @@ class ResignationService
     $this->resignationStatusService = $resignationStatusService;
   }
 
-
+  /**
+   * Undocumented function
+   *
+   * @param string $userId
+   * @return void
+   */
   public function all($userId = '')
   {
     $query = $this->resignationRepository->where('company_id', auth()->user()->company_id)->orderBy('id', 'DESC');
@@ -25,6 +30,13 @@ class ResignationService
     return $query->paginate(10);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $statuses
+   * @param [type] $userId
+   * @return void
+   */
   public function getResignationByResignationStatusIds($statuses, $userId)
   {
     return $this->resignationRepository
@@ -34,6 +46,13 @@ class ResignationService
       ->get();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @param [type] $userId
+   * @return void
+   */
   public function resignation($data, $userId)
   {
     $data['user_id'] = $userId;
@@ -45,6 +64,13 @@ class ResignationService
       return false;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @param [type] $resignationId
+   * @return void
+   */
   public function resignationUpdate($data, $resignationId)
   {
     $checkActionStatus = $this->resignationRepository->where('id', $resignationId)->update([
@@ -56,7 +82,12 @@ class ResignationService
       return false;
   }
 
-
+ /**
+  * Undocumented function
+  *
+  * @param [type] $resignationId
+  * @return void
+  */
   public function getResignationDetails($resignationId)
   {
     return $this->resignationRepository
@@ -68,6 +99,12 @@ class ResignationService
       ->find($resignationId);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->resignationRepository->find($id)->delete();

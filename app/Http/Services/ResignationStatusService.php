@@ -23,6 +23,12 @@ class ResignationStatusService
     $this->resignationLogRepository = $resignationLogRepository;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param string $type
+   * @return void
+   */
   public function all($type = '')
   {
     $query = $this->resignationStatusRepository->select('id', 'name', 'status')->orderBy('id', 'DESC');
@@ -34,6 +40,13 @@ class ResignationStatusService
     return $query;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $type
+   * @param [type] $value
+   * @return void
+   */
   public function getResignationStatusByIdOrStatus($type, $value)
   {
     $query = $this->resignationStatusRepository;
@@ -45,8 +58,14 @@ class ResignationStatusService
     return $query->first();
   }
 
-
-
+  /**
+   * Undocumented function
+   *
+   * @param [type] $resignationId
+   * @param [type] $data
+   * @param [type] $action_taken_by
+   * @return void
+   */
   public function changeStatus($resignationId, $data, $action_taken_by)
   {
     try {
@@ -76,15 +95,36 @@ class ResignationStatusService
       return false;
     }
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails($data, $id)
   {
     return $this->resignationStatusRepository->find($id)->update($data);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->resignationStatusRepository->find($id)->delete();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @return void
+   */
   public function create($data)
   {
 
@@ -93,6 +133,12 @@ class ResignationStatusService
     return $this->resignationStatusRepository->create($data);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $request
+   * @return void
+   */
   public function searchInResignationStatus($request)
   {
     $resignationStatusDetails = $this->resignationStatusRepository;

@@ -11,10 +11,23 @@ class ShiftServices
     {
         $this->shiftRepository = $shiftRepository;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function all()
     {
         return $this->shiftRepository->orderBy('id', 'DESC')->paginate(10);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         $data['company_id'] = Auth()->user()->company_id;
@@ -22,15 +35,35 @@ class ShiftServices
         return $this->shiftRepository->create($data);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @param [type] $id
+     * @return void
+     */
     public function updateDetails(array $data, $id)
     {
         return $this->shiftRepository->find($id)->update($data);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function deleteDetails($id)
     {
         return $this->shiftRepository->find($id)->delete();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $request
+     * @return void
+     */
     public function serachDepartmentFilterList($request)
     {
         $shiftsDetails = $this->shiftRepository;
@@ -70,6 +103,11 @@ class ShiftServices
         return $shiftsDetails->orderBy('id', 'DESC')->paginate(10);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getAllActiveShifts()
     {
         return $this->shiftRepository->where('status', '1')->get();

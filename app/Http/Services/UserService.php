@@ -39,6 +39,7 @@ class UserService
     {
         $userDetails = $this->userRepository->find($userId);
         $userDetails->type == 'company' ? $userDetails->companyDetails()->update(['status' => $statusValue]) : $userDetails->details()->update(['status' => $statusValue]);
+        
         return $userDetails->update(['status' => $statusValue]);
     }
 
@@ -54,8 +55,10 @@ class UserService
     {
         $userDetails = $this->userRepository->find($userId);
         $userDetails->type == 'company' ? $userDetails->companyDetails()->delete() : $userDetails->details()->delete();
+        
         return $userDetails->delete();
     }
+
     public function searchFilterCompany($searchKey)
     {
         $allCompanyDetails = $this->userRepository->where('type', 'company');
@@ -93,6 +96,7 @@ class UserService
 
         return $allCompanyDetails->paginate(10);
     }
+
     public function searchCompanyMenu($searchKey)
     {
         return $this->userRepository
@@ -286,5 +290,9 @@ class UserService
         }
 
         return $allEmployeeDetails->orderBy('id', 'DESC');
+    }
+
+    public function getCompanyEmployeeIDs($companyId) {
+        return $this->userRepository->where('company_id', $companyId)->pluck('id')->toArray();
     }
 }

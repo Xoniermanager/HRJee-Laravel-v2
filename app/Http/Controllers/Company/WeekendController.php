@@ -27,12 +27,13 @@ class WeekendController extends Controller
      */
     public function index()
     {
-        
+        $companyIDs = getCompanyIDs();
+
         return view('company.weekend.index', [
-            'allWeekendDetails' => $this->weekendService->all(Auth()->user()->id),
-            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->user()->id),
+            'allWeekendDetails' => $this->weekendService->all($companyIDs),
+            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId($companyIDs),
             'allWeekDay' => [],
-            'allDepartments' => $this->departmentService->getAllDepartmentsByCompanyId()
+            'allDepartments' => $this->departmentService->getAllDepartmentsByCompanyId($companyIDs)
         ]);
     }
 
@@ -54,10 +55,12 @@ class WeekendController extends Controller
 
             $data = $request->all();
             if ($this->weekendService->create($data)) {
+                $companyIDs = getCompanyIDs();
+
                 return response()->json([
                     'message' => 'Weekend Added Successfully!',
                     'data' => view('company.weekend.weekend_list', [
-                        'allWeekendDetails' => $this->weekendService->all(Auth()->user()->id)
+                        'allWeekendDetails' => $this->weekendService->all($companyIDs)
                     ])->render()
                 ]);
             }
@@ -73,10 +76,12 @@ class WeekendController extends Controller
         $id = $request->id;
         $data = $this->weekendService->deleteDetails($id);
         if ($data) {
+            $companyIDs = getCompanyIDs();
+
             return response()->json([
                 'success' => 'Holiday Deleted Successfully',
                 'data' => view('company.weekend.weekend_list', [
-                    'allWeekendDetails' => $this->weekendService->all(Auth()->user()->id)
+                    'allWeekendDetails' => $this->weekendService->all($companyIDs)
                 ])->render()
             ]);
         } else {

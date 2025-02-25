@@ -30,46 +30,13 @@ class EmployeeAttendanceService
         $this->employeeService = $employeeService;
         $this->weekendService = $weekendService;
     }
-    // public function create($data)
-    // {
-    //     $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
-    //     $attendanceTime = date('Y/m/d H:i:s');
-    //     $startingTime = Carbon::parse($userDetails->officeShift->start_time);
-    //     $loginBeforeShiftTime = $startingTime->subMinutes($userDetails->officeShift->login_before_shift_time);
-    //     // dd($userDetails->officeShift->officeTimingConfigs->half_day_hours);
-
-    //     //dd($userDetails);
-    //     if ($attendanceTime >= $loginBeforeShiftTime) {
-    //         $payload = [];
-    //         $payload =
-    //             [
-    //                 'user_id' => $userDetails->id,
-    //                 'punch_in_using' => $data['punch_in_using']
-    //             ];
-    //         /** If Data Exit in Table Soo we Implement for Puch Out  */
-    //         $existingDetails = $this->getExtistingDetailsByUserId($userDetails->id);
-    //         if (isset($existingDetails) && !empty($existingDetails)) {
-    //             $payload['punch_out'] = $attendanceTime;
-    //             $puchOutDetail =  $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
-    //         }
-
-    //         /** If Data No Exit in Table Soo we Implement for Puch In  */
-    //         else {
-    //             $payload['punch_in'] = $attendanceTime;
-    //             $puchInDetail =  $this->employeeAttendanceRepository->create($payload);
-    //         }
-    //         if (isset($puchInDetail)) {
-    //             $message = 'Puch In';
-    //         }
-    //         if (isset($puchOutDetail)) {
-    //             $message = 'Puch Out';
-    //         }
-    //         return $response = ['data' => $message, 'status' => true];
-    //     } else {
-    //         return $response = ['status' => false];
-    //     }
-    // }
-
+    
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function create($data)
     {
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
@@ -169,11 +136,25 @@ class EmployeeAttendanceService
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $userId
+     * @return void
+     */
     public function getExtistingDetailsByUserId($userId)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', Carbon::today())->first();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $fromDate
+     * @param [type] $toDate
+     * @param [type] $userId
+     * @return void
+     */
     public function getAttendanceByFromAndToDate($fromDate, $toDate, $userId)
     {
         $fromDate = Carbon::parse($fromDate)->startOfDay();
@@ -183,12 +164,23 @@ class EmployeeAttendanceService
             ->whereBetween('punch_in', [$fromDate, $toDate]);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getLastTenDaysAttendance()
     {
         $userId = Auth()->user()->id ?? auth()->guard('employee_api')->user()->id;
         return $this->employeeAttendanceRepository->where('user_id', $userId)->where('punch_in', '>', now()->subDays(10)->endOfDay())->orderBy('id', 'DESC')->get();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $companyId
+     * @return void
+     */
     public function getAllAttendanceByCompanyId($companyId)
     {
         return $this->employeeAttendanceRepository
@@ -197,21 +189,50 @@ class EmployeeAttendanceService
             })->orderBy('id', 'desc')->paginate(10);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $month
+     * @param [type] $userId
+     * @param [type] $year
+     * @return void
+     */
     public function getAllAttendanceByMonthByUserId($month, $userId, $year)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $month
+     * @param [type] $userId
+     * @param [type] $year
+     * @return void
+     */
     public function getShortAttendanceByMonthByUserId($month, $userId, $year)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year)->where('is_short_attendance', 1);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $userId
+     * @param [type] $date
+     * @return void
+     */
     public function getAttendanceByDateByUserId($userId, $date)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', '=', $date);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function editAttendanceByUserId($data)
     {
         $data['punch_in'] = date('Y/m/d H:i:s', strtotime($data['date'] . ' ' . $data['punch_in']));
@@ -224,6 +245,12 @@ class EmployeeAttendanceService
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function addBulkAttendance($data)
     {
         $startDate = Carbon::createFromFormat('Y-m-d', $data['from_date']);
@@ -274,6 +301,13 @@ class EmployeeAttendanceService
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $breakDetails
+     * @param [type] $breakHourValue
+     * @return void
+     */
     public function updateAttendanceDetails($breakDetails, $breakHourValue)
     {
         $attendanceDetails = $this->employeeAttendanceRepository->where('id', $breakDetails->employee_attendance_id)->first();
@@ -303,10 +337,16 @@ class EmployeeAttendanceService
         return $attendanceDetails->update(['total_break_time' => $totalBreak]);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $date
+     * @param [type] $userID
+     * @return void
+     */
     public function getAttendanceByByDate($date, $userID)
     {
         $attendance = $this->employeeAttendanceRepository->where('user_id', $userID)->whereDate('punch_in', $date)->first();
-
         $leave = $this->leaveService->getConfirmedLeaveByUserIDAndDate('user_id', $userID);
 
         $response = [
@@ -314,21 +354,15 @@ class EmployeeAttendanceService
             'punch_out' => null,
             'total_working_hours' => 'N/A',
             'status' => null,
-
         ];
 
-
         if ($leave) {
-            if ($leave->is_half_day) {
-                $response['status'] = 'Half Day';
-            } else {
-                $response['status'] = 'Leave';
-            }
+            $response['status'] = $leave->is_half_day ? 'Half Day' : 'Leave';
+            
         } elseif ($attendance) {
             $response['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
             $response['punch_out'] = date('H:i A', strtotime($attendance->punch_out));
             if ($attendance->punch_out) {
-
                 $punchIn = Carbon::parse($attendance->punch_in);
                 $punchOut = Carbon::parse($attendance->punch_out);
                 $totalBreakSeconds = 0;
@@ -358,14 +392,22 @@ class EmployeeAttendanceService
         return $response;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $year
+     * @param [type] $month
+     * @param [type] $userId
+     * @return void
+     */
     public function getTotalWorkingDaysByUserId($year, $month, $userId)
     {
         $fromDate = Carbon::create($year, $month, 1)->startOfMonth();
         $toDate = Carbon::create($year, $month, 1)->endOfMonth();
         return $this->employeeAttendanceRepository
-            ->where('user_id', $userId)
-            ->whereBetween('punch_in', [$fromDate, $toDate])
-            ->selectRaw('SUM(status = 1) + (SUM(status = 2) / 2) as total_present')
-            ->selectRaw('SUM(late = 1) as late_count');  // Count late days;
+        ->where('user_id', $userId)
+        ->whereBetween('punch_in', [$fromDate, $toDate])
+        ->selectRaw('SUM(status = 1) + (SUM(status = 2) / 2) as total_present')
+        ->selectRaw('SUM(late = 1) as late_count');  // Count late days;
     }
 }

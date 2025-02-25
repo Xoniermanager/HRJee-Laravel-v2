@@ -12,6 +12,12 @@ class UserBankDetailServices
     $this->userBankDetailRepository = $userBankDetailRepository;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @return void
+   */
   public function create($data)
   {
     $user_id = $data['user_id'];
@@ -19,6 +25,12 @@ class UserBankDetailServices
     return $response;
   }
   
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function getDetailById($id)
   {
     return $this->userBankDetailRepository->where('user_id',$id)->first();

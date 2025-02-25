@@ -25,9 +25,11 @@ class DesignationsController extends Controller
      */
     public function index()
     {
+        $companyIDs = getCompanyIDs();
+
         return view('company.designation.index', [
-            'allDesignationDetails' => $this->designationService->getByCompanyId(auth()->user()->company_id),
-            'allDepartments' => $this->departmentService->getByCompanyId(auth()->user()->company_id)->where('status', '1')
+            'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs),
+            'allDepartments' => $this->departmentService->getByCompanyId($companyIDs)->where('status', '1')
         ]);
     }
 

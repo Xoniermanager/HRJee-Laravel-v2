@@ -14,6 +14,12 @@ class UserDocumentDetailServices
         $this->documentTypeService = $documentTypeService;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $allDocumentFile
+     * @return void
+     */
     public function create($allDocumentFile)
     {
         $allDocumentTypes = $this->documentTypeService->getAllActiveDocuments();
@@ -42,6 +48,12 @@ class UserDocumentDetailServices
         }
         return $response;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function documents()
     {
         return $this->userDocumentDetailRepository->getUserDocuments();

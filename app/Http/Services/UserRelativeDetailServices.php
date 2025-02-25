@@ -12,6 +12,12 @@ class UserRelativeDetailServices
     $this->userRelativeDetailRepository = $userRelativeDetailRepository;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $allfamilyDetails
+   * @return void
+   */
   public function create(array $allfamilyDetails)
   {
     $user_id = $allfamilyDetails['user_id'];
@@ -24,6 +30,12 @@ class UserRelativeDetailServices
     return $response;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function delete($id)
   {
     return $this->userRelativeDetailRepository->find($id)->delete();

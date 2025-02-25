@@ -14,12 +14,22 @@ class UserAssetDetailService
         $this->userAssetService = $userAssetService;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function all()
     {
         return $this->userAssetService->all();
     }
 
-
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         $allocatedDetails = $this->userAssetDetailRepository->create($data);
@@ -30,6 +40,12 @@ class UserAssetDetailService
         return true;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function updateDetails(array $data)
     {
         $updatedDetails =  $this->userAssetDetailRepository->find($data['id']);
@@ -41,8 +57,11 @@ class UserAssetDetailService
         return true;
     }
 
-
-
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getAllAssignedAsset()
     {
         return  $this->userAssetDetailRepository->with('asset:id,name')->where('user_id', auth()->user()->id)->get();

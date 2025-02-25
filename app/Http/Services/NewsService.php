@@ -21,10 +21,23 @@ class NewsService
     $this->departmentServices = $departmentServices;
     $this->designationServices = $designationServices;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function all()
   {
     return $this->newsRepository->orderBy('id', 'DESC')->paginate(10);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function create(array $data)
   {
     /** for file or file Upload */
@@ -59,11 +72,24 @@ class NewsService
     return true;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function findByNewsId($id)
   {
     return $this->newsRepository->find($id);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails(array $data, $id)
   {
     $editDetails = $this->newsRepository->find($id);
@@ -111,6 +137,13 @@ class NewsService
     }
     return true;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     $deletedData = News::find($id);
@@ -128,10 +161,25 @@ class NewsService
     $deletedData->delete();
     return true;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @param [type] $statusValue
+   * @return void
+   */
   public function updateStatus($id, $statusValue)
   {
     return $this->newsRepository->find($id)->update(['status' => $statusValue]);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $request
+   * @return void
+   */
   public function serachNewsFilterList($request)
   {
     $newsDetails = $this->newsRepository;
@@ -169,6 +217,12 @@ class NewsService
     }
     return $newsDetails->orderBy('id', 'DESC')->paginate(10);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function getAllAssignedNewsForEmployee()
   {
     $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();

@@ -2,12 +2,22 @@
 
 use Carbon\Carbon;
 use App\Models\Menu;
+use App\Models\User;
 use App\Models\MenuRole;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
+function getCompanyIDs() {
+    if(Auth()->user()->type == 'user') {
+        $companyIDs = [Auth()->user()->id, Auth()->user()->company_id];
+    } else {
+        $companyIDs = User::where('company_id', Auth()->user()->id)->pluck('id')->toArray();
+    }
+
+    return $companyIDs;
+}
 
 function removingSpaceMakingName($name)
 {
@@ -270,7 +280,7 @@ function getCompanyMenuHtml()
         }
     }
 
-    if($user->companyDetails->allow_face_recognition ) {
+    if($user->type == "company" && $user->companyDetails->allow_face_recognition ) {
         $html .= '<div class="menu-item" data-url="/company/face-recognition">
                         <a class="menu-link" href="/company/face-recognition">
                             <span class="menu-icon">
