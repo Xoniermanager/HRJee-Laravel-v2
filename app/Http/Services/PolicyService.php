@@ -180,7 +180,7 @@ class PolicyService
             $assignedDepartmentIds = $this->departmentServices->getAllAssignedDepartment($policyDetails);
             $assignedDesignationIds = $this->designationServices->getAllAssignedDesignation($policyDetails);
 
-            if (in_array($userDetails->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
+            if (in_array($userDetails->details->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->details->department_id, $assignedDepartmentIds) && in_array($userDetails->details->designation_id, $assignedDesignationIds)) {
                 $allAssignedPolicy[] = $policyDetails;
             }
         }

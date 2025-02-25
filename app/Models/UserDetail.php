@@ -35,7 +35,10 @@ class UserDetail extends Model
         'official_mobile_no',
         'shift_id',
         'start_time',
-        'status'
+        'status',
+        'allow_face_recognition',
+        'allow_location_tracking',
+        'face_kyc'
     ];
     protected function profileImage(): Attribute
     {

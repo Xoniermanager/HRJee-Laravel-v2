@@ -482,8 +482,7 @@
                     },
                     submitHandler: function (form) {
                         var shift_data = $(form).serialize();
-                        console.log(shift_data);
-                        $.ajax({
+                            $.ajax({
                             url: "{{ route('shift.store') }}",
                             type: 'POST',
                             data: shift_data,

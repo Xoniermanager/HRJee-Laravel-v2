@@ -10,8 +10,7 @@
             </div>
             <div class="col-md-4 form-group">
                 <label class="required">Effective Date</label>
-                <input class="form-control" type="date" name="effective_date"
-                    value="{{ $userctcDetails->effectiveDate() ?? ''}}">
+                <input class="form-control" type="date" name="effective_date">
             </div>
             <div class="col-md-4 form-group">
                 <label class="required">Salary Structured</label>

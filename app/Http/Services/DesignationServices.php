@@ -46,8 +46,8 @@ class DesignationServices
 
   public function getAllDesignationByDepartmentIds($departmentIds = null, $allDepartment = null)
   {
-    if ($allDepartment == true) {
-      $company_id = Auth()->user()->id ?? Auth()->user()->company_id ?? auth()->guard('employee_api')->user()->company_id;
+    if ($allDepartment) {
+      $company_id = Auth()->user()->company_id ?? auth()->guard('employee_api')->user()->company_id;
       $departmentIds = $this->departmentService->getAllActiveDepartmentsByCompanyId($company_id)->pluck('id')->toArray();
       return $this->designationRepository->whereIn('department_id', $departmentIds)->where('status', '1')->get();
     } else {
