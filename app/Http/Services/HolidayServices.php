@@ -73,7 +73,7 @@ class HolidayServices
 
     public function getListByCompanyId($companyID, $year = NULL, $month = NULL, $date = NULL)
     {
-        $holidayQuery = $this->holidayRepository->where('company_id', $companyID)->where('year', $year)->where('status', '1');
+        $holidayQuery = $this->holidayRepository->whereIn('company_id', $companyID)->where('year', $year)->where('status', '1');
         if($month) {
             $holidayQuery = $holidayQuery->whereMonth('date', $month);
         } 

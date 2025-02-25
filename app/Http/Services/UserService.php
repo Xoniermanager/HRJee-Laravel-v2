@@ -265,12 +265,25 @@ class UserService
 
     public function getFaceRecognitionUsers($companyId)
     {
-        $allEmployeeDetails = $this->userRepository
-        ->where('type', 'user')
-        ->where('company_id', $companyId)
-        ->whereHas('details', function ($query) {
-            $query->where('allow_face_recognition', 1);
-        });
+        if(Auth()->user()->type == "user") {
+            $managerID = Auth()->user()->id;
+            $allEmployeeDetails = $this->userRepository
+            ->where('type', 'user')
+            ->where('company_id', $companyId)
+            ->whereHas('details', function ($query) {
+                $query->where('allow_face_recognition', 1);
+            })
+            ->whereHas('managerEmployees', function ($query) use($managerID) {
+                $query->where('manager_id', $managerID);
+            });
+        } else {
+            $allEmployeeDetails = $this->userRepository
+            ->where('type', 'user')
+            ->where('company_id', $companyId)
+            ->whereHas('details', function ($query) {
+                $query->where('allow_face_recognition', 1);
+            });
+        }
 
         return $allEmployeeDetails->orderBy('id', 'DESC');
     }

@@ -19,11 +19,15 @@ class HolidayController extends Controller
     public function getHolidays(Request $request)
     {
         try {
-            $companyID = auth()->user()->company_id;
+            $companyIDs = [];
+            $companyIDs[] = auth()->user()->company_id;
+            if(auth()->user()->type == 'user') {
+                $companyIDs[] = auth()->user()->id;
+            }
             $month = $request->has('month') ? $request->get('month') : NULL;
             $date = $request->has('date') ? $request->get('date') : NULL;
 
-            $getHolidayList = $this->holidayService->getListByCompanyId($companyID, date('Y'), $month, $date);
+            $getHolidayList = $this->holidayService->getListByCompanyId($companyIDs, date('Y'), $month, $date);
 
             return response()->json([
                 'status' => true,

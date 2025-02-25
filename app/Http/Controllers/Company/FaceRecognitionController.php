@@ -19,8 +19,11 @@ class FaceRecognitionController extends Controller
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->userService->getFaceRecognitionUsers(Auth()->user()->id)->paginate(10);
-    
+        if(Auth()->user()->type == "user") {
+            $allUserDetails = $this->userService->getFaceRecognitionUsers(Auth()->user()->id)->paginate(10);
+        } else {
+            $allUserDetails = $this->userService->getFaceRecognitionUsers(Auth()->user()->id)->paginate(10);
+        }
         return view('company.face_recognition.index', compact('allUserDetails'));
     }
 }
