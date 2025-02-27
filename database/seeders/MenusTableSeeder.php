@@ -632,7 +632,7 @@ class MenusTableSeeder extends Seeder
                 array(
                     'id' => 48,
                     'title' => 'PRM Category',
-                    'slug' => 'prm/category',
+                    'slug' => '/prm/category',
                     'icon' => 'NA',
                     'parent_id' => 47,
                     'status' => 1,
@@ -645,7 +645,7 @@ class MenusTableSeeder extends Seeder
                 array(
                     'id' => 49,
                     'title' => 'PRM Request',
-                    'slug' => 'prm/request',
+                    'slug' => '/prm/request',
                     'icon' => 'NA',
                     'parent_id' => 47,
                     'status' => 1,
