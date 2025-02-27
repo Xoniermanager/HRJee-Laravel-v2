@@ -12,10 +12,12 @@ class PRMCategoryService
   {
     $this->prmCategoryRepository = $prmCategoryRepository;
   }
+
   public function all()
   {
     return $this->prmCategoryRepository->where('company_id', Auth()->user()->company_id)->orderBy('id', 'DESC')->paginate(10);
   }
+
   public function create(array $data)
   {
     $data['company_id'] = Auth()->user()->company_id ?? '';
@@ -26,14 +28,10 @@ class PRMCategoryService
   {
     return $this->prmCategoryRepository->find($id)->update($data);
   }
+
   public function deleteDetails($id)
   {
     return $this->prmCategoryRepository->find($id)->delete();
-  }
-
-  public function getAllActiveNewsCategory()
-  {
-    return $this->prmCategoryRepository->where('status', '1')->get();
   }
 
   public function searchPRMCategoryFilterList($request)
@@ -49,8 +47,11 @@ class PRMCategoryService
     }
     return $assetCategoryDetails->orderBy('id', 'DESC')->paginate(10);
   }
-  public function getAllActivePRMCategoryByCompanyID($companyId)
+
+  public function getAllActiveCategoryByCompanyID($companyId)
   {
-    return $this->prmCategoryRepository->where('company_id', $companyId)->orwhere('company_id', '')->where('status', '1')->get();
+    return $this->prmCategoryRepository->whereIn('company_id', $companyId)->orwhere('company_id', '')->where('status', '1')->get();
   }
+
+
 }

@@ -12,7 +12,7 @@
                     <th>Amount</th>
                     <th>Bill Date</th>
                     <th>Remark</th>
-                    <th>Status (Pending/Approved)</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             @forelse ($allPRMRequestDetails as $key => $prmRequestDetails)
@@ -25,11 +25,21 @@
                         <td>{{ date('Y-m-d',strtotime($prmRequestDetails->bill_date)) }}</td>
                         <td>{{ $prmRequestDetails->remark }}</td>
                         <td data-order="Invalid date">
-                            <label class="switch">
+                            @if($prmRequestDetails->status == 0)
+                                <select name="status" class="form-control min-w-150px me-2" id="status_{{ $prmRequestDetails->id }}" onchange="handleStatus({{ $prmRequestDetails->id }})">
+                                    <option value="0">Pending</option>
+                                    <option value="1">Approved</option>
+                                    <option value="2">Rejected</option>
+                                </select>
+                            @else
+                            {{ $prmRequestDetails->status == 1 ? "Approved" : "Rejected" }}
+                            @endif
+
+                            {{-- <label class="switch">
                                 <input type="checkbox" <?= $prmRequestDetails->status == '1' ? 'checked' : '' ?>
                                     onchange="handleStatus({{ $prmRequestDetails->id }})" id="checked_value_{{ $prmRequestDetails->id }}">
                                 <span class="slider round"></span>
-                            </label>
+                            </label> --}}
                         </td>
                     </tr>
                 </tbody>

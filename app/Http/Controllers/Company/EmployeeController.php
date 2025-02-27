@@ -92,18 +92,20 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
+        $companyIDs = getCompanyIDs();
+
         if(Auth()->user()->type == "user") {
             $allUserDetails = $this->userService->getManagedUsers($request == null, Auth()->user()->id)->paginate(10);
         } else {
             $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
         }
-
+        
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allShifts = $this->shiftService->getAllActiveShifts();
-        $allBranches = $this->branchService->all(Auth()->user()->id);
+        $allBranches = $this->branchService->all($companyIDs);
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);

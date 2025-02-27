@@ -36,8 +36,10 @@ function unlinkFileOrImage($file)
 
 function uploadingImageorFile($file, string $path, $namePrefix = '')
 {
+    // dd("here i am");
     $image = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
     $path = $path . '/' . $image;
+    // dd($path);
     Storage::disk('public')->put($path, file_get_contents($file));
     return $path;
 }

@@ -92,6 +92,13 @@ class EmployeesMenusSeeder extends Seeder
                 'icon' => '<i class="fa fa-headphones"></i>',
                 'order_no' => 10,
                 'role' => 'employee'
+            ],
+            [
+                'title' => 'PRM',
+                'slug' => '/employee/prm',
+                'icon' => '<i class="fas fa-money-bill-wave"></i>',
+                'order_no' => 10,
+                'role' => 'employee'
             ]
         ];
 

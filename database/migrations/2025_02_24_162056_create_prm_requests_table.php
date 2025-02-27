@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->bigInteger('amount');
-            $table->string('document');
+            $table->string('document')->nullable();
             $table->string('remark');
             $table->date('bill_date');
             $table->boolean('status')->default(false);

@@ -33,10 +33,12 @@
                         </div>
                         <select name="status" class="form-control min-w-150px me-2" id="status">
                             <option value="">Status</option>
-                            <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
-                                value="1">Active</option>
                             <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
-                                value="0">Inactive</option>
+                                value="0">Pending</option>
+                            <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
+                                value="1">Approved</option>
+                            <option {{ old('status') == '2' || request()->get('status') == '2' ? 'selected' : '' }}
+                                value="2">Rejected</option>
                         </select>
                     </div>
                     <!--end::Card title-->
@@ -60,14 +62,8 @@
         function handleStatus(id) {
             var checked_value = $('#checked_value_' + id).prop('checked');
             let status;
-            let status_name;
-            if (checked_value == true) {
-                status = 1;
-                status_name = 'Active';
-            } else {
-                status = 0;
-                status_name = 'Inactive';
-            }
+
+            status = $('#status_'+id).val()
             $.ajax({
                 url: "{{ route('prm.request.statusUpdate') }}",
                 type: 'get',
@@ -77,7 +73,8 @@
                 },
                 success: function(res) {
                     if (res) {
-                        swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
+                        swal.fire("Done!", 'Status Update Successfully', "success");
+                        location.reload()
                     } else {
                         swal.fire("Oops!", 'Something Went Wrong', "error");
                     }

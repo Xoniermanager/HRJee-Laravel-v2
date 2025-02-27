@@ -19,6 +19,7 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 use App\Http\Controllers\Employee\HrComplainController;
+use App\Http\Controllers\Employee\PRMController;
 use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\LeaveTrackingController;
 
@@ -69,6 +70,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
     //     Route::get('/resignation', 'index')->name('employee.resignation');
     //     Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
     // });
+
     //Policy Module
     Route::controller(PolicyController::class)->group(function () {
         Route::get('/policy', 'index')->name('employee.policy');
@@ -79,6 +81,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::get('/announcement', 'index')->name('employee.announcement');
         Route::get('/announcement/details/{announcements:id}', 'viewDetails')->name('employee.announcement.details');
     });
+
     //Account Module
     Route::controller(AccountController::class)->group(function () {
         Route::get('/account', 'index')->name('employee.account');
@@ -121,12 +124,11 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
     Route::controller(HolidaysMangementController::class)->group(function () {
         Route::get('/holidays', 'index')->name('employee.holidays');
         Route::get('/update/calendar', 'updateCalendar')->name('update.calendar');
-        Route::get('/holiday_by_daate', 'holidayByDate')->name('holiday.by.date');
+        Route::get('/holiday_by_date', 'holidayByDate')->name('holiday.by.date');
     });
+
     // Payslips Management
     Route::get('/payslips', [PayslipsMangementController::class, 'index'])->name('employee.payslips');
-
-
 
     //Employee Attendance Management]
     Route::get('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
@@ -149,6 +151,17 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::get('/add', 'add')->name('hr_complain.add');
         Route::post('/store', 'store')->name('hr_complain.store');
         Route::get('/chat/{employee_complains:id}', 'getComplainDetails')->name('employee.getComplainDetails');
+    });
+
+    //Employee PRM
+    Route::prefix('/prm')->controller(PRMController::class)->group(function () {
+        Route::get('/', 'index')->name('prm.index');
+        Route::get('/add', 'add')->name('prm.add');
+        Route::post('/store', 'store')->name('prm.store');
+        Route::get('/edit/{id}', 'edit')->name('prm.edit');
+        Route::post('/update/{id}', 'update')->name('prm.update');
+        Route::get('/view/{id}', 'getDetails')->name('prm.view');
+        Route::get('/delete', 'delete')->name('prm.delete');
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/
