@@ -615,6 +615,45 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
+            47 =>
+                array(
+                    'id' => 47,
+                    'title' => 'PRM Management',
+                    'slug' => '#',
+                    'icon' => '<i class="fas fa-money-bill-wave"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 31,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            48 =>
+                array(
+                    'id' => 48,
+                    'title' => 'PRM Category',
+                    'slug' => 'prm/category',
+                    'icon' => 'NA',
+                    'parent_id' => 47,
+                    'status' => 1,
+                    'order_no' => 31,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            49 =>
+                array(
+                    'id' => 49,
+                    'title' => 'PRM Request',
+                    'slug' => 'prm/request',
+                    'icon' => 'NA',
+                    'parent_id' => 47,
+                    'status' => 1,
+                    'order_no' => 31,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
         ));
 
 
