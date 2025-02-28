@@ -76,6 +76,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::get('/policy', 'index')->name('employee.policy');
         Route::get('/policy/details/{policies:id}', 'viewDetails')->name('employee.policy.details');
     });
+    
     //Announcement Module
     Route::controller(AnnouncementsController::class)->group(function () {
         Route::get('/announcement', 'index')->name('employee.announcement');
