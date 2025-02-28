@@ -34,12 +34,6 @@
                             @else
                             {{ $prmRequestDetails->status == 1 ? "Approved" : "Rejected" }}
                             @endif
-
-                            {{-- <label class="switch">
-                                <input type="checkbox" <?= $prmRequestDetails->status == '1' ? 'checked' : '' ?>
-                                    onchange="handleStatus({{ $prmRequestDetails->id }})" id="checked_value_{{ $prmRequestDetails->id }}">
-                                <span class="slider round"></span>
-                            </label> --}}
                         </td>
                     </tr>
                 </tbody>
