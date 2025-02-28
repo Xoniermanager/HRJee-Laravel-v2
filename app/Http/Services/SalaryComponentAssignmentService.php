@@ -13,23 +13,58 @@ class SalaryComponentAssignmentService
         $this->salaryComponentAssignmentRepository = $salaryComponentAssignmentRepository;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $companyId
+     * @return void
+     */
     public function getAllSalaryComponentAssignmentByCompanyId($companyId)
     {
         return $this->salaryComponentAssignmentRepository->where('company_id', $companyId)->orderBy('id', 'DESC');
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function create($data)
     {
         return $this->salaryComponentAssignmentRepository->create($data);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @param [type] $id
+     * @return void
+     */
     public function updateDetails($data, $id)
     {
         return $this->salaryComponentAssignmentRepository->find($id)->update($data);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function deleteDetails($id)
     {
         return $this->salaryComponentAssignmentRepository->find($id)->delete();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $request
+     * @param [type] $companyID
+     * @return void
+     */
     public function serachSalaryComponentAssignmentFilterList($request, $companyID)
     {
         $salaryComponentDetails = $this->salaryComponentAssignmentRepository->where('company_id', $companyID);
@@ -49,11 +84,23 @@ class SalaryComponentAssignmentService
         return $salaryComponentDetails->orderBy('id', 'DESC')->paginate(10);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $companyId
+     * @return void
+     */
     public function getBasicPayDetails($companyId)
     {
         return $this->salaryComponentAssignmentRepository->where('company_id', $companyId)->where('name', 'Basic Pay')->first();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $salaryComponentAssignId
+     * @return void
+     */
     public function getDetailsBySalaryComponentAssignmentId($salaryComponentAssignId)
     {
         return $this->salaryComponentAssignmentRepository->find($salaryComponentAssignId);

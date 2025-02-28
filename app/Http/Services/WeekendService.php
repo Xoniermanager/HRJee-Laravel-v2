@@ -2,10 +2,7 @@
 
 namespace App\Http\Services;
 
-use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\WeekendRepository;
 
 class WeekendService
@@ -17,7 +14,7 @@ class WeekendService
     }
     public function all($companyId)
     {
-        return $this->weekendRepository->with(['companyBranch', 'department'])->where('company_id', $companyId)->orderBy('id', 'DESC')->paginate(10);
+        return $this->weekendRepository->with(['companyBranch', 'department'])->whereIn('created_by', $companyId)->orderBy('id', 'DESC')->paginate(10);
     }
 
     /**

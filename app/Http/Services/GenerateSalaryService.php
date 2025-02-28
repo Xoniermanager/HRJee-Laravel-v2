@@ -18,6 +18,13 @@ class GenerateSalaryService
         $this->taxSlabRateService = $taxSlabRateService;
         $this->employeeAttendanceService = $employeeAttendanceService;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $request
+     * @return void
+     */
     public function generateSalaryByEmployeeDetails($request)
     {
         $date = Carbon::create($request['year'], $request['month'], 1);
@@ -53,9 +60,19 @@ class GenerateSalaryService
             } else {
                 return ['status' => false];
             }
-         }
+        }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $ctc
+     * @param [type] $salaryComponents
+     * @param [type] $applicableTaxRates
+     * @param [type] $totalWorking
+     * @param [type] $lossOfPay
+     * @return void
+     */
     public function getEmployeeMonthlySalary($ctc, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay)
     {
         $monthlyCtc = bcdiv($ctc, 12, 2);
@@ -155,7 +172,13 @@ class GenerateSalaryService
         ];
     }
 
-    // For Salary Tax Rate Calculation
+    /**
+     * Undocumented function
+     * For Salary Tax Rate Calculation
+     * @param [type] $ctc
+     * @param [type] $taxRates
+     * @return void
+     */
     public function calculateTaxOnSalary($ctc, $taxRates)
     {
         $totalTaxes = 0;
@@ -179,7 +202,14 @@ class GenerateSalaryService
         return $totalTaxes;
     }
 
-    // For Salary Yearly Calculation
+    /**
+     * For Salary Yearly Calculation
+     *
+     * @param [type] $ctc
+     * @param [type] $salaryComponents
+     * @param [type] $applicableTaxRates
+     * @return void
+     */
     public function getEmployeeCtcComponents($ctc, $salaryComponents, $applicableTaxRates)
     {
         $allComponentsWithValues = [];
@@ -260,6 +290,13 @@ class GenerateSalaryService
         ];
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $getEmployeeMonthlySalary
+     * @param [type] $request
+     * @return void
+     */
     public function createUserMonthlySalary($getEmployeeMonthlySalary, $request)
     {
         $getEmployeeMonthlySalary['others']['user_id'] = $request['user_id'];
@@ -274,6 +311,12 @@ class GenerateSalaryService
         return $userMonthlySalary;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $request
+     * @return void
+     */
     public function checkExistingMonthDetails($request)
     {
         return UserMonthlySalary::where('user_id', $request['user_id'])->where('year', $request['year'])->where('month', $request['month'])->first();

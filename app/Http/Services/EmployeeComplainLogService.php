@@ -12,6 +12,13 @@ class EmployeeComplainLogService
   {
     $this->employeeComplainLogRepository = $employeeComplainLogRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function sendMessage(array $data)
   {
     $sentMessage = $this->employeeComplainLogRepository->create($data);
@@ -19,6 +26,12 @@ class EmployeeComplainLogService
     return $sentMessage;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function findDetailsByComplainId($id)
   {
     return $this->employeeComplainLogRepository->where('employee_complain_id', $id)->orderBy('created_at', 'ASC')->get();

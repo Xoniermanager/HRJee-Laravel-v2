@@ -15,6 +15,7 @@ use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
+use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
@@ -59,6 +60,8 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
+use App\Http\Controllers\company\PRMCategoryController;
+use App\Http\Controllers\company\PRMRequestController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 use App\Http\Controllers\Company\SalaryComponentAssignmentController;
@@ -180,6 +183,11 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::prefix('/language')->controller(LanguagesController::class)->group(function () {
         Route::post('/create', 'store')->name('language.create');
         Route::get('/delete', 'destroy')->name('language.delete');
+    });
+
+    //Face Recognition Module
+    Route::prefix('/face-recognition')->controller(FaceRecognitionController::class)->group(function () {
+        Route::get('/', 'index')->name('face-recognition.index');
     });
 
     //Employee Module
@@ -585,6 +593,37 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/get/weekend/details/companyId', 'getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
     });
 
+    // prm Management
+    
+
+    Route::prefix('/prm')->group(function () {
+       //PRM Request
+        Route::controller(PRMRequestController::class)->group(function () {
+            Route::get('/request', 'index')->name('prm.request.index');
+
+            // Route::get('/add', 'add')->name('news.add');
+            // Route::post('/create', 'store')->name('news.store');
+            // Route::get('/edit/{news:id}', 'edit')->name('news.edit');
+            // Route::get('/view/{news:id}', 'view')->name('news.view');
+            // Route::post('/update/{id}', 'update')->name('news.update');
+            // Route::get('/delete/{id}', 'destroy')->name('news.delete');
+            Route::get('/status/update', 'statusUpdate')->name('prm.request.statusUpdate');
+            Route::get('/prm-request/search/filter', 'searchPrmRequestFilterList');
+        });
+        //News Category Module
+        Route::prefix('/category')->controller(PRMCategoryController::class)->group(function () {
+            Route::get('/', 'index')->name('prm.category.index');
+            Route::post('/create', 'store')->name('prm.category.store');
+            Route::post('/update', 'update')->name('prm.category.update');
+            Route::get('/delete', 'destroy')->name('prm.category.delete');
+            Route::get('/status/update', 'statusUpdate')->name('prm.category.statusUpdate');
+            Route::get('/search/filter', 'serachPrmCategoryFilterList');
+        });
+    });
+    // prm Management
+
+
+
     // Salary Management
     Route::prefix('/salary')->controller(SalaryController::class)->group(function () {
         Route::get('/', 'index')->name('salary.index');
@@ -598,6 +637,9 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachSalaryFilterList');
     });
     // Salary Component Management
+
+
+    
     Route::prefix('/salary-component')->controller(SalaryComponentController::class)->group(function () {
         Route::get('/', 'index')->name('salary.component.index');
         Route::get('/add', 'add')->name('salary.component.add');

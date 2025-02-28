@@ -13,6 +13,12 @@ class CustomRoleService
     $this->customRoleRepository = $customRoleRepository;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $companyId
+   * @return void
+   */
   public function all($companyId = null)
   {
     return $this->customRoleRepository
@@ -22,6 +28,12 @@ class CustomRoleService
       ->get();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function getRolesByCompanyID($id)
   {
     return $this->customRoleRepository
@@ -30,27 +42,58 @@ class CustomRoleService
       ->orderBy('id', 'DESC')->get();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function create(array $data)
   {
-    // dd($data);
     return $this->customRoleRepository->create($data);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->customRoleRepository->getRolesById($id)->delete();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails(array $data, $id)
   {
     return $this->customRoleRepository->find($id)->update($data);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param int $id
+   * @return void
+   */
   public function getDetails($id)
   {
     return $this->customRoleRepository->with(['users'])->find($id);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $request
+   * @param int $companyID
+   * @return void
+   */
   public function serachRoleFilterList($request, $companyID)
     {
         $roleDetails = $this->customRoleRepository->where('company_id', $companyID)->where('category', 'custom');

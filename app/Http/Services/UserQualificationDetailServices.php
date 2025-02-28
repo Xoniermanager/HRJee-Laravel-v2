@@ -12,6 +12,12 @@ class UserQualificationDetailServices
     $this->userQualificationDetailRepository = $userQualificationDetailRepository;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $allQualifications
+   * @return void
+   */
   public function create(array $allQualifications)
   {
     $user_id = $allQualifications['user_id'];
@@ -25,6 +31,13 @@ class UserQualificationDetailServices
     }
     return true;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function delete($id)
   {
     return $this->userQualificationDetailRepository->where('qualification_id', $id)->delete();

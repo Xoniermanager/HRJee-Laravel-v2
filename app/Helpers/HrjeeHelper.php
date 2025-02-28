@@ -2,12 +2,22 @@
 
 use Carbon\Carbon;
 use App\Models\Menu;
+use App\Models\User;
 use App\Models\MenuRole;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
+function getCompanyIDs() {
+    if(Auth()->user()->type == 'user') {
+        $companyIDs = [Auth()->user()->id, Auth()->user()->company_id];
+    } else {
+        $companyIDs = User::where('company_id', Auth()->user()->id)->pluck('id')->toArray();
+    }
+
+    return $companyIDs;
+}
 
 function removingSpaceMakingName($name)
 {
@@ -26,8 +36,10 @@ function unlinkFileOrImage($file)
 
 function uploadingImageorFile($file, string $path, $namePrefix = '')
 {
+    // dd("here i am");
     $image = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
     $path = $path . '/' . $image;
+    // dd($path);
     Storage::disk('public')->put($path, file_get_contents($file));
     return $path;
 }
@@ -268,6 +280,19 @@ function getCompanyMenuHtml()
                         </div>';
             }
         }
+    }
+
+    if($user->type == "company" && $user->companyDetails->allow_face_recognition ) {
+        $html .= '<div class="menu-item" data-url="/company/face-recognition">
+                        <a class="menu-link" href="/company/face-recognition">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-5">
+                                    <i class="fas fa-smile"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">Face Recognition</span>
+                        </a>
+                        </div>';
     }
 
     return $html;

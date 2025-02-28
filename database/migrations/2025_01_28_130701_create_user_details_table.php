@@ -50,6 +50,7 @@ return new class extends Migration {
             $table->boolean('allow_face_recognition')->default(0);
             $table->boolean('allow_location_tracking')->default(0);
             $table->string('face_kyc')->nullable();
+            $table->string('face_punchin_kyc')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

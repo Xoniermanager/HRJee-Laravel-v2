@@ -25,9 +25,11 @@ class HolidayController extends Controller
      */
     public function index()
     {
+        $companyIDs = getCompanyIDs();
+        
         return view('company.holiday.index', [
-            'allHolidaysDetails' => $this->holidayService->all(),
-            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->user()->id)
+            'allHolidaysDetails' => $this->holidayService->all($companyIDs),
+            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId($companyIDs)
         ]);
     }
 
@@ -49,10 +51,12 @@ class HolidayController extends Controller
             }
             $data = $request->all();
             if ($this->holidayService->create($data)) {
+                $companyIDs = getCompanyIDs();
+
                 return response()->json([
                     'message' => 'Holiday Created Successfully!',
                     'data' => view('company.holiday.holiday_list', [
-                        'allHolidaysDetails' => $this->holidayService->all()
+                        'allHolidaysDetails' => $this->holidayService->all($companyIDs)
                     ])->render()
                 ]);
             }
@@ -80,11 +84,13 @@ class HolidayController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->holidayService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
+            $companyIDs = getCompanyIDs();
+
             return response()->json(
                 [
                     'message' => 'Holiday Updated Successfully!',
                     'data' => view('company.holiday.holiday_list', [
-                        'allHolidaysDetails' => $this->holidayService->all()
+                        'allHolidaysDetails' => $this->holidayService->all($companyIDs)
                     ])->render()
                 ]
             );
@@ -99,10 +105,12 @@ class HolidayController extends Controller
         $id = $request->id;
         $data = $this->holidayService->deleteDetails($id);
         if ($data) {
+            $companyIDs = getCompanyIDs();
+
             return response()->json([
                 'success' => 'Holiday Deleted Successfully',
                 'data' => view('company.holiday.holiday_list', [
-                    'allHolidaysDetails' => $this->holidayService->all()
+                    'allHolidaysDetails' => $this->holidayService->all($companyIDs)
                 ])->render()
             ]);
         } else {

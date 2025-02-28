@@ -11,24 +11,57 @@ class CompanyTypeService
     {
         $this->companyTypeRepository = $companyTypeRepository;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function all()
     {
         return $this->companyTypeRepository->orderBy('id', 'DESC')->paginate(10);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         return $this->companyTypeRepository->create($data);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @param [type] $id
+     * @return void
+     */
     public function updateDetails(array $data, $id)
     {
         return $this->companyTypeRepository->find($id)->update($data);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function deleteDetails($id)
     {
         return $this->companyTypeRepository->find($id)->delete();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $request
+     * @return void
+     */
     public function serachFilterList($request)
     {
         $countryDetails = $this->companyTypeRepository;
@@ -43,6 +76,12 @@ class CompanyTypeService
         }
         return $countryDetails->orderBy('id', 'DESC')->paginate(10);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getAllActiveCompanyType()
     {
         return $this->companyTypeRepository->where('status', '1')->get();

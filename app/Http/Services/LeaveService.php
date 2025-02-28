@@ -20,11 +20,23 @@ class LeaveService
         $this->leaveManagerUpdateRepository = $leaveManagerUpdateRepository;
         $this->employeeLeaveAvailableService = $employeeLeaveAvailableService;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function all()
     {
         return $this->leaveRepository->orderBy('id', 'DESC')->paginate(10);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $userId
+     * @return void
+     */
     public function leavesByUserId($userId)
     {
         return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->with(['leaveStatus'])->paginate(10);
@@ -89,6 +101,13 @@ class LeaveService
         return $response;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @param [type] $id
+     * @return void
+     */
     public function updateDetails(array $data, $id)
     {
         $existingUpdateDetails = $this->leaveRepository->find($id);
@@ -104,26 +123,67 @@ class LeaveService
         }
         return $response;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getLeaveDetailsOnlyUserId()
     {
         return $this->leaveRepository->select('id', 'user_id', 'from', 'to')->get();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getPendingLeavesByUserId()
     {
         return $this->leaveRepository->where('leave_status_id', 1)->select('id', 'user_id', 'from', 'to')->get();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getAllAppliedLeave()
     {
         return $this->leaveRepository->with(['leaveStatus:id,status,name', 'leaveType:id,name', 'leaveAppliedBy:id,name', 'leaveAction:id,leave_id,remarks,action_taken_by,leave_status_id', 'leaveAction.leaveStatus:id,name,status', 'leaveAction.actionTakenBy:id,name,email'])->where('user_id', auth()->guard('employee_api')->user()->id)->get();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function getAppliedLeaveDetailsUsingId($id)
     {
         return $this->leaveRepository->where('id', $id)->where('leave_status_id', '!=', 3)->where('leave_status_id', '!=', 4)->first();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function getDetailsById($id)
     {
         return $this->leaveRepository->find($id);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @param [type] $fromdate
+     * @param [type] $toDate
+     * @return void
+     */
     public function getUserConfirmLeaveByDate($id, $fromdate, $toDate = NULL)
     {
         return $this->leaveRepository->where('user_id', $id)->where('from', '<=', $fromdate)
@@ -131,6 +191,13 @@ class LeaveService
             ->where('leave_status_id', 2)
             ->first();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function checkTodayLeaveData($data)
     {
         //dd($data);
@@ -173,11 +240,27 @@ class LeaveService
             return ['success' => false, 'message' => 'Leave not available'];
         }
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $userId
+     * @param [type] $month
+     * @param [type] $year
+     * @return void
+     */
     public function getTotalLeaveByUserIdByMonth($userId, $month, $year)
     {
         return $this->leaveRepository->getTotalLeaveByUserIDByMonth($userId, $month, $year);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $date
+     * @param [type] $userID
+     * @return void
+     */
     public function getConfirmedLeaveByUserIDAndDate($date, $userID)
     {
 

@@ -11,30 +11,67 @@ class QualificationService
   {
     $this->qualificationRepository = $qualificationRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function all()
   {
     return $this->qualificationRepository->orderBy('id','DESC')->paginate(10);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function get_qualification_ajax_call()
   {
     return $this->qualificationRepository->orderBy('id','DESC')->get();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function create(array $data)
   {
     return $this->qualificationRepository->create($data);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails(array $data, $id)
   {
     return $this->qualificationRepository->find($id)->update($data);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->qualificationRepository->find($id)->delete();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $searchKey
+   * @return void
+   */
   public function searchInQualification($searchKey)
   {
     $data['key']    = array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
@@ -52,6 +89,11 @@ class QualificationService
 
   }
 
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function getAllActiveQualification()
   {
     return $this->qualificationRepository->where('status','1')->get();

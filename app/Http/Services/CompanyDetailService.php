@@ -11,25 +11,57 @@ class CompanyDetailService
     {
         $this->companyDetailRepository = $companyDetailRepository;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function all()
     {
         return $this->companyDetailRepository->paginate(10);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function allCompanyDetails()
     {
         return $this->companyDetailRepository->all();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @return mixed
+     */
     public function create($data): mixed
     {
         $data['joining_date'] = date('Y-m-d');
         return $this->companyDetailRepository->create($data);
     }
     
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @param [type] $userId
+     * @return void
+     */
     public function updateDetails($data, $userId)
     {
         return $this->companyDetailRepository->where('user_id', $userId)->update($data);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $searchKey
+     * @return void
+     */
     public function searchInCompany($searchKey)
     {
         return $this->companyDetailRepository->where(function ($query) use ($searchKey) {
@@ -51,29 +83,69 @@ class CompanyDetailService
             }
         })->paginate(10);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function delete_company_by_id($id)
     {
         return $this->companyDetailRepository->getCompanyById($id)->delete();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function get_company_by_id($id)
     {
         return $this->companyDetailRepository->where('user_id', $id)->first();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function update_company($data)
     {
         return $this->companyDetailRepository->updateCompany($data);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $data
+     * @param [type] $userId
+     * @return void
+     */
     public function updateCompanyDetails($data, $userId)
     {
         return $this->companyDetailRepository->where('user_id', $userId)->update($data);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function get_company_with_branch_details($id)
     {
         return $this->companyDetailRepository->getPrimaryBranchForCompany($id);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $searchKey
+     * @return void
+     */
     public function searchCompanyMenu($searchKey)
     {
         return $this->companyDetailRepository->where(function ($query) use ($searchKey) {

@@ -12,6 +12,12 @@ class UserAdvanceDetailServices
         $this->userAdvanceDetailRepository = $userAdvanceDetailRepository;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         $user_id = $data['user_id'];
@@ -21,7 +27,12 @@ class UserAdvanceDetailServices
         return $response;
     }
 
-
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function getDetailById($id)
     {
         return $this->userAdvanceDetailRepository->where('user_id', $id)->first();

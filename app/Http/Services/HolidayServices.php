@@ -15,9 +15,9 @@ class HolidayServices
     {
         $this->holidayRepository = $holidayRepository;
     }
-    public function all()
+    public function all($companyIDs)
     {
-        return $this->holidayRepository->where('company_id', Auth()->user()->id)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
+        return $this->holidayRepository->whereIn('created_by', $companyIDs)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
     {
@@ -73,7 +73,7 @@ class HolidayServices
 
     public function getListByCompanyId($companyID, $year = NULL, $month = NULL, $date = NULL)
     {
-        $holidayQuery = $this->holidayRepository->where('company_id', $companyID)->where('year', $year)->where('status', '1');
+        $holidayQuery = $this->holidayRepository->whereIn('company_id', $companyID)->where('year', $year)->where('status', '1');
         if($month) {
             $holidayQuery = $holidayQuery->whereMonth('date', $month);
         } 

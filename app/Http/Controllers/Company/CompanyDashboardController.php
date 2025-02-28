@@ -32,12 +32,13 @@ class CompanyDashboardController extends Controller
     public function index()
     {
         $companyId = Auth()->user()->id;
+        $companyIDs = getCompanyIDs();
         $today = today();
         $dashboardData = [
             // Total office branches
-            'allCompanyBranch' => $this->companyBranchService->getAllCompanyBranchByCompanyId($companyId),
+            'allCompanyBranch' => $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs),
 
-            'allDepartment' => $this->departmentService->getAllDepartmentsByCompanyId(),
+            'allDepartment' => $this->departmentService->getAllDepartmentsByCompanyId($companyIDs),
             // Total attendance for today (optimizing query)
             'total_present' => EmployeeAttendance::whereDate('punch_in', $today)
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))

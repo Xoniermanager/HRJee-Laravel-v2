@@ -133,7 +133,9 @@ class EmployeeServices
 
     public function getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds = null, $designationIds = null, $allCompanyBranches = null, $allDepartment = null, $allDesignation = null)
     {
-        $allCompanyDepartment = $this->departmentService->getAllDepartmentsByCompanyId();
+        $companyIDs = getCompanyIDs();
+
+        $allCompanyDepartment = $this->departmentService->getAllDepartmentsByCompanyId($companyIDs);
         $allDepartmentIds = $allCompanyDepartment->pluck('id');
         $selectedDepartments = $allDepartmentIds;
         $baseQuery = $this->userDetailRepository;
@@ -142,7 +144,7 @@ class EmployeeServices
         if (isset($companyBranchIds) && count($companyBranchIds) > 0) {
             $baseQuery->whereIn('company_branch_id', $companyBranchIds);
         } else {
-            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
             $allCompanyBranchIds = $allCompanyBranchDetails->pluck('id');
             $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
         }
