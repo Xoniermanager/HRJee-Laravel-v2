@@ -335,29 +335,20 @@
     @endif
 </div>
 <script>
-    function createBasicDetails(form) {
-        var basic_details_Data = new FormData(form);
-        $.ajax({
-            url: "{{ route('employee.store') }}",
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: basic_details_Data,
-            success: function(response) {
-                if (response.data.status == 'createData') {
-                    location.href = '/company/employee/edit/' + response.data.id;
-                    setTimeout(function() {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        jQuery('.nav-pills a[href="#advance_details_tab"]').tab(
-                            'show');
-                    }, 4000);
-                } else {
+   function createBasicDetails(form) {
+    var basic_details_Data = new FormData(form);
+
+    $.ajax({
+        url: "{{ route('employee.store') }}",
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        data: basic_details_Data,
+        success: function(response) {
+            if (response.data.status == 'createData') {
+                location.href = '/company/employee/edit/' + response.data.id;
+
+                setTimeout(function() {
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
@@ -365,28 +356,38 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    jQuery('.nav-pills a[href="#advance_details_tab"]').tab(
-                        'show');
-                }
-                // This variable is used on save all records button
-                all_data_saved = true;
-            },
-            error: function(error_messages) {
-                // This variable is used on save all records button
-                all_data_saved = false;
-                let errors = error_messages.responseJSON.error;
-                for (var error_key in errors) {
-                    $(document).find('[name=' + error_key + ']').after(
-                        '<span class="' + error_key +
-                        '_error text text-danger">' + errors[
-                            error_key] + '</span>');
-                    setTimeout(function() {
-                        jQuery("." + error_key + "_error").remove();
-                    }, 5000);
-                }
+                    jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
+                }, 4000);
+            } else {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
             }
-        });
-    }
+
+            // This variable is used on save all records button
+            all_data_saved = true;
+        },
+        error: function(error_messages) {
+            // This variable is used on save all records button
+            all_data_saved = false;
+
+            let errors = error_messages.responseJSON.errors;
+            for (var error_key in errors) {
+                $(document).find('[name=' + error_key + ']').after(
+                    '<span class="' + error_key + '_error text text-danger">' + errors[error_key] + '</span>'
+                );
+                setTimeout(function() {
+                    jQuery("." + error_key + "_error").remove();
+                }, 8000);
+            }
+        }
+    });
+}
 </script>
 <script>
     jQuery(document).ready(function() {
