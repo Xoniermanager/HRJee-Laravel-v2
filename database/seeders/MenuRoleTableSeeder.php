@@ -547,8 +547,78 @@ class MenuRoleTableSeeder extends Seeder
                 'created_at' => '2025-02-03 15:07:08',
                 'updated_at' => '2025-02-03 15:07:08',
             ),
+            46 =>
+            array (
+                'id' => 88,
+                'menu_id' => 47,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            47 =>
+            array (
+                'id' => 89,
+                'menu_id' => 48,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            48 =>
+            array (
+                'id' => 90,
+                'menu_id' => 49,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            49 =>
+            array (
+                'id' => 91,
+                'menu_id' => 50,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            50 =>
+            array (
+                'id' => 92,
+                'menu_id' => 51,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            51 =>
+            array (
+                'id' => 93,
+                'menu_id' => 52,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
         ));
-
-
     }
 }

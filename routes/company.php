@@ -36,6 +36,7 @@ use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Employee\ResignationController;
+use App\Http\Controllers\Company\LocationVisitController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
@@ -594,7 +595,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
 
     // prm Management
-    
+
 
     Route::prefix('/prm')->group(function () {
        //PRM Request
@@ -639,7 +640,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     // Salary Component Management
 
 
-    
+
     Route::prefix('/salary-component')->controller(SalaryComponentController::class)->group(function () {
         Route::get('/', 'index')->name('salary.component.index');
         Route::get('/add', 'add')->name('salary.component.add');
@@ -669,6 +670,20 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachEmployeeSalaryFilterList');
         Route::get('/show/payslip', 'showEmployeePayslip');
         Route::get('/generate/previous/month/payslip', 'generatePayslipPreviousMonth');
+    });
+
+     // Location Visit
+     Route::prefix('/location-visit')->controller(LocationVisitController::class)->group(function () {
+        Route::get('/', 'index')->name('location_visit.index');
+        Route::post('/store', 'store')->name('location_visit.store');
+        Route::get('/assign_task', 'assignTaskList')->name('location_visit.assign_task');
+        Route::get('/add_task', 'addTask')->name('location_visit.add_task');
+        Route::post('/store_task_assign', 'storeTaskAssigned')->name('location_visit.store_task_assign');
+        Route::get('/task/{id}', 'editTaskAssigned')->name('location_visit.edit_task_assign');
+        Route::post('/update_task_assign/{id}', 'updateTaskAssigned')->name('location_visit.update_task_assign');
+        Route::get('/task/delete/{id}', 'deleteTaskAssigned')->name('location_visit.delete_task_assign');
+        Route::get('/view/task/{id}', 'viewTaskAssigned')->name('location_visit.view_task_assign');
+        Route::get('/search/task', 'searchFilterTask');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {

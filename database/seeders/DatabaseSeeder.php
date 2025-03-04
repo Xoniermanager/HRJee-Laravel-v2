@@ -70,5 +70,8 @@ class DatabaseSeeder extends Seeder
         $this->call(UserCtcDetailsTableSeeder::class);
         $this->call(UserCtcHistoriesTableSeeder::class);
         $this->call(UserCtcComponentHistoriesTableSeeder::class);
+        $this->call(FormsTableSeeder::class);
+        $this->call(FormFieldsTableSeeder::class);
+        $this->call(AssignTasksTableSeeder::class);
     }
 } 
