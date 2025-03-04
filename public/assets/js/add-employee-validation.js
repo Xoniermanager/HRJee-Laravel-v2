@@ -128,6 +128,46 @@ jQuery(document).ready(function () {
             }
         }
     });
+
+
+
+    /** Course Details created Ajax*/
+    jQuery("#course_details_form").validate({
+        rules: {
+            title: "required",
+            description: "required",
+            video_type: "required",
+            department_id: 'required',
+            designation_id: 'required',
+            pdf_file: {
+                required: function () {
+                    return $("#video_type").val() === "pdf" && $("#id").val() === "";
+                }
+            },
+            video_url: {
+                required: function () {
+                    return $("#video_type").val() !== "pdf" && $("#id").val() === "";
+                },
+                url: true
+            }
+        },
+        messages: {
+            title: "Please enter the title",
+            description: "Please enter the description",
+            video_type: "Please select the type",
+            department_id: 'Please Select the Department',
+            designation_id: 'Please Select the Designation',
+            pdf_file: {
+                required: "Please upload a PDF file."
+            },
+            video_url: {
+                required: "Please provide a valid video URL."
+            }
+        },
+        submitHandler: function (form) {
+            createBasicDetails(form);
+        }
+    });
 });
 
 

@@ -67,6 +67,7 @@ use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 use App\Http\Controllers\Company\SalaryComponentAssignmentController;
+use App\Http\Controllers\Company\CourseController;
 
 // Route::get('/test',function()
 // {
@@ -182,6 +183,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/previous_company_data', 'get_all_previous_company_ajax_call');
         Route::get('/ajax_store_previous_company', 'ajax_store_previous_company');
     });
+
     Route::prefix('/language')->controller(LanguagesController::class)->group(function () {
         Route::post('/create', 'store')->name('language.create');
         Route::get('/delete', 'destroy')->name('language.delete');
@@ -502,7 +504,6 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachComplainCategoryFilterList');
     });
 
-
     //Company Size Module
     Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
         Route::get('/', 'index')->name('company.size.index');
@@ -586,6 +587,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::get('/status/update', 'statusUpdate')->name('attendance.status.statusUpdate');
         });
     });
+
     //Weekend Module
     Route::prefix('/weekend')->controller(WeekendController::class)->group(function () {
         Route::get('/', 'index')->name('weekend.index');
@@ -624,8 +626,6 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
     // prm Management
 
-
-
     // Salary Management
     Route::prefix('/salary')->controller(SalaryController::class)->group(function () {
         Route::get('/', 'index')->name('salary.index');
@@ -638,6 +638,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/status/update', 'statusUpdate')->name('salary.statusUpdate');
         Route::get('/search/filter', 'serachSalaryFilterList');
     });
+
     // Salary Component Management
 
 
@@ -664,6 +665,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/status/update', 'statusUpdate')->name('taxslab.statusUpdate');
         Route::get('/search/filter', 'serachTaxSlabFilterList');
     });
+
     // Employee Salary
     Route::prefix('/employee-salary')->controller(EmployeeSalaryController::class)->group(function () {
         Route::get('/', 'index')->name('employee_salary.index');
@@ -671,6 +673,15 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachEmployeeSalaryFilterList');
         Route::get('/show/payslip', 'showEmployeePayslip');
         Route::get('/generate/previous/month/payslip', 'generatePayslipPreviousMonth');
+    });
+
+    //Courses
+    Route::prefix('/courses')->controller(CourseController::class)->group(function () {
+        Route::get('/', 'index')->name('course.list');
+        Route::get('/add', 'add')->name('course.add');
+        Route::get('/edit/{id}', 'edit')->name('course.edit');
+        Route::get('/edit/{id}', 'edit')->name('course.edit');
+        Route::post('/store', 'store')->name('course.store');
     });
 
      // Location Visit
@@ -700,4 +711,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
+
+
+
 /**---------------End Company Panel Route----------------*/
