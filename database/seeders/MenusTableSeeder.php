@@ -592,6 +592,58 @@ class MenusTableSeeder extends Seeder
             47 =>
                 array(
                     'id' => 47,
+                    'title' => 'Location Management',
+                    'slug' => '#',
+                    'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            48 =>
+                array(
+                    'id' => 48,
+                    'title' => 'Location Visit',
+                    'slug' => '/location-visit',
+                    'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
+                    'parent_id' => 47,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            49 =>
+                array(
+                    'id' => 49,
+                    'title' => 'Disposition Code',
+                    'slug' => '/disposition-code',
+                    'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
+                    'parent_id' => 47,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            50 =>
+                array(
+                    'id' => 50,
+                    'title' => 'Assign Task',
+                    'slug' => '/location-visit/assign_task',
+                    'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
+                    'parent_id' => 47,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            51 =>
+                array(
+                    'id' => 51,
                     'title' => 'PRM Management',
                     'slug' => '#',
                     'icon' => '<i class="fas fa-money-bill-wave"></i>',
@@ -602,26 +654,26 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
-            48 =>
+            52 =>
                 array(
-                    'id' => 48,
+                    'id' => 52,
                     'title' => 'PRM Category',
                     'slug' => '/prm/category',
                     'icon' => 'NA',
-                    'parent_id' => 47,
+                    'parent_id' => 51,
                     'status' => 1,
                     'order_no' => 31,
                     'role' => 'company',
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
-            49 =>
+            53 =>
                 array(
-                    'id' => 49,
+                    'id' => 53,
                     'title' => 'PRM Request',
                     'slug' => '/prm/request',
                     'icon' => 'NA',
-                    'parent_id' => 47,
+                    'parent_id' => 51,
                     'status' => 1,
                     'order_no' => 31,
                     'role' => 'company',
