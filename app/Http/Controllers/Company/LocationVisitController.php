@@ -8,19 +8,21 @@ use App\Http\Services\FormService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormStoreRequest;
 use App\Http\Services\AssignTaskService;
+use App\Http\Services\DispositionCodeService;
 use App\Http\Services\EmployeeServices;
 
 class LocationVisitController extends Controller
 {
     public $formService;
     public $employeeService;
-
     public $assignTaskService;
-    public function __construct(FormService $formService, EmployeeServices $employeeService, AssignTaskService $assignTaskService)
+    public $dispositionCodeService;
+    public function __construct(FormService $formService, EmployeeServices $employeeService, AssignTaskService $assignTaskService,DispositionCodeService $dispositionCodeService)
     {
         $this->formService = $formService;
         $this->employeeService = $employeeService;
         $this->assignTaskService = $assignTaskService;
+        $this->dispositionCodeService = $dispositionCodeService;
     }
     public function index()
     {
@@ -74,7 +76,8 @@ class LocationVisitController extends Controller
         $taskdetails = $this->assignTaskService->getTaskDetailsById($taskId);
         $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();
         $fieldDetails = $this->formService->getFormFieldsByCompanyId(Auth()->user()->company_id);
-        return view('company.location_visit.edit_task', compact('taskdetails', 'allEmployeeDetails', 'fieldDetails'));
+        $dispositionCodeDetails = $this->dispositionCodeService->getDispositionCodeByCompanyId(Auth()->user()->company_id);
+        return view('company.location_visit.edit_task', compact('taskdetails', 'allEmployeeDetails', 'fieldDetails','dispositionCodeDetails'));
     }
 
     public function updateTaskAssigned(Request $request, $taskId)

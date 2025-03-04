@@ -40,6 +40,12 @@
                                         <th>Task Status</th>
                                         <td>{{ ucfirst($taskdetails->user_end_status) }}</td>
                                     </tr>
+                                    @if(!empty($taskdetails->disposition_code_id))
+                                    <tr>
+                                        <th>Disposition Code</th>
+                                        <td>{{ $taskdetails->dispositionCode->name }}</td>
+                                    </tr>
+                                    @endif
                                     @if(!empty($taskdetails->image))
                                     <tr>
                                         <th>Image</th>

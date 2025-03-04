@@ -72,6 +72,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserCtcComponentHistoriesTableSeeder::class);
         $this->call(FormsTableSeeder::class);
         $this->call(FormFieldsTableSeeder::class);
+        $this->call(DispositionCodesTableSeeder::class);
         $this->call(AssignTasksTableSeeder::class);
     }
-} 
+}

@@ -108,6 +108,18 @@
                                 @endforeach
                                 @endif
                                 <div class="col-md-3 form-group">
+                                    <label for="">Disposition Code</label>
+                                   <select name="disposition_code_id" class="form-control">
+                                    <option value="">Select the Disposition</option>
+                                    @foreach ($dispositionCodeDetails as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                   </select>
+                                    @if ($errors->has('document'))
+                                    <div class="text-danger">{{ $errors->first('document') }}</div>
+                                    @endif
+                                </div>
+                                <div class="col-md-3 form-group">
                                     <label for="">Document</label>
                                     <input type="file" class="form-control" name="document">
                                     @if ($errors->has('document'))

@@ -15,7 +15,6 @@ use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
-use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
@@ -25,11 +24,13 @@ use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\AttendanceController;
 use App\Http\Controllers\Company\DepartmentController;
+use App\Http\Controllers\company\PRMRequestController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\company\PRMCategoryController;
 use App\Http\Controllers\Company\TaxSlabRuleController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
@@ -44,6 +45,8 @@ use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Company\UserCtcDetailsController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
+use App\Http\Controllers\Company\DispositionCodeController;
+use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\SalaryComponentController;
 use App\Http\Controllers\Company\UserBankDetailsController;
@@ -61,8 +64,6 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
-use App\Http\Controllers\company\PRMCategoryController;
-use App\Http\Controllers\company\PRMRequestController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 use App\Http\Controllers\Company\SalaryComponentAssignmentController;
@@ -684,6 +685,16 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/task/delete/{id}', 'deleteTaskAssigned')->name('location_visit.delete_task_assign');
         Route::get('/view/task/{id}', 'viewTaskAssigned')->name('location_visit.view_task_assign');
         Route::get('/search/task', 'searchFilterTask');
+    });
+
+     //Dispostion Code Module
+     Route::prefix('/disposition-code')->controller(DispositionCodeController::class)->group(function () {
+        Route::get('/', 'index')->name('disposition_code.index');
+        Route::post('/create', 'store')->name('disposition_code.store');
+        Route::post('/update', 'update')->name('disposition_code.update');
+        Route::get('/delete', 'destroy')->name('disposition_code.delete');
+        Route::get('/status/update', 'statusUpdate')->name('disposition_code.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {

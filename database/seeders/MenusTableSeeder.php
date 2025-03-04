@@ -618,8 +618,8 @@ class MenusTableSeeder extends Seeder
             49 =>
                 array(
                     'id' => 49,
-                    'title' => 'Assign Task',
-                    'slug' => '/location-visit/assign_task',
+                    'title' => 'Disposition Code',
+                    'slug' => '/disposition-code',
                     'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
                     'parent_id' => 47,
                     'status' => 1,
@@ -631,6 +631,19 @@ class MenusTableSeeder extends Seeder
             50 =>
                 array(
                     'id' => 50,
+                    'title' => 'Assign Task',
+                    'slug' => '/location-visit/assign_task',
+                    'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
+                    'parent_id' => 47,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            51 =>
+                array(
+                    'id' => 51,
                     'title' => 'PRM Management',
                     'slug' => '#',
                     'icon' => '<i class="fas fa-money-bill-wave"></i>',
@@ -641,26 +654,26 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
-            51 =>
+            52 =>
                 array(
-                    'id' => 51,
+                    'id' => 52,
                     'title' => 'PRM Category',
                     'slug' => '/prm/category',
                     'icon' => 'NA',
-                    'parent_id' => 50,
+                    'parent_id' => 51,
                     'status' => 1,
                     'order_no' => 31,
                     'role' => 'company',
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
-            52 =>
+            53 =>
                 array(
-                    'id' => 52,
+                    'id' => 53,
                     'title' => 'PRM Request',
                     'slug' => '/prm/request',
                     'icon' => 'NA',
-                    'parent_id' => 50,
+                    'parent_id' => 51,
                     'status' => 1,
                     'order_no' => 31,
                     'role' => 'company',
