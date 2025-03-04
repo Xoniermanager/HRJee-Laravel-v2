@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class AssignTask extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'user_end_status', 'final_status', 'response_data', 'company_id', 'created_by','document','image','disposition_code_id'];
+    protected $fillable = ['user_id', 'user_end_status', 'final_status', 'response_data', 'company_id', 'created_by', 'document', 'image', 'disposition_code_id'];
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -29,5 +29,43 @@ class AssignTask extends Model
         return Attribute::make(
             get: fn($value) => url("storage" . $value)
         );
+    }
+    protected static function booted()
+    {
+        parent::booted();
+
+        static::created(function ($assignedTask) {
+            $assignedTask->handlePostCreationActions();
+        });
+        static::updated(function ($assignedTask) {
+            $assignedTask->handlePostUpdatedActions();
+        });
+    }
+
+    public function handlePostCreationActions()
+    {
+        $payload = [
+            'user_id' => $this->user_id,
+            'assign_task_id' => $this->id,
+            'from_status' => $this->user_end_status,
+            'to_status' => $this->user_end_status,
+            'response_data' => $this->response_data,
+            'company_id' => Auth()->user()->company_id,
+            'created_by' => Auth()->user()->id,
+        ];
+        TaskTrackLog::create($payload);
+    }
+    public function handlePostUpdatedActions()
+    {
+        $payload = [
+            'user_id' => $this->user_id,
+            'assign_task_id' => $this->id,
+            'from_status' => $this->user_end_status,
+            'to_status' => $this->user_end_status,
+            'response_data' => $this->response_data,
+            'company_id' => Auth()->user()->company_id,
+            'created_by' => Auth()->user()->id,
+        ];
+        TaskTrackLog::create($payload);
     }
 }
