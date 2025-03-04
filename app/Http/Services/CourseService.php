@@ -37,7 +37,7 @@ class CourseService
         return $this->courseRepository->where('type', 'company');
     }
 
-    public function getUserById($id)
+    public function getCourseById($id)
     {
         return $this->courseRepository->find($id);
     }

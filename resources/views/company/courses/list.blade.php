@@ -5,26 +5,25 @@
 		<thead>
 			<tr class="fw-bold">
 				<th>Sr. No.</th>
-				<th class="min-w-150px">Title</th>
+				<th>Title</th>
 				<th>Department</th>
                 <th>Designation</th>
 				<th>Type</th>
 				<th>Link</th>
-				<th class="">Action</th>
+				<th>Action</th>
 			</tr>
 		</thead>
 		<!--end::Table head-->
 		<!--begin::Table body-->
-		{{-- {{ dd($allUserDetails->toArray()) }} --}}
 		@forelse ($courses as $key => $course)
 			<tbody class="">
 				<tr>
 					<td>{{ $key + 1 }}</td>
 					<td>{{ $course->title }}</td>
-					<td>{{ $course->department_id }}</td>
-                    <td>{{ $course->designation_id }}</td>
-					<td>{{ $course->type }}</td>
-					<td>{{ $course->pdf_file }}</td>
+					<td>{{ $course->department->name }}</td>
+                    <td>{{ $course->designation->name }}</td>
+					<td>{{ $course->video_type }}</td>
+					<td><a href="{{ $course->video_type == "pdf" ? $course->pdf_file : $course->video_url }}" target="_blank">{{ $course->video_type == "pdf" ? $course->pdf_file : $course->video_url }}</a></td>
 					<td>
 						<div class="d-flex justify-content-end flex-shrink-0">
 							<a href="{{ route('employee.view', $course->id) }}"
@@ -43,37 +42,11 @@
 								<div
 									class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3"
 									data-kt-menu="true">
-
-									<!--begin::Menu item-->
-									<div class="menu-item px-3" data-bs-toggle="modal" data-bs-target="#personal_details">
-										<a href="#" class="menu-link px-3" onclick="getPersonalDetails({{ $course->id }});">Personal
-											Details</a>
-									</div>
-									<!--end::Menu item-->
-									<!--begin::Menu item-->
-									<div class="menu-item px-3" data-bs-toggle="modal" data-bs-target="#advance_details">
-										<a href="#" class="menu-link flex-stack px-3"
-											onclick="getAdvanceDetails({{ $singleUserDetails->id }})">Advance
-											Details </a>
-									</div>
-									<!--end::Menu item-->
-									<!--begin::Menu item-->
-									<div class="menu-item px-3" data-bs-toggle="modal" data-bs-target="#address"
-										onclick="getAddressDetails({{ $singleUserDetails->id }})">
-										<a href="#" class="menu-link px-3">Address</a>
-									</div>
-									<!--end::Menu item-->
-
-									<!--begin::Menu item-->
-									<div class="menu-item my-1 px-3" data-bs-toggle="modal" data-bs-target="#bank_details">
-										<a href="#" class="menu-link px-3" onclick="getBankDetails({{ $singleUserDetails->id }})">Bank
-											Details</a>
-									</div>
 									<!--end::Menu item-->
 									<!--begin::Menu item-->
 									<div class="menu-item my-1 px-3" data-bs-toggle="modal" data-bs-target="#upload_documents">
-										<a href="{{ route('employee.edit', $singleUserDetails->id) }}" class="menu-link px-3">
-											Edit Employee Detail</a>
+										<a href="{{ route('course.edit', $course->id) }}" class="menu-link px-3">
+											Edit Detail</a>
 									</div>
 									<!--end::Menu item-->
 								</div>

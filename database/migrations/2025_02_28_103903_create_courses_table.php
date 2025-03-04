@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('video_type', ['pdf', 'video', 'vimeo'])->nullable();
+            $table->enum('video_type', ['pdf', 'youtube', 'vimeo'])->nullable();
             $table->string('video_url')->nullable();
             $table->string('pdf_file')->nullable();
             $table->timestamps();

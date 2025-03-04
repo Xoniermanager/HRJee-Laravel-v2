@@ -2,22 +2,22 @@
     <!--begin::Wrapper-->
     <form id="course_details_form">
         @csrf
-        <input type="hidden" name="id" value="{{ $singleUserDetails->id ?? '' }}">
+        <input type="hidden" id="" name="id" value="{{ $course->id ?? '' }}">
 
         <div class="row">
             <div class="col-md-6 form-group">
                 <label for="">Title *</label>
-                <input class="form-control" type="text" name="title" value="{{ $singleUserDetails->name ?? '' }}">
+                <input class="form-control" type="text" name="title" value="{{ $course->title ?? '' }}">
             </div>
 
             <div class="col-md-6 form-group">
                 <label for="">Department*</label>
                 <select class="form-control" name="department_id" id="department_id">
                     <option value="">Select The Department</option>
-                    @forelse ($alldepartmentDetails as $departmentDetails)
-                        <option value="{{ $departmentDetails->id }}"
-                            {{ $singleUserDetails->details->department_id ?? '' == $departmentDetails->id ? 'selected' : '' }}>
-                            {{ $departmentDetails->name }}</option>
+                    @forelse ($alldepartmentDetails as $department)
+                        <option value="{{ $department->id }}"
+                            {{ $editDetails && $course->department_id == $department->id ? 'selected' : '' }}>
+                            {{ $department->name }}</option>
                     @empty
                         <option value="">No Department Found</option>
                     @endforelse
@@ -32,29 +32,34 @@
             <div class="col-md-6 form-group">
                 <label for="">Type *</label>
                 <select class="form-control" name="video_type" id="video_type" onchange="toggleVideoInput()">
-                    <option value="pdf">PDF</option>
-                    <option value="youtube">Youtube Link/Vimeo Link</option>
+                    <option value="pdf" {{ $editDetails && $course->video_type == 'pdf' ? 'selected' : '' }}>PDF
+                    </option>
+                    <option value="youtube" {{ $editDetails && $course->video_type == 'youtube' ? 'selected' : '' }}>
+                        Youtube Link/Vimeo Link</option>
                     {{-- <option value="youtube">YouTube</option>
                     <option value="vimeo">Vimeo</option> --}}
                 </select>
             </div>
 
             <div class="col-md-6 form-group">
-                <div id="videoFileDiv">
+                <div id="videoFileDiv"
+                    style="display: {{ isset($course) ? ($course->video_type == 'pdf' ? 'block' : 'none') : 'block' }};">
                     <label>Upload PDF:</label>
                     <input class="form-control" type="file" name="pdf_file" accept="application/pdf">
                 </div>
 
-                <div id="videoUrlDiv" style="display: none;">
+                <div id="videoUrlDiv"
+                    style="display: {{ isset($course) ? ($course->video_type == 'youtube' ? 'block' : 'none') : 'none' }};">
                     <label>Enter Video URL:</label>
-                    <input class="form-control" type="url" name="video_url">
+                    <input class="form-control" type="url" name="video_url"
+                        value="{{ $editDetails && $course->video_type == 'youtube' ? $course->video_url : '' }}">
                 </div>
             </div>
             <div class="row">
-            <div class="col-md-12 form-group">
-                <label for="">Description *</label>
-                <textarea class="form-control" id="description_editor" name="description" rows="20" cols="20"></textarea>
-            </div>
+                <div class="col-md-12 form-group">
+                    <label for="">Description *</label>
+                    <textarea class="form-control" id="description_editor" name="description" rows="20" cols="20">{!! $editDetails && $course->description ? $course->description : '' !!}</textarea>
+                </div>
             </div>
         </div>
         <button class="btn btn-primary" id="submit">Save & Continue</button>
@@ -67,6 +72,7 @@
         width: 1000,
         removeButtons: 'PasteFromWord'
     });
+
     function createBasicDetails(form) {
         var basic_details_Data = new FormData(form);
         console.log("basic_details_Data => ", basic_details_Data);
@@ -116,9 +122,9 @@
         document.getElementById("videoUrlDiv").style.display = (type === "pdf") ? "none" : "block";
     }
     jQuery(document).ready(function() {
-        var departmentId = '{{ $singleUserDetails->details->department_id ?? '' }}';
+        var departmentId = '{{ $course->department_id ?? '' }}';
         const all_department_id = [departmentId];
-        var designation_id = '{{ $singleUserDetails->details->designation_id ?? '' }}';
+        var designation_id = '{{ $course->designation_id ?? '' }}';
         get_all_designation_using_department_id(all_department_id, designation_id);
     });
 

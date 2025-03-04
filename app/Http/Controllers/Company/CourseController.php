@@ -18,6 +18,12 @@ class CourseController extends Controller
         $this->departmentService = $departmentService;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function index(Request $request)
     {
         $companyIDs = getCompanyIDs();
@@ -27,6 +33,11 @@ class CourseController extends Controller
         return view('company.courses.index', compact('courses', 'alldepartmentDetails'));
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function add()
     {
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
@@ -34,9 +45,14 @@ class CourseController extends Controller
         return view('company.courses.add', compact('alldepartmentDetails'));
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function store(Request $request)
     {
-
         $data = $request->except(['_token']);
         $data['created_by'] = auth()->user()->id;
         $data['company_id'] = auth()->user()->company_id;
@@ -49,8 +65,27 @@ class CourseController extends Controller
         } else {
             $data['video_url'] = $request->video_url;
         }
-        $course = Course::create($data);
 
+        if(isset($data['id'])) {
+            $course = Course::where('id', $data['id'])->update($data);
+        } else {
+            $course = Course::create($data);
+        }
+        
         return response()->json(['message' => 'Course created successfully', 'course' => $course]);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
+    public function edit($id)
+    {
+        $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
+        $course = $this->courseService->getCourseById($id);
+
+        return view('company.courses.add', compact('alldepartmentDetails', 'course'));
     }
 }

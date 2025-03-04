@@ -41,6 +41,7 @@ class UserDetail extends Model
         'face_kyc',
         'face_punchin_kyc'
     ];
+    
     protected function profileImage(): Attribute
     {
         return Attribute::make(

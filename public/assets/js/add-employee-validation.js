@@ -141,12 +141,12 @@ jQuery(document).ready(function () {
             designation_id: 'required',
             pdf_file: {
                 required: function () {
-                    return $("#video_type").val() === "pdf";
+                    return $("#video_type").val() === "pdf" && $("#id").val() === "";
                 }
             },
             video_url: {
                 required: function () {
-                    return $("#video_type").val() !== "pdf";
+                    return $("#video_type").val() !== "pdf" && $("#id").val() === "";
                 },
                 url: true
             }

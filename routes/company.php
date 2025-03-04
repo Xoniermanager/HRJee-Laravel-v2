@@ -672,6 +672,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::prefix('/courses')->controller(CourseController::class)->group(function () {
         Route::get('/', 'index')->name('course.list');
         Route::get('/add', 'add')->name('course.add');
+        Route::get('/edit/{id}', 'edit')->name('course.edit');
+        Route::get('/edit/{id}', 'edit')->name('course.edit');
         Route::post('/store', 'store')->name('course.store');
     });
 });

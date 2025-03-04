@@ -5,7 +5,7 @@
 @section('content')
     @php
         $editDetails = false;
-        if (isset($singleUserDetails)) {
+        if (isset($course)) {
             $editDetails = true;
         }
     @endphp
@@ -39,13 +39,6 @@
                                     <span class="fs-7 fw-semibold">Curriculum</span>
                                 </a>
                             </li>
-                            <li class="nav-item p-0 ms-0">
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
-                                    data-bs-toggle="tab" href="#advance_details_tab">
-                                    <span class="fs-7 fw-semibold">Curriculum</span>
-
-                                </a>
-                            </li>
                         </ul>
                         <!--end::Nav-->
 
@@ -61,10 +54,6 @@
 
                             <!--begin::Tap pane Advance Details-->
                             @include('company.courses.tabs.curriculum')
-                            <!--end::Tap pane-->
-
-                            <!--begin::Tap pane Address Tab-->
-                            @include('company.courses.tabs.assignment')
                             <!--end::Tap pane-->
                         </div>
                         <!--end::Tab Content-->
@@ -112,72 +101,7 @@
                         jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
                     }
                 }
-            }, 4000);
-
-
-            //Address Details
-            setTimeout(function() {
-                if (all_data_saved) {
-                    if (jQuery("#address_Details_form").valid()) {
-                        createAddressDetails(jQuery('#address_Details_form'));
-                    } else {
-                        jQuery('.nav-pills a[href="#address_tab"]').tab('show');
-                    }
-                }
-            }, 6000);
-
-            //Bank Details
-            setTimeout(function() {
-                if (all_data_saved) {
-                    if (jQuery("#bank_details_form").valid()) {
-                        createBankDetails(jQuery('#bank_details_form'));
-                    } else {
-                        jQuery('.nav-pills a[href="#bank_details_tab"]').tab('show');
-                    }
-                }
-            }, 8000);
-
-            //Qualification Details
-            setTimeout(function() {
-                if (all_data_saved) {
-                    if (jQuery("#qualification_details_form").valid()) {
-                        createQualification(jQuery('#qualification_details_form'));
-                    } else {
-                        jQuery('.nav-pills a[href="#qualification_tab"]').tab('show');
-                    }
-                }
-            }, 10000);
-
-            //Past Work Details
-            setTimeout(function() {
-                if (all_data_saved) {
-                    if (jQuery("#past_work_details").valid()) {
-                        createPastWorkDetails(jQuery('#past_work_details'));
-                    } else {
-                        jQuery('.nav-pills a[href="#past_work_tab"]').tab('show');
-                    }
-                }
-            }, 12000);
-            //Fmaily Details  Details
-            setTimeout(function() {
-                if (all_data_saved) {
-                    if (jQuery("#family_details_form").valid()) {
-                        createFamilyDetails(jQuery('#family_details_form'));
-                    } else {
-                        jQuery('.nav-pills a[href="#family_details_tab"]').tab('show');
-                    }
-                }
-            }, 16000);
-            //Documents Details
-            setTimeout(function() {
-                if (all_data_saved) {
-                    if (jQuery("#document_details").valid()) {
-                        createDocumentDetails(jQuery('#document_details')[0]);
-                    } else {
-                        jQuery('.nav-pills a[href="#document_tab"]').tab('show');
-                    }
-                }
-            }, 18000);
+            }, 4000);           
         });
     </script>
 @endsection
