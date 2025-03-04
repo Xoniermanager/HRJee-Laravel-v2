@@ -20,7 +20,7 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'Attendance Detail',
                 'slug' => '/employee/attendance/service',
                 'icon' => '<i class="fa fa-calendar-days"></i>',
-                'parent_id' => 28,
+                'parent_id' => NULL,
                 'order_no' => 1,
                 'role' => 'employee'
             ],
@@ -107,7 +107,7 @@ class EmployeesMenusSeeder extends Seeder
         foreach($payload as $menuData) {
             Menu::create($menuData);
         }
-        
+
         return true;
     }
 }
