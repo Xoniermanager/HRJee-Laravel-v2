@@ -23,7 +23,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('disposition_code_id')->references('id')->on('disposition_codes');
             $table->timestamps();
         });
     }
