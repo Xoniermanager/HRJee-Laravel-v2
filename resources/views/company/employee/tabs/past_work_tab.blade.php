@@ -82,11 +82,13 @@
             </div>
 
         </div>
+        <div class="m-auto text-center">
         <button class="btn btn-primary">Save & Continue</button>
+        </div>
     </form>
-    <button onclick="show_next_tab('qualification_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
+    <button onclick="show_next_tab('qualification_tab')" class="tab-btn-inline btn btn-primary"><i class="fa fa-arrow-left"></i>
         Previous</button>
-    <button onclick="show_next_tab('family_details_tab')" class="btn btn-primary float-right">Next <i
+    <button onclick="show_next_tab('family_details_tab')" class="tab-btn-inline btnnext btn btn-primary float-right">Next <i
             class="fa fa-arrow-right"></i> </button>
     <!--end::Wrapper-->
 </div>

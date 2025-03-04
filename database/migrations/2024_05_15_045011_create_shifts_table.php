@@ -18,6 +18,8 @@ return new class extends Migration
             $table->time('end_time');
             $table->time('half_day_login');
             $table->string('check_in_buffer');
+            $table->string('total_late_count');
+            $table->string('total_leave_deduction');
             $table->string('check_out_buffer');
             $table->string('min_late_count');
             $table->string('login_before_shift_time');

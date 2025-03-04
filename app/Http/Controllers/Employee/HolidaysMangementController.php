@@ -19,7 +19,7 @@ class HolidaysMangementController extends Controller
     public function index()
     {
         $monthHolidayDetails = $this->holidayService->getHolidayByMonth(Auth()->user()->company_id, date('Y-m'));
-        $allHolidayDetails = $this->holidayService->getListByCompanyId(Auth()->user()->company_id);
+        $allHolidayDetails = $this->holidayService->getListByCompanyId([Auth()->user()->company_id], date('Y'));
         $calender = $this->showCalendar();
         return view('employee.holidays.index', compact('allHolidayDetails', 'calender', 'monthHolidayDetails'));
     }

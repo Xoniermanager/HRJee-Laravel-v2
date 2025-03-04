@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\HolidayApiController;
+use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ForgotPasswordController;
@@ -31,11 +31,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:30,1');
 Route::post('sendOtp', [AuthController::class, 'sendOtp']);
-
 Route::post('forgot/password', [ForgotPasswordController::class, 'forgotPassword']);
 Route::post('reset/password', [ForgotPasswordController::class, 'resetPassword']);
-
-
 Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']);
 Route::post('verify/otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:30,1');
 
@@ -51,19 +48,12 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::put('update/address', [AddressController::class, 'updateAddress']);
 
-    Route::get('applied/leave/history', [LeaveManagementApiController::class, 'appliedLeaveHistory']);
-
     /**For Leave Management API */
     Route::get('/leave-types', [LeaveManagementApiController::class, 'leaveType']);
     Route::get('/leaves', [LeaveManagementApiController::class, 'allLeaves']);
     Route::post('/apply/leave', [LeaveManagementApiController::class, 'applyLeave']);
     Route::get('/available-leaves', [LeaveAvailableApiController::class, 'getAllLeaveAvailableByUserId']);
-
-    /** For Holiday Management API */
-    Route::get('/holiday/list', [HolidayApiController::class, 'list']);
-
-    /** Get All Leave Avaialble of Employee */
-    
+    Route::get('applied/leave/history', [LeaveManagementApiController::class, 'appliedLeaveHistory']);
 
     /** Punch In */
     Route::controller(AttendanceController::class)->group(function () {
@@ -100,4 +90,12 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
         Route::put('/{id}', 'edit');
         Route::put('/{id}/withdraw', 'withdraw');
     });
+
+
+    Route::prefix('assets')->controller(AssetController::class)->group(function () {
+        Route::get('/', 'assetDetails');
+    });
+
+    /** For Holiday Management API */
+    Route::get('/holidays', [HolidayController::class, 'getHolidays']);
 });

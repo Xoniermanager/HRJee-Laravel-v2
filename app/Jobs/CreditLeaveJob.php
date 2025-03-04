@@ -92,7 +92,7 @@ class CreditLeaveJob implements ShouldQueue
     public function leaveCreditDetailsBasedOnCurrentDay()
     {
         $currentDay = date('d');
-        if ($currentDay > 28 && $currentDay == 31) {
+        if ($currentDay > 28 && $currentDay = 31) {
             $currentDay = '0';
         }
         return $this->leaveCreditManagementService->getAllLeaveCreditManagementDetailsBasedOnCurrentDay($currentDay);

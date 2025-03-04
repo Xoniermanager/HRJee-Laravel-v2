@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('employee_salary_histories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_salary_id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('salary_id');
             $table->float('ctc_value');
             $table->date('start_date');
             $table->date('end_date');
             $table->unsignedBigInteger('changed_by');
             $table->text('change_details');
-            $table->foreign('employee_salary_id')->references('id')->on('employee_salaries');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('salary_id')->references('id')->on('salaries');
             $table->timestamps();
         });

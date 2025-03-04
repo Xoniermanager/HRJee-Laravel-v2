@@ -21,10 +21,23 @@ class PolicyService
         $this->companyBranchServices = $companyBranchServices;
         $this->designationServices = $designationServices;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function all()
     {
         return $this->policyRepository->orderBy('id', 'DESC')->paginate(10);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         /** for file or file Upload */
@@ -59,11 +72,24 @@ class PolicyService
         return true;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function findByPolicyId($id)
     {
         return $this->policyRepository->find($id);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @param [type] $id
+     * @return void
+     */
     public function updateDetails(array $data, $id)
     {
         $editDetails = $this->policyRepository->find($id);
@@ -111,6 +137,13 @@ class PolicyService
         }
         return true;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function deleteDetails($id)
     {
         $deletedData = Policy::find($id);
@@ -128,10 +161,25 @@ class PolicyService
         $deletedData->delete();
         return true;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @param [type] $statusValue
+     * @return void
+     */
     public function updateStatus($id, $statusValue)
     {
         return $this->policyRepository->find($id)->update(['status' => $statusValue]);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $request
+     * @return void
+     */
     public function serachPolicyFilterList($request)
     {
         $policyDetails = $this->policyRepository;
@@ -169,6 +217,12 @@ class PolicyService
         }
         return $policyDetails->orderBy('id', 'DESC')->paginate(10);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function getAllAssignedPolicyForEmployee()
     {
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
@@ -180,7 +234,7 @@ class PolicyService
             $assignedDepartmentIds = $this->departmentServices->getAllAssignedDepartment($policyDetails);
             $assignedDesignationIds = $this->designationServices->getAllAssignedDesignation($policyDetails);
 
-            if (in_array($userDetails->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
+            if (in_array($userDetails->details->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->details->department_id, $assignedDepartmentIds) && in_array($userDetails->details->designation_id, $assignedDesignationIds)) {
                 $allAssignedPolicy[] = $policyDetails;
             }
         }

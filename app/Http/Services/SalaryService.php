@@ -13,26 +13,61 @@ class SalaryService
         $this->salaryRepository = $salaryRepository;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $companyId
+     * @return void
+     */
     public function getAllSalariesByCompanyId($companyId)
     {
         return $this->salaryRepository->where('company_id', $companyId)->orderBy('id', 'DESC');
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $companyId
+     * @return void
+     */
     public function getAllActiveSalaries($companyId)
     {
-        return $this->salaryRepository->where('company_id', $companyId)->where('status', '1')->get();
+        return $this->salaryRepository->where('company_id', $companyId)->where('status', '1')->with('salaryComponentAssignments')->get();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         $createdSalary = $this->salaryRepository->create($data);
         $createdSalary->createSalaryComponentAssignment($data['componentDetails']);
         return true;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @param [type] $id
+     * @return void
+     */
     public function updateDetails(array $data, $id)
     {
         $salariesDetails = $this->salaryRepository->find($id);
         $salariesDetails->createSalaryComponentAssignment($data['componentDetails']);
         return $salariesDetails->update($data);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function deleteDetails($id)
     {
         $salaryDetails = $this->salaryRepository->find($id);
@@ -40,6 +75,13 @@ class SalaryService
         return $salaryDetails->delete();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $request
+     * @param [type] $companyID
+     * @return void
+     */
     public function serachSalaryFilterList($request, $companyID)
     {
         $salaryDetails = $this->salaryRepository->where('company_id', $companyID);
@@ -54,6 +96,12 @@ class SalaryService
         return $salaryDetails->orderBy('id', 'DESC')->paginate(10);
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $salaryId
+     * @return void
+     */
     public function getSalaryIdById($salaryId)
     {
         return $this->salaryRepository->find($salaryId);

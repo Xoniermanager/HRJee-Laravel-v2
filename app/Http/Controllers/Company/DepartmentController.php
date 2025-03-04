@@ -23,8 +23,10 @@ class DepartmentController extends Controller
      */
     public function index()
     {
+        $companyIDs = getCompanyIDs();
+        
         return view("company.department.index", [
-            'allDepartmentDetails' => $this->departmentService->getByCompanyId(auth()->user()->company_id)
+            'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
         ]);
     }
 

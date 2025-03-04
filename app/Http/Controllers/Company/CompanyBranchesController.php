@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ValidateBranch;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
+use App\Http\Services\UserService;
 use Illuminate\Support\Facades\Validator;
 
 class CompanyBranchesController extends Controller
@@ -19,19 +20,23 @@ class CompanyBranchesController extends Controller
     private $branch_services;
     private $countryService;
     private $stateService;
-    public function __construct(BranchServices $branch_services, CountryServices $countryService, StateServices $stateService)
+    private $userService;
+    public function __construct(BranchServices $branch_services, CountryServices $countryService, UserService $userService, StateServices $stateService)
     {
         $this->branch_services = $branch_services;
         $this->countryService = $countryService;
         $this->stateService = $stateService;
+        $this->userService = $userService;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $branches = $this->branch_services->all(Auth()->user()->company_id);
+        $companyIDs = getCompanyIDs();
+        $branches = $this->branch_services->all($companyIDs);
         $countries = $this->countryService->getAllActiveCountry();
+        
         return view('company.branch.index', [
             'branches' => $branches,
             'countries' => $countries,
@@ -44,6 +49,7 @@ class CompanyBranchesController extends Controller
     public function branch_form()
     {
         $countries = DB::table('countries')->get();
+
         return view('company.branch.index', compact('countries'));
     }
     public function store(ValidateBranch $request)
@@ -56,6 +62,7 @@ class CompanyBranchesController extends Controller
             }
             $companyBranches = $this->branch_services->create($request->all());
             if ($companyBranches) {
+
                 return response()->json(
                     [
                         'message' => 'Created Successfully!',
@@ -66,6 +73,7 @@ class CompanyBranchesController extends Controller
                 );
             }
         } catch (Exception $e) {
+
             return $e->getMessage();
         }
     }
@@ -84,12 +92,14 @@ class CompanyBranchesController extends Controller
             ]);
 
             if ($validator->fails()) {
+
                 return response()->json(['error' => $validator->messages()], 400);
             }
 
             $updateData = $request->except(['_token', 'id']);
             $companyBranches = $this->branch_services->updateDetails($updateData, $request->id);
             if ($companyBranches) {
+
                 return response()->json(
                     [
                         'message' => 'Updated Successfully!',
@@ -98,6 +108,7 @@ class CompanyBranchesController extends Controller
                 );
             }
         } catch (Exception $e) {
+
             return $e->getMessage();
         }
     }
@@ -111,12 +122,14 @@ class CompanyBranchesController extends Controller
             ]);
 
             if ($validator->fails()) {
+
                 return back()->withErrors($validator->errors())->withInput();
             }
 
             $updateData = $request->except(['_token', 'id']);
             $companyBranches = $this->branch_services->updateDetails($updateData, $request->id);
             if ($companyBranches) {
+
                 return response()->json(
                     [
                         'message' => 'Updated Successfully!',
@@ -125,6 +138,7 @@ class CompanyBranchesController extends Controller
                 );
             }
         } catch (Exception $e) {
+
             return $e->getMessage();
         }
     }
@@ -137,6 +151,7 @@ class CompanyBranchesController extends Controller
         $id = $request->id;
         $data = $this->branch_services->deleteDetails($id);
         if ($data) {
+
             return response()->json([
                 'success' => 'Country Deleted Successfully',
                 'data' => view('company.branch.branches-list', [
@@ -144,6 +159,7 @@ class CompanyBranchesController extends Controller
                 ])->render()
             ]);
         } else {
+
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
@@ -154,6 +170,7 @@ class CompanyBranchesController extends Controller
         $data['status'] = $request->status;
         $statusDetails = $this->branch_services->updateDetails($data, $id);
         if ($statusDetails) {
+
             return response()->json([
                 'success' => 'Branch Status Updated Successfully',
                 'data' => view('company.branch.branches-list', [
@@ -161,6 +178,7 @@ class CompanyBranchesController extends Controller
                 ])->render()
             ]);
         } else {
+
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
@@ -169,12 +187,26 @@ class CompanyBranchesController extends Controller
     {
         $branches = $this->branch_services->searchInCompanyBranch($request);
         if ($branches) {
+
             return response()->json([
                 'success' => 'Searching',
                 'data' => view('company.branch.branches-list', compact('branches'))->render()
             ]);
         } else {
+
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
+    }
+
+    public function getAllManagers(Request $request)
+    {
+        $branchIds = $request->branch_id;
+        $allManagers = $this->userService->getManagersByBranchId($branchIds);
+        $response = [
+            'status' => true,
+            'data' => $allManagers
+        ];
+        
+        return json_encode($response);
     }
 }

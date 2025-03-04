@@ -92,16 +92,24 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
+        $companyIDs = getCompanyIDs();
+
+        if(Auth()->user()->type == "user") {
+            $allUserDetails = $this->userService->getManagedUsers($request == null, Auth()->user()->id)->paginate(10);
+        } else {
+            $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
+        }
+        
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allShifts = $this->shiftService->getAllActiveShifts();
-        $allBranches = $this->branchService->all(Auth()->user()->id);
+        $allBranches = $this->branchService->all($companyIDs);
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
+
         return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills','allSalaryStructured'));
     }
 
@@ -115,7 +123,7 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages = $this->languagesServices->defaultLanguages();
-        $allBranches = $this->branchService->all(Auth()->user()->company_id);
+        $allBranches = $this->branchService->all([Auth()->user()->company_id]);
         $allRoles = $this->customRoleService->all(auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
@@ -135,14 +143,16 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
-        $allBranches = $this->branchService->all(Auth()->user()->id);
+        $allBranches = $this->branchService->all([Auth()->user()->id]);
         $allRoles = $this->customRoleService->all(Auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
-        $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
-        // dd($singleUserDetails->toArray());
+        $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails','ctcDetails');
+        $allManagers = $this->qualificationService->getAllActiveQualification();
+
+        //  dd($singleUserDetails->ctcDetails);
         return view(
             'company.employee.add_employee',
             compact(
@@ -171,12 +181,16 @@ class EmployeeController extends Controller
             $request['company_id'] = Auth()->user()->company_id;
             if (isset($request->id) && !empty($request->id)) {
                 $userCreated = $this->userService->updateDetail($request->only('name', 'role_id'), $request->id);
+                $request['user_id'] = $request->id;
             } else {
-                $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'company_id'));
+                $userCreated = $this->userService->create($request->only('name', 'password', 'email', 'company_id', 'role_id'));
                 $request['user_id'] = $userCreated->id;
             }
             if ($userCreated) {
+
                 $userDetails = $this->employeeService->create($request->except('password', 'email', '_token', 'company_id'));
+                $this->employeeService->addManagers($request['user_id'], $request->get('manager_id'));
+
                 DB::commit();
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
@@ -194,6 +208,7 @@ class EmployeeController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+
     public function getPersonalDetails($id)
     {
         $data = $this->userService->getUserById($id);
@@ -217,6 +232,7 @@ class EmployeeController extends Controller
     public function view(User $user)
     {
         $singleViewEmployeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails');
+
         return view('company.employee.view', compact('singleViewEmployeeDetails'));
     }
 
@@ -228,6 +244,7 @@ class EmployeeController extends Controller
             $updateDetails = $user->details->update(['exit_date' => now()->format('Y-m-d'), 'status' => $statusValue]);
             if ($updateDetails) {
                 $allUserDetails = $this->userService->searchFilterEmployee('', Auth()->user()->company_id)->paginate(10);
+
                 return response()->json([
                     'data' => view('company.employee.list', compact('allUserDetails'))->render()
                 ]);

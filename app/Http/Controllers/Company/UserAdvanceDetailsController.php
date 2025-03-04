@@ -20,9 +20,9 @@ class UserAdvanceDetailsController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateDetails  = Validator::make($request->all(), [
-                'aadhar_no'                => ['required', 'numeric'],
-                'pan_no'                   => ['required'],
+            $validateDetails = Validator::make($request->all(), [
+                'aadhar_no' => ['required', 'numeric'],
+                'pan_no' => ['required'],
             ]);
             if ($validateDetails->fails()) {
                 return response()->json(['error' => $validateDetails->messages()], 400);
@@ -34,7 +34,7 @@ class UserAdvanceDetailsController extends Controller
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 

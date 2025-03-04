@@ -26,6 +26,10 @@ return new class extends Migration
             $table->foreign('company_type_id')->references('id')->on('company_types');
             $table->string('status')->default(true);
             $table->string('subscription_id')->nullable();
+            $table->boolean('allow_face_recognition')->default(0);
+            $table->boolean('allow_location_tracking')->default(0);
+            $table->integer('face_recognition_user_limit')->default(0);
+            $table->integer('location_tracking_user_limit')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

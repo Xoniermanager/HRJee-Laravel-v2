@@ -18,11 +18,20 @@ class LeaveTrackingController extends Controller
         $this->leaveService = $leaveService;
         $this->leaveStatusLogService = $leaveStatusLogService;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function index($id)
     {
         $leaveDetails = $this->leaveService->getDetailsById($id);
         $leaveLogStatusDetails = $this->leaveStatusLogService->getDetailsByLeaveId($id);
-
-        return view('employee.leave.partials.leave_tracking_modal', compact('leaveDetails','leaveLogStatusDetails'));
+        $leaveManagerDetails = $this->leaveStatusLogService->getManagerDetailsByLeaveId($id);
+        
+        return view('employee.leave.partials.leave_tracking_modal', compact('leaveDetails','leaveLogStatusDetails', 'leaveManagerDetails'));
     }
+    
 }

@@ -24,23 +24,29 @@ use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\AttendanceController;
 use App\Http\Controllers\Company\DepartmentController;
+use App\Http\Controllers\company\PRMRequestController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\company\PRMCategoryController;
 use App\Http\Controllers\Company\TaxSlabRuleController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Employee\ResignationController;
+use App\Http\Controllers\Company\LocationVisitController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
+use App\Http\Controllers\Company\UserCtcDetailsController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
+use App\Http\Controllers\Company\DispositionCodeController;
+use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\SalaryComponentController;
 use App\Http\Controllers\Company\UserBankDetailsController;
@@ -61,6 +67,7 @@ use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 use App\Http\Controllers\Company\SalaryComponentAssignmentController;
+use App\Http\Controllers\Company\CourseController;
 
 // Route::get('/test',function()
 // {
@@ -86,6 +93,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/update', 'update')->name('company.branch.update');
         Route::get('/delete/{id?}', 'destroy')->name('company.branch.delete');
         Route::get('/status/update', 'statusUpdate')->name('company.branch.statusUpdate');
+        Route::get('/get-managers-by-branch', 'getAllManagers')->name('get.all.managers');
         Route::get('/company/branch/search', 'searchBranchFilter')->name('company.branch.search');
     });
 
@@ -175,9 +183,15 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/previous_company_data', 'get_all_previous_company_ajax_call');
         Route::get('/ajax_store_previous_company', 'ajax_store_previous_company');
     });
+
     Route::prefix('/language')->controller(LanguagesController::class)->group(function () {
         Route::post('/create', 'store')->name('language.create');
         Route::get('/delete', 'destroy')->name('language.delete');
+    });
+
+    //Face Recognition Module
+    Route::prefix('/face-recognition')->controller(FaceRecognitionController::class)->group(function () {
+        Route::get('/', 'index')->name('face-recognition.index');
     });
 
     //Employee Module
@@ -199,6 +213,10 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
         Route::get('/get/advance/details/{id}', 'getAdvanceDetails');
+    });
+    Route::controller(UserCtcDetailsController::class)->group(function () {
+        Route::post('/employee/ctc/details', 'store')->name('employee.ctc.details');
+        Route::get('/salary/component/details','getComponentsDetail');
     });
 
     //Address Details for employee
@@ -486,7 +504,6 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachComplainCategoryFilterList');
     });
 
-
     //Company Size Module
     Route::prefix('/company-size')->controller(CompanySizeController::class)->group(function () {
         Route::get('/', 'index')->name('company.size.index');
@@ -570,6 +587,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::get('/status/update', 'statusUpdate')->name('attendance.status.statusUpdate');
         });
     });
+
     //Weekend Module
     Route::prefix('/weekend')->controller(WeekendController::class)->group(function () {
         Route::get('/', 'index')->name('weekend.index');
@@ -578,6 +596,35 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/status/update', 'statusUpdate')->name('weekend.statusUpdate');
         Route::get('/get/weekend/details/companyId', 'getWeekEndDetailByCompanyId')->name('weekend.details.companybranchId');
     });
+
+    // prm Management
+
+
+    Route::prefix('/prm')->group(function () {
+       //PRM Request
+        Route::controller(PRMRequestController::class)->group(function () {
+            Route::get('/request', 'index')->name('prm.request.index');
+
+            // Route::get('/add', 'add')->name('news.add');
+            // Route::post('/create', 'store')->name('news.store');
+            // Route::get('/edit/{news:id}', 'edit')->name('news.edit');
+            // Route::get('/view/{news:id}', 'view')->name('news.view');
+            // Route::post('/update/{id}', 'update')->name('news.update');
+            // Route::get('/delete/{id}', 'destroy')->name('news.delete');
+            Route::get('/status/update', 'statusUpdate')->name('prm.request.statusUpdate');
+            Route::get('/prm-request/search/filter', 'searchPrmRequestFilterList');
+        });
+        //News Category Module
+        Route::prefix('/category')->controller(PRMCategoryController::class)->group(function () {
+            Route::get('/', 'index')->name('prm.category.index');
+            Route::post('/create', 'store')->name('prm.category.store');
+            Route::post('/update', 'update')->name('prm.category.update');
+            Route::get('/delete', 'destroy')->name('prm.category.delete');
+            Route::get('/status/update', 'statusUpdate')->name('prm.category.statusUpdate');
+            Route::get('/search/filter', 'serachPrmCategoryFilterList');
+        });
+    });
+    // prm Management
 
     // Salary Management
     Route::prefix('/salary')->controller(SalaryController::class)->group(function () {
@@ -591,7 +638,11 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/status/update', 'statusUpdate')->name('salary.statusUpdate');
         Route::get('/search/filter', 'serachSalaryFilterList');
     });
+
     // Salary Component Management
+
+
+
     Route::prefix('/salary-component')->controller(SalaryComponentController::class)->group(function () {
         Route::get('/', 'index')->name('salary.component.index');
         Route::get('/add', 'add')->name('salary.component.add');
@@ -614,14 +665,53 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/status/update', 'statusUpdate')->name('taxslab.statusUpdate');
         Route::get('/search/filter', 'serachTaxSlabFilterList');
     });
+
     // Employee Salary
     Route::prefix('/employee-salary')->controller(EmployeeSalaryController::class)->group(function () {
         Route::get('/', 'index')->name('employee_salary.index');
         Route::get('/view/{id}', 'viewSalary')->name('employee_salary.viewSalary');
-        Route::get('/generate-pdf/{id}', 'generatePDF')->name('employee_salary.generatePDF');
+        Route::get('/search/filter', 'serachEmployeeSalaryFilterList');
+        Route::get('/show/payslip', 'showEmployeePayslip');
+        Route::get('/generate/previous/month/payslip', 'generatePayslipPreviousMonth');
+    });
+
+    //Courses
+    Route::prefix('/courses')->controller(CourseController::class)->group(function () {
+        Route::get('/', 'index')->name('course.list');
+        Route::get('/add', 'add')->name('course.add');
+        Route::get('/edit/{id}', 'edit')->name('course.edit');
+        Route::get('/edit/{id}', 'edit')->name('course.edit');
+        Route::post('/store', 'store')->name('course.store');
+    });
+
+     // Location Visit
+     Route::prefix('/location-visit')->controller(LocationVisitController::class)->group(function () {
+        Route::get('/', 'index')->name('location_visit.index');
+        Route::post('/store', 'store')->name('location_visit.store');
+        Route::get('/assign_task', 'assignTaskList')->name('location_visit.assign_task');
+        Route::get('/add_task', 'addTask')->name('location_visit.add_task');
+        Route::post('/store_task_assign', 'storeTaskAssigned')->name('location_visit.store_task_assign');
+        Route::get('/task/{id}', 'editTaskAssigned')->name('location_visit.edit_task_assign');
+        Route::post('/update_task_assign/{id}', 'updateTaskAssigned')->name('location_visit.update_task_assign');
+        Route::get('/task/delete/{id}', 'deleteTaskAssigned')->name('location_visit.delete_task_assign');
+        Route::get('/view/task/{id}', 'viewTaskAssigned')->name('location_visit.view_task_assign');
+        Route::get('/search/task', 'searchFilterTask');
+    });
+
+     //Dispostion Code Module
+     Route::prefix('/disposition-code')->controller(DispositionCodeController::class)->group(function () {
+        Route::get('/', 'index')->name('disposition_code.index');
+        Route::post('/create', 'store')->name('disposition_code.store');
+        Route::post('/update', 'update')->name('disposition_code.update');
+        Route::get('/delete', 'destroy')->name('disposition_code.delete');
+        Route::get('/status/update', 'statusUpdate')->name('disposition_code.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
+
+
+
 /**---------------End Company Panel Route----------------*/

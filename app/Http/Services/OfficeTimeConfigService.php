@@ -2,19 +2,32 @@
 
 namespace App\Http\Services;
 
-use App\Repositories\officeTimeConfigRepository;
+use App\Repositories\OfficeTimeConfigRepository;
 
 class OfficeTimeConfigService
 {
   private $officeTimeConfigRepository;
-  public function __construct(officeTimeConfigRepository $officeTimeConfigRepository)
+  public function __construct(OfficeTimeConfigRepository $officeTimeConfigRepository)
   {
     $this->officeTimeConfigRepository = $officeTimeConfigRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function all()
   {
     return $this->officeTimeConfigRepository->orderBy('id', 'DESC')->paginate(10);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function create(array $data)
   {
     $data['company_id'] = Auth()->user()->company_id;
@@ -22,15 +35,35 @@ class OfficeTimeConfigService
     return $this->officeTimeConfigRepository->create($data);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails(array $data, $id)
   {
     return $this->officeTimeConfigRepository->find($id)->update($data);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->officeTimeConfigRepository->find($id)->delete();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $request
+   * @return void
+   */
   public function searchOfficeTimeFilter($request)
   {
     $officeTimeConfigDetails = $this->officeTimeConfigRepository;

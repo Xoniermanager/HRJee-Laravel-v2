@@ -11,6 +11,14 @@ class LeaveCreditHistoryService
   {
     $this->leaveCreditHistoryRepository = $leaveCreditHistoryRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $userId
+   * @param [type] $leaveCreditManagementid
+   * @return void
+   */
   public function createHistory($userId, $leaveCreditManagementid)
   {
     $data = [
@@ -24,6 +32,14 @@ class LeaveCreditHistoryService
       return false;
     }
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $leaveCreditManagementId
+   * @param [type] $userId
+   * @return void
+   */
   public function getDetailsByLeaveCreditManagementIdUserId($leaveCreditManagementId, $userId)
   {
     return $this->leaveCreditHistoryRepository->where('leave_credit_management_id', $leaveCreditManagementId)->where('user_id', $userId)->orderBy('id', 'Desc')->first();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Menu;
+use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -128,6 +129,7 @@ class AdminCompanyController extends Controller
 
     public function update_company(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'username' => 'sometimes|required|string|max:255',
@@ -197,6 +199,32 @@ class AdminCompanyController extends Controller
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        }
+    }
+
+    public function updateFaceRecognitionStatus(Request $request)
+    {
+        $allowedUserLimit = auth()->user()->companyDetails->face_recognition_user_limit;
+
+        $allotedUserLimit = User::where('company_id', auth()->user()->id)->where('type', 'user')->with(['details' => function ($query) {
+            $query->where('allow_face_recognition', 1);
+        }])->count();
+
+        if($allowedUserLimit < $allotedUserLimit && $request->status == "1") {
+            return response()->json(['error' => 'You have reached the limit of allowing face recognition to users.', 'status' => 400]);
+        }
+
+        $statusDetails = $this->userService->updateFaceRecognitionStatus($request->id, $request->status);
+        if ($statusDetails) {
+            return response()->json([
+                'success' => 'Face Recognition Updated Successfully',
+                'data' => view("admin.company.company_list", [
+                    'allCompaniesDetails' => $this->userService->getCompanies()->paginate(10)
+                ])->render(),
+                'status' => 200
+            ]);
+        } else {
+            return response()->json(['error' => 'Something Went Wrong!! Please try again', 'status' => 400]);
         }
     }
 }

@@ -243,7 +243,6 @@
             },
             submitHandler: function(form) {
                 var role = $(form).serialize();
-                console.log(role);
                 $.ajax({
                     url: "<?= route('role.update') ?>",
                     type: 'post',
@@ -271,7 +270,6 @@
 
         function handleStatus(id) {
             var checked_value = $('#checked_value_'+id).prop('checked');
-            console.log(checked_value);
             let status;
             let status_name;
             if (checked_value == true) {
@@ -317,7 +315,6 @@
                             id: id
                         },
                         success: function(res) {
-                            console.log("res => ", res);
                             if(res.status ==  false) {
                                 Swal.fire("Error deleting!", res.message, "error");
                             } else {

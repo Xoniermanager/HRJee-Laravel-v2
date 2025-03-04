@@ -329,7 +329,7 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/asset-category/search/filter',
+                url: company_ajax_base_url + '/asset/asset-category/search/filter',
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val()

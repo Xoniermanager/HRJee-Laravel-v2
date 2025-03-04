@@ -12,18 +12,45 @@ class BranchServices
   {
     $this->branchRepository = $branchRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $companyId
+   * @return void
+   */
   public function all($companyId)
   {
-    return $this->branchRepository->with('country', 'state')->where('company_id', $companyId)->orderBy('id', 'DESC')->paginate(10);
+    return $this->branchRepository->with('country', 'state')->whereIn('created_by', $companyId)->orderBy('id', 'DESC')->paginate(10);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function allActiveBranches()
   {
     return $this->branchRepository->with('country', 'state')->where('status', 1)->orderBy('id', 'DESC')->get();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $companyId
+   * @return void
+   */
   public function getAllCompanyBranchByCompanyId($companyId)
   {
-    return $this->branchRepository->where('company_id', $companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
+    return $this->branchRepository->whereIn('created_by', $companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @return void
+   */
   public function create($data)
   {
     
@@ -32,18 +59,40 @@ class BranchServices
     
     return $this->branchRepository->create($data);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->branchRepository->find($id)->delete();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails($data, $id)
   {
     return $this->branchRepository->find($id)->update($data);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $request
+   * @return void
+   */
   public function searchInCompanyBranch($request)
   {
     $branchDetails = $this->branchRepository;
-    //dd($request);
+    
     /**List By Search or Filter */
     if (isset($request->search) && !empty($request->search)) {
       $searchKey = $request->search;
@@ -88,10 +137,17 @@ class BranchServices
   {
     return $this->branchRepository->whereIn('id', $ids)->get();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @return void
+   */
   public function getAllAssignedCompanyBranches($data)
   {
     if ($data->all_company_branch == 1) {
-      return $this->getAllCompanyBranchByCompanyId($data->company_id)->pluck('id')->toArray();
+      return $this->getAllCompanyBranchByCompanyId([$data->company_id])->pluck('id')->toArray();
     } else {
       return $data->companyBranches->pluck('id')->toArray();
     }

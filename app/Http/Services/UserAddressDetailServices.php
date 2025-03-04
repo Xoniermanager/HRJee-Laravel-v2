@@ -12,6 +12,12 @@ class UserAddressDetailServices
     $this->userAddressDetailRepository = $userAddressDetailRepository;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function create(array $data)
   {
     $address_type = $data['address_type'];
@@ -103,26 +109,70 @@ class UserAddressDetailServices
     return  $response;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $user_id
+   * @param [type] $address_name
+   * @return void
+   */
   public function checkExistingDetails($user_id, $address_name)
   {
     return $this->userAddressDetailRepository->where('user_id', $user_id)->where('address_type', $address_name)->first();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function getDetailById($id)
   {
     return $this->userAddressDetailRepository->where('user_id', $id)->get();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteUserAddress($id)
   {
     return $this->userAddressDetailRepository->where('user_id', $id)->delete();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteUserAddressById($id)
   {
     return $this->userAddressDetailRepository->where('id', $id)->delete();
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @param [type] $addressId
+   * @param [type] $data
+   * @return void
+   */
   public function update($id, $addressId, $data)
   {
     return $this->userAddressDetailRepository->where(['user_id' => $id, 'id' => $addressId])->update($data);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @return void
+   */
   public function createAddress($data)
   {
     return $this->userAddressDetailRepository->create($data);

@@ -8,10 +8,9 @@ use Throwable;
 
 use Carbon\Carbon;
 use App\Models\UserCode;
+use App\Models\EmployeeManager;
 use App\Mail\ResetPassword;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Repositories\UserDetailRepository;
 
@@ -134,7 +133,9 @@ class EmployeeServices
 
     public function getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds = null, $designationIds = null, $allCompanyBranches = null, $allDepartment = null, $allDesignation = null)
     {
-        $allCompanyDepartment = $this->departmentService->getAllDepartmentsByCompanyId();
+        $companyIDs = getCompanyIDs();
+
+        $allCompanyDepartment = $this->departmentService->getAllDepartmentsByCompanyId($companyIDs);
         $allDepartmentIds = $allCompanyDepartment->pluck('id');
         $selectedDepartments = $allDepartmentIds;
         $baseQuery = $this->userDetailRepository;
@@ -143,7 +144,7 @@ class EmployeeServices
         if (isset($companyBranchIds) && count($companyBranchIds) > 0) {
             $baseQuery->whereIn('company_branch_id', $companyBranchIds);
         } else {
-            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->user()->id);
+            $allCompanyBranchDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
             $allCompanyBranchIds = $allCompanyBranchDetails->pluck('id');
             $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
         }
@@ -179,6 +180,27 @@ class EmployeeServices
                 $query->where('name', 'Like', '%' . $searchKey . '%');
                 $query->orWhere('emp_id', 'Like', '%' . $searchKey . '%');
             });
+    }
+
+
+    public function addManagers($userId, $managerIDs)
+    {
+        EmployeeManager::where('user_id', $userId)->delete();
+        if($managerIDs) {
+            $payload = [];
+
+            foreach ($managerIDs as $manager) {
+                $payload[] = [
+                    'manager_id' => $manager,
+                    'user_id' => $userId,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ];
+            }
+            EmployeeManager::insert($payload);
+        }
+
+        return true;
     }
 
     public function getExitEmployeeList($companyId)

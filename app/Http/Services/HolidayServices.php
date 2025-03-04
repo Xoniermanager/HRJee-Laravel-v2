@@ -15,9 +15,9 @@ class HolidayServices
     {
         $this->holidayRepository = $holidayRepository;
     }
-    public function all()
+    public function all($companyIDs)
     {
-        return $this->holidayRepository->where('company_id', Auth()->user()->id)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
+        return $this->holidayRepository->whereIn('created_by', $companyIDs)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
     {
@@ -70,10 +70,23 @@ class HolidayServices
         $deletedData->delete();
         return $deletedData;
     }
-    public function getListByCompanyId($companyID)
+
+    public function getListByCompanyId($companyID, $year = NULL, $month = NULL, $date = NULL)
     {
-        return $this->holidayRepository->where('company_id', $companyID)->where('year', date('Y'))->where('status', '1')->get();
+        $holidayQuery = $this->holidayRepository->whereIn('company_id', $companyID)->where('year', $year)->where('status', '1');
+        if($month) {
+            $holidayQuery = $holidayQuery->whereMonth('date', $month);
+        } 
+        
+        if($date) {
+            $holidayQuery = $holidayQuery->where('date', $date);
+        }
+
+        return $holidayQuery->whereHas('companyBranch', function ($query) {
+            $query->where('company_branch_id', auth()->user()->details->company_branch_id);
+        })->get();
     }
+
     public function getHolidayByDate($companyID, $date)
     {
         return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1');

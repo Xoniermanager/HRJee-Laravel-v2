@@ -11,25 +11,57 @@ class CompanySizeService
   {
     $this->companySizeRepository = $companySizeRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function all()
   {
     return $this->companySizeRepository->orderBy('id','DESC')->paginate(10);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function create(array $data)
   {
     return $this->companySizeRepository->create($data);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails(array $data, $id)
   {
     return $this->companySizeRepository->find($id)->update($data);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->companySizeRepository->find($id)->delete();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $searchKey
+   * @return void
+   */
   public function searchInCompanySize($searchKey)
   {
     $data['key']     =  array_key_exists('key', $searchKey) ? $searchKey['key'] : '';

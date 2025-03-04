@@ -18,6 +18,9 @@
 				<th class="min-w-150px">Employee Type</th>
 				{{-- <th class="min-w-150px">Shift</th> --}}
 				<th class="min-w-150px">Status</th>
+				@if(auth()->user()->companyDetails->allow_face_recognition == 1)
+				<th class="min-w-150px">Allow Face Recognition</th>
+				@endif
 				<th class="">Action</th>
 			</tr>
 		</thead>
@@ -60,6 +63,15 @@
 							<span class="slider round"></span>
 						</label>
 					</td>
+					@if(auth()->user()->companyDetails->allow_face_recognition == 1)
+					<td data-order="Invalid date">
+						<label class="switch">
+							<input type="checkbox" <?= $singleUserDetails->details->allow_face_recognition == '1' ? 'checked' : '' ?>
+								onchange="handleFaceRecognition({{ $singleUserDetails->id }})" id="checked_face_value_{{ $singleUserDetails->id }}">
+							<span class="slider round"></span>
+						</label>
+					</td>
+					@endif
 					<td>
 						<div class="d-flex justify-content-end flex-shrink-0">
 							<a href="{{ route('employee.view', $singleUserDetails->id) }}"
