@@ -7,15 +7,19 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CourseService;
 use App\Http\Services\DepartmentServices;
+use App\Http\Services\CurriculumService;
 
 class CourseController extends Controller
 {
 
     private $courseService;
     private $departmentService;
-    public function __construct(CourseService $courseService, DepartmentServices $departmentService) {
+    private $curriculumService;
+    
+    public function __construct(CourseService $courseService, CurriculumService $curriculumService, DepartmentServices $departmentService) {
         $this->courseService = $courseService;
         $this->departmentService = $departmentService;
+        $this->curriculumService = $curriculumService;
     }
 
     /**
@@ -87,5 +91,30 @@ class CourseController extends Controller
         $course = $this->courseService->getCourseById($id);
 
         return view('company.courses.add', compact('alldepartmentDetails', 'course'));
+    }
+
+    public function saveCurriculum(Request $request)
+    {
+        $requestedData = $request->get('curriculums');
+        $payload = [];
+        $courseID = $request->get('course_id');
+
+        foreach($requestedData as $data) {
+            // if ($data['content_type'] === 'pdf' && $request->hasFile('url')) {
+            //     $nameForImage = removingSpaceMakingName($request->title);
+            //     $upload_path = "/training_materials";
+            //     $filePath = uploadingImageorFile($request->pdf_file, $upload_path, $nameForImage);
+            //     $request->merge(['url' => $filePath]);
+            // }
+            $payload[] = $data;
+        }
+
+        if(isset($data['id'])) {
+            $this->curriculumService->deleteByCourseId($courseID);
+        }
+
+        $this->curriculumService->create($payload);
+        
+        return response()->json(['message' => 'Curriculum saved successfully', 'status' => 'success']);
     }
 }

@@ -39553,3 +39553,17 @@ span.relative.z-0.inline-flex.rtl\:flex-row-reverse.shadow-sm.rounded-md {
 .pb-0 {
 padding-bottom: 0 !important;
 }
+.course-row {
+    background: #f1f7fc;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #deedfa;
+}
+.assignmentDiv {
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+    border: 2px solid #deedfa;
+}
