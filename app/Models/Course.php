@@ -23,6 +23,11 @@ class Course extends Model
         return $this->belongsTo(Department::class, 'department_id', 'id');
     }
 
+    public function curriculums()
+    {
+        return $this->hasMany(Curriculum::class);
+    }
+
     protected function pdfFile(): Attribute
     {
         return Attribute::make(
