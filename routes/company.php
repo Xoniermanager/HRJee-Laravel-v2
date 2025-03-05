@@ -15,7 +15,6 @@ use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
-use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
@@ -25,17 +24,20 @@ use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\AttendanceController;
 use App\Http\Controllers\Company\DepartmentController;
+use App\Http\Controllers\company\PRMRequestController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\CompanyStatusController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
+use App\Http\Controllers\company\PRMCategoryController;
 use App\Http\Controllers\Company\TaxSlabRuleController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
 use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Employee\ResignationController;
+use App\Http\Controllers\Company\LocationVisitController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
@@ -43,6 +45,8 @@ use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Company\UserCtcDetailsController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
+use App\Http\Controllers\Company\DispositionCodeController;
+use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Company\PreviousCompanyController;
 use App\Http\Controllers\Company\SalaryComponentController;
 use App\Http\Controllers\Company\UserBankDetailsController;
@@ -60,8 +64,6 @@ use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
-use App\Http\Controllers\company\PRMCategoryController;
-use App\Http\Controllers\company\PRMRequestController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 use App\Http\Controllers\Company\SalaryComponentAssignmentController;
@@ -596,6 +598,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
 
     // prm Management
+
+
     Route::prefix('/prm')->group(function () {
        //PRM Request
         Route::controller(PRMRequestController::class)->group(function () {
@@ -636,6 +640,9 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
 
     // Salary Component Management
+
+
+
     Route::prefix('/salary-component')->controller(SalaryComponentController::class)->group(function () {
         Route::get('/', 'index')->name('salary.component.index');
         Route::get('/add', 'add')->name('salary.component.add');
@@ -675,6 +682,30 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/edit/{id}', 'edit')->name('course.edit');
         Route::get('/edit/{id}', 'edit')->name('course.edit');
         Route::post('/store', 'store')->name('course.store');
+    });
+
+     // Location Visit
+     Route::prefix('/location-visit')->controller(LocationVisitController::class)->group(function () {
+        Route::get('/', 'index')->name('location_visit.index');
+        Route::post('/store', 'store')->name('location_visit.store');
+        Route::get('/assign_task', 'assignTaskList')->name('location_visit.assign_task');
+        Route::get('/add_task', 'addTask')->name('location_visit.add_task');
+        Route::post('/store_task_assign', 'storeTaskAssigned')->name('location_visit.store_task_assign');
+        Route::get('/task/{id}', 'editTaskAssigned')->name('location_visit.edit_task_assign');
+        Route::post('/update_task_assign/{id}', 'updateTaskAssigned')->name('location_visit.update_task_assign');
+        Route::get('/task/delete/{id}', 'deleteTaskAssigned')->name('location_visit.delete_task_assign');
+        Route::get('/view/task/{id}', 'viewTaskAssigned')->name('location_visit.view_task_assign');
+        Route::get('/search/task', 'searchFilterTask');
+    });
+
+     //Dispostion Code Module
+     Route::prefix('/disposition-code')->controller(DispositionCodeController::class)->group(function () {
+        Route::get('/', 'index')->name('disposition_code.index');
+        Route::post('/create', 'store')->name('disposition_code.store');
+        Route::post('/update', 'update')->name('disposition_code.update');
+        Route::get('/delete', 'destroy')->name('disposition_code.delete');
+        Route::get('/status/update', 'statusUpdate')->name('disposition_code.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
