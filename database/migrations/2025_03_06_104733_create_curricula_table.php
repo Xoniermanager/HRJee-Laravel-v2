@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('curriculam', function (Blueprint $table) {
+        Schema::create('curricula', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('course_id')->nullable();
             $table->string('title')->nullable();
             $table->string('instructor')->nullable();
             $table->text('short_description')->nullable();
             $table->enum('content_type', ['pdf', 'youtube', 'vimeo'])->nullable();
-            $table->string('url')->nullable();
+            $table->string('video_url')->nullable();
+            $table->string('pdf_file')->nullable();
             $table->boolean('has_assignment')->default(0);
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }
