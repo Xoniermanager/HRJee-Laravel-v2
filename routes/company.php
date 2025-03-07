@@ -680,8 +680,13 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/', 'index')->name('course.list');
         Route::get('/add', 'add')->name('course.add');
         Route::get('/edit/{id}', 'edit')->name('course.edit');
-        Route::get('/edit/{id}', 'edit')->name('course.edit');
+        Route::get('/delete', 'delete')->name('course.delete');
         Route::post('/store', 'store')->name('course.store');
+        Route::get('/view/{id}', 'view')->name('course.view');
+        Route::get('/status/update', 'statusUpdate')->name('course.statusUpdate');
+    });
+    Route::prefix('/curriculum')->controller(CourseController::class)->group(function () {
+        Route::post('/store', 'curriculumStore')->name('curriculum.store');
     });
 
      // Location Visit

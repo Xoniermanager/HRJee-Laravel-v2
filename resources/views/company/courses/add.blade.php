@@ -34,7 +34,7 @@
                                 }
                             @endphp
                             <li class="nav-item p-0 ms-0">
-                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
+                                <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger"
                                     data-bs-toggle="tab" href="#curriculum_details_tab">
                                     <span class="fs-7 fw-semibold">Curriculum</span>
                                 </a>
@@ -101,7 +101,7 @@
                         jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
                     }
                 }
-            }, 4000);           
+            }, 4000);
         });
     </script>
 @endsection

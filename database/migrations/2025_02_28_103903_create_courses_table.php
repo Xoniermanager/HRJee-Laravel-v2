@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('video_type', ['pdf', 'youtube', 'vimeo'])->nullable();
             $table->string('video_url')->nullable();
             $table->string('pdf_file')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
