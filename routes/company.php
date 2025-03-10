@@ -29,7 +29,7 @@ use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
 use App\Http\Controllers\Company\PermissionsController;
-use App\Http\Controllers\company\PRMCategoryController;
+use App\Http\Controllers\Company\PRMCategoryController;
 use App\Http\Controllers\Company\TaxSlabRuleController;
 use App\Http\Controllers\Admin\EmployeeStatusController;
 use App\Http\Controllers\Company\AnnouncementController;
