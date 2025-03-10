@@ -55,6 +55,7 @@ class CompanyBranchesController extends Controller
 
     public function store(ValidateBranch $request)
     {
+        $companyIDs = getCompanyIDs();
         try {
             $payload = $request->all();
 
