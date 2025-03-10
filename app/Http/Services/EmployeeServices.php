@@ -123,7 +123,7 @@ class EmployeeServices
         ->where('company_id', $companyId)
         ->whereHas('details', function ($query) {
             $query->whereNull('exit_date');
-        });;
+        });
     }
 
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
