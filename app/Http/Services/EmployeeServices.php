@@ -60,7 +60,7 @@ class EmployeeServices
                 $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
                 $status = 'createdEmployee';
-                $id = $createdEmployee->id;
+                $id = $createdEmployee->user_id;
             }
             $response = [
                 'status' => $status,
