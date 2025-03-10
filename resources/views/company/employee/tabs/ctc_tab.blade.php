@@ -1,7 +1,7 @@
 <div class="tab-pane fade" id="ctc_tab">
     <form id="ctc_details_form">
         @csrf
-        <input type="hidden" name="user_id" value="{{ $userctcDetails->user_id ?? '' }}">
+        <input type="hidden" name="user_id" value="{{ $singleUserDetails->id ?? '' }}">
         <div class="row">
             <div class="col-md-4 form-group">
                 <label class="required">CTC Vaue</label>

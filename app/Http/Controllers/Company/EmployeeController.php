@@ -99,7 +99,7 @@ class EmployeeController extends Controller
         } else {
             $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
         }
-        
+
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
@@ -187,10 +187,8 @@ class EmployeeController extends Controller
                 $request['user_id'] = $userCreated->id;
             }
             if ($userCreated) {
-
                 $userDetails = $this->employeeService->create($request->except('password', 'email', '_token', 'company_id'));
                 $this->employeeService->addManagers($request['user_id'], $request->get('manager_id'));
-
                 DB::commit();
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
