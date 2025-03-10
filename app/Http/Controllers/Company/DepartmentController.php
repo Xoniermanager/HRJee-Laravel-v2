@@ -24,7 +24,7 @@ class DepartmentController extends Controller
     public function index()
     {
         $companyIDs = getCompanyIDs();
-        
+
         return view("company.department.index", [
             'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
         ]);
@@ -36,6 +36,7 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
+        $companyIDs = getCompanyIDs();
         try {
             $validateDepartments = Validator::make($request->all(), [
                 'name' => ['required', 'regex:/^[A-Za-z\s]+$/', 'alpha','unique:departments,name,NULL,id,company_id,' . auth()->user()->company_id],
@@ -50,7 +51,7 @@ class DepartmentController extends Controller
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
                     'data' => view("company.department.department_list", [
-                        'allDepartmentDetails' => $this->departmentService->getByCompanyId(auth()->user()->company_id)
+                        'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
                     ])->render()
                 ]);
             }
@@ -120,7 +121,7 @@ class DepartmentController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-    
+
     public function serachDepartmentFilterList(Request $request)
     {
         $searchedItems = $this->departmentService->serachDepartmentFilterList($request, auth()->user()->company_id);
