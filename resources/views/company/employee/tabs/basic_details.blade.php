@@ -345,9 +345,8 @@
         contentType: false,
         data: basic_details_Data,
         success: function(response) {
-            if (response.data.status == 'createData') {
+            if (response.data.status == "createdEmployee") {
                 location.href = '/company/employee/edit/' + response.data.id;
-
                 setTimeout(function() {
                     Swal.fire({
                         position: "top-end",
