@@ -115,6 +115,7 @@ class EmployeeController extends Controller
 
     public function add()
     {
+
         $allCountries = $this->countryService->getAllActiveCountry();
         $allPreviousCompany = $this->previousCompanyService->getAllActivePreviousCompany();
         $allQualification = $this->qualificationService->getAllActiveQualification();
@@ -152,7 +153,6 @@ class EmployeeController extends Controller
         $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails','ctcDetails');
         $allManagers = $this->qualificationService->getAllActiveQualification();
 
-        //  dd($singleUserDetails->ctcDetails);
         return view(
             'company.employee.add_employee',
             compact(

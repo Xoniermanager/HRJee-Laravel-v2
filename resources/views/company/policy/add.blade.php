@@ -114,7 +114,7 @@
                                                     multiple="multiple" name="company_branch_id[]" id="company_branch">
                                                     <option value=""></option>
                                                     @foreach ($allCompanyBranchesDetails as $compayBranches)
-                                                        <option value="{{ $compayBranches->id }}" @if (old("company_branch_id")){{ (in_array($departmentsDetails->id, old("company_branch_id")) ? "selected":"") }}@endif>
+                                                        <option value="{{ $compayBranches->id }}" @if (old("company_branch_id")){{ (in_array($compayBranches->id, old("company_branch_id")) ? "selected":"") }}@endif>
                                                             {{ $compayBranches->name }}
                                                         </option>
                                                     @endforeach

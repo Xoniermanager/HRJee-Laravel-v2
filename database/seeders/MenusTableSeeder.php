@@ -592,7 +592,7 @@ class MenusTableSeeder extends Seeder
             47 =>
                 array(
                     'id' => 47,
-                    'title' => 'Location Management',
+                    'title' => 'Location Visit Management',
                     'slug' => '#',
                     'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
                     'parent_id' => NULL,
