@@ -11,50 +11,28 @@ class CourseService
     {
         $this->courseRepository = $courseRepository;
     }
-
-
-    public function fetchCoursesByCompanyID($companyIDs) {
-        $allCourses = $this->courseRepository->whereIn('created_by', $companyIDs)->with('curriculums');
-
-        return $allCourses;
+    public function fetchCoursesByCompanyID($companyId)
+    {
+        return $this->courseRepository->where('company_id', $companyId);
     }
 
     public function updateDetail($data, $userId)
     {
         return $this->courseRepository->find($userId)->update($data);
     }
-
-    public function getCompanies()
-    {
-        return $this->courseRepository->where('type', 'company');
-    }
-
     public function getCourseById($id)
     {
         return $this->courseRepository->find($id);
     }
-
-    public function updateStatus($userId, $statusValue)
+    public function deleteCourseDetailsById($courseId)
     {
-        $userDetails = $this->courseRepository->find($userId);
-        $userDetails->type == 'company' ? $userDetails->companyDetails()->update(['status' => $statusValue]) : $userDetails->details()->update(['status' => $statusValue]);
-        
-        return $userDetails->update(['status' => $statusValue]);
+        $courseDetails = $this->courseRepository->find($courseId);
+        $courseDetails->curriculums()->delete();
+        return $courseDetails->delete();
     }
 
-    public function updateFaceRecognitionStatus($userId, $statusValue)
+    public function updateStatus($statusValue, $courseId)
     {
-        $userDetails = $this->courseRepository->find($userId);
-        $userDetails->details()->update(['allow_face_recognition' => $statusValue]);
-
-        return true;
-    }
-
-    public function deleteUserById($userId)
-    {
-        $userDetails = $this->courseRepository->find($userId);
-        $userDetails->type == 'company' ? $userDetails->companyDetails()->delete() : $userDetails->details()->delete();
-        
-        return $userDetails->delete();
+        return $this->courseRepository->find($courseId)->update(['status' => $statusValue]);
     }
 }

@@ -75,7 +75,6 @@
 
     function createBasicDetails(form) {
         var basic_details_Data = new FormData(form);
-        console.log("basic_details_Data => ", basic_details_Data);
         $.ajax({
             url: "{{ route('course.store') }}",
             type: 'POST',
@@ -83,7 +82,6 @@
             contentType: false,
             data: basic_details_Data,
             success: function(response) {
-                console.log("response => ", response)
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -92,25 +90,19 @@
                     timer: 1500
                 });
                 jQuery('.nav-pills a[href="#curriculum_details_tab"]').tab('show');
-
-                // This variable is used on save all records button
-                // all_data_saved = true;
             },
             error: function(error_messages) {
                 console.log("errr => ", error_messages, error_messages.responseJSON)
-                // // This variable is used on save all records button
-                // all_data_saved = false;
-
-                // let errors = error_messages.responseJSON.errors;
-                // for (var error_key in errors) {
-                //     $(document).find('[name=' + error_key + ']').after(
-                //         '<span class="' + error_key + '_error text text-danger">' + errors[error_key] +
-                //         '</span>'
-                //     );
-                //     setTimeout(function() {
-                //         jQuery("." + error_key + "_error").remove();
-                //     }, 8000);
-                // }
+                let errors = error_messages.responseJSON.errors;
+                for (var error_key in errors) {
+                    $(document).find('[name=' + error_key + ']').after(
+                        '<span class="' + error_key + '_error text text-danger">' + errors[error_key] +
+                        '</span>'
+                    );
+                    setTimeout(function() {
+                        jQuery("." + error_key + "_error").remove();
+                    }, 8000);
+                }
             }
         });
     }
