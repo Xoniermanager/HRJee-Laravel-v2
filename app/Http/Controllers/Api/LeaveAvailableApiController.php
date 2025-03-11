@@ -31,7 +31,7 @@ class LeaveAvailableApiController extends Controller
             }
             return response()->json([
                 'status' => true,
-                'message' => '',
+                'message' => 'All Leave Available',
                 'data' => $data,
             ], 200);
         } catch (Exception $e) {

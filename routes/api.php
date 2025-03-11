@@ -1,22 +1,23 @@
 <?php
 
-use App\Http\Controllers\Api\AddressController;
-use App\Http\Controllers\Api\AnnouncementController;
-use App\Http\Controllers\Api\AssetController;
-use App\Http\Controllers\Api\AttendanceController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\HolidayController;
-use App\Http\Controllers\Api\BankController;
-use App\Http\Controllers\Api\DocumentController;
-use App\Http\Controllers\Api\ForgotPasswordController;
-use App\Http\Controllers\Api\LeaveAvailableApiController;
-use App\Http\Controllers\Api\LeaveManagementController;
-use App\Http\Controllers\Api\LeaveManagementApiController;
-use App\Http\Controllers\Api\NewsController;
-use App\Http\Controllers\Api\PolicyController;
-use App\Http\Controllers\Api\ResignationController;
-use App\Http\Controllers\Api\ResignationStatusController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BankController;
+use App\Http\Controllers\Api\NewsController;
+use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\PolicyController;
+use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\HolidayController;
+use App\Http\Controllers\Api\DocumentController;
+use App\Http\Controllers\Api\AttendanceController;
+use App\Http\Controllers\Api\ResignationController;
+use App\Http\Controllers\Api\AnnouncementController;
+use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\LeaveManagementController;
+use App\Http\Controllers\Api\LocationVisitAPiController;
+use App\Http\Controllers\Api\LeaveAvailableApiController;
+use App\Http\Controllers\Api\ResignationStatusController;
+use App\Http\Controllers\Api\LeaveManagementApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,4 +99,11 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
 
     /** For Holiday Management API */
     Route::get('/holidays', [HolidayController::class, 'getHolidays']);
+
+
+     /** for Location Visit And Assigned Task */
+     Route::controller(LocationVisitAPiController::class)->group(function () {
+        Route::get('/assign/task', 'assignedTask');
+        Route::get('/get/disposition/code', 'getDispositionCode');
+    });
 });
