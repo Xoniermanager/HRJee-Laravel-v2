@@ -39,7 +39,9 @@ class UserDetail extends Model
         'allow_face_recognition',
         'allow_location_tracking',
         'face_kyc',
-        'face_punchin_kyc'
+        'face_punchin_kyc',
+        'track_location',
+        'live_location_active'
     ];
     
     protected function profileImage(): Attribute

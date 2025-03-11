@@ -66,12 +66,15 @@ class EmployeeAttendanceService
                     return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
                 }
             }
-
+            $payload['punch_out_latitude'] = $data['punch_out_latitude'];
+            $payload['punch_out_longitude'] = $data['punch_out_longitude'];
             $payload['punch_out'] = $attendanceTime;
             $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
             return ['data' => 'Punch Out', 'status' => true];
         } else {
             $payload['punch_in'] = $attendanceTime;
+            $payload['latitude'] = $data['latitude'];
+            $payload['longitude'] = $data['longitude'];
             if ($officeShiftDetails->login_before_shift_time > 0) {
                 $beforTime = ' -' . $officeShiftDetails->login_before_shift_time . ' minutes';
                 $loginBeforeShiftTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $beforTime));
@@ -92,8 +95,6 @@ class EmployeeAttendanceService
             if ($checkWeekend) {
                 return array('status' => false, 'message' => 'Punch-in cannot be processed today as it is your weekend.');
             }
-
-
 
             $todayConfirmLeaveDeatils = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, date('Y-m-d'));
             $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDeatils);
@@ -130,6 +131,11 @@ class EmployeeAttendanceService
                 $payload['late'] = 1;
             }
 
+
+            $payload = [
+                'user_id' => $userDetails->id,
+                'punch_in_using' => $data['punch_in_using']
+            ];
 
             $this->employeeAttendanceRepository->create($payload);
             return ['status' => true, 'data' => 'Punch In'];
