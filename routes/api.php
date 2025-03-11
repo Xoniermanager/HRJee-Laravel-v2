@@ -39,9 +39,7 @@ Route::post('verify/otp', [AuthController::class, 'verifyOtp'])->middleware('thr
 
 Route::group(['middleware' =>  'auth:sanctum'], function () {
     Route::get('logout', [AuthController::class, 'logout']);
-    Route::get('profile', [AuthController::class, 'profile']);
-    Route::get('user/details', [AuthController::class, 'userAllDetails']);
-
+    Route::get('profile/details', [AuthController::class, 'profileDetails']);
     Route::get('company-details', [AuthController::class, 'getCompanyDetails']);
     Route::get('menu-access', [AuthController::class, 'getMenuAccess']);
 
@@ -63,6 +61,8 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
         Route::get('/get-today-attendance', 'getTodayAttendance');
         Route::get('/get-last-attendance', 'getLastTenDaysAttendance');
         Route::get('/attendance', 'getParticularDateAttendance');
+        Route::post('/attendance/export', 'generateAttendanceExport');
+        Route::get('/generatePaySlip', 'generatePaySlip');
     });
 
     /** News Module  */

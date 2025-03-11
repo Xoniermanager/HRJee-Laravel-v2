@@ -50,15 +50,19 @@ class GenerateSalaryService
                 $salaryComponents = $userCTCDetails->userCtcComponentHistory;
                 $applicableTaxRates = $this->taxSlabRateService->getActiveTaxSlab($employeeDetails->company_id);
                 $totalDayPresent = $this->employeeAttendanceService->getTotalWorkingDaysByUserId($request['year'], $request['month'], $employeeDetails->id)->first();
-                $totalWorking = $date->daysInMonth;
-                $working = round($totalWorking - $totalDayPresent->total_present, 2);
-                $lossOfPay = round((($totalDayPresent->late_count / $employeeDetails->details->officeShift->total_late_count) * $employeeDetails->details->officeShift->total_leave_deduction) + $working, 2);
-                $getEmployeeMonthlySalary = $this->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
-                $getEmployeeCtcComponents = $this->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);
-                $userMonthlySalary = $this->createUserMonthlySalary($getEmployeeMonthlySalary, $request);
-                return ['status' => true, 'getEmployeeMonthlySalary' => $getEmployeeMonthlySalary, 'getEmployeeCtcComponents' => $getEmployeeCtcComponents, 'employeeSalary' => $employeeDetails, 'mail' => $userMonthlySalary->mail_send];
+                if ($totalDayPresent->total_present > 0) {
+                    $totalWorking = $date->daysInMonth;
+                    $working = round($totalWorking - $totalDayPresent->total_present, 2);
+                    $lossOfPay = round((($totalDayPresent->late_count / $employeeDetails->details->officeShift->total_late_count) * $employeeDetails->details->officeShift->total_leave_deduction) + $working, 2);
+                    $getEmployeeMonthlySalary = $this->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
+                    $getEmployeeCtcComponents = $this->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);
+                    $userMonthlySalary = $this->createUserMonthlySalary($getEmployeeMonthlySalary, $request);
+                    return ['status' => true, 'getEmployeeMonthlySalary' => $getEmployeeMonthlySalary, 'getEmployeeCtcComponents' => $getEmployeeCtcComponents, 'employeeSalary' => $employeeDetails, 'mail' => $userMonthlySalary->mail_send];
+                } else {
+                    return ['status' => false, 'message' => "No attendance found for the previous month"];
+                }
             } else {
-                return ['status' => false];
+                return ['status' => false, 'message' => 'No payslip found for this employee for the respective month and year'];
             }
         }
     }
