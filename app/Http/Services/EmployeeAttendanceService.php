@@ -30,20 +30,13 @@ class EmployeeAttendanceService
         $this->employeeService = $employeeService;
         $this->weekendService = $weekendService;
     }
-    
-    /**
-     * Undocumented function
-     *
-     * @param [type] $data
-     * @return void
-     */
     public function create($data)
     {
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
-        $attendanceTime = date(format: 'Y/m/d H:i:s');
+        $attendanceTime = date('Y/m/d H:i:s');
         $officeShiftDetails = $userDetails->details->officeShift;
-        $officeStartTime = $officeShiftDetails->start_time;
-        $officeEndTime = $officeShiftDetails->end_time;
+        $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->start_time));
+        $officeEndTime = date('H:i:s', strtotime($officeShiftDetails->end_time));
         $payload = [
             'user_id' => $userDetails->id,
             'punch_in_using' => $data['punch_in_using']
@@ -135,13 +128,6 @@ class EmployeeAttendanceService
             return ['status' => true, 'data' => 'Punch In'];
         }
     }
-
-    /**
-     * Undocumented function
-     *
-     * @param [type] $userId
-     * @return void
-     */
     public function getExtistingDetailsByUserId($userId)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', Carbon::today())->first();
@@ -358,7 +344,7 @@ class EmployeeAttendanceService
 
         if ($leave) {
             $response['status'] = $leave->is_half_day ? 'Half Day' : 'Leave';
-            
+
         } elseif ($attendance) {
             $response['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
             $response['punch_out'] = date('H:i A', strtotime($attendance->punch_out));

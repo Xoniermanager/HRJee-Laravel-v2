@@ -60,23 +60,6 @@ class AuthService
             return exceptionErrorMessage($th);
         }
     }
-    public function userAllDetails()
-    {
-        try {
-            $user = auth()->guard('employee_api')->user();
-
-            // $countries = $this->countryServices->getAllActiveCountry();
-            // $states = $this->stateServices->getAllStates();
-
-            $singleUserDetails = $user->load('details', 'bankDetails', 'addressDetails', 'assetDetails', 'documentDetails:id,document_type_id,user_id,document', 'documentDetails.documentTypes:id,name');
-            
-            // $singleUserDetails->countries = $countries;
-            // $singleUserDetails->states = $states;
-            return apiResponse('user_details', $singleUserDetails);
-        } catch (Throwable $th) {
-            return exceptionErrorMessage($th);
-        }
-    }
     public function logout($request)
     {
         auth()->guard('employee_api')->user()->currentAccessToken()->delete();
