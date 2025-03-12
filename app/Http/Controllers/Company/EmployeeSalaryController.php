@@ -67,11 +67,10 @@ class EmployeeSalaryController extends Controller
         } else {
             return response()->json([
                 'status' => false,
-                'message' => "No payslip found for this employee for the respective month and year"
+                'message' => $data['message']
             ]);
         }
     }
-
     public function generatePayslipPreviousMonth()
     {
         $userDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();

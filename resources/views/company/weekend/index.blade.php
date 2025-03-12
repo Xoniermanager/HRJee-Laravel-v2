@@ -144,9 +144,9 @@ Weekend Management
     <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet"/>
     <script>
+        jQuery(document).ready(function() {
         var today = new Date();
         var firstDayOfNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1); // 1st day of next month
-        
         $('#datepicker2').datepicker({
             // minDate: firstDayOfNextMonth, // Disable all dates before next month
             multidate: true,
@@ -156,6 +156,7 @@ Weekend Management
             //     let dateString = $.datepicker.formatDate('yy-mm-dd', date);
             //     return [true, selectedDates.includes(dateString) ? "highlight-date" : "", "Selected"];
             // }
+        });
         });
 
         function edit_weekend_details(id, companyBranchId,deparmentId, weekendId) {
@@ -169,7 +170,7 @@ Weekend Management
 
             // Set input value
             $('#datepicker2').val(weekendId.join(", ")).datepicker("refresh"); // Update UI
-    
+
             // $('#weekday').val(weekendId).trigger('change');
             jQuery('#add_weekend').modal('show');
         }

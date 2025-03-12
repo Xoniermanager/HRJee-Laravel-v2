@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\SendOtpRequest;
-use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\UserRequest;
-use App\Http\Services\Api\AuthService;
+use Exception;
+use App\Models\Menu;
 use App\Models\User;
 use App\Models\MenuRole;
-use App\Models\Menu;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\SendOtpRequest;
+use App\Http\Services\Api\AuthService;
+use App\Http\Requests\UserLoginRequest;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -25,14 +26,22 @@ class AuthController extends Controller
     {
         return $this->userAuthService->login($request);
     }
-    public function profile(Request $request)
+    public function profileDetails()
     {
-        return $this->userAuthService->profile();
-    }
-    public function userAllDetails()
-    {
-
-      return $this->userAuthService->userAllDetails();
+        $user = Auth()->guard('employee_api')->user();
+        try {
+            $employeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'documentDetails.documentTypes');
+            return response()->json([
+                'status' => true,
+                'message' => 'Employee details',
+                'data' => $employeeDetails,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function logout(Request $request)
@@ -50,9 +59,9 @@ class AuthController extends Controller
     public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'password' => ['required','string','min:8'],
-            'old_password' => ['required','string','min:8'],
-            'confirm_password' => ['required','same:password']
+            'password' => ['required', 'string', 'min:8'],
+            'old_password' => ['required', 'string', 'min:8'],
+            'confirm_password' => ['required', 'same:password']
         ]);
 
         if ($validator->fails()) {
@@ -115,13 +124,11 @@ class AuthController extends Controller
 
     public function getCompanyDetails()
     {
-        $companyDetails = auth()->user()->parent;
-        $companyDetails->details = auth()->user()->parent->companyDetails;
-
+        $details = Auth()->guard('employee_api')->user()->userCompanyDetails;
         return response()->json([
             'status' => true,
-            'message' => NULL,
-            'data' => $companyDetails,
+            'message' => "User Company Details",
+            'data' => $details,
         ], 200);
     }
 

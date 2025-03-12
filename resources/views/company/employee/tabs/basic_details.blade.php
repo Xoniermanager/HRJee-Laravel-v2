@@ -274,7 +274,7 @@
                 <select class="form-control" id="shift" name="shift_id">
                     <option value="">Please Select the Shift</option>
                     @forelse ($allShifts as $shift)
-                        <option {{ $singleUserDetails->details->shift_id ?? old('shift_id') ? 'selected' : '' }}
+                        <option {{ ($singleUserDetails->details->shift_id ?? old('shift_id') )== $shift->id ? 'selected' : '' }}
                             value="{{ $shift->id }}" data-time="{{ $shift->start_time }}">{{ $shift->name }}
                         </option>
                     @empty
