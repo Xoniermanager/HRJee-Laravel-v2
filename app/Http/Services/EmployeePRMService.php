@@ -30,8 +30,7 @@ class EmployeePRMService
    */
   public function create(array $data)
   {
-    $data['user_id'] = Auth()->user()->id;
-
+    $data['user_id'] = Auth()->user()->id ?? Auth()->guard('employee_api')->user()->id;
     return $this->employeePRMRepository->create($data);
   }
 
