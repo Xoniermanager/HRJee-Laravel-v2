@@ -45,33 +45,12 @@ class PRMController extends Controller
                 'category_id' => ['required', 'exists:prm_categories,id'],
                 'remark' => ['required', 'string'],
                 'bill_date' => ['required', 'string'],
-                'amount' => ['required', 'string']
+                'amount' => ['required|numeric|regex:/^\d{1,10}(\.\d{1,2})?$/']
             ]);
-
             if ($validateData->fails()) {
                 return back()->withErrors($validateData->errors())->withInput();
             }
-
-            // if ($request->hasFile('document')) {
-            //     dd("hihi");
-            //     $nameForImage = removingSpaceMakingName(strtotime(date('Y-m-d H:i:s')));
-            //     $upload_path = "/user_profile_picture";
-            //     $filePath = uploadingImageorFile($request->document, $upload_path, $nameForImage);
-            //     $request->merge(['document' => $filePath]);
-            //     $request->merge(['document1' => $filePath]);
-            // }
-
-            // if ($request->document !== null) {
-            //     $upload_path = "/user_profile_picture";
-            //     $image = $request->document;
-            //     $filePath = uploadingImageorFile($image, $upload_path, 'user_profile_picture');
-            //     if ($filePath) {
-            //         $data['document'] = $filePath;
-            //     }
-            // }
-
             $data = $request->except(['_token']);
-
             if ($this->employeePRMService->create($data)) {
                 return redirect(route('prm.index'))->with('success', 'Added successfully');
             }
@@ -112,7 +91,6 @@ class PRMController extends Controller
             }
 
             $data = $request->except(['_token']);
-
             if ($this->employeePRMService->update($data, $id)) {
                 return redirect(route('prm.index'))->with('success', 'Updated successfully');
             }

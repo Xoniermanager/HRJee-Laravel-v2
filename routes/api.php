@@ -111,6 +111,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     /** for PRM Request and PRM Category */
     Route::controller(PRMApiController::class)->group(function () {
         Route::get('/get/prm/Category', 'getAllPRMCategory');
+        Route::get('/get/prm/request/details/{id}', 'getPRMRequestDetails');
         Route::post('/add/prm/request', 'addPRMRequest');
+        Route::post('/update/prm/request/{id}', 'updatePRMRequest');
+        Route::get('/delete/prm/request/{id}', 'deletePRMRequest');
     });
 });
