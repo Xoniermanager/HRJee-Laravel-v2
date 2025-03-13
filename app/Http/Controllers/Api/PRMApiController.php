@@ -39,13 +39,30 @@ class PRMApiController extends Controller
         }
     }
 
+    public function getPRMRequestDetails($prmRequestId)
+    {
+        try {
+            $prmRequestDetail = $this->employeePRMService->findById($prmRequestId);
+            return response()->json([
+                'status' => true,
+                'message' => 'PRM Request details',
+                'data' => $prmRequestDetail,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function addPRMRequest(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:prm_categories,id',
             'bill_date' => 'required|date',
-            'amount' => 'required|integer',
-            'document' => 'somestimes|bullable|file|mimes:jpg,png,jpeg,pdf',
+            'amount' => 'required|numeric|regex:/^\d{1,10}(\.\d{1,2})?$/',
+            'document' => 'nullable|somestimes|file|mimes:jpg,png,jpeg,pdf',
             'remark' => 'required|string',
         ]);
         if ($validator->fails()) {
@@ -56,11 +73,7 @@ class PRMApiController extends Controller
         }
         DB::beginTransaction();
         try {
-            $userDetails = Auth()->guard('employee_api')->user();
             $data = $request->all();
-            if (isset($request->document) && !empty($request->document)) {
-                $data['document'] = uploadingImageorFile($request->document, '/prm_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
-            }
             if ($this->employeePRMService->create($data)) {
                 DB::commit();
                 return response()->json([
@@ -80,6 +93,69 @@ class PRMApiController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong. Please try again later.'
+            ], 500);
+        }
+    }
+    public function updatePRMRequest(Request $request, $prmRequestId)
+    {
+        $validator = Validator::make($request->all(), [
+            'category_id' => 'required|exists:prm_categories,id',
+            'bill_date' => 'required|date',
+            'amount' => 'required|numeric|regex:/^\d{1,10}(\.\d{1,2})?$/',
+            'document' => 'nullable|somestimes|file|mimes:jpg,png,jpeg,pdf',
+            'remark' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()
+            ], 422);
+        }
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            if ($this->employeePRMService->update($data, $prmRequestId)) {
+                DB::commit();
+                return response()->json([
+                    'status' => true,
+                    'message' => "PRM Request Updated Successfully"
+                ], 201);
+            } else {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => "Please try Again"
+                ], 500);
+            }
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong. Please try again later.'
+            ], 500);
+        }
+    }
+
+    public function deletePRMRequest($prmRequestId)
+    {
+        try {
+            $deletedDetails = $this->employeePRMService->delete($prmRequestId);
+            if ($deletedDetails) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'PRM Request deleted successfully.',
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to delete the PRM Request. Please try again.",
+                ], 400);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred: ' . $e->getMessage(),
             ], 500);
         }
     }
