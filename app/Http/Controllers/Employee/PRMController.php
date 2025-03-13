@@ -27,14 +27,14 @@ class PRMController extends Controller
     public function index()
     {
         $allPRMs = $this->employeePRMService->getAllPRMByUserId(Auth()->user()->id);
-        
+
         return view('employee.prm.index', compact('allPRMs'));
     }
 
     public function add()
     {
         $allCategories = $this->prmCategoryService->getAllActiveCategoryByCompanyID([auth()->user()->company_id]);
-        
+
         return view('employee.prm.add', compact('allCategories'));
     }
 
@@ -69,7 +69,7 @@ class PRMController extends Controller
             //         $data['document'] = $filePath;
             //     }
             // }
-            
+
             $data = $request->except(['_token']);
 
             if ($this->employeePRMService->create($data)) {
@@ -85,7 +85,7 @@ class PRMController extends Controller
     {
         $prmDetails = $this->employeePRMService->findById($id);
         $allCategories = $this->prmCategoryService->getAllActiveCategoryByCompanyID([auth()->user()->company_id]);
-        
+
         return view('employee.prm.view', compact('prmDetails', 'allCategories'));
     }
 
@@ -93,7 +93,7 @@ class PRMController extends Controller
     {
         $prmDetails = $this->employeePRMService->findById($id);
         $allCategories = $this->prmCategoryService->getAllActiveCategoryByCompanyID([auth()->user()->company_id]);
-        
+
         return view('employee.prm.edit', compact('prmDetails', 'allCategories'));
     }
 
@@ -110,7 +110,7 @@ class PRMController extends Controller
             if ($validateData->fails()) {
                 return back()->withErrors($validateData->errors())->withInput();
             }
-            
+
             $data = $request->except(['_token']);
 
             if ($this->employeePRMService->update($data, $id)) {
@@ -125,7 +125,7 @@ class PRMController extends Controller
     public function delete(Request $request)
     {
         try {
-            
+
             if ($this->employeePRMService->delete($request->id)) {
                 return redirect(route('prm.index'))->with('success', 'Deleted successfully');
             }

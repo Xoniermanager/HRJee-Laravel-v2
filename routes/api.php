@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\PolicyController;
+use App\Http\Controllers\Api\PRMApiController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\DocumentController;
@@ -37,7 +38,7 @@ Route::post('reset/password', [ForgotPasswordController::class, 'resetPassword']
 Route::post('password/reset', [ForgotPasswordController::class, 'resetPassword']);
 Route::post('verify/otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:30,1');
 
-Route::group(['middleware' =>  'auth:sanctum'], function () {
+Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout', [AuthController::class, 'logout']);
     Route::get('profile/details', [AuthController::class, 'profileDetails']);
     Route::get('company-details', [AuthController::class, 'getCompanyDetails']);
@@ -101,9 +102,15 @@ Route::group(['middleware' =>  'auth:sanctum'], function () {
     Route::get('/holidays', [HolidayController::class, 'getHolidays']);
 
 
-     /** for Location Visit And Assigned Task */
-     Route::controller(LocationVisitAPiController::class)->group(function () {
+    /** for Location Visit And Assigned Task */
+    Route::controller(LocationVisitAPiController::class)->group(function () {
         Route::get('/assign/task', 'assignedTask');
         Route::get('/get/disposition/code', 'getDispositionCode');
+    });
+
+    /** for PRM Request and PRM Category */
+    Route::controller(PRMApiController::class)->group(function () {
+        Route::get('/get/prm/Category', 'getAllPRMCategory');
+        Route::post('/add/prm/request', 'addPRMRequest');
     });
 });

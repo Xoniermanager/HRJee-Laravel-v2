@@ -20,10 +20,10 @@ class AssignTaskService
         $data['created_by'] = Auth()->user()->id;
         $userDetails = User::find($data['user_id']);
         if (isset($data['image']) && !empty($data['image'])) {
-            $data['image'] = uploadingImageorFile($data['image'], '/task_image', $userDetails->name . '-' . $userDetails->id);
+            $data['image'] = uploadingImageorFile($data['image'], '/task_image', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
         if (isset($data['document']) && !empty($data['document'])) {
-            $data['document'] = uploadingImageorFile($data['document'], '/task_document', $userDetails->name . '-' . $userDetails->id);
+            $data['document'] = uploadingImageorFile($data['document'], '/task_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
         return $this->assignTaskRepository->create(Arr::except($data, ['_token']));
     }
@@ -45,13 +45,13 @@ class AssignTaskService
             if (!empty($taskDetails->getRawOriginal('image'))) {
                 unlinkFileOrImage($taskDetails->getRawOriginal('image'));
             }
-            $payload['image'] = uploadingImageorFile($data['image'], '/task_image', $userDetails->name . '-' . $userDetails->id);
+            $payload['image'] = uploadingImageorFile($data['image'], '/task_image', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
         if (isset($data['document']) && !empty($data['document'])) {
             if (!empty($taskDetails->getRawOriginal('document'))) {
                 unlinkFileOrImage($taskDetails->getRawOriginal('document'));
             }
-            $payload['document'] = uploadingImageorFile($data['document'], '/task_document', $userDetails->name . '-' . $userDetails->id);
+            $payload['document'] = uploadingImageorFile($data['document'], '/task_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
         $payload['response_data'] = json_encode(Arr::except($data, ['_token', 'user_id', 'document', 'image', 'disposition_code_id', 'user_end_status', 'final_status']));
         $payload['user_id'] = $data['user_id'];
