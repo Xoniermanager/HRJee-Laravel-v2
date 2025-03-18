@@ -44,7 +44,6 @@
                         </div>
                     </div>
                     @include('admin.state.state_list')
-                    {{ $allStateDetails->links('paginate') }}
                 </div>
             </div>
         </div>
@@ -70,6 +69,17 @@
                             @error('name')
                             <span class="text-denger">{{ $message}} </span>
                             @enderror
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <label>Country*</label>
+                            <select class="form-control mb-3" name="country_id" id="country_id">
+                                <option value="">Select Country</option>
+                                @forelse ($allcountryDetails as $countryDetails)
+                                <option value="{{ $countryDetails->id }}">{{ $countryDetails->name }}</option>
+                                @empty
+                                <option value="">No Country Available</option>
+                                @endforelse
+                            </select>
                         </div>
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Update</button>
@@ -98,6 +108,17 @@
                             @error('name')
                             <span class="text-denger">{{ $message}} </span>
                             @enderror
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <label>Country*</label>
+                            <select class="form-control mb-3" name="country_id" id="">
+                                <option value="">Select Country</option>
+                                @forelse ($allcountryDetails as $countryDetails)
+                                <option value="{{ $countryDetails->id }}">{{ $countryDetails->name }}</option>
+                                @empty
+                                <option value="">No Country Available</option>
+                                @endforelse
+                            </select>
                         </div>
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Save</button>
@@ -139,9 +160,10 @@
         }
 
 
-        function edit_state_details(id, name) {
+        function edit_state_details(id,name,countryId) {
             $('#id').val(id);
             $('#name').val(name);
+            $('#country_id').val(countryId);
             jQuery('#edit_state').modal('show');
         }
 

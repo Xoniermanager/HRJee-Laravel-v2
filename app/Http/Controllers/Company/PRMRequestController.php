@@ -32,7 +32,7 @@ class PRMRequestController extends Controller
             echo 0;
         }
     }
-    public function searchPrmRequestFilterList(){
+    public function searchPrmRequestFilterList(Request $request){
         $allPRMRequestDetails = $this->prmRequestService->searchPRMRequestFilterList($request);
         if ($allPRMRequestDetails) {
             return response()->json([
