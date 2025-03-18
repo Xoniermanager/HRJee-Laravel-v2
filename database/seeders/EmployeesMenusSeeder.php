@@ -97,7 +97,21 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'PRM',
                 'slug' => '/employee/prm',
                 'icon' => '<i class="fas fa-money-bill-wave"></i>',
-                'order_no' => 10,
+                'order_no' => 11,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Payslip',
+                'slug' => '/employee/show/payslip',
+                'icon' => '<i class="fa fa-credit-card"></i>',
+                'order_no' => 12,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Contact Us',
+                'slug' => '/employee/contact-us',
+                'icon' => '<i class="fa fa-phone"></i>',
+                'order_no' => 13,
                 'role' => 'employee'
             ]
         ];

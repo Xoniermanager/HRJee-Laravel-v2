@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->text('response_data');
             $table->string('document')->nullable();
             $table->string('image')->nullable();
+            $table->string('remark')->nullable();
             $table->unsignedBigInteger('disposition_code_id')->nullable();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('created_by');

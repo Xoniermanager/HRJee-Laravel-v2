@@ -32,36 +32,7 @@
 								</a>
 								<!--end:Menu link-->
 							</div>
-							<!--end:Menu item-->
-
 							{!! getEmployeeMenuHtml() !!}
-							<!--begin:Menu item-->
-							<div class="menu-item">
-								<!--begin:Menu link-->
-								<a class="menu-link" href="{{ route('employee.salary.index') }}">
-									<span class="menu-icon">
-										<span class="svg-icon svg-icon-5">
-											<i class="fa fa-phone-flip"></i>
-										</span>
-										<!--end::Svg Icon-->
-									</span>
-									<span class="menu-title">Payslip</span>
-								</a>
-								<!--end:Menu link-->
-							</div>
-                            <div class="menu-item">
-								<!--begin:Menu link-->
-								<a class="menu-link" href="http://127.0.0.1:8000/employee/contact-us">
-									<span class="menu-icon">
-										<span class="svg-icon svg-icon-5">
-											<i class="fa fa-phone-flip"></i>
-										</span>
-										<!--end::Svg Icon-->
-									</span>
-									<span class="menu-title">Contact Us</span>
-								</a>
-								<!--end:Menu link-->
-							</div>
 						</div>
 						<!--end:Menu item-->
 						<div class="aside-footer flex-column-auto" id="kt_aside_footer">

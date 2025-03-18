@@ -106,6 +106,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::controller(LocationVisitAPiController::class)->group(function () {
         Route::get('/assign/task', 'assignedTask');
         Route::get('/get/disposition/code', 'getDispositionCode');
+        Route::post('/update/task/status/{id}', 'updateTaskStatusDetails');
+        Route::post('/change/task/status/{id}', 'changeStatus');
     });
 
     /** for PRM Request and PRM Category */
