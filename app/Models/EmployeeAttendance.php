@@ -28,7 +28,9 @@ class EmployeeAttendance extends Model
         'remark',
         'company_id',
         'created_by',
-        'is_short_attendance'
+        'is_short_attendance',
+        'punch_out_latitude',
+        'punch_out_longitude'
     ];
     public function user()
     {

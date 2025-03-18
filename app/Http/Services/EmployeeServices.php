@@ -60,7 +60,7 @@ class EmployeeServices
                 $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
                 $status = 'createdEmployee';
-                $id = $createdEmployee->user_id;
+                $id = $createdEmployee->id;
             }
             $response = [
                 'status' => $status,
@@ -123,7 +123,7 @@ class EmployeeServices
         ->where('company_id', $companyId)
         ->whereHas('details', function ($query) {
             $query->whereNull('exit_date');
-        });
+        });;
     }
 
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
