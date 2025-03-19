@@ -67,7 +67,6 @@ use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
-use App\Http\Controllers\Company\SalaryComponentAssignmentController;
 
 // Route::get('/test',function()
 // {

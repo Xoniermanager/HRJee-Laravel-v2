@@ -1,13 +1,8 @@
 <div class="tab-pane fade" id="curriculum_details_tab">
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <div>{{$error}}</div>
-        @endforeach
-    @endif
     <!--begin::Wrapper-->
     <form id="course_details_form" action="{{ route('curriculum.store') }}" enctype="multipart/form-data" method="post">
         @csrf
-        <input type="hidden" id="" name="course_id" value="{{ $course->id ?? '' }}">
+        <input type="hidden" id="course_id" name="course_id" value="{{ $course->id ?? '' }}">
         @php
             $i = 0;
             $assignmentCount = 0;

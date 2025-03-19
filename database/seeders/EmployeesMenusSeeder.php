@@ -108,10 +108,17 @@ class EmployeesMenusSeeder extends Seeder
                 'role' => 'employee'
             ],
             [
+                'title' => 'Courses',
+                'slug' => '/employee/course',
+                'icon' => '<i class="fa fa-credit-card"></i>',
+                'order_no' => 13,
+                'role' => 'employee'
+            ],
+            [
                 'title' => 'Contact Us',
                 'slug' => '/employee/contact-us',
-                'icon' => '<i class="fa fa-phone"></i>',
-                'order_no' => 13,
+                'icon' => '<i class="fas fa-book"></i>',
+                'order_no' => 14,
                 'role' => 'employee'
             ]
         ];

@@ -6,7 +6,6 @@
         <div class="container-xxl" id="kt_content_container">
             <!--begin::Row-->
             <div class="col-lg-12 col-xl-12 col-xxl-12 mb-5">
-                <form action="{{ route('salary.store') }}" method="post" id="salaryForm">
                     @csrf
                     <div class="card h-md-100">
                         <!--begin::Header-->
@@ -60,7 +59,7 @@
                                                     <tbody>
                                                         <tr>
                                                             <th class="w-200px">Sr No.</th>
-                                                            <td>{{$key+1 }}</td>
+                                                            <td>{{$key + 1 }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th class="w-200px">Title</th>
@@ -93,66 +92,66 @@
                                     </div>
                                 </div>
                                 @if(isset($item->curriculamAssignment) && count($item->curriculamAssignment) > 0)
-                                <h2 class="mt-5 text-center">Assignment Details</h2>
-                                @foreach ($item->curriculamAssignment as $key => $assignementDetails)
-                                    {{-- <div class="col-md-6 mt-4"> --}}
-                                        <div class="card">
-                                            <!--begin::Header-->
-                                            <div class="card-header p-0 align-items-center">
-                                                <div class="card-body">
-                                                    {{-- {{ dd($allSalaryComponentDetails) }} --}}
+                                    <h2 class="mt-5 text-center">Assignment Details</h2>
+                                    @foreach ($item->curriculamAssignment as $key => $assignementDetails)
+                                        {{-- <div class="col-md-6 mt-4"> --}}
+                                            <div class="card">
+                                                <!--begin::Header-->
+                                                <div class="card-header p-0 align-items-center">
+                                                    <div class="card-body">
+                                                        {{-- {{ dd($allSalaryComponentDetails) }} --}}
 
-                                                    <div class="row">
-                                                        <div class="table-responsive">
-                                                            <table class="table table-row-dashed table-row-gray-300 align-middle">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <th>Sr No.</th>
-                                                                        <td>Assignment {{ $key+1 }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th class="w-200px">Question</th>
-                                                                        <td>{{ $assignementDetails->question }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Option 1</th>
-                                                                        <td>{{ $assignementDetails->option1 }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Option 2</th>
-                                                                        <td>{{ $assignementDetails->option2 }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Option 3</th>
-                                                                        <td>{{ $assignementDetails->option3 }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Option 4</th>
-                                                                        <td>{{ $assignementDetails->option4 }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>File</th>
-                                                                        @if(isset($assignementDetails->file) && !empty($assignementDetails->file))
-                                                                        <td> <a href="{{ $assignementDetails->file}}" download>
-                                                                            Download
-                                                                        </a>
-                                                                        </td>
-                                                                        @endif
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
+                                                        <div class="row">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-row-dashed table-row-gray-300 align-middle">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th>Sr No.</th>
+                                                                            <td>Assignment {{ $key + 1 }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <th class="w-200px">Question</th>
+                                                                            <td>{{ $assignementDetails->question }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <th>Option 1</th>
+                                                                            <td>{{ $assignementDetails->option1 }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <th>Option 2</th>
+                                                                            <td>{{ $assignementDetails->option2 }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <th>Option 3</th>
+                                                                            <td>{{ $assignementDetails->option3 }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <th>Option 4</th>
+                                                                            <td>{{ $assignementDetails->option4 }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            @if(!empty($assignementDetails->getRawOriginal('file')))
+                                                                                <th>File</th>
+                                                                                <td> <a href="{{ $assignementDetails->file}}" download>
+                                                                                        Download
+                                                                                    </a>
+                                                                                </td>
+                                                                            @endif
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    {{-- </div> --}}
-                                @endforeach
+                                            {{--
+                                        </div> --}}
+                                    @endforeach
                                 @endif
                             </div>
                         </div>
                     @endforeach
-                </form>
             </div>
         </div>
     </div>

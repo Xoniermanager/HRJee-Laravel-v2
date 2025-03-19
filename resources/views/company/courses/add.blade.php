@@ -48,6 +48,20 @@
                     <div class="card-body pt-7 px-0">
                         <!--begin::Tab Content-->
                         <div class="tab-content mb-2 px-9">
+                            @if ($errors->any())
+                            @foreach ($errors->all() as $error)
+                                <div class="text-denger">{{$error}}</div>
+                            @endforeach
+                        @endif
+                         @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                        @elseif (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                        @endif
                             <!--begin::Tap pane Basic Details-->
                             @include('company.courses.tabs.course')
                             <!--end::Tap pane -->

@@ -59,15 +59,14 @@ class EmployeeAttendanceService
                     return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
                 }
             }
-            $payload['punch_out_latitude'] = $data['punch_out_latitude'];
-            $payload['punch_out_longitude'] = $data['punch_out_longitude'];
+            $payload['punch_out_latitude'] = $data['punch_out_latitude'] ?? '';
+            $payload['punch_out_longitude'] = $data['punch_out_longitude'] ?? '';
             $payload['punch_out'] = $attendanceTime;
             $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
             return ['data' => 'Punch Out', 'status' => true];
         } else {
-            $payload['punch_in'] = $attendanceTime;
-            $payload['latitude'] = $data['latitude'];
-            $payload['longitude'] = $data['longitude'];
+            $payload['punch_in_latitude'] = $data['latitude'] ?? '';
+            $payload['punch_in_latitude'] = $data['longitude'] ?? '';
             if ($officeShiftDetails->login_before_shift_time > 0) {
                 $beforTime = ' -' . $officeShiftDetails->login_before_shift_time . ' minutes';
                 $loginBeforeShiftTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $beforTime));
@@ -123,13 +122,12 @@ class EmployeeAttendanceService
             if (date('H:i:s') > $officeStartTime) {
                 $payload['late'] = 1;
             }
-
-
             $payload = [
                 'user_id' => $userDetails->id,
-                'punch_in_using' => $data['punch_in_using']
-            ];
+                'punch_in_using' => $data['punch_in_using'],
+                'punch_in' => $attendanceTime
 
+            ];
             $this->employeeAttendanceRepository->create($payload);
             return ['status' => true, 'data' => 'Punch In'];
         }

@@ -48,10 +48,12 @@ class CourseController extends Controller
         }
         if (isset($data['id'])) {
             $course = Course::where('id', $data['id'])->update($data);
+            $courseId = $data['id'];
         } else {
             $course = Course::create($data);
+            $courseId = $course->id;
         }
-        return response()->json(['message' => 'Course created successfully', 'course' => $course]);
+        return response()->json(['message' => 'Course created successfully', 'courseId' => $courseId]);
     }
     public function edit($id)
     {
@@ -61,7 +63,6 @@ class CourseController extends Controller
     }
     public function curriculumStore(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'curriculum_details' => 'required|array',
             'curriculum_details.*.title' => 'required|string',
@@ -69,8 +70,8 @@ class CourseController extends Controller
             'curriculum_details.*.short_description' => 'required|string',
             'curriculum_details.*.content_type' => 'required|in:youtube,pdf',
             'curriculum_details.*.has_assignment' => 'required|boolean',
-            'curriculum_details.*.video_url' => 'required_if:content_type,youtube|url',
-            'curriculum_details.*.pdf_file' => 'required_if:content_type,pdf|mimes:pdf|max:10240', // Ensure it's a pdf and the file size doesn't exceed 10MB
+            'curriculum_details.*.video_url' => 'nullable|required_if:content_type,youtube|url',
+            'curriculum_details.*.pdf_file' => 'nullable|required_if:content_type,pdf|mimes:pdf|max:10240', // Ensure it's a pdf and the file size doesn't exceed 10MB
             'curriculum_details.*.assignment' => 'required|array',
             'curriculum_details.*.assignment.*.question' => 'nullable|required_if:has_assignment,1',
             'curriculum_details.*.assignment.*.option1' => 'nullable|required_if:has_assignment,1',
