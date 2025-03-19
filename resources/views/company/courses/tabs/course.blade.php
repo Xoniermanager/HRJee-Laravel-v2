@@ -2,7 +2,7 @@
     <!--begin::Wrapper-->
     <form id="course_details_form">
         @csrf
-        <input type="hidden" id="" name="id" value="{{ $course->id ?? '' }}">
+        <input type="hidden" id="main_id" name="id" value="{{ $course->id ?? '' }}">
 
         <div class="row">
             <div class="col-md-6 form-group">
@@ -15,9 +15,9 @@
                 <select class="form-control" name="department_id" id="department_id">
                     <option value="">Select The Department</option>
                     @forelse ($alldepartmentDetails as $department)
-                        <option value="{{ $department->id }}"
-                            {{ $editDetails && $course->department_id == $department->id ? 'selected' : '' }}>
-                            {{ $department->name }}</option>
+                        <option value="{{ $department->id }}" {{ $editDetails && $course->department_id == $department->id ? 'selected' : '' }}>
+                            {{ $department->name }}
+                        </option>
                     @empty
                         <option value="">No Department Found</option>
                     @endforelse
@@ -58,7 +58,8 @@
             <div class="row">
                 <div class="col-md-12 form-group">
                     <label for="">Description *</label>
-                    <textarea class="form-control" id="description_editor" name="description" rows="20" cols="20">{!! $editDetails && $course->description ? $course->description : '' !!}</textarea>
+                    <textarea class="form-control" id="description_editor" name="description" rows="20"
+                        cols="20">{!! $editDetails && $course->description ? $course->description : '' !!}</textarea>
                 </div>
             </div>
         </div>
@@ -81,7 +82,9 @@
             processData: false,
             contentType: false,
             data: basic_details_Data,
-            success: function(response) {
+            success: function (response) {
+                $('#main_id').val(response.courseId);
+                $('#course_id').val(response.courseId);
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -91,15 +94,14 @@
                 });
                 jQuery('.nav-pills a[href="#curriculum_details_tab"]').tab('show');
             },
-            error: function(error_messages) {
-                console.log("errr => ", error_messages, error_messages.responseJSON)
+            error: function (error_messages) {
                 let errors = error_messages.responseJSON.errors;
                 for (var error_key in errors) {
                     $(document).find('[name=' + error_key + ']').after(
                         '<span class="' + error_key + '_error text text-danger">' + errors[error_key] +
                         '</span>'
                     );
-                    setTimeout(function() {
+                    setTimeout(function () {
                         jQuery("." + error_key + "_error").remove();
                     }, 8000);
                 }
@@ -113,7 +115,7 @@
         document.getElementById("videoFileDiv").style.display = (type === "pdf") ? "block" : "none";
         document.getElementById("videoUrlDiv").style.display = (type === "pdf") ? "none" : "block";
     }
-    jQuery(document).ready(function() {
+    jQuery(document).ready(function () {
         var departmentId = '{{ $course->department_id ?? '' }}';
         const all_department_id = [departmentId];
         var designation_id = '{{ $course->designation_id ?? '' }}';
@@ -121,7 +123,7 @@
     });
 
     /** get all Designation Using Department Id*/
-    jQuery('#department_id').on('change', function() {
+    jQuery('#department_id').on('change', function () {
         var department_id = $(this).val();
         const all_department_id = [department_id];
         get_all_designation_using_department_id(all_department_id);
@@ -136,13 +138,13 @@
                 data: {
                     'department_id': all_department_id
                 },
-                success: function(response) {
+                success: function (response) {
                     var select = $('#designation_id');
                     select.empty();
                     if (response.status == true) {
                         $('#designation_id').append(
                             '<option>Select The Designation</option>');
-                        $.each(response.data, function(key, value) {
+                        $.each(response.data, function (key, value) {
                             select.append('<option ' + ((designationId == value.id) ? "selected" :
                                 "") + ' value=' + value.id + '>' + value.name + '</option>');
                         });
@@ -151,7 +153,7 @@
                             '</option>');
                     }
                 },
-                error: function() {
+                error: function () {
                     Swal.fire({
                         icon: "error",
                         title: "Oops...",

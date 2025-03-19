@@ -2,22 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\PolicyController;
 use App\Http\Controllers\Api\PRMApiController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\HolidayController;
-use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\ResignationController;
 use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\ForgotPasswordController;
-use App\Http\Controllers\Api\LeaveManagementController;
 use App\Http\Controllers\Api\LocationVisitAPiController;
 use App\Http\Controllers\Api\LeaveAvailableApiController;
-use App\Http\Controllers\Api\ResignationStatusController;
 use App\Http\Controllers\Api\LeaveManagementApiController;
 
 /*
@@ -112,6 +108,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     /** for PRM Request and PRM Category */
     Route::controller(PRMApiController::class)->group(function () {
+        Route::get('/get/all/prm/request','getAllPRMList');
         Route::get('/get/prm/Category', 'getAllPRMCategory');
         Route::get('/get/prm/request/details/{id}', 'getPRMRequestDetails');
         Route::post('/add/prm/request', 'addPRMRequest');
@@ -119,3 +116,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/delete/prm/request/{id}', 'deletePRMRequest');
     });
 });
+

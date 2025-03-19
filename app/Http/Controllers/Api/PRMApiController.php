@@ -56,6 +56,24 @@ class PRMApiController extends Controller
         }
     }
 
+    public function getAllPRMList()
+    {
+        try {
+            $userId = Auth()->guard('employee_api')->user()->id;
+            $allPrmRequestDetail = $this->employeePRMService->getAllPRMByUserId($userId);
+            return response()->json([
+                'status' => true,
+                'message' => 'All PRM Request details',
+                'data' => $allPrmRequestDetail,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function addPRMRequest(Request $request)
     {
         $validator = Validator::make($request->all(), [

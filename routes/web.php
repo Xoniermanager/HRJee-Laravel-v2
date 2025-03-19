@@ -1,27 +1,28 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Employee\PRMController;
 use App\Http\Controllers\Employee\NewsController;
+use App\Http\Controllers\Employee\CourseController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
-use App\Http\Controllers\Employee\AnnouncementsController;
-use App\Http\Controllers\Employee\ApplyLeaveController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Employee\ContactUsController;
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\HRServiceController;
+use App\Http\Controllers\Employee\ApplyLeaveController;
+use App\Http\Controllers\Employee\AttendanceController;
+use App\Http\Controllers\Employee\HrComplainController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
+use App\Http\Controllers\Employee\AnnouncementsController;
+use App\Http\Controllers\Employee\LeaveTrackingController;
+use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
-use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
-use App\Http\Controllers\Employee\HrComplainController;
-use App\Http\Controllers\Employee\PRMController;
-use App\Http\Controllers\Employee\LeaveAvailableController;
-use App\Http\Controllers\Employee\LeaveTrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,7 +77,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::get('/policy', 'index')->name('employee.policy');
         Route::get('/policy/details/{policies:id}', 'viewDetails')->name('employee.policy.details');
     });
-    
+
     //Announcement Module
     Route::controller(AnnouncementsController::class)->group(function () {
         Route::get('/announcement', 'index')->name('employee.announcement');
@@ -163,6 +164,12 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::post('/update/{id}', 'update')->name('prm.update');
         Route::get('/view/{id}', 'getDetails')->name('prm.view');
         Route::get('/delete', 'delete')->name('prm.delete');
+    });
+
+    //Course Details
+    Route::controller(CourseController::class)->group(function () {
+        Route::get('/course', 'index')->name('employee.course');
+        Route::get('/course/details/{courses:id}', 'viewDetails')->name('employee.course.details');
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/

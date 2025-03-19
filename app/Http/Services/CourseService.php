@@ -35,4 +35,9 @@ class CourseService
     {
         return $this->courseRepository->find($courseId)->update(['status' => $statusValue]);
     }
+
+    public function getCourseByDepartmentIdAndDesignationId($departmentId, $designationId)
+    {
+        return $this->courseRepository->where('department_id', $departmentId)->where('designation_id', $designationId)->where('status',true);
+    }
 }
