@@ -99,4 +99,23 @@ class AssignTaskService
     {
         return $this->assignTaskRepository->where('user_id', $userId);
     }
+
+    public function taskStatusUpdateByApi($data,$taskId)
+    {
+        $taskDetails = $this->assignTaskRepository->find($taskId);
+        $userDetails = User::find($taskDetails->user_id);
+        if (isset($data['image']) && !empty($data['image'])) {
+            if (!empty($taskDetails->getRawOriginal('image'))) {
+                unlinkFileOrImage($taskDetails->getRawOriginal('image'));
+            }
+            $data['image'] = uploadingImageorFile($data['image'], '/task_image', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
+        }
+        if (isset($data['document']) && !empty($data['document'])) {
+            if (!empty($taskDetails->getRawOriginal('document'))) {
+                unlinkFileOrImage($taskDetails->getRawOriginal('document'));
+            }
+            $data['document'] = uploadingImageorFile($data['document'], '/task_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
+        }
+        return $taskDetails->update($data);
+    }
 }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class AssignTask extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'user_end_status', 'final_status', 'response_data', 'company_id', 'created_by', 'document', 'image', 'disposition_code_id'];
+    protected $fillable = ['user_id', 'user_end_status', 'final_status', 'response_data', 'company_id', 'created_by', 'document', 'image', 'disposition_code_id','remark'];
     public function user()
     {
         return $this->belongsTo(User::class);

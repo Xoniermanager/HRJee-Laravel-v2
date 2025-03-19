@@ -45,8 +45,10 @@ class PRMController extends Controller
                 'category_id' => ['required', 'exists:prm_categories,id'],
                 'remark' => ['required', 'string'],
                 'bill_date' => ['required', 'string'],
-                'amount' => ['required|numeric|regex:/^\d{1,10}(\.\d{1,2})?$/']
+                'amount' => ['required', 'numeric', 'regex:/^\d{1,10}(\.\d{1,2})?$/'],
+                'document' => 'nullable|sometimes|mimes:jpg,jpeg,png,pdf|max:2048',
             ]);
+
             if ($validateData->fails()) {
                 return back()->withErrors($validateData->errors())->withInput();
             }
@@ -83,7 +85,8 @@ class PRMController extends Controller
                 'category_id' => ['required', 'exists:prm_categories,id'],
                 'remark' => ['required', 'string'],
                 'bill_date' => ['required', 'string'],
-                'amount' => ['required', 'string']
+                'amount' => ['required', 'numeric', 'regex:/^\d{1,10}(\.\d{1,2})?$/'],
+                'document' => 'nullable|sometimes|mimes:jpg,jpeg,png,pdf|max:2048',
             ]);
 
             if ($validateData->fails()) {

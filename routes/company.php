@@ -7,6 +7,7 @@ use App\Http\Controllers\Company\NewsController;
 use App\Http\Controllers\Company\LeaveController;
 use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\StateController;
+use App\Http\Controllers\Company\CourseController;
 use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\Company\SalaryController;
 use App\Http\Controllers\Admin\LeaveTypeController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
+use App\Http\Controllers\Company\LocationTrackingController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
@@ -66,7 +68,6 @@ use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 use App\Http\Controllers\Company\SalaryComponentAssignmentController;
-use App\Http\Controllers\Company\CourseController;
 
 // Route::get('/test',function()
 // {
@@ -709,6 +710,13 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/update', 'update')->name('disposition_code.update');
         Route::get('/delete', 'destroy')->name('disposition_code.delete');
         Route::get('/status/update', 'statusUpdate')->name('disposition_code.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
+    });
+      //Dispostion Code Module
+      Route::prefix('/location-tracking')->controller(LocationTrackingController::class)->group(function () {
+        Route::get('/', 'index')->name('location.tracking.index');
+        Route::post('/create', 'store')->name('location.tracking.store');
+        Route::get('/update/status', 'updateLocationTrackingStatus')->name('location.tracking.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
     });
 });

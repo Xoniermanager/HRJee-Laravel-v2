@@ -74,7 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function userCompanyDetails()
     {
-        return $this->belongsTo(User::class, 'company_id', 'id');
+        return $this->belongsTo(CompanyDetail::class, 'company_id', 'id')->with('user');
     }
     public function addressDetails()
     {

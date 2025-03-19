@@ -17,8 +17,10 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->dateTime('punch_in');
             $table->dateTime('punch_out')->nullable();
-            $table->string('latitude')->nullable();
-            $table->string('longitude')->nullable();
+            $table->string('punch_in_latitude')->nullable();
+            $table->string('punch_in_longitude')->nullable();
+            $table->string('punch_out_latitude')->nullable();
+            $table->string('punch_out_longitude')->nullable();
             $table->enum('punch_in_using', ['Mobile', 'Web']);
             $table->enum('punch_in_by', ['Self', 'Company'])->default('Self');
             $table->enum('work_from', ['Office', 'Home'])->default('Office');

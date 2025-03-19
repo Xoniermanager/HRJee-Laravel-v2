@@ -36,12 +36,13 @@ class UserDetail extends Model
         'shift_id',
         'start_time',
         'status',
-        'allow_face_recognition',
-        'allow_location_tracking',
+        'face_recognition',
         'face_kyc',
-        'face_punchin_kyc'
+        'face_punchin_kyc',
+        'location_tracking',
+        'live_location_active',
     ];
-    
+
     protected function profileImage(): Attribute
     {
         return Attribute::make(
@@ -72,7 +73,7 @@ class UserDetail extends Model
     {
         return $this->belongsTo(EmployeeType::class, 'employee_type_id', 'id');
     }
-    
+
     public function officeShift()
     {
         return $this->belongsTo(OfficeShift::class, 'shift_id', 'id');
