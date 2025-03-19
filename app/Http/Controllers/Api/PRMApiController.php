@@ -62,7 +62,7 @@ class PRMApiController extends Controller
             'category_id' => 'required|exists:prm_categories,id',
             'bill_date' => 'required|date',
             'amount' => 'required|numeric|regex:/^\d{1,10}(\.\d{1,2})?$/',
-            'document' => 'nullable|somestimes|file|mimes:jpg,png,jpeg,pdf',
+            'document' => 'nullable|sometimes|file|mimes:jpg,png,jpeg,pdf',
             'remark' => 'required|string',
         ]);
         if ($validator->fails()) {
@@ -102,7 +102,7 @@ class PRMApiController extends Controller
             'category_id' => 'required|exists:prm_categories,id',
             'bill_date' => 'required|date',
             'amount' => 'required|numeric|regex:/^\d{1,10}(\.\d{1,2})?$/',
-            'document' => 'nullable|somestimes|file|mimes:jpg,png,jpeg,pdf',
+            'document' => 'nullable|sometimes|file|mimes:jpg,png,jpeg,pdf',
             'remark' => 'required|string',
         ]);
         if ($validator->fails()) {

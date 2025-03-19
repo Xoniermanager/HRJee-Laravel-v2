@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->string('timestamp')->nullable();
-            $table->string('is_read')->boolean()->default(0);
             $table->timestamps();
         });
     }

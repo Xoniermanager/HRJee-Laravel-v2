@@ -39,7 +39,7 @@ class UserService
     {
         $userDetails = $this->userRepository->find($userId);
         $userDetails->type == 'company' ? $userDetails->companyDetails()->update(['status' => $statusValue]) : $userDetails->details()->update(['status' => $statusValue]);
-        
+
         return $userDetails->update(['status' => $statusValue]);
     }
 
@@ -55,7 +55,7 @@ class UserService
     {
         $userDetails = $this->userRepository->find($userId);
         $userDetails->type == 'company' ? $userDetails->companyDetails()->delete() : $userDetails->details()->delete();
-        
+
         return $userDetails->delete();
     }
 
@@ -180,9 +180,11 @@ class UserService
 
     public function getManagersByBranchId($branchIDs)
     {
-        $allManagers = $this->userRepository->where('role_id', '!=', null)->where('type', 'user')->with(['details' => function ($query) use ($branchIDs) {
-            $query->whereIn('company_branch_id', $branchIDs);
-        }])->get();
+        $allManagers = $this->userRepository->where('role_id', '!=', null)->where('type', 'user')->with([
+            'details' => function ($query) use ($branchIDs) {
+                $query->whereIn('company_branch_id', $branchIDs);
+            }
+        ])->get();
 
         return $allManagers;
     }
@@ -269,30 +271,38 @@ class UserService
 
     public function getFaceRecognitionUsers($companyId)
     {
-        if(Auth()->user()->type == "user") {
+        if (Auth()->user()->type == "user") {
             $managerID = Auth()->user()->id;
             $allEmployeeDetails = $this->userRepository
-            ->where('type', 'user')
-            ->where('company_id', $companyId)
-            ->whereHas('details', function ($query) {
-                $query->where('allow_face_recognition', 1);
-            })
-            ->whereHas('managerEmployees', function ($query) use($managerID) {
-                $query->where('manager_id', $managerID);
-            });
+                ->where('type', 'user')
+                ->where('company_id', $companyId)
+                ->whereHas('details', function ($query) {
+                    $query->where('allow_face_recognition', 1);
+                })
+                ->whereHas('managerEmployees', function ($query) use ($managerID) {
+                    $query->where('manager_id', $managerID);
+                });
         } else {
             $allEmployeeDetails = $this->userRepository
-            ->where('type', 'user')
-            ->where('company_id', $companyId)
-            ->whereHas('details', function ($query) {
-                $query->where('allow_face_recognition', 1);
-            });
+                ->where('type', 'user')
+                ->where('company_id', $companyId)
+                ->whereHas('details', function ($query) {
+                    $query->where('allow_face_recognition', 1);
+                });
         }
 
         return $allEmployeeDetails->orderBy('id', 'DESC');
     }
 
-    public function getCompanyEmployeeIDs($companyId) {
+    public function getCompanyEmployeeIDs($companyId)
+    {
         return $this->userRepository->where('company_id', $companyId)->pluck('id')->toArray();
+    }
+
+    public function getAllEmployeeUnAssignedLocationTracking($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type','user')->whereHas('details', function ($query) {
+            $query->where('location_tracking', false);
+        });
     }
 }
