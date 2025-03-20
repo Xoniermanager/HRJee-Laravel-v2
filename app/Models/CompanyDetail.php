@@ -28,7 +28,9 @@ class CompanyDetail extends Model
         'allow_face_recognition',
         'allow_location_tracking',
         'face_recognition_user_limit',
-        'location_tracking_user_limit'
+        'location_tracking_user_limit',
+        'attendance_radius',
+        'task_radius'
     ];
     protected function logo(): Attribute
     {

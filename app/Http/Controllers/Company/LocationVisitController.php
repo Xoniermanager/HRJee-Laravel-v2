@@ -61,6 +61,7 @@ class LocationVisitController extends Controller
             'user_id' => 'required|exists:users,id',  // Validates user_id is required and exists in users table
             'document' => 'nullable|mimes:pdf,docx,doc,pdf|max:10240',  // Optional document with specific types and max size 10MB
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',  // Optional image with specific types and max size 5MB
+            'visit_address' => 'required|max:1024'
         ]);
         try {
             $data = $request->all();
@@ -86,6 +87,7 @@ class LocationVisitController extends Controller
             'user_id' => 'required|exists:users,id',
             'document' => 'nullable|mimes:pdf,docx,doc,pdf|max:10240',  // Optional document with specific types and max size 10MB
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',  // Optional image with specific types and max size 5MB
+            'visit_address' => 'required|max:1024'
         ]);
         try {
             $data = $request->all();

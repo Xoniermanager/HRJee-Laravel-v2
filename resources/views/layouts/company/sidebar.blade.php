@@ -110,6 +110,11 @@
 												My Profile
 											</a>
 										</div>
+                                        <div class="menu-item px-5">
+											<a href="{{ route('company.configuration') }}" class="menu-link px-5">
+												Configuration
+											</a>
+										</div>
 										<!--end::Menu item-->
 
 										<div class="menu-item px-5">

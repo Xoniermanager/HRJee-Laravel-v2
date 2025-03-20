@@ -4,7 +4,8 @@
 		<!--begin::Table head-->
 		<thead>
 			<tr class="fw-bold">
-				<th>Sr. No.</th>
+                {{-- <th><input type="checkbox" name="" id=""></th> --}}
+				<th> Sr. No.</th>
 				<th class="min-w-150px">Name</th>
 				{{-- <th>Department</th>
                 <th>Designation</th> --}}
@@ -30,6 +31,7 @@
 		@forelse ($allUserDetails as $key => $singleUserDetails)
 			<tbody class="">
 				<tr>
+                    {{-- <td> <input type="checkbox" name="" id=""></td> --}}
 					<td>{{ $key + 1 }}</td>
 					<td>{{ $singleUserDetails->name }}</td>
 					{{-- <td>{{ $singleUserDetails->department->name }}</td>
