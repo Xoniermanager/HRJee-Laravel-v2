@@ -113,6 +113,13 @@
                                 @endif
                                 @endforeach
                                 @endif
+                                <div class="col-md-6 form-group">
+                                    <label class="required">Visit Address</label>
+                                   <textarea name="visit_address" class="form-control">{{ $taskdetails->visit_address }}</textarea>
+                                    @if ($errors->has('visit_address'))
+                                    <div class="text-danger">{{ $errors->first('visit_address') }}</div>
+                                    @endif
+                                </div>
                                 <div class="col-md-3 form-group">
                                     <label for="">Disposition Code</label>
                                    <select name="disposition_code_id" class="form-control">

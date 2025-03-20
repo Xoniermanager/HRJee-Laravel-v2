@@ -78,8 +78,10 @@ Route::get('/company/state/get/all/state', [StateController::class, 'getAllState
 Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
+        Route::get('configuration', 'companyConfiguartion')->name('company.configuration');
         Route::post('profile/update', 'update_company')->name('company.profile.update');
         Route::post('change/password', 'company_change_password')->name('company.change.password');
+        Route::post('configuration/update', 'updateCompanyConfiguration')->name('company.configuration.update');
     });
     Route::controller(CompanyDashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('company.dashboard');
