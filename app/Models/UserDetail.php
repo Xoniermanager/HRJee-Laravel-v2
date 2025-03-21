@@ -41,6 +41,7 @@ class UserDetail extends Model
         'face_punchin_kyc',
         'location_tracking',
         'live_location_active',
+        'punch_in_radius'
     ];
 
     protected function profileImage(): Attribute

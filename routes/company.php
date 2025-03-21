@@ -210,6 +210,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
         Route::post('/export-file', 'uploadImport')->name('upload.file');
+        Route::post('/punchIn/radius','updatePunchInRadius')->name('update.punhin.radius');
     });
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
