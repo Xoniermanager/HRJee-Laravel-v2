@@ -100,7 +100,10 @@ class EmployeeController extends Controller
             $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
         }
 
+        $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+        
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
+        
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
@@ -110,7 +113,7 @@ class EmployeeController extends Controller
         $allSkills = $this->skillServices->getAllActiveSkills();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
 
-        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills','allSalaryStructured'));
+        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills','allSalaryStructured', 'activeUserCount'));
     }
 
     public function add()
@@ -178,6 +181,13 @@ class EmployeeController extends Controller
     {
         DB::beginTransaction();
         try {
+            $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+
+            if($activeUserCount >= auth()->user()->companyDetails->company_size) {
+                DB::rollBack();
+                return response()->json(['error' => 'Company size limit has been exceeded!']);
+            }
+
             $request['company_id'] = Auth()->user()->company_id;
             if (isset($request->id) && !empty($request->id)) {
                 $userCreated = $this->userService->updateDetail($request->only('name', 'role_id'), $request->id);
@@ -251,6 +261,8 @@ class EmployeeController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+
+
     public function statusUpdate(Request $request, $userId)
     {
         try {
@@ -318,18 +330,30 @@ class EmployeeController extends Controller
     public function uploadImport(Request $request)
     {
         // Validate that the file is uploaded
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|mimes:csv|max:2048',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'The file is required and must be an Excel or CSV file.'
-            ], 400);
-        }
+        // $validator = Validator::make($request->all(), [
+        //     'file' => 'required|mimes:csv|max:2048',
+        // ]);
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'The file is required and must be an Excel or CSV file.'
+        //     ], 400);
+        // }
         $import = new UserImport();
+
         try {
-            Excel::import($import, $request->file('file'));
+            $importedData = Excel::import($import, $request->file('file'));
+
+            $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+
+            if(($activeUserCount + $import->count) > auth()->user()->companyDetails->company_size) {
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Company size limit has been exceeded!',
+                ], 500);
+            }
+
             $failures = $import->getFailures();
             if (count($failures) > 0) {
                 return response()->json([

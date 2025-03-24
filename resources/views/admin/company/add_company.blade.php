@@ -235,7 +235,7 @@
                                                                 <div class="col-md-6">
                                                                     <input class="form-control" id="company_size"
                                                                         name="company_size" type="number"
-                                                                        placeholder="No of User/Licence required.">
+                                                                        placeholder="No of Employees">
                                                                 </div>
                                                             </div>
                                                         </div>
