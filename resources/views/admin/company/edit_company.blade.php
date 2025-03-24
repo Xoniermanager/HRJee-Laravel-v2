@@ -238,7 +238,7 @@
                                                             <div class="col-md-6">
                                                                 <input class="form-control" id="company_size" name="company_size"
                                                                     type="number"
-                                                                    placeholder="No of User/Licence required." value="{{$companyDetails->companyDetails->company_size}}">
+                                                                    placeholder="No of Employees" value="{{$companyDetails->companyDetails->company_size}}">
                                                             </div>
 
                                                         </div>

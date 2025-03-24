@@ -13,10 +13,10 @@
                             <div class="d-flex align-items-center position-relative">
                                 <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                                 <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none">
-                                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1"
-                                            transform="rotate(45 17.0365 15.1223)" fill="black">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none">
+                                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
+                                            rx="1" transform="rotate(45 17.0365 15.1223)" fill="black">
                                         </rect>
                                         <path
                                             d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
@@ -35,9 +35,11 @@
                             <a href="#" class="btn btn-sm ms-3 btn-primary align-self-center wt-space disabled"
                                 id="punch_in_radius">Add PunchIn Radius</a>
                         </div>
-                        <a href="{{ route('employee.add') }}"
-                            class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
-                            Add Employee</a>
+                        @if ($activeUserCount < auth()->user()->companyDetails->company_size)
+                            <a href="{{ route('employee.add') }}"
+                                class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
+                                Add Employee</a>
+                        
                         <div class="row">
 
                             <div class="col-md-1 mt-3">
@@ -59,7 +61,7 @@
 
                             </div>
                         </div>
-
+                        @endif
                         <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
                         <div id="validationErrors" class="alert alert-danger" style="display: none;"></div>
                         @if (session('success'))
@@ -86,15 +88,15 @@
                                 <div class="col-md-2 mb-1" id="gender_div">
                                     <select class="form-control filter_form" name="gender" id="gender">
                                         <option value="">Gender</option>
-                                        <option value="M" {{ request()->get('gender') == 'M' || old('gender') == 'M' ?
-        'selected' : '' }}>
+                                        <option value="M"
+                                            {{ request()->get('gender') == 'M' || old('gender') == 'M' ? 'selected' : '' }}>
                                             Male
                                         </option>
-                                        <option value="F" {{ request()->get('gender') == 'F' || old('gender') == 'F' ?
-        'selected' : '' }}>
+                                        <option value="F"
+                                            {{ request()->get('gender') == 'F' || old('gender') == 'F' ? 'selected' : '' }}>
                                             Female</option>
-                                        <option value="O" {{ request()->get('gender') == 'O' || old('gender') == 'O' ?
-        'selected' : '' }}>
+                                        <option value="O"
+                                            {{ request()->get('gender') == 'O' || old('gender') == 'O' ? 'selected' : '' }}>
                                             Other</option>
                                     </select>
                                 </div>
@@ -102,23 +104,23 @@
                                     <select class="form-control filter_form" name="emp_status_id" id="emp_status_id">
                                         <option value="">Employee Status</option>
                                         @foreach ($allEmployeeStatus as $employeeStatus)
-                                                                        <option {{ request()->get('emp_status_id') == $employeeStatus->id ||
-                                            old('emp_status_id') == $employeeStatus->id
-                                            ? 'selected'
-                                            : '' }}
-                                                                            value="{{ $employeeStatus->id }}">{{ $employeeStatus->name }}</option>
+                                            <option
+                                                {{ request()->get('emp_status_id') == $employeeStatus->id || old('emp_status_id') == $employeeStatus->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $employeeStatus->id }}">{{ $employeeStatus->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-1" id="marital_status_div">
                                     <select class="form-control filter_form" name="marital_status" id="marital_status">
                                         <option value="">Marital Status</option>
-                                        <option value="S" {{ request()->get('marital_status') == 'S' ||
-        old('marital_status') == 'S' ? 'selected' : '' }}>
+                                        <option value="S"
+                                            {{ request()->get('marital_status') == 'S' || old('marital_status') == 'S' ? 'selected' : '' }}>
                                             Single
                                         </option>
-                                        <option value="M" {{ request()->get('marital_status') == 'M' ||
-        old('marital_status') == 'M' ? 'selected' : '' }}>
+                                        <option value="M"
+                                            {{ request()->get('marital_status') == 'M' || old('marital_status') == 'M' ? 'selected' : '' }}>
                                             Married</option>
                                     </select>
                                 </div>
@@ -126,11 +128,11 @@
                                     <select class="form-control filter_form" name="emp_type_id" id="emp_type_id">
                                         <option value="">All Employee Type</option>
                                         @foreach ($allEmployeeType as $employeeType)
-                                                                        <option {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id')
-                                            == $employeeType->id
-                                            ? 'selected'
-                                            : '' }}
-                                                                            value="{{ $employeeType->id }}">{{ $employeeType->name }}</option>
+                                            <option
+                                                {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id') == $employeeType->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $employeeType->id }}">{{ $employeeType->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -138,12 +140,12 @@
                                     <select class="form-control filter_form" name="department_id" id="department_id">
                                         <option value="">All Department</option>
                                         @foreach ($alldepartmentDetails as $departmentDetails)
-                                                                        <option {{ request()->get('department_id') == $departmentDetails->id ||
-                                            old('department_id') == $departmentDetails->id
-                                            ? 'selected'
-                                            : '' }}
-                                                                            value="{{ $departmentDetails->id }}">{{ $departmentDetails->name }}
-                                                                        </option>
+                                            <option
+                                                {{ request()->get('department_id') == $departmentDetails->id || old('department_id') == $departmentDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $departmentDetails->id }}">{{ $departmentDetails->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -151,9 +153,9 @@
                                     <select class="form-control filter_form" name="shift_id">
                                         <option value="">Shift</option>
                                         @foreach ($allShifts as $shiftDetail)
-                                                                        <option {{ request()->get('shift_id') == $shiftDetail->id || old('shift_id') ==
-                                            $shiftDetail->id ? 'selected' : '' }}
-                                                                            value="{{ $shiftDetail->id }}">{{ $shiftDetail->name }}</option>
+                                            <option
+                                                {{ request()->get('shift_id') == $shiftDetail->id || old('shift_id') == $shiftDetail->id ? 'selected' : '' }}
+                                                value="{{ $shiftDetail->id }}">{{ $shiftDetail->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -161,11 +163,11 @@
                                     <select class="form-control filter_form" name="branch_id">
                                         <option value="">Branch</option>
                                         @foreach ($allBranches as $branchDetails)
-                                                                        <option {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') ==
-                                            $branchDetails->id
-                                            ? 'selected'
-                                            : '' }}
-                                                                            value="{{ $branchDetails->id }}">{{ $branchDetails->name }}</option>
+                                            <option
+                                                {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') == $branchDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $branchDetails->id }}">{{ $branchDetails->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -173,12 +175,13 @@
                                     <select class="form-control filter_form" name="qualification_id">
                                         <option value="">Qualification</option>
                                         @foreach ($allQualification as $qualificationDetails)
-                                                                        <option {{ request()->get('qualification_id') == $qualificationDetails->id ||
-                                            old('qualification_id') == $qualificationDetails->id
-                                            ? 'selected'
-                                            : '' }}
-                                                                            value="{{ $qualificationDetails->id }}">{{ $qualificationDetails->name }}
-                                                                        </option>
+                                            <option
+                                                {{ request()->get('qualification_id') == $qualificationDetails->id ||
+                                                old('qualification_id') == $qualificationDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $qualificationDetails->id }}">{{ $qualificationDetails->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -186,9 +189,9 @@
                                     <select class="form-control filter_form" name="skill_id">
                                         <option value="">Skills</option>
                                         @foreach ($allSkills as $skillsDetails)
-                                                                        <option {{ request()->get('skill_id') == $skillsDetails->id || old('skill_id') ==
-                                            $skillsDetails->id ? 'selected' : '' }}
-                                                                            value="{{ $skillsDetails->id }}">{{ $skillsDetails->name }}</option>
+                                            <option
+                                                {{ request()->get('skill_id') == $skillsDetails->id || old('skill_id') == $skillsDetails->id ? 'selected' : '' }}
+                                                value="{{ $skillsDetails->id }}">{{ $skillsDetails->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -261,8 +264,8 @@
                                 <span class="svg-icon svg-icon-1">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
-                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
-                                            transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2"
+                                            rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
                                         <rect x="7.41422" y="6" width="16" height="2" rx="1"
                                             transform="rotate(45 7.41422 6)" fill="currentColor" />
                                     </svg>
@@ -298,8 +301,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" value="emp_type_div_id"
-                                            checked>
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="emp_type_div_id" checked>
 
                                         <label for="gender">Employee Type</label>
                                     </div>
@@ -321,7 +324,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" value="branch_div_id">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="branch_div_id">
 
                                         <label for="gender">Branch</label>
                                     </div>
@@ -349,7 +353,7 @@
         </div>
         <script>
             let submit_handler = false;
-            $(".filter").on("click", function (event) {
+            $(".filter").on("click", function(event) {
                 let filter_id = $(this).val();
                 let selected_status = $(this).prop('checked');
                 if (selected_status) {
@@ -358,16 +362,16 @@
                     jQuery('#' + filter_id).hide();
                 }
             });
-            $('.filter_form').on('change', function () {
+            $('.filter_form').on('change', function() {
                 var data = $('#filter_id').serialize();
                 $.ajax({
                     method: 'GET',
                     url: company_ajax_base_url + '/employee/get/filter/list',
                     data: data,
-                    success: function (response) {
+                    success: function(response) {
                         $('#employee_list').replaceWith(response.data);
                     },
-                    error: function (jqXHR, textStatus, errorThrown) { }
+                    error: function(jqXHR, textStatus, errorThrown) {}
                 });
             });
 
@@ -399,14 +403,14 @@
 
                 return result;
             }
-            $("#search").on('input', function () {
+            $("#search").on('input', function() {
                 $.ajax({
                     type: 'GET',
                     url: company_ajax_base_url + '/employee/get/filter/list',
                     data: {
                         'search': $(this).val()
                     },
-                    success: function (response) {
+                    success: function(response) {
                         $('#employee_list').replaceWith(response.data);
                     }
                 });
@@ -427,11 +431,11 @@
                         $.ajax({
                             url: company_ajax_base_url + '/employee/delete/' + id,
                             type: "get",
-                            success: function (res) {
+                            success: function(res) {
                                 Swal.fire("Done!", "It was succesfully Exit!", "success");
                                 $('#employee_list').replaceWith(res.data);
                             },
-                            error: function (xhr, ajaxOptions, thrownError) {
+                            error: function(xhr, ajaxOptions, thrownError) {
                                 Swal.fire("Error deleting!", "Please try again", "error");
                             }
                         });
@@ -456,7 +460,7 @@
                     data: {
                         'status': status,
                     },
-                    success: function (res) {
+                    success: function(res) {
                         if (res.status == true) {
                             swal.fire("Done!", 'Status ' + status_name + ' Update Successfully', "success");
                         } else {
@@ -486,7 +490,7 @@
                         'id': id,
                         'status': status,
                     },
-                    success: function (res) {
+                    success: function(res) {
                         console.log("res => ", res)
                         if (res) {
                             if (res.status == 200) {
@@ -505,13 +509,13 @@
             }
 
 
-            jQuery('#export_button').on('click', function () {
+            jQuery('#export_button').on('click', function() {
                 var filteredData = $('#filter_id').serialize();
                 $.ajax({
                     type: 'get',
                     url: "{{ route('employee.export') }}",
                     data: filteredData,
-                    success: function (response) {
+                    success: function(response) {
                         if (response.status) {
                             Swal.fire({
                                 title: 'Sucess',
@@ -528,16 +532,16 @@
                             });
                         }
                     },
-                    error: function () {
+                    error: function() {
                         console.log("Export failed");
                     }
                 });
             });
         </script>
         <script>
-            $(document).ready(function () {
+            $(document).ready(function() {
                 // Handle the form submission via AJAX
-                $('#importForm').on('submit', function (e) {
+                $('#importForm').on('submit', function(e) {
                     e.preventDefault();
                     var formData = new FormData(this);
                     $('#errorMessage').hide();
@@ -549,7 +553,7 @@
                         data: formData,
                         contentType: false,
                         processData: false,
-                        success: function (response) {
+                        success: function(response) {
                             if (response.status === 'success') {
                                 Swal.fire({
                                     title: 'Sucess',
@@ -562,7 +566,7 @@
                                 if (response.errors) {
                                     let errorsHtml =
                                         '<ul style="color: red; list-style-type: none; padding-left: 20px; margin: 0;">';
-                                    response.errors.forEach(function (error) {
+                                    response.errors.forEach(function(error) {
                                         // Ensure you join multiple errors with commas if needed
                                         let errorMessages = Array.isArray(error.errors) ?
                                             error.errors.join(', ') : error.errors;
@@ -587,7 +591,7 @@
                                 }
                             }
                         },
-                        error: function (xhr) {
+                        error: function(xhr) {
                             var response = xhr.responseJSON;
                             $('#errorMessage').text(response.message ||
                                 'An unexpected error occurred.').show();
@@ -597,7 +601,7 @@
             });
         </script>
         <script>
-            document.getElementById('check_all').addEventListener('click', function () {
+            document.getElementById('check_all').addEventListener('click', function() {
                 const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
                 const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                 checkboxes.forEach(checkbox => {
@@ -610,4 +614,4 @@
                 }
             });
         </script>
-@endsection
+    @endsection
