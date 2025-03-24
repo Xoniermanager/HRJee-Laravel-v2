@@ -13,10 +13,10 @@
                         <div class="d-flex align-items-center position-relative">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                             <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none">
-                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1"
-                                        transform="rotate(45 17.0365 15.1223)" fill="black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none">
+                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
+                                        rx="1" transform="rotate(45 17.0365 15.1223)" fill="black">
                                     </rect>
                                     <path
                                         d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
@@ -34,10 +34,12 @@
                         <div class="col-md-5">
                         <a class="btn btn-sm ms-3 btn-primary align-self-center wt-space disabled" data-bs-toggle="modal" data-bs-target="#modal_radius" id="punch_in_radius">Add PunchIn Radius</a>
                         </div>
-                        <a href="{{ route('employee.add') }}"
-                        class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
-                        Add Employee</a>
-                   <div class="row">
+                        @if ($activeUserCount < auth()->user()->companyDetails->company_size)
+                            <a href="{{ route('employee.add') }}"
+                                class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
+                                Add Employee</a>
+
+                        <div class="row">
 
                     <div class="col-md-1 mt-3">
                         <a href="{{ asset('storage/test.csv') }}"
@@ -57,7 +59,7 @@
 
             </div>
                    </div>
-
+                        @endif
                     <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
                     <div id="validationErrors" class="alert alert-danger" style="display: none;"></div>
                     @if (session('success'))
@@ -65,132 +67,137 @@
                             {{ session('success') }}
                         </div>
                         @elseif (session('danger'))
-                        <div class="alert alert-danger">
-                            {{ session('danger') }}
-                        </div>
-                    @endif
+                            <div class="alert alert-danger">
+                                {{ session('danger') }}
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
-        <!--begin::Row-->
-        <div class="row gy-5 g-xl-10">
-            <!--begin::Col-->
-            <div class="card card-body col-md-12">
-                <div class="card-header cursor-pointer d-block p-0 mb-3">
-                    <!--begin::Card title-->
-                    <!--begin::Action-->
-                    <div>
-                        <form class="row" id="filter_id">
-                            <div class="col-md-2 mb-1" id="gender_div">
-                                <select class="form-control filter_form" name="gender" id="gender">
-                                    <option value="">Gender</option>
-                                    <option value="M" {{ request()->get('gender') == 'M' || old('gender') == 'M' ? 'selected' : '' }}>
-                                        Male
-                                    </option>
-                                    <option value="F" {{ request()->get('gender') == 'F' || old('gender') == 'F' ?'selected' : '' }}>
-                                        Female</option>
-                                    <option value="O" {{ request()->get('gender') == 'O' || old('gender') == 'O' ? 'selected' : '' }}>
-                                        Other</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1" id="emp_status_id_div">
-                                <select class="form-control filter_form" name="emp_status_id" id="emp_status_id">
-                                    <option value="">Employee Status</option>
-                                    @foreach ($allEmployeeStatus as $employeeStatus)
-                                    <option {{ request()->get('emp_status_id') == $employeeStatus->id ||
-                                        old('emp_status_id') == $employeeStatus->id
-                                        ? 'selected'
-                                        : '' }}
-                                        value="{{ $employeeStatus->id }}">{{ $employeeStatus->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1" id="marital_status_div">
-                                <select class="form-control filter_form" name="marital_status" id="marital_status">
-                                    <option value="">Marital Status</option>
-                                    <option value="S" {{ request()->get('marital_status') == 'S' ||
-                                        old('marital_status') == 'S' ? 'selected' : '' }}>
-                                        Single
-                                    </option>
-                                    <option value="M" {{ request()->get('marital_status') == 'M' ||
-                                        old('marital_status') == 'M' ? 'selected' : '' }}>
-                                        Married</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1" id="emp_type_div_id">
-                                <select class="form-control filter_form" name="emp_type_id" id="emp_type_id">
-                                    <option value="">All Employee Type</option>
-                                    @foreach ($allEmployeeType as $employeeType)
-                                    <option {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id')
-                                        == $employeeType->id
-                                        ? 'selected'
-                                        : '' }}
-                                        value="{{ $employeeType->id }}">{{ $employeeType->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1" id="department_div_id">
-                                <select class="form-control filter_form" name="department_id" id="department_id">
-                                    <option value="">All Department</option>
-                                    @foreach ($alldepartmentDetails as $departmentDetails)
-                                    <option {{ request()->get('department_id') == $departmentDetails->id ||
-                                        old('department_id') == $departmentDetails->id
-                                        ? 'selected'
-                                        : '' }}
-                                        value="{{ $departmentDetails->id }}">{{ $departmentDetails->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1" id="shift_div_id" style="display: none">
-                                <select class="form-control filter_form" name="shift_id">
-                                    <option value="">Shift</option>
-                                    @foreach ($allShifts as $shiftDetail)
-                                    <option {{ request()->get('shift_id') == $shiftDetail->id || old('shift_id') ==
-                                        $shiftDetail->id ? 'selected' : '' }}
-                                        value="{{ $shiftDetail->id }}">{{ $shiftDetail->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1" id="branch_div_id" style="display: none">
-                                <select class="form-control filter_form" name="branch_id">
-                                    <option value="">Branch</option>
-                                    @foreach ($allBranches as $branchDetails)
-                                    <option {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') ==
-                                        $branchDetails->id
-                                        ? 'selected'
-                                        : '' }}
-                                        value="{{ $branchDetails->id }}">{{ $branchDetails->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1" id="qualification_div_id" style="display: none">
-                                <select class="form-control filter_form" name="qualification_id">
-                                    <option value="">Qualification</option>
-                                    @foreach ($allQualification as $qualificationDetails)
-                                    <option {{ request()->get('qualification_id') == $qualificationDetails->id ||
-                                        old('qualification_id') == $qualificationDetails->id
-                                        ? 'selected'
-                                        : '' }}
-                                        value="{{ $qualificationDetails->id }}">{{ $qualificationDetails->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1" id="skill_div_id" style="display: none">
-                                <select class="form-control filter_form" name="skill_id">
-                                    <option value="">Skills</option>
-                                    @foreach ($allSkills as $skillsDetails)
-                                    <option {{ request()->get('skill_id') == $skillsDetails->id || old('skill_id') ==
-                                        $skillsDetails->id ? 'selected' : '' }}
-                                        value="{{ $skillsDetails->id }}">{{ $skillsDetails->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2 mb-1">
-                                <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#filter_popup">More Filter</a>
-                            </div>
-                        </form>
+            <!--begin::Row-->
+            <div class="row gy-5 g-xl-10">
+                <!--begin::Col-->
+                <div class="card card-body col-md-12">
+                    <div class="card-header cursor-pointer d-block p-0 mb-3">
+                        <!--begin::Card title-->
+                        <!--begin::Action-->
+                        <div>
+                            <form class="row" id="filter_id">
+                                <div class="col-md-2 mb-1" id="gender_div">
+                                    <select class="form-control filter_form" name="gender" id="gender">
+                                        <option value="">Gender</option>
+                                        <option value="M"
+                                            {{ request()->get('gender') == 'M' || old('gender') == 'M' ? 'selected' : '' }}>
+                                            Male
+                                        </option>
+                                        <option value="F"
+                                            {{ request()->get('gender') == 'F' || old('gender') == 'F' ? 'selected' : '' }}>
+                                            Female</option>
+                                        <option value="O"
+                                            {{ request()->get('gender') == 'O' || old('gender') == 'O' ? 'selected' : '' }}>
+                                            Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1" id="emp_status_id_div">
+                                    <select class="form-control filter_form" name="emp_status_id" id="emp_status_id">
+                                        <option value="">Employee Status</option>
+                                        @foreach ($allEmployeeStatus as $employeeStatus)
+                                            <option
+                                                {{ request()->get('emp_status_id') == $employeeStatus->id || old('emp_status_id') == $employeeStatus->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $employeeStatus->id }}">{{ $employeeStatus->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1" id="marital_status_div">
+                                    <select class="form-control filter_form" name="marital_status" id="marital_status">
+                                        <option value="">Marital Status</option>
+                                        <option value="S"
+                                            {{ request()->get('marital_status') == 'S' || old('marital_status') == 'S' ? 'selected' : '' }}>
+                                            Single
+                                        </option>
+                                        <option value="M"
+                                            {{ request()->get('marital_status') == 'M' || old('marital_status') == 'M' ? 'selected' : '' }}>
+                                            Married</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1" id="emp_type_div_id">
+                                    <select class="form-control filter_form" name="emp_type_id" id="emp_type_id">
+                                        <option value="">All Employee Type</option>
+                                        @foreach ($allEmployeeType as $employeeType)
+                                            <option
+                                                {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id') == $employeeType->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $employeeType->id }}">{{ $employeeType->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1" id="department_div_id">
+                                    <select class="form-control filter_form" name="department_id" id="department_id">
+                                        <option value="">All Department</option>
+                                        @foreach ($alldepartmentDetails as $departmentDetails)
+                                            <option
+                                                {{ request()->get('department_id') == $departmentDetails->id || old('department_id') == $departmentDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $departmentDetails->id }}">{{ $departmentDetails->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1" id="shift_div_id" style="display: none">
+                                    <select class="form-control filter_form" name="shift_id">
+                                        <option value="">Shift</option>
+                                        @foreach ($allShifts as $shiftDetail)
+                                            <option
+                                                {{ request()->get('shift_id') == $shiftDetail->id || old('shift_id') == $shiftDetail->id ? 'selected' : '' }}
+                                                value="{{ $shiftDetail->id }}">{{ $shiftDetail->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1" id="branch_div_id" style="display: none">
+                                    <select class="form-control filter_form" name="branch_id">
+                                        <option value="">Branch</option>
+                                        @foreach ($allBranches as $branchDetails)
+                                            <option
+                                                {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') == $branchDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $branchDetails->id }}">{{ $branchDetails->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1" id="qualification_div_id" style="display: none">
+                                    <select class="form-control filter_form" name="qualification_id">
+                                        <option value="">Qualification</option>
+                                        @foreach ($allQualification as $qualificationDetails)
+                                            <option
+                                                {{ request()->get('qualification_id') == $qualificationDetails->id ||
+                                                old('qualification_id') == $qualificationDetails->id
+                                                    ? 'selected'
+                                                    : '' }}
+                                                value="{{ $qualificationDetails->id }}">{{ $qualificationDetails->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1" id="skill_div_id" style="display: none">
+                                    <select class="form-control filter_form" name="skill_id">
+                                        <option value="">Skills</option>
+                                        @foreach ($allSkills as $skillsDetails)
+                                            <option
+                                                {{ request()->get('skill_id') == $skillsDetails->id || old('skill_id') == $skillsDetails->id ? 'selected' : '' }}
+                                                value="{{ $skillsDetails->id }}">{{ $skillsDetails->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-1">
+                                    <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#filter_popup">More Filter</a>
+                                </div>
+                            </form>
 
                     </div>
 
@@ -212,88 +219,88 @@
                             </div>
                             <!--begin::Body-->
 
+                            </div>
+                            <!--begin::Body-->
                         </div>
                         <!--begin::Body-->
                     </div>
-                    <!--begin::Body-->
                 </div>
+                <!--end::Col-->
             </div>
-            <!--end::Col-->
+            <!--end::Row-->
         </div>
-        <!--end::Row-->
-    </div>
-    <div class="modal fade" id="personal_details" tabindex="-1" aria-hidden="true">
-        @include('company.employee.popup_form.personal_detail')
-    </div>
-    <!--end::Modal - personal_details-->
-    <!--begin::Modal - advance_details-->
-    <div class="modal fade" id="advance_details" tabindex="-1" aria-hidden="true">
-        @include('company.employee.popup_form.advance_detail')
-    </div>
-    <!--end::Modal - advance_details-->
-    <!--begin::Modal - Address-->
-    <div class="modal fade" id="address" tabindex="-1" aria-hidden="true">
-        @include('company.employee.popup_form.address_detail')
-    </div>
-    <!--end::Modal - Address-->
-    <!--begin::Modal - Bank Details-->
-    <div class="modal fade" id="bank_details" tabindex="-1" aria-hidden="true">
-        @include('company.employee.popup_form.bank_detail')
-    </div>
-    <!--end::Modal - Bank Details-->
-    <div class="modal fade" id="filter_popup" tabindex="-1" aria-hidden="true">
-        <div>
-            <div class="modal-dialog mw-400px">
-                <!--begin::Modal content-->
-                <div class="modal-content">
-                    <!--begin::Modal header-->
-                    <div class="modal-header pb-0">
-                        <!--begin::Close-->
-                        <h3 class="fw-bold m-0">Apply More Filters</h3>
-                        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-                            <span class="svg-icon svg-icon-1">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
-                                        transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                                    <rect x="7.41422" y="6" width="16" height="2" rx="1"
-                                        transform="rotate(45 7.41422 6)" fill="currentColor" />
-                                </svg>
-                            </span>
-                            <!--end::Svg Icon-->
+        <div class="modal fade" id="personal_details" tabindex="-1" aria-hidden="true">
+            @include('company.employee.popup_form.personal_detail')
+        </div>
+        <!--end::Modal - personal_details-->
+        <!--begin::Modal - advance_details-->
+        <div class="modal fade" id="advance_details" tabindex="-1" aria-hidden="true">
+            @include('company.employee.popup_form.advance_detail')
+        </div>
+        <!--end::Modal - advance_details-->
+        <!--begin::Modal - Address-->
+        <div class="modal fade" id="address" tabindex="-1" aria-hidden="true">
+            @include('company.employee.popup_form.address_detail')
+        </div>
+        <!--end::Modal - Address-->
+        <!--begin::Modal - Bank Details-->
+        <div class="modal fade" id="bank_details" tabindex="-1" aria-hidden="true">
+            @include('company.employee.popup_form.bank_detail')
+        </div>
+        <!--end::Modal - Bank Details-->
+        <div class="modal fade" id="filter_popup" tabindex="-1" aria-hidden="true">
+            <div>
+                <div class="modal-dialog mw-400px">
+                    <!--begin::Modal content-->
+                    <div class="modal-content">
+                        <!--begin::Modal header-->
+                        <div class="modal-header pb-0">
+                            <!--begin::Close-->
+                            <h3 class="fw-bold m-0">Apply More Filters</h3>
+                            <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                                <span class="svg-icon svg-icon-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2"
+                                            rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                                        <rect x="7.41422" y="6" width="16" height="2" rx="1"
+                                            transform="rotate(45 7.41422 6)" fill="currentColor" />
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->
+                            </div>
+                            <!--end::Close-->
                         </div>
-                        <!--end::Close-->
-                    </div>
-                    <!--begin::Modal header-->
-                    <!--begin::Modal body-->
-                    <div class="modal-body scroll-y p-4">
-                        <div class="row w-100">
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check form-switch form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3 filter" type="checkbox" value="gender_div"
-                                        checked>
-                                    <label for="gender">Gender</label>
+                        <!--begin::Modal header-->
+                        <!--begin::Modal body-->
+                        <div class="modal-body scroll-y p-4">
+                            <div class="row w-100">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox" value="gender_div"
+                                            checked>
+                                        <label for="gender">Gender</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check form-switch form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3 filter" type="checkbox"
-                                        value="emp_status_id_div" checked>
-                                    <label for="gender">Employee Status</label>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="emp_status_id_div" checked>
+                                        <label for="gender">Employee Status</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check form-switch form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3 filter" type="checkbox"
-                                        value="marital_status_div" checked>
-                                    <label for="gender">Marital Status</label>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="marital_status_div" checked>
+                                        <label for="gender">Marital Status</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check form-switch form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3 filter" type="checkbox" value="emp_type_div_id"
-                                        checked>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="emp_type_div_id" checked>
 
                                     <label for="gender">Employee Type</label>
                                 </div>
@@ -310,12 +317,13 @@
                                 <div class="form-check form-switch form-check-custom form-check-solid">
                                     <input class="form-check-input me-3 filter" type="checkbox" value="shift_div_id">
 
-                                    <label for="gender">Sift</label>
+                                        <label for="gender">Sift</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check form-switch form-check-custom form-check-solid">
-                                    <input class="form-check-input me-3 filter" type="checkbox" value="branch_div_id">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3 filter" type="checkbox"
+                                            value="branch_div_id">
 
                                     <label for="gender">Branch</label>
                                 </div>
@@ -458,6 +466,7 @@
                         'search': $(this).val()
                     },
                     success: function(response) {
+                    success: function(response) {
                         $('#employee_list').replaceWith(response.data);
                     }
                 });
@@ -537,7 +546,7 @@
                         'id': id,
                         'status': status,
                     },
-                    success: function (res) {
+                    success: function(res) {
                         console.log("res => ", res)
                         if (res) {
                             if(res.status == 200) {
@@ -648,7 +657,7 @@
             });
     </script>
     <script>
-        document.getElementById('check_all').addEventListener('click', function () {
+        document.getElementById('check_all').addEventListener('click', function() {
             const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
             const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
             checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
@@ -768,5 +777,5 @@
         });
     </script>
 
-    @endsection
+        @endsection
 
