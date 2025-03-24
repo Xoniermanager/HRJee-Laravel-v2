@@ -15,12 +15,12 @@ class PrmRequestService
 
   public function getAllRequest($companyId)
   {
-    
+
     return $this->prmRequestRepository
             ->whereHas('user', function ($query) use ($companyId) {
                 $query->where('company_id', $companyId);
             })->orderBy('id', 'desc')->paginate(10);
-    
+
   }
   public function updateDetails(array $data, $id)
   {
@@ -31,7 +31,11 @@ class PrmRequestService
     $assetCategoryDetails = $this->prmRequestRepository;
     /**List By Search or Filter */
     if (isset($request->search) && !empty($request->search)) {
-      $assetCategoryDetails = $assetCategoryDetails->where('name', 'Like', '%' . $request->search . '%');
+        $searchKey = $request->search;
+      $assetCategoryDetails ->whereHas('user', function ($query) use ($searchKey) {
+        $query->where('name', 'like', '%' . $searchKey . '%')
+            ->orWhere('email', 'like', '%' . $searchKey . '%');
+    });;
     }
     /**List By Status or Filter */
     if (isset($request->status)) {
