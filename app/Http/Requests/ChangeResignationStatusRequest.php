@@ -21,10 +21,22 @@ class ChangeResignationStatusRequest extends FormRequest
      */
     public function rules(): array
     {
+        $resignationId = $this->route('id');
+        $resignation = \App\Models\Resignation::findOrFail($resignationId);
+
         return [
-            "resignation_status_id" => 'nullable|exists:resignation_status,id',
-            "resignation_id" => 'required|exists:resignations,id',
-            'remark' => 'required|string'
+            "status" => [
+                'required',
+                'in:Pending,Approved,Rejected,Withdrawn,Hold',
+
+                function ($attribute, $value, $fail) use ($resignation) {
+                    if ($resignation->status === $value) {
+                        $fail('The status must be different from the current status.');
+                    }
+                },
+            ],
+            'remark' => 'required|string',
+            'release_date' => 'required_if:status,==,approved',
         ];
     }
 }

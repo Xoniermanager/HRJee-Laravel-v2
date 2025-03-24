@@ -18,13 +18,13 @@ class AttendanceController extends Controller
     }
     public function index()
     {
-        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate(Carbon::now()->startOfMonth(), Carbon::now(), Auth::guard('employee')->user()->id)->orderBy('punch_in', 'DESC')->paginate(20);
+        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate(Carbon::now()->startOfMonth(), Carbon::now(), Auth::user()->id)->orderBy('punch_in', 'DESC')->paginate(20);
         return view('employee.hrService.attendance_service', compact('allAttendanceDetails'));
     }
 
     public function getAttendanceByFromAndToDate(Request $request)
     {
-        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date, Auth()->guard('employee')->user()->id)->orderBy('punch_in', 'DESC')->paginate(20);
+        $allAttendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date, Auth()->user()->id)->orderBy('punch_in', 'DESC')->paginate(20);
         if ($allAttendanceDetails) {
             return response()->json([
                 'data' => view('employee.hrService.attendance_list', compact('allAttendanceDetails'))->render()

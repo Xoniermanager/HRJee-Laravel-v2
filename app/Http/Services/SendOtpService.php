@@ -20,6 +20,14 @@ class SendOtpService
   {
     $this->userOtpRepository = $userOtpRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $email
+   * @param [type] $type
+   * @return void
+   */
   public function generateOTP($email, $type)
   {
     $checkOTPExists = ['email' => $email, 'type' => $type];
@@ -42,21 +50,53 @@ class SendOtpService
     }
   }
 
-  public function verifyOTP($data, $guardType = '')
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @param string $guardType
+   * @param string $requestType
+   * @return void
+   */
+  public function verifyOTP($data, $guardType = '', $requestType = "")
   {
     $find = UserCode::where(['email' => $data['email'], 'code' => $data['otp'], 'type' => $data['type']])
       ->where('updated_at', '>=', now()->subMinutes(20))
       ->first();
+      
     if ($find) {
-      if (!empty($guardType))
-        $type = $guardType;
-      else
-        $type = $data['type'];
-
-      Session::put('user_2fa', Auth::guard($type)->user()->id);
-      return true;
-    } else {
+      if($requestType == "api") {
+        return ['status' => true, 'message' => 'otp_sent_on_mail'];
+      } else {
+        if($guardType){
+          Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+        }else{
+          Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+        }
+  
+        return true;
+      }
+      
+    }
+    else {
       return false;
     }
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $email
+   * @param [type] $type
+   * @param [type] $code
+   * @return void
+   */
+  public function update($email,$type, $code)
+  {
+    UserCode::where('email', $email)->delete();
+    UserCode::create(['email' => $email, 'code' => $code, 'type' => $type]);
+      
+    return true;
+  }
+  
 }

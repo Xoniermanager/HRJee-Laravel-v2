@@ -21,12 +21,14 @@ return new class extends Migration
             $table->string('address')->unique();
             $table->string('city');
             $table->string('pincode');
+            $table->text('description')->nullable();
+            $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('country_id');
             $table->unsignedBigInteger('state_id');
             $table->unsignedBigInteger('company_id');
+            $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('country_id')->references('id')->on('countries');
             $table->foreign('state_id')->references('id')->on('states');
-            $table->foreign('company_id')->references('id')->on('companies');
             $table->boolean('status')->default(true);
             $table->softDeletes('deleted_at')->nullable();
             $table->timestamps();

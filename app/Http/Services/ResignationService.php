@@ -15,47 +15,96 @@ class ResignationService
     $this->resignationStatusService = $resignationStatusService;
   }
 
-
+  /**
+   * Undocumented function
+   *
+   * @param string $userId
+   * @return void
+   */
   public function all($userId = '')
   {
-    $query = $this->resignationRepository->with(['resignationStatus'])->orderBy('id', 'DESC');
+    $query = $this->resignationRepository->where('company_id', auth()->user()->company_id)->orderBy('id', 'DESC');
     if (!empty($userId))
       $query = $query->where('user_id', $userId);
 
     return $query->paginate(10);
   }
 
-  public function getResignationByResigtionStatusIds($ids, $userId)
+  /**
+   * Undocumented function
+   *
+   * @param [type] $statuses
+   * @param [type] $userId
+   * @return void
+   */
+  public function getResignationByResignationStatusIds($statuses, $userId)
   {
-    return $this->resignationRepository->whereNotIn('resignation_status_id', $ids)->where('user_id', $userId)->orderBy('id', 'DESC')->get();
+    return $this->resignationRepository
+      ->whereIn('status', $statuses)
+      ->where('user_id', $userId)
+      ->orderBy('id', 'DESC')
+      ->get();
   }
 
-  public function resignation($data, $guard)
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @param [type] $userId
+   * @return void
+   */
+  public function resignation($data, $userId)
   {
-    $resignationStatus = $this->resignationStatusService->getResignationStatusByIdOrStatus('status', 'pending');
-    $data['resignation_status_id'] = $resignationStatus->id;
-    $data['user_id'] = auth()->guard($guard)->user()->id;
+    $data['user_id'] = $userId;
+    $data['company_id'] = auth()->user()->company_id;
     $checkActionStatus = $this->resignationRepository->create($data);
     if ($checkActionStatus)
       return true;
     else
       return false;
   }
-  public function resignationUpdate($data,$resignationId)
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $data
+   * @param [type] $resignationId
+   * @return void
+   */
+  public function resignationUpdate($data, $resignationId)
   {
-    $checkActionStatus = $this->resignationRepository->where('id', $resignationId)->update($data);
+    $checkActionStatus = $this->resignationRepository->where('id', $resignationId)->update([
+      'remark' => $data['remark'],
+    ]);
     if ($checkActionStatus)
       return true;
     else
       return false;
   }
 
-
+ /**
+  * Undocumented function
+  *
+  * @param [type] $resignationId
+  * @return void
+  */
   public function getResignationDetails($resignationId)
   {
-    return  $this->resignationRepository->with(['resignationStatus:id,name', 'resignationActionDetails:id,action_taken_by,resignation_status_id,remark,resignation_id', 'resignationActionDetails.actionTakenBy:id,name', 'resignationActionDetails.resignationStatus:id,name'])->find($resignationId);
+    return $this->resignationRepository
+      ->with([
+        'resignationActionDetails:id,action_taken_by_id,action_taken_by_type,status,remark,resignation_id',
+        'resignationActionDetails.actionTakenBy:id,name',
+        'user:id,name',
+      ])
+      ->find($resignationId);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->resignationRepository->find($id)->delete();

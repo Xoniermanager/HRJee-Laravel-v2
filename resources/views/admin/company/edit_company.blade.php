@@ -117,7 +117,7 @@
                                         <div class="meta-body">
                                             <form id="companyAccountform">
                                                 @csrf
-                                                <input type="hidden" id="company_id" name="company_id" value="{{$companyDetails->id}}">
+                                                <input type="hidden" id="id" name="id" value="{{$companyDetails->id}}">
                                                 <div class="row g-3 custom-input pb-5">
                                                     <div class="col-12">
                                                         <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
@@ -132,7 +132,7 @@
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
                                                                 <input class="form-control" id="contact_no" name="contact_no"
-                                                                    type="number" placeholder="Contact No." value="{{$companyDetails->contact_no}}">
+                                                                    type="number" placeholder="Contact No." value="{{$companyDetails->companyDetails->contact_no}}">
                                                             </div>
 
                                                         </div>
@@ -142,39 +142,39 @@
                                                         <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
 
                                                             <div class="col-md-6 col-sm-6">
-                                                                <input class="form-control" id="username" name="username" value="{{$companyDetails->username}}"
+                                                                <input class="form-control" id="username" name="username" value="{{$companyDetails->companyDetails->username}}"
                                                                     type="text" placeholder="UsernName">
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
                                                                 <input class="form-control" id="email" name="email" value="{{$companyDetails->email}}"
-                                                                    type="email" placeholder="Company Email">
+                                                                    type="email" placeholder="Company Email" disabled>
                                                             </div>
 
                                                         </div>
                                                     </div>
-
-                                                    {{-- <div class="col-12">
-                                                          <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
-                                                              <div class="col-12">
-
-                                                              </div>
-                                                              <div class="col-md-6 col-sm-6">
-                                                                  <input class="form-control" id="password" name="password"
-                                                                      type="password" placeholder="Enter Password">
-                                                              </div>
-                                                              <div class="col-md-6 col-sm-6">
-                                                                  <input class="form-control" id="password_confirmation" name="password_confirmation"
-                                                                      type="password" placeholder="Enter Confirm Password">
-                                                              </div>
-                                                          </div>
-                                                      </div> --}}
-
-                                                    <div class="col-12">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control" id="username" name="username" value="{{$companyDetails->companyDetails->username}}"
+                                                            type="text" placeholder="UsernName">
+                                                    </div>
+                                                    <!-- Face Recognition Dropdown -->
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <select class="form-control" id="face_recognition" name="allow_face_recognition" onchange="toggleUserLimit()">
+                                                            <option value="" disabled>Allow Face Recognition</option>
+                                                            <option value="0">No</option>
+                                                            <option value="1" {{$companyDetails->companyDetails->allow_face_recognition == 1 ? "selected" : ""}}>Yes</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <!-- User Limit (Hidden by Default) -->
+                                                    <div class="col-md-6 col-sm-6" id="face_recognition_user_limit_container" style="display: {{$companyDetails->companyDetails->allow_face_recognition == 1 ? "block" : "none"}};">
+                                                        <input class="form-control" id="face_recognition_user_limit" name="face_recognition_user_limit" type="number" placeholder="Enter User Limit for Face Recgnition" value="{{$companyDetails->companyDetails->face_recognition_user_limit}}">
+                                                    </div>
+                                                    <div class="col-6">
                                                         <div class="row">
                                                             <div class="col-12">
                                                                 <div class="image-input">
-                                                                    <input type="file" accept="image/*"
-                                                                        id="imageInput" class="form-control">
+                                                                    <input type="file" id="logo" name="logo"
+                                                                        class="form-control">
                                                                     <p for="imageInput" class="image-button"> Choose
                                                                         Logo</p>
                                                                     <img src="" class="image-preview">
@@ -214,7 +214,7 @@
                                         <div class="meta-body">
                                             <form id="companyDetailForm">
                                                 @csrf
-                                                <input type="hidden" class="company_id" name="company_id" value="{{$companyDetails->id}}">
+                                                <input type="hidden" class="id" name="id" value="{{$companyDetails->id}}">
                                                 <div class="row g-3 custom-input">
                                                     <div class="col-12">
                                                         <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
@@ -225,19 +225,12 @@
                                                             </div>
 
                                                             <div class="col-md-6">
-                                                                <input class="form-control" id="company_url" name="company_url" value="{{$companyDetails->company_url}}"
+                                                                <input class="form-control" id="company_url" name="company_url" value="{{$companyDetails->companyDetails->company_url}}"
                                                                     type="url" placeholder="Company Website">
                                                             </div>
                                                             <div class="col-md-6 col-sm-6">
-                                                                <select class="form-select" id="industry_type" name="industry_type" value="{{$companyDetails->industry_type}}">
-                                                                    <option value="">industry type</option>
-                                                                    <option value="IT" {{ $companyDetails->industry_type == 'IT' ? 'selected' : '' }}>IT</option>
-                                                                    <option value="Medical" {{ $companyDetails->industry_type == 'Medical' ? 'selected' : '' }}>Medical</option>
-                                                                    <option value="Raw Supplies" {{ $companyDetails->industry_type == 'Raw Supplies' ? 'selected' : '' }}>Raw Supplies</option>
-                                                                </select>
-
+                                                                <input class="form-control" value="{{$companyDetails->companyDetails->companyType->name}}" type="text" disabled>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                     <div class="col-12">
@@ -245,7 +238,7 @@
                                                             <div class="col-md-6">
                                                                 <input class="form-control" id="company_size" name="company_size"
                                                                     type="number"
-                                                                    placeholder="No of User/Licence required." value="{{$companyDetails->company_size}}">
+                                                                    placeholder="No of User/Licence required." value="{{$companyDetails->companyDetails->company_size}}">
                                                             </div>
 
                                                         </div>
@@ -253,7 +246,7 @@
                                                     <div class="col-12">
                                                         <div class="row bottomspace">
                                                             <div class="col-md-12 col-sm-12">
-                                                                <textarea class="form-control" id="company_address" name="company_address" rows="2" placeholder="Enter Your Company Address">{{ $companyDetails->company_address }}</textarea>
+                                                                <textarea class="form-control" id="company_address" name="company_address" rows="2" placeholder="Enter Your Company Address">{{ $companyDetails->companyDetails->company_address }}</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -310,6 +303,16 @@
 </div>
 
 <script>
+    function toggleUserLimit() {
+        var dropdown = document.getElementById("face_recognition");
+        var userLimitField = document.getElementById("face_recognition_user_limit_container");
+        
+        if (dropdown.value === "1") {
+            userLimitField.style.display = "block";
+        } else {
+            userLimitField.style.display = "none";
+        }
+    }
     // next button script
     $(document).ready(function() {
 
@@ -323,10 +326,10 @@
                 rules: {
                     name: "required",
                     username: "required",
-                    email: {
-                        required: true,
-                        email: true
-                    },
+                    // email: {
+                    //     required: true,
+                    //     email: true
+                    // },
                     password: {
                         required: true,
                         minlength: 8,
@@ -347,7 +350,7 @@
                 messages: {
                     name: "Please enter your name",
                     username: "Please enter your username",
-                    email: "Please enter a valid email address",
+                    // email: "Please enter a valid email address",
                     password: {
                         required: "Please enter your password",
                         minlength: "Password must be at least 8 characters long",
@@ -402,7 +405,7 @@
                         digits: true,
                         maxlength: 6
                     },
-                    industry_type: "required",
+                    // industry_type: "required",
                     company_address: "required",
                 },
                 messages: {
@@ -415,7 +418,7 @@
                         digits: "Please enter only digits",
                         maxlength: "Company size must not exceed 6 digits"
                     },
-                    industry_type: "Please Enter Industry Type",
+                    // industry_type: "Please Enter Industry Type",
                     company_address: "Please Enter Company Address",
                 },
             });
@@ -482,6 +485,8 @@
             e.preventDefault();
             $('#add-product-pills-tab a[href="#detail-product"]').tab('show');
         });
+
+        
     });
 </script>
 <style>

@@ -22,19 +22,20 @@ class ValidateBranch extends FormRequest
     public function rules(): array
     {
         return [
+            'company_id' => 'sometimes',
             'name' => 'required|string',
             'type' => 'required|in:primary,secondary',
-            'contact_no' => 'required|numeric',
+            'contact_no' => 'required|numeric|unique:company_branches,contact_no',
             'email' => 'required|email|unique:company_branches,email',
-            'hr_email' => 'required|email|unique:company_branches,email',
+            'hr_email' => 'required|email|unique:company_branches,hr_email',
             'address' => 'required|string',
             'city' => 'required|string',
             'pincode' => 'required|string',
-            'country_id' => ['required_if:address_type,==,0', 'exists:countries,id'],
-            'state_id' => ['required_if:address_type,==,0', 'exists:states,id'],
+            'country_id' => 'required_if:address_type,==,0|exists:countries,id',
+            'state_id' => 'required_if:address_type,==,0|exists:states,id',
         ];
     }
-    
+
     /**
      * Get the error messages for the defined validation rules.
      *

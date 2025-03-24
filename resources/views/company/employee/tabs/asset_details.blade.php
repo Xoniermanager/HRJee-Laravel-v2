@@ -9,7 +9,7 @@
     @include('company.employee.asset_management.list')
     <button onclick="show_next_tab('family_details_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
         Previous</button>
-    <button onclick="show_next_tab('document_tab')" class="btn btn-primary float-right">Next <i
+    <button onclick="show_next_tab('ctc_tab')" class="btn btn-primary float-right">Next <i
             class="fa fa-arrow-right"></i>
     </button>
 </div>

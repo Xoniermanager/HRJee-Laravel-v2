@@ -19,12 +19,8 @@ class Check2FA
         if (!Session::has('user_2fa')) {
             if ($request->segment(1) == 'admin')
                 return redirect()->route('admin.login.form');
-            elseif ($request->segment(1) == 'employee')
-                return redirect()->route('employee');
-            elseif ($request->segment(1) == 'company')
-                return redirect()->route('signin');
             else
-                return errorMessage('null', 'verify_otp');
+                return redirect()->route('base');
         }
         return $next($request);
     }

@@ -152,8 +152,8 @@
             eyeIcon.classList.remove("fa-eye-slash");
         } else {
             passwordField.type = "password";
-            eyeIcon.classList.add("fa-eye");
-            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye-slash");
+            eyeIcon.classList.remove("fa-eye");
         }
     }
 </script>

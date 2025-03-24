@@ -2,46 +2,49 @@
 
 namespace App\Http\Controllers\Company;
 
+use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\Request;
+use App\Http\Services\UserService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\BranchServices;
-use App\Http\Services\CompanyServices;
 use App\Http\Services\FileUploadService;
 use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Services\CompanyDetailService;
+use Illuminate\Validation\ValidationException;
+use App\Http\Requests\UserChangePasswordRequest;
 use App\Http\Requests\ValidateUpdateCompanyRequest;
-use App\Models\Company;
 
 class CompanyController extends Controller
 {
 
 
-    private $company_services;
-    private $branch_services;
+    private $branchService;
+    private $userService;
+    private $companyDetailService;
 
     public function __construct(
-        CompanyServices $company_services,
-        BranchServices $branch_services
+        BranchServices $branchService,
+        CompanyDetailService $companyDetailService,
+        UserService $userService
     ) {
-        $this->company_services  = $company_services;
-        $this->branch_services = $branch_services;
+        $this->branchService = $branchService;
+        $this->userService = $userService;
+        $this->companyDetailService = $companyDetailService;
     }
     /**
      * Display a listing of the resource.
      */
     public function company_profile()
     {
-        if (empty(Auth::guard('company')->user()->branch_id))
-            $companyID = Auth::guard('company')->user()->company_id;
-        else
-            $companyID = Auth::guard('company')->user()->branch_id;
-
-
-        $companyDetails =  $this->company_services->get_company_with_branch_details($companyID);
-        $companyBranch = $companyDetails->branches->where('type', 'primary')->first();
-        return view('company.company.company_profile', compact('companyDetails', 'companyBranch'));
+        return view('company.company.company_profile');
+    }
+    public function companyConfiguartion()
+    {
+        return view('company.company.companyConfig');
     }
 
     /**
@@ -51,56 +54,49 @@ class CompanyController extends Controller
     {
         try {
             $data = request()->except(['_token']);
+
+
+            $this->userService->updateDetail(['name' => $data['name']], auth()->id());
+            $detailPayload = [
+                'username' => $data['username'],
+                'contact_no' => $data['contact_no'],
+            ];
             if ($request->logo !== null) {
                 $upload_path = "/uploads";
-                $image =  $data['logo'];
+                $image = $data['logo'];
                 $filePath = uploadingImageorFile($image, $upload_path, 'company_profile');
                 if ($filePath) {
-                    $data['logo'] = $filePath;
+                    $detailPayload['logo'] = $filePath;
                 }
             }
-
-
-            $updatedCompany = $this->company_services->update_company($data);
+            $updatedCompany = $this->companyDetailService->updateCompanyDetails($detailPayload, auth()->id());
             if ($updatedCompany) {
-                smilify('success', 'Profile Updated Successfully!');
-                return redirect()->route('company.profile');
+                return redirect(route('company.profile'))->with('success', 'Profile Updated Successfully!');
+
+                // smilify('success', 'Profile Updated Successfully!');
+
+                // return redirect()->route('company.profile');
             }
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-    public function company_change_password(Request $request)
+
+    public function updateCompanyConfiguration(Request $request)
     {
-        $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|min:6|confirmed', // Ensure new password matches the confirmation field
-        ]);
-        $companyUser = Auth::guard('company')->user();
-        if (!Hash::check($request->old_password, $companyUser->password)) {
-            smilify('success', 'The old password is incorrect.');
-            return false;
+        // dd($request->all());
+        try {
+            $request->validate([
+                'task_radius' => 'required|numeric|min:500',
+                'attendance_radius' => 'required|numeric|min:500',
+            ]);
+            $data = $request->except('_token');
+            $updatedCompanyConfiguration = $this->companyDetailService->updateCompanyDetails($data, Auth()->user()->id);
+            if ($updatedCompanyConfiguration) {
+                return back()->with('success', 'Configuartion Updated Successfully');
+            }
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
         }
-
-        $companyUser->password = Hash::make($request->new_password);
-        $companyUser->save();
-        return true;
     }
-
-    // public function update_branch(Request $request, $id)
-    // {
-    //     try {
-    //         $data =  $request->except(['_token']);
-    //         $branchUpdated = $this->branch_services->update_branch($data,$id);
-    //         if(   $branchUpdated )
-    //         {
-    //            smilify('success','Branch Updated Successfully!');
-    //            return redirect('/branch');
-    //         }
-
-    //     } catch (\Exception $e) {
-    //         return $e->getMessage();
-    //     }
-    // }
-
 }

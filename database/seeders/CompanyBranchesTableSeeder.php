@@ -14,12 +14,12 @@ class CompanyBranchesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('company_branches')->delete();
-        
+
         \DB::table('company_branches')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
                 'name' => 'Noida',
@@ -30,16 +30,18 @@ class CompanyBranchesTableSeeder extends Seeder
                 'address' => 'Noida H-161 BSI Park',
                 'city' => 'Noida',
                 'pincode' => '201901',
-                'country_id' => 103,
+                'country_id' => 100,
                 'state_id' => 1,
                 'company_id' => 1,
+                'created_by' => 1,
                 'status' => 1,
                 'deleted_at' => NULL,
+                'description' => NULL,
                 'created_at' => '2024-06-21 14:52:45',
                 'updated_at' => '2024-06-21 14:52:45',
             ),
         ));
-        
-        
+
+
     }
 }

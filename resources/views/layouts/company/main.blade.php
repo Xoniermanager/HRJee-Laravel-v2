@@ -30,6 +30,7 @@
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin/assets/js/jquery.searchableSelect.css') }}">
 
     <!--end::Global Stylesheets Bundle-->
     <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
@@ -39,23 +40,25 @@
 
     <!-- jQuery Validation Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-
-    {{-- SweetAlert --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
-        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <script>
         window.company_ajax_base_url = '{{ env('COMPANY_BASE_URL') }}';
         window.admin_ajax_base_url = '{{ env('ADMIN_BASE_URL') }}';
         window.employee_ajax_base_url = '{{ env('EMPLOYEE_BASE_URL') }}';
         window.project_ajax_base_url = '{{ env('PROJECT_BASE_URL') }}';
     </script>
-
+    {{-- SweetAlert --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Select2 & DateTime Picker (If Needed) -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+    <style>
+        .cke_notifications_area {
+            display: none;
+        }
+    </style>
 </head>
 
 <body id="kt_body" class="sidebar-enabled">

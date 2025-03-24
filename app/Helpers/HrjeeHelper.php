@@ -1,11 +1,23 @@
 <?php
 
 use Carbon\Carbon;
-use App\Models\Company;
+use App\Models\Menu;
+use App\Models\User;
+use App\Models\MenuRole;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
+function getCompanyIDs() {
+    if(Auth()->user()->type == 'user') {
+        $companyIDs = [Auth()->user()->id, Auth()->user()->company_id];
+    } else {
+        $companyIDs = User::where('company_id', Auth()->user()->id)->pluck('id')->toArray();
+    }
+
+    return $companyIDs;
+}
 
 function removingSpaceMakingName($name)
 {
@@ -22,12 +34,12 @@ function unlinkFileOrImage($file)
     return true;
 }
 
-function uploadingImageorFile($file, String $path, $namePrefix = '')
+function uploadingImageorFile($file, string $path, $namePrefix = '')
 {
-    $image  = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
+    $image = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();
     $path = $path . '/' . $image;
     Storage::disk('public')->put($path, file_get_contents($file));
-    return  $path;
+    return $path;
 }
 
 
@@ -115,8 +127,8 @@ if (!function_exists('errorMessage')) {
         return response()->json([
             'message' => transLang('given_data_invalid'),
             'status' => false,
-            'errors' =>  empty($errors) ? null : $errors,
-            'data' =>   $data === 'null' ? null : $data
+            'errors' => empty($errors) ? null : $errors,
+            'data' => $data === 'null' ? null : $data
         ], 401);
     }
 }
@@ -132,12 +144,13 @@ if (!function_exists('apiResponse')) {
         return response()->json($output, $httpCode);
     }
 }
+
 function getTotalWorkingHour($startTime, $endTime)
 {
     $time1 = new DateTime($startTime);
     $time2 = new DateTime($endTime);
     $time_diff = $time1->diff($time2);
-    return  $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
+    return $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
 }
 
 
@@ -148,15 +161,21 @@ function getFormattedDate($date)
 
 function getWorkDateFromate($joiningDate)
 {
-    $joiningDate = Carbon::createFromFormat('Y-m-d', $joiningDate);
-    $currentDate = Carbon::now();
-    $diff = $joiningDate->diff($currentDate);
-    return $diff->format(' %y Years, %m Months, %d Days');
+    if ($joiningDate) {
+        $joiningDate = Carbon::createFromFormat('Y-m-d', $joiningDate);
+        $currentDate = Carbon::now();
+        $diff = $joiningDate->diff($currentDate);
+
+        return $diff->format(' %y Years, %m Months, %d Days');
+    } else {
+
+        return $joiningDate;
+    }
 }
 
 function fullMonthList()
 {
-    return  [
+    return [
         '1' => 'January',
         '2' => 'February',
         '3' => 'March',
@@ -171,6 +190,7 @@ function fullMonthList()
         '12' => 'December'
     ];
 }
+
 /**
  * Encrypt the id and return the encrypted id
  */
@@ -193,57 +213,180 @@ function getDecryptId($id)
     return false;
 }
 
-function getCompanyMenuHtml($companyId)
+function getCompanyMenuHtml()
 {
-    $company = Company::with(['menu' => function ($query) {
-        $query->orderBy('order_no', 'ASC');
-    }, 'menu.parent'])->find($companyId);
     $html = '';
-    if ($company && $company->menu) {
-        foreach ($company->menu as $menu) {
-            // Check if the menu has children
-            if ($menu->children && $menu->children->isNotEmpty()) {
+    $user = Auth::user();
+
+    if ($user->type == 'company' || session()->has('impersonation')) {
+        $urlPrefix = 'company';
+    } else {
+        $urlPrefix = 'employee';
+    }
+
+    foreach ($user->menu as $menu) {
+        // Check if the menu has children
+        if ($menu->children && $menu->children->isNotEmpty()) {
+            if ($menu->status == 1) {
                 $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
-                            <span class="menu-link">
-                                <span class="menu-icon">
-                                    <span class="svg-icon svg-icon-5">
-                                        ' . $menu->icon . '
-                                    </span>
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-5">
+                                    ' . $menu->icon . '
                                 </span>
-                                <span class="menu-title">' . $menu->title . '</span>
-                                <span class="menu-arrow"></span>
-                            </span>';
-
-                // Iterate over the children
-                foreach ($menu->children as $children) {
-                    $html .= '<div class="menu-sub menu-sub-accordion">
-                                <div class="menu-item" data-url="' . $children->slug . '">
-                                    <a class="menu-link" href="' . $children->slug . '">
-                                        <span class="menu-bullet">
-                                            <span class="bullet bullet-dot"></span>
-                                        </span>
-                                        <span class="menu-title">' . $children->title . '</span>
-                                    </a>
-                                </div>
-                              </div>';
-                }
-
-                $html .= '</div>';  // Close the menu-item (accordion)
+                            </span>
+                            <span class="menu-title">' . $menu->title . '</span>
+                            <span class="menu-arrow"></span>
+                        </span>';
             }
-            if ($menu->parent_id == null && $menu->children->isEmpty()) {
-                // If no children, just a simple menu item
-                $html .= '<div class="menu-item" data-url="' . $menu->slug . '">
-                            <a class="menu-link" href="' . $menu->slug . '">
-                                <span class="menu-icon">
-                                    <span class="svg-icon svg-icon-5">
-                                        ' . $menu->icon . '
+
+
+            // Iterate over the children
+            foreach ($menu->children as $children) {
+                if ($children->role == "company" && $children->status == 1) {
+                    $url = "/$urlPrefix$children->slug";
+
+                    $html .= '<div class="menu-sub menu-sub-accordion">
+                            <div class="menu-item" data-url="' . $url . '">
+                                <a class="menu-link" href="' . $url . '">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
                                     </span>
+                                    <span class="menu-title">' . $children->title . '</span>
+                                </a>
+                            </div>
+                            </div>';
+                }
+            }
+
+            $html .= '</div>';  // Close the menu-item (accordion)
+        }
+        if ($menu->parent_id == null && $menu->children->isEmpty()) {
+            if ($menu->status == 1) {
+                $url = "/$urlPrefix$menu->slug";
+
+                // If no children, just a simple menu item
+                $html .= '<div class="menu-item" data-url="' . $url . '">
+                        <a class="menu-link" href="' . $url . '">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-5">
+                                    ' . $menu->icon . '
                                 </span>
-                                <span class="menu-title">' . $menu->title . '</span>
-                            </a>
-                          </div>';
+                            </span>
+                            <span class="menu-title">' . $menu->title . '</span>
+                        </a>
+                        </div>';
             }
         }
     }
+
+    if($user->type == "company" && $user->companyDetails->allow_face_recognition ) {
+        $html .= '<div class="menu-item" data-url="/company/face-recognition">
+                        <a class="menu-link" href="/company/face-recognition">
+                            <span class="menu-icon">
+                                <span class="svg-icon svg-icon-5">
+                                    <i class="fas fa-smile"></i>
+                                </span>
+                            </span>
+                            <span class="menu-title">Face Recognition</span>
+                        </a>
+                        </div>';
+    }
+
     return $html;
+}
+
+function getEmployeeMenuHtml()
+{
+    $html = '';
+
+    $companyAssignedMenuIds = MenuRole::where('role_id', auth()->user()->parent->role_id)->pluck('menu_id')->toArray();
+    $childMenus = Menu::where(['status' => 1, 'role' => 'employee'])->where(function ($query) use ($companyAssignedMenuIds) {
+        $query->whereIn('parent_id', $companyAssignedMenuIds)
+            ->orWhere('parent_id', NULL);
+    })->get();
+
+    foreach ($childMenus as $menu) {
+        // If no children, just a simple menu item
+        $html .= '<div class="menu-item" data-url="' . $menu->slug . '">
+        <a class="menu-link" href="' . $menu->slug . '">
+            <span class="menu-icon">
+                <span class="svg-icon svg-icon-5">
+                    ' . $menu->icon . '
+                </span>
+            </span>
+            <span class="menu-title">' . $menu->title . '</span>
+        </a>
+        </div>';
+    }
+
+    return $html;
+}
+function numberToWords($num)
+{
+    $ones = array(
+        0 => 'Zero',
+        1 => 'One',
+        2 => 'Two',
+        3 => 'Three',
+        4 => 'Four',
+        5 => 'Five',
+        6 => 'Six',
+        7 => 'Seven',
+        8 => 'Eight',
+        9 => 'Nine',
+        10 => 'Ten',
+        11 => 'Eleven',
+        12 => 'Twelve',
+        13 => 'Thirteen',
+        14 => 'Fourteen',
+        15 => 'Fifteen',
+        16 => 'Sixteen',
+        17 => 'Seventeen',
+        18 => 'Eighteen',
+        19 => 'Nineteen'
+    );
+    $tens = array(
+        2 => 'Twenty',
+        3 => 'Thirty',
+        4 => 'Forty',
+        5 => 'Fifty',
+        6 => 'Sixty',
+        7 => 'Seventy',
+        8 => 'Eighty',
+        9 => 'Ninety'
+    );
+    $hundreds = array(
+        1 => 'Hundred',
+        1000 => 'Thousand',
+        1000000 => 'Million',
+        1000000000 => 'Billion'
+    );
+
+    if ($num == 0) {
+        return $ones[0];
+    }
+
+    $result = '';
+
+    if ($num >= 1000) {
+        $result .= numberToWords(intval($num / 1000)) . ' ' . $hundreds[1000] . ' ';
+        $num = $num % 1000;
+    }
+
+    if ($num >= 100) {
+        $result .= $ones[intval($num / 100)] . ' ' . $hundreds[1] . ' ';
+        $num = $num % 100;
+    }
+
+    if ($num >= 20) {
+        $result .= $tens[intval($num / 10)] . ' ';
+        $num = $num % 10;
+    }
+
+    if ($num > 0) {
+        $result .= $ones[$num];
+    }
+
+    return $result;
 }

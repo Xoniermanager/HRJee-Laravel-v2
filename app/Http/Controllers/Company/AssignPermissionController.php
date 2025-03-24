@@ -4,52 +4,74 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use App\Models\MenuRole;
+use App\Models\Role;
 use App\Http\Controllers\Controller;
-use App\Http\Services\RolesServices;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Services\PermissionsServices;
 
 class AssignPermissionController extends Controller
 {
-    private $rolesServices;
-    private $permissionServices;
-    public function __construct(RolesServices $rolesServices, PermissionsServices $permissionServices)
-    {
-        $this->rolesServices = $rolesServices;
-        $this->permissionServices = $permissionServices;
-    }
+
+    public function __construct()
+    {}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $roles = Role::with('permissions')->orderBy('id', 'DESC')->get();
-        $permissions = $this->permissionServices->all();
-        return view('company.roles_and_permission.assign_permission.index', compact('roles', 'permissions'));
+        $roles = Role::where('category', 'custom')->where('status', 1)->with(['menus'])->get();
+        
+        return view('company.roles_and_permission.assign_permission.index', compact('roles'));
+    }
+
+    public function add()
+    {
+        $roles = Role::where('category', 'custom')->where('status', 1)->orderBy('id', 'DESC')->get();
+       
+        $allMenus = auth()->user()->menu->where('parent_id', null);
+        
+        return view('company.roles_and_permission.assign_permission.add_assign', compact('roles', 'allMenus'));
     }
 
     public function store(Request $request)
     {
-        $validateData  = Validator::make($request->all(), [
-            'role_id' => 'required|exits:roles,id',
-            'permission_id' => 'required|array',
-            'permission_id.*' => 'required|exists:permissions,id'
+        $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'menu_id'    => 'sometimes|array',
+            'menu_id.*'    => 'required|exists:menus,id',
         ]);
+
         try {
-            $role = Role::find($request->role_id);
-            $permissions = Permission::whereIn('id', $request->permission_id)->get(['name'])->toArray();
-            if ($role->syncPermissions($permissions)) {
-                return response()->json([
-                    'message' => 'Assigned Permission Successfully!',
-                    'data'   =>  view('company.roles_and_permission.assign_permission.assign_permission_list', [
-                        'roles' => Role::with('permissions')->orderBy('id', 'DESC')->get()
-                    ])->render()
-                ]);
+            $syncData = [];
+            if($request->menu_id) {
+                foreach($request->menu_id as $menu_id) {
+                    $syncData[$menu_id] = [
+                        'can_create' => true,
+                        'can_read' => true,
+                        'can_update' => true,
+                        'can_delete' => true,
+                    ];
+                }
+    
+                $adminRole = Role::where('id', $request->role_id)->first();
+                $adminRole->menus()->sync($syncData);
+            } else {
+                MenuRole::where('role_id', $request->role_id)->delete();
             }
+
+            return redirect('/company/roles/assign_permissions')->with('success', 'Permissions updated successfully!');
         } catch (Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function getAssignedPermissions(Request $request)
+    {
+        $menuIds = MenuRole::where('role_id', $request->role_id)->pluck('menu_id')->toArray();
+
+        return response()->json([
+            'success' => true,
+            'data'   => $menuIds
+        ]);
     }
 }

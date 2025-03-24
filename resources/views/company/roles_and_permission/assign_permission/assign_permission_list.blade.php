@@ -8,26 +8,29 @@
                 <tr class="fw-bold">
                     <th>Sr. No.</th>
                     <th>Roles</th>
-                    <th>Permission</th>
+                    <th>Permissions</th>
                 </tr>
             </thead>
-            @forelse ($roles as $key => $assignPermissionDetails)
+            @forelse ($roles as $role) 
             <tbody class="">
                 <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $assignPermissionDetails->name }} </td>
+                    <td>{{ $loop->iteration }}</td>
+                    
+                    <td>{{ $role->name }} </td>
                     <td>
-                        @forelse ($assignPermissionDetails->permissions as $permission)
-                        <span class="badge bg-primary">{{ ucfirst($permission->name) }}</span>
+                        @forelse ($role->menus as $menu)
+                        {{ ucfirst($menu->title) }}
                         @empty
+                        No Permission available
                         @endforelse
                     </td>
+                    
                 </tr>
             </tbody>
             @empty
             <td colspan="3">
                 <span class="text-danger">
-                    <strong>No Office Time Found!</strong>
+                    <strong>No Permission Found!</strong>
                 </span>
             </td>
             @endforelse

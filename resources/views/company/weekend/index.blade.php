@@ -107,8 +107,8 @@ Weekend Management
                                 </select>
                             </div>
                             <div class="mt-3">
-                                <label class="required">Weekdays</label>
-                                <select class="form-control mb-5 mt-3" data-control="select2"
+                                <label class="required">Weekends</label>
+                                {{-- <select class="form-control mb-5 mt-3" data-control="select2"
                                     data-close-on-select="false" data-placeholder="Select the Weekday"
                                     data-allow-clear="true" multiple="multiple" name="weekday_id[]" id="weekday">
                                     @foreach ($allWeekDay as $weekDay)
@@ -116,7 +116,8 @@ Weekend Management
                                         {{ $weekDay->name }}
                                     </option>
                                     @endforeach
-                                </select>
+                                </select> --}}
+                                <input type="text" class="form-control" id="datepicker2" name="weekend_dates" readonly>
                             </div>
                         </div>
                         <!--end::Wrapper-->
@@ -140,7 +141,20 @@ Weekend Management
         </div>
         <!--end::Modal dialog-->
     </div>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet"/>
     <script>
+        jQuery(document).ready(function() {
+            var today = new Date();
+            var firstDayOfNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1); // 1st day of next month
+            $('#datepicker2').datepicker({
+                // minDate: firstDayOfNextMonth, // Disable all dates before next month
+                multidate: true,
+                format: 'yyyy-mm-dd',
+                closeOnDateSelect: true,
+            });
+        });
+
         function edit_weekend_details(id, companyBranchId,deparmentId, weekendId) {
             if (typeof weekendId === 'string') {
                 weekendId = JSON.parse(weekendId);
@@ -148,7 +162,12 @@ Weekend Management
             $('#weekend_id').val(id);
             $('#company_branch_id').val(companyBranchId);
             $('#department_id').val(deparmentId);
-            $('#weekday').val(weekendId).trigger('change');
+            selectedDates = weekendId;
+
+            // Set input value
+            $('#datepicker2').val(weekendId.join(", ")).datepicker("refresh"); // Update UI
+
+            // $('#weekday').val(weekendId).trigger('change');
             jQuery('#add_weekend').modal('show');
         }
 
@@ -185,15 +204,15 @@ Weekend Management
                     'department_id': {
                         required: true,
                     },
-                    'weekday_id[]': {
+                    'weekend_dates': {
                         required: true,
-                        minlength: 1 // Requires at least one branch to be selected
+                        minlength: 1 // Requires at least one date to be selected
                     },
                 },
                 messages: {
                     'company_branch_id': "Please select the Company Branch",
                     'department_id': "Please select the Department",
-                    'weekday_id[]': "Please select at least one Weekday",
+                    'weekend_dates': "Please select at least one date",
                 },
                 submitHandler: function(form) {
                     var weekend_data = $(form).serialize();
@@ -224,6 +243,7 @@ Weekend Management
                 }
             });
         });
+
         function handleStatus(id) {
             var checked_value = $('#checked_value_' + id).prop('checked');
             let status;

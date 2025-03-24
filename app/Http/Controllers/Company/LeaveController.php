@@ -19,8 +19,8 @@ class LeaveController extends Controller
     public function __construct(LeaveTypeService $leaveTypeService, EmployeeServices $employeeService, LeaveService $leaveService)
     {
         $this->leaveTypeService = $leaveTypeService;
-        $this->employeeService  = $employeeService;
-        $this->leaveService     = $leaveService;
+        $this->employeeService = $employeeService;
+        $this->leaveService = $leaveService;
     }
     public function index()
     {
@@ -31,7 +31,9 @@ class LeaveController extends Controller
     public function applyLeave()
     {
         $leaveTypes = $this->leaveTypeService->getAllActiveLeaveType();
-        $allEmployeeDetails = $this->employeeService->all('',Auth::guard('company')->user()->id);
+       
+        // $allEmployeeDetails = $this->employeeService->all('', Auth()->user()->company_id)->paginate(10);
+        $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();
         return view('company.leave.apply_leave', compact('leaveTypes', 'allEmployeeDetails'));
     }
 
@@ -40,15 +42,15 @@ class LeaveController extends Controller
 
         try {
             $request->validate([
-                'leave_type_id'      => ['required', 'exists:leave_types,id'],
-                'leave_applied_by'   => ['boolean'],
-                'user_id'            => ['required_if:leave_applied_by,==,1', 'exists:users,id'],
-                'from'               => ['required', 'date'],
-                'to'                 => ['required', 'date'],
-                'is_half_day'        => ['boolean'],
-                'from_half_day'      => ['required_if:is_half_day,==,1', 'in:first_half,second_half'],
-                'to_half_day'        => ['required_if:from,>,to', 'in:first_half,second_half'],
-                'reason'             => ['required'],
+                'leave_type_id' => ['required', 'exists:leave_types,id'],
+                'leave_applied_by' => ['boolean'],
+                'user_id' => ['required_if:leave_applied_by,==,1', 'exists:users,id'],
+                'from' => ['required', 'date'],
+                'to' => ['required', 'date'],
+                'is_half_day' => ['boolean'],
+                'from_half_day' => ['required_if:is_half_day,==,1', 'in:first_half,second_half'],
+                'to_half_day' => ['required_if:from,>,to', 'in:first_half,second_half'],
+                'reason' => ['required'],
 
             ]);
             $data = $request->all();

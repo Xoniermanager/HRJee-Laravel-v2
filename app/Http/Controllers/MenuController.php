@@ -38,7 +38,7 @@ class MenuController extends Controller
 
     public function save_menu(ValidateMenu $validateMenu){
         $validated = $validateMenu->validated();
-        $validated['slug'] = '/company/' . ltrim($validated["slug"], '/');
+        $validated['slug'] = '/' . ltrim($validated["slug"], '/');
         $this->menuServices->create($validated);
         return redirect(route('admin.menu'))->with('success','Menu Created Succesfully');
     }
@@ -51,7 +51,7 @@ class MenuController extends Controller
             'parent_id' => 'nullable|sometimes|exists:menus,id',
             'icon'     => 'required'
         ]);
-        $validated['slug'] = '/company/' . ltrim($validated["slug"], '/');
+        $validated['slug'] = '/' . ltrim($validated["slug"], '/');
         $this->menuServices->updateDetails($validated,$menuId);
         return redirect(route('admin.menu'))->with('success','Menu Updated Succesfully');
     }

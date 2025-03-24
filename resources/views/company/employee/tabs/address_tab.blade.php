@@ -1,23 +1,23 @@
 @php
-    $local = [];
-    $permanent = [];
-    foreach ($userAddressDetails as $userAddress) {
-        if ($userAddress->address_type == 'local') {
-            $local = $userAddress;
-        }
+$local = [];
+$permanent = [];
+foreach ($userAddressDetails as $userAddress) {
+if ($userAddress->address_type == 'local') {
+$local = $userAddress;
+}
 
-        if ($userAddress->address_type == 'permanent') {
-            $permanent = $userAddress;
-        }
+if ($userAddress->address_type == 'permanent') {
+$permanent = $userAddress;
+}
 
-        if ($userAddress->address_type == 'both_same') {
-            $permanent = $userAddress;
-            $local = $userAddress;
-            $checkedbox = 'checked';
-            $inputDisabled = 'disabled';
-            $addressTypeValue = '1';
-        }
-    }
+if ($userAddress->address_type == 'both_same') {
+$permanent = $userAddress;
+$local = $userAddress;
+$checkedbox = 'checked';
+$inputDisabled = 'disabled';
+$addressTypeValue = '1';
+}
+}
 @endphp
 <div class="tab-pane fade" id="address_tab">
     <!--begin::Wrapper-->
@@ -31,19 +31,19 @@
                 <div class="row">
                     <div class="col-md-12 form-group">
                         <label for="">Address *</label>
-                        <textarea class="form-control alldetails" type="text" name="l_address" id="l_address">{{ $local->address ?? '' }}</textarea>
+                        <textarea class="form-control alldetails" type="text" name="l_address"
+                            id="l_address">{{ $local->address ?? '' }}</textarea>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="">Country *</label>
                         <select class="form-control alldetails" id="l_country_id" name="l_country_id">
                             <option value="">Please Select Country</option>
                             @forelse ($allCountries as $countriesDetails)
-                                <option
-                                    {{ $local->country_id ?? old('l_country_id') == $countriesDetails->id ? 'selected' : '' }}
-                                    value="{{ $countriesDetails->id }}">
-                                    {{ $countriesDetails->name }}</option>
+                            <option {{ $local->country_id ?? '' == $countriesDetails->id ? 'selected' : '' }}
+                                value="{{ $countriesDetails->id }}">
+                                {{ $countriesDetails->name }}</option>
                             @empty
-                                <option value="">No Country Found</option>
+                            <option value="">No Country Found</option>
                             @endforelse
                         </select>
                     </div>
@@ -75,26 +75,26 @@
                 <div class="row">
                     <div class="col-md-12 form-group">
                         <label for="">Address *</label>
-                        <textarea class="form-control" type="text" name="p_address" id="p_address" {{ $inputDisabled ?? '' }}> {{ $permanent->address ?? '' }}</textarea>
+                        <textarea class="form-control" type="text" name="p_address" id="p_address" {{ $inputDisabled
+                            ?? '' }}> {{ $permanent->address ?? '' }}</textarea>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="">Country *</label>
                         <select class="form-control" id="p_country_id" name="p_country_id" {{ $inputDisabled ?? '' }}>
                             <option value="">Please Select Country</option>
                             @forelse ($allCountries as $countriesDetails)
-                                <option
-                                    {{ $permanent->address ?? old('p_country_id') == $countriesDetails->id ? 'selected' : '' }}
-                                    value="{{ $countriesDetails->id }}">
-                                    {{ $countriesDetails->name }}</option>
+                            <option {{ $permanent->country_id ?? '' == $countriesDetails->id ? 'selected' : '' }}
+                                value="{{ $countriesDetails->id }}">
+                                {{ $countriesDetails->name }}</option>
                             @empty
-                                <option value="">No Country Found</option>
+                            <option value="">No Country Found</option>
                             @endforelse
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="">State *</label>
-                        <select name="p_state_id" class="form-control" id="p_state_id"
-                            {{ $inputDisabled ?? '' }}></select>
+                        <select name="p_state_id" class="form-control" id="p_state_id" {{ $inputDisabled ?? ''
+                            }}></select>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="">City *</label>
@@ -110,11 +110,13 @@
                 </div>
             </div>
         </div>
+        <div class="m-auto text-center">
         <button class="btn btn-primary">Save & Continue</button>
+        </div>
     </form>
-    <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
+    <button onclick="show_next_tab('advance_details_tab')" class="tab-btn-inline btn btn-primary"><i class="fa fa-arrow-left"></i>
         Previous</button>
-    <button onclick="show_next_tab('bank_details_tab')" class="btn btn-primary float-right">Next <i
+    <button onclick="show_next_tab('bank_details_tab')" class="tab-btn-inline btnnext btn btn-primary float-right">Next <i
             class="fa fa-arrow-right"></i> </button>
     <!--end::Wrapper-->
 </div>

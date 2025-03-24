@@ -94,6 +94,18 @@
                             <span class="">Manage Menu</span></a>
 
                     </li>
+                     <li class="sidebar-list "><a class="sidebar-link " href="{{ route('admin.attendance.details') }}">
+                            <svg fill="#ddd" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" stroke="#ddd">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path
+                                        d="M0 0h7v7H0V0zm2 2v3h3V2H2zM0 9h7v7H0V9zm9-9h7v7H9V0zm2 2v3h3V2h-3zM9 9h7v7H9V9zm2 2v3h3v-3h-3zm-9 0v3h3v-3H2z"
+                                        fill-rule="evenodd"></path>
+                                </g>
+                            </svg>
+                            <span class="">Attendance Details</span></a>
+                    </li>
                     <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="javascript:void(0)">
                             <svg fill="#ffffff" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" stroke="#ffffff">
@@ -107,6 +119,7 @@
                             </svg>
                             <span class="">Master</span></a>
                         <ul class="sidebar-submenu">
+                            <li><a href="{{route('admin.company_type')}}">Company Type</a></li>
                             <li><a href="{{route('admin.departments')}}">Departments</a></li>
                             <li><a href="{{route('admin.designations')}}">Designations</a></li>
                             <li><a href="{{route('admin.country')}}">Countries</a></li>

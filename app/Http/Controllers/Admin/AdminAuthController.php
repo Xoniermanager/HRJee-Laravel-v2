@@ -30,16 +30,20 @@ class AdminAuthController extends Controller
 
             // If validation fails, return the error messages
             if ($validator->fails()) {
+
                 return redirect()->back()->withErrors($validator)->withInput();
             }
             // If authentication fails, redirect back with an error message
             if (!Auth::guard('admin')->attempt($request->only('email', 'password'))) {
+                
                 return redirect()->back()->with(['error' => 'These credentials do not match our records.']);
             } else {
                 $generateOtpResponse = $this->sendOtpService->generateOTP($request->email, 'admin');
                 if ($generateOtpResponse['status'] === true) {
+
                     return redirect('/admin/verify/otp');
                 } else {
+
                     return redirect('/signin')->with('error', $generateOtpResponse['message']);
                 }
             }
@@ -65,8 +69,10 @@ class AdminAuthController extends Controller
     public function verifyOtp()
     {
         if (!auth()->guard('admin')->check()) {
+
             return  redirect('/admin/login');
         }
+        
         return view('admin-verify-otp');
     }
     public function verifyOtpCheck(VerifyOtpRequest $request)
@@ -75,7 +81,7 @@ class AdminAuthController extends Controller
             $data = $request->all();
             $data['email'] = auth()->guard('admin')->user()->email;
             $data['type'] = 'admin';
-            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data);
+            $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'admin');
             if ($verifyOtpResponse)
                 return redirect('/admin/dashboard');
             else

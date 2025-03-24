@@ -33,14 +33,15 @@ class NewsCategoryController extends Controller
     {
         try {
             $validateData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:news_categories,name'],
+                'name' => ['required', 'string', 'unique:news_categories,name,NULL,id,company_id,' . auth()->user()->company_id],
             ]);
 
             if ($validateData->fails()) {
                 return response()->json(['error' => $validateData->messages()], 400);
             }
             $data = $request->all();
-            if ($this->newsCategoryService->create($data)) {
+            $payload = $request->except(['_token']);
+            if ($this->newsCategoryService->create($payload)) {
                 return response()->json([
                     'message' => 'News Category Created Successfully!',
                     'data'   =>  view('company.news_category.news_category_list', [
@@ -59,7 +60,7 @@ class NewsCategoryController extends Controller
     public function update(Request $request)
     {
         $validateData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:news_categories,name,' . $request->id]
+            'name' => ['required', 'string', 'unique:news_categories,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id]
         ]);
 
         if ($validateData->fails()) {

@@ -1,7 +1,7 @@
 @extends('layouts.company.main')
 @section('content')
 @section('title')
-    Announcements
+Announcements
 @endsection
 <div class="card card-body col-md-12">
     <div class="mb-5 mb-xl-10">
@@ -12,7 +12,7 @@
                 <input type="hidden" name="all department" value="0">
                 <input type="hidden" name="all_designation" value="0">
                 <div class="row">
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label class="col-form-label required">Title</label>
                         <input type="text" class="form-control" name="title" placeholder="Enter the title"
                             value="{{ old('title') }}">
@@ -20,7 +20,7 @@
                             <div class="text-danger">{{ $errors->first('title') }}</div>
                         @endif
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label class="col-form-label required">Start Date</label>
                         <input class="form-control" name="start_date_time" type="datetime-local"
                             value="{{ old('start_date_time') }}">
@@ -28,7 +28,7 @@
                             <div class="text-danger">{{ $errors->first('start_date_time') }}</div>
                         @endif
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label class="col-form-label required">End Date</label>
                         <input class="form-control" name="expires_at_time" type="datetime-local"
                             value="{{ old('expires_at_time') }}">
@@ -43,9 +43,10 @@
                             <div class="text-danger">{{ $errors->first('image') }}</div>
                         @endif
                     </div>
-                    <div class="col-md-12 form-group mb-4">
+                    <div class="col-md-6 form-group">
                         <label class="col-form-label required">Description </label>
-                        <textarea id="editor" name="description" value="{{ old('description') }}"></textarea>
+                        <textarea name="description" value="{{ old('description') }}"
+                            class="form-control">{{ old('description') }}</textarea>
                         @if ($errors->has('description'))
                             <div class="text-danger">{{ $errors->first('description') }}</div>
                         @endif
@@ -78,7 +79,6 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                {{-- <div class="col-md-6 mb-2"> --}}
                                 <div class="form-group notification_schedule_time mb-0">
                                     <label class="required">Schedule Date</label>
                                     <input class="form-control" name="notification_schedule_time" type="datetime-local"
@@ -98,8 +98,7 @@
                                             </span>
                                             <input class="form-check-input m-4" type="checkbox"
                                                 name="all_company_branch" onchange="get_checked_value('company_branch')"
-                                                id="company_branches_checkbox" value="0"
-                                                {{ old('all_company_branch') == '1' ? 'checked' : '' }}>
+                                                id="company_branches_checkbox" value="0" {{ old('all_company_branch') == '1' ? 'checked' : '' }}>
                                         </label>
                                     </div>
                                     <div class="col-md-10 form-group">
@@ -109,8 +108,7 @@
                                             data-allow-clear="true" multiple="multiple" name="company_branch_id[]"
                                             id="company_branch" onchange="get_all_user()">
                                             @foreach ($allCompanyBranchesDetails as $compayBranches)
-                                                <option value="{{ $compayBranches->id }}"
-                                                    @if (old('company_branch_id')) {{ in_array($departmentsDetails->id, old('company_branch_id')) ? 'selected' : '' }} @endif>
+                                                <option value="{{ $compayBranches->id }}" @if (old('company_branch_id')) {{ in_array($compayBranches->id, old('company_branch_id')) ? 'selected' : '' }} @endif>
                                                     {{ $compayBranches->name }}
                                                 </option>
                                             @endforeach
@@ -142,9 +140,11 @@
                                             onchange="get_designation_by_department_id('','',true)"
                                             name="department_id[]">
                                             @foreach ($allDepartmentsDetails as $departmentsDetails)
-                                                <option value="{{ $departmentsDetails->id }}"
-                                                    @if (old('department_id')) {{ in_array($departmentsDetails->id, old('department_id')) ? 'selected' : '' }} @endif>
-                                                    {{ $departmentsDetails->name }}</option>
+                                                                                <option value="{{ $departmentsDetails->id }}" @if (old('department_id')) {{
+                                                                                    in_array($departmentsDetails->id, old('department_id')) ?
+                                                                                'selected' : '' }} @endif>
+                                                                                    {{ $departmentsDetails->name }}
+                                                                                </option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('department_id'))
@@ -160,10 +160,9 @@
                                             <span class="fw-semibold ps-2 fs-6">
                                                 All
                                             </span>
-                                            <input class="form-check-input m-4" type="checkbox"
-                                                name="all_designation" onchange="get_checked_value('designation')"
-                                                id="designation_checkbox" value="0"
-                                                {{ old('all_designation') == '1' ? 'checked' : '' }}>
+                                            <input class="form-check-input m-4" type="checkbox" name="all_designation"
+                                                onchange="get_checked_value('designation')" id="designation_checkbox"
+                                                value="0" {{ old('all_designation') == '1' ? 'checked' : '' }}>
                                         </label>
                                     </div>
                                     <div class="col-md-10 form-group">

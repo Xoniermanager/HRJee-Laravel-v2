@@ -401,6 +401,41 @@ function exportAttendanceByUserIdByToDateFromDate(empId,toDate,fromDate) {
         }
     });
 }
+function downloadPaySlip(userId) {
+    $.ajax({
+        type: 'get',
+        url: "/employee/payslip/generate-pdf",
+        data: {
+            'year': $('#year').val(),
+            'month': $('#month').val(),
+            'user_id': userId
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (response, status, xhr) {
+            var blob = response;
+            var link = document.createElement('a');
+            var filename = xhr.getResponseHeader('Content-Disposition').split('filename=')[1].replace(/"/g, '');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            // SweetAlert notification after download is triggered
+            Swal.fire({
+                title: 'Download Complete',
+                text: 'Your Payslip has been successfully downloaded!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        },
+        error: function () {
+            $('#download_btn').hide();
+            console.log("Export failed");
+        }
+    });
+}
 
 
 

@@ -21,7 +21,8 @@ class OfficeTimingConfigController extends Controller
 
     public function index()
     {
-        $branches = $this->branch_services->all(Auth()->guard('company')->user()->company_id);
+        $companyIDs = getCompanyIDs();
+        $branches = $this->branch_services->all($companyIDs);
         $allOfficeTimeDetails = $this->office_time_config_service->all();
 
         return view('company.office_time_config.index', [
@@ -33,11 +34,11 @@ class OfficeTimingConfigController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateOfficeTimeConfig  = Validator::make($request->all(), [
-                'name'            => ['required', 'string', 'unique:office_timing_configs,name'],
-                'company_branch_id'         => ['required', 'exists:company_branches,id'],
-                'shift_hours'     => ['required', 'string'],
-                'half_day_hours'  => ['required', 'string'],
+            $validateOfficeTimeConfig = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'unique:office_timing_configs,name'],
+                'company_branch_id' => ['required', 'exists:company_branches,id'],
+                'shift_hours' => ['required', 'string'],
+                'half_day_hours' => ['required', 'string'],
                 'min_shift_Hours' => ['required', 'string'],
                 'min_half_day_hours' => ['required', 'string'],
             ]);
@@ -48,13 +49,13 @@ class OfficeTimingConfigController extends Controller
             if ($this->office_time_config_service->create($data)) {
                 return response()->json([
                     'message' => 'Office Time Created Successfully!',
-                    'data'   =>  view('company.office_time_config.office_time_list', [
+                    'data' => view('company.office_time_config.office_time_list', [
                         'allOfficeTimeDetails' => $this->office_time_config_service->all()
                     ])->render()
                 ]);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -65,7 +66,7 @@ class OfficeTimingConfigController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Office Time Deleted Successfully',
-                'data'   =>  view('company.office_time_config.office_time_list', [
+                'data' => view('company.office_time_config.office_time_list', [
                     'allOfficeTimeDetails' => $this->office_time_config_service->all()
                 ])->render()
             ]);
@@ -76,11 +77,11 @@ class OfficeTimingConfigController extends Controller
 
     public function update(Request $request)
     {
-        $validateOfficeTimeConfig  = Validator::make($request->all(), [
-            'name'            => ['required', 'string', 'unique:office_timing_configs,name,' . $request->id],
-            'company_branch_id'         => ['required', 'exists:company_branches,id'],
-            'shift_hours'     => ['required', 'string'],
-            'half_day_hours'  => ['required', 'string'],
+        $validateOfficeTimeConfig = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'unique:office_timing_configs,name,' . $request->id],
+            'company_branch_id' => ['required', 'exists:company_branches,id'],
+            'shift_hours' => ['required', 'string'],
+            'half_day_hours' => ['required', 'string'],
             'min_shift_Hours' => ['required', 'string'],
             'min_half_day_hours' => ['required', 'string'],
         ]);
@@ -94,7 +95,7 @@ class OfficeTimingConfigController extends Controller
             return response()->json(
                 [
                     'message' => 'Office Time Updated Successfully!',
-                    'data'    =>  view('company.office_time_config.office_time_list', [
+                    'data' => view('company.office_time_config.office_time_list', [
                         'allOfficeTimeDetails' => $this->office_time_config_service->all()
                     ])->render()
                 ]
@@ -107,7 +108,7 @@ class OfficeTimingConfigController extends Controller
         if ($allOfficeTimeDetails) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view('company.office_time_config.office_time_list', compact('allOfficeTimeDetails'))->render()
+                'data' => view('company.office_time_config.office_time_list', compact('allOfficeTimeDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

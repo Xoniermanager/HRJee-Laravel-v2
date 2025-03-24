@@ -11,6 +11,16 @@ class EmployeeLeaveManagementService
   {
     $this->emoloyeeLeaveManagementRepository = $emoloyeeLeaveManagementRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $userID
+   * @param [type] $employeeLeaveAvailableId
+   * @param [type] $creditValue
+   * @param [type] $mode
+   * @return void
+   */
   public function createAndUpdateToCreditDetails($userID, $employeeLeaveAvailableId, $creditValue, $mode)
   {
     $data = [
@@ -32,7 +42,16 @@ class EmployeeLeaveManagementService
       return false;
     }
   }
+
   /** Debit Operation After applied Leave*/
+  /**
+   * Undocumented function
+   *
+   * @param [type] $userID
+   * @param [type] $employeeLeaveAvailableId
+   * @param [type] $debitValue
+   * @return void
+   */
   public function debitLeaveDetails($userID, $employeeLeaveAvailableId, $debitValue)
   {
     $data = [
@@ -44,6 +63,8 @@ class EmployeeLeaveManagementService
     $finalCreditedDetails = $this->emoloyeeLeaveManagementRepository->where('employee_leave_available_id', $employeeLeaveAvailableId)->orderBy('id', 'DESC')->first();
     if (isset($finalCreditedDetails) && !empty($finalCreditedDetails)) {
       $data['available'] = $finalCreditedDetails->available - $debitValue;
+    } else {
+      $data['available'] = $debitValue;
     }
     $response = $this->emoloyeeLeaveManagementRepository->create($data);
     if ($response) {

@@ -36,7 +36,7 @@
                             <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
                                 value="1">Active</option>
                             <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
-                                value="2">Inactive</option>
+                                value="0">Inactive</option>
                         </select>
 
                     </div>
@@ -317,7 +317,7 @@
                 }
             });
         }
-        jQuery("#search").on('blur', function() {
+        jQuery("#search").on('keyup', function() {
             search_filter_results();
         });
         jQuery("#status").on('change', function() {

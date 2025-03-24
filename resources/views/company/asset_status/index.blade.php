@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="mb-5 mb-xl-10">
-                    @include('company.asset_Status.asset_status_list')
+                    @include('company.asset_status.asset_status_list')
                 </div>
                 <!--end::Col-->
             </div>
@@ -328,7 +328,7 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/asset-status/search/filter',
+                url: company_ajax_base_url + '/asset/asset-status/search/filter',
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val()

@@ -14,30 +14,28 @@ class UserAdvanceDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('user_advance_details')->delete();
-        
+
         \DB::table('user_advance_details')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
-                'user_id' => 1,
-                'aadhar_no' => '123456',
-                'pan_no' => '12345',
-                'uan_no' => NULL,
-                'esic_no' => NULL,
-                'pf_no' => NULL,
-                'insurance_no' => NULL,
-                'driving_licence_no' => NULL,
-                'probation_period' => NULL,
-                'ctc_monthly_in_probation' => NULL,
-                'ctc_monthly_after_probation' => NULL,
+                'user_id' => 2,
+                'aadhar_no' => '12345612345678',
+                'pan_no' => '12345234567',
+                'uan_no' => '1234567',
+                'esic_no' => '123456',
+                'pf_no' => '12345678',
+                'insurance_no' => '234567',
+                'driving_licence_no' => '234567',
+                'probation_period' => 23456,
                 'created_at' => '2024-06-21 14:57:49',
-                'updated_at' => '2024-06-21 14:57:49',
+                'updated_at' => '2025-02-07 15:26:58',
             ),
         ));
-        
-        
+
+
     }
 }

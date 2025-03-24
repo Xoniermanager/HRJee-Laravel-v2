@@ -3,9 +3,11 @@
     <form id="basic_create_form" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="id" value="{{ $singleUserDetails->id ?? '' }}">
-        <input type="hidden" id="highest_qualification_id" value="{{ $singleUserDetails->qualification_id ?? '' }}">
+        <input type="hidden" name="user_details_id" value="{{ $singleUserDetails->details->id ?? '' }}">
+        <input type="hidden" id="highest_qualification_id"
+            value="{{ $singleUserDetails->details->qualification_id ?? '' }}">
         <p id="get_skills_id" style="display: none">{{ $userSkills ?? '' }}</p>
-        <div class="row mb-6 m-0">
+        <div class="row m-0 mb-6">
             <!--begin::Label-->
             <label class="col-lg-4 col-form-label fw-semibold fs-6">
                 Profile Photo
@@ -18,7 +20,7 @@
                     style="background-image: url('/assets/media/user.jpg')">
                     <!--begin::Preview existing avatar-->
                     <div class="image-input-wrapper w-125px h-125px"
-                        style="background-image: url({{ $singleUserDetails->profile_image ?? '/assets/media/user.jpg' }})">
+                        style="background-image: url({{ $singleUserDetails->details->profile_image ?? '/assets/media/user.jpg' }})">
                     </div>
                     <!--end::Preview existing avatar-->
                     <!--begin::Label-->
@@ -53,56 +55,73 @@
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Email *</label>
-                <input class="form-control" type="email" name="email" value="{{ $singleUserDetails->email ?? '' }}">
+                <input class="form-control" type="email" name="email" value="{{ $singleUserDetails->email ?? '' }}"
+                    {{ isset($singleUserDetails->email) ? 'readonly' : '' }}>
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Official Email *</label>
                 <input class="form-control" type="email" name="official_email_id"
-                    value="{{ $singleUserDetails->official_email_id ?? '' }}">
+                    value="{{ $singleUserDetails->details->official_email_id ?? '' }}">
             </div>
             @if (!isset($singleUserDetails))
-            <div class="col-md-4 form-group">
-                <label for="">Password</label>
-                <input class="form-control" type="password" name="password">
-            </div>
+                <div class="col-md-4 form-group">
+                    <label for="">Password</label>
+                    <input class="form-control" type="password" name="password">
+                </div>
             @endif
             <div class="col-md-4 form-group">
                 <label for="">Father's Name</label>
                 <input class="form-control" type="text" name="father_name"
-                    value="{{ $singleUserDetails->father_name ?? '' }}">
+                    value="{{ $singleUserDetails->details->father_name ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Mother's Name</label>
                 <input class="form-control" type="text" name="mother_name"
-                    value="{{ $singleUserDetails->mother_name ?? '' }}">
+                    value="{{ $singleUserDetails->details->mother_name ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Blood Group *</label>
                 <select class="form-control" name="blood_group">
                     <option value="">Select the Blood Group</option>
-                    <option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'A-' ? 'selected' : '' }}
-                        value="A-">A-</option>
-                    <option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'A+' ? 'selected' : '' }}
-                        value="A+">A+</option>
-                    <option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'B+' ? 'selected' : '' }}
-                        value="B+">B+</option>
-                    <option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'B-' ? 'selected' : '' }}
-                        value="B-">B-</option>
-                    <option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'O+' ? 'selected' : '' }}
-                        value="O+">O+</option>
-                    <option {{ $singleUserDetails->blood_group ?? old('blood_group') == 'O-' ? 'selected' : '' }}
-                        value="O-">O</option>
+                    <option
+                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'A-' ? 'selected' : '' }}
+                        value="A-">A-
+                    </option>
+                    <option
+                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'A+' ? 'selected' : '' }}
+                        value="A+">A+
+                    </option>
+                    <option
+                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'B+' ? 'selected' : '' }}
+                        value="B+">B+
+                    </option>
+                    <option
+                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'B-' ? 'selected' : '' }}
+                        value="B-">B-
+                    </option>
+                    <option
+                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'O+' ? 'selected' : '' }}
+                        value="O+">O+
+                    </option>
+                    <option
+                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'O-' ? 'selected' : '' }}
+                        value="O-">O
+                    </option>
                 </select>
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Gender *</label>
                 <select class="form-control" name="gender">
                     <option value="">Select the Gender</option>
-                    <option {{ $singleUserDetails->gender ?? old('gender') == 'M' ? 'selected' : '' }} value="M">
+                    <option {{ $singleUserDetails->details->gender ?? old('gender') == 'M' ? 'selected' : '' }}
+                        value="M">
                         Male</option>
-                    <option {{ $singleUserDetails->gender ?? old('gender') == 'F' ? 'selected' : '' }} value="F">
+                    <option {{ $singleUserDetails->details->gender ?? old('gender') == 'F' ? 'selected' : '' }}
+                        value="F">
                         Female</option>
-                    <option {{ $singleUserDetails->gender ?? old('gender') == 'O' ? 'selected' : '' }}value="O">Other
+                    <option
+                        {{ $singleUserDetails->details->gender ?? old('gender') == 'O' ? 'selected' : '' }}value="O">
+                        Other
                     </option>
                 </select>
             </div>
@@ -110,9 +129,11 @@
                 <label for="">Marital Status *</label>
                 <select class="form-control" name="marital_status">
                     <option value="">Select the Marital Status</option>
-                    <option {{ $singleUserDetails->marital_status ?? old('marital_status') == 'M' ? 'selected' : '' }}
+                    <option
+                        {{ $singleUserDetails->details->marital_status ?? old('marital_status') == 'M' ? 'selected' : '' }}
                         value="M">Married</option>
-                    <option {{ $singleUserDetails->marital_status ?? old('marital_status') == 'S' ? 'selected' : '' }}
+                    <option
+                        {{ $singleUserDetails->details->marital_status ?? old('marital_status') == 'S' ? 'selected' : '' }}
                         value="S">Single</option>
                 </select>
             </div>
@@ -121,28 +142,29 @@
                 <select class="form-control" name="employee_status_id">
                     <option value="">Select The Employee Status</option>
                     @forelse ($allEmployeeStatus as $employeeStatus)
-                    <option {{ $singleUserDetails->employee_status_id ?? old('employee_status_id') ==
-                        $employeeStatus->id ? 'selected' : '' }}
-                        value="{{ $employeeStatus->id }}">
-                        {{ $employeeStatus->name }}</option>
+                        <option
+                            {{ $singleUserDetails->details->employee_status_id ?? old('employee_status_id') == $employeeStatus->id ? 'selected' : '' }}
+                            value="{{ $employeeStatus->id }}">
+                            {{ $employeeStatus->name }}</option>
                     @empty
-                    <option value="">No Employee Status Found</option>
+                        <option value="">No Employee Status Found</option>
                     @endforelse
                 </select>
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Date of Birth *</label>
                 <input class="form-control" type="date" name="date_of_birth"
-                    value="{{ $singleUserDetails->date_of_birth ?? '' }}">
+                    value="{{ $singleUserDetails->details->date_of_birth ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Date of Joining *</label>
                 <input class="form-control" type="date" name="joining_date"
-                    value="{{ $singleUserDetails->joining_date ?? '' }}">
+                    value="{{ $singleUserDetails->details->joining_date ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Phone Number *</label>
-                <input class="form-control" type="number" name="phone" value="{{ $singleUserDetails->phone ?? '' }}">
+                <input class="form-control" type="number" name="phone"
+                    value="{{ $singleUserDetails->details->phone ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <div class="k-w-300">
@@ -176,18 +198,19 @@
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Employee Id *</label>
-                <input class="form-control" type="text" name="emp_id" value="{{ $singleUserDetails->emp_id ?? '' }}"
-                    @if(isset($singleUserDetails->offer_letter_id)) disabled @endif>
+                <input class="form-control" type="text" name="emp_id"
+                    value="{{ $singleUserDetails->details->emp_id ?? '' }}"
+                    @if (isset($singleUserDetails->details->offer_letter_id)) disabled @endif>
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Role*</label>
                 <select class="form-control" name="role_id">
-                    <option value="">Select the roles</option>
+                    <option value="">Select Role</option>
                     @forelse ($allRoles as $role)
-                    <option {{ $singleUserDetails->role_id ?? old('role_id') ? 'selected' : '' }}
-                        value="{{ $role->id }}">{{ $role->name }}</option>
+                        <option {{ ($singleUserDetails->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
+                            value="{{ $role->id }}">{{ $role->name }}</option>
                     @empty
-                    <option value="">No Roles Found</option>
+                        <option value="">No Roles Found</option>
                     @endforelse
                 </select>
             </div>
@@ -196,11 +219,12 @@
                 <select class="form-control" name="employee_type_id">
                     <option value="">Select The Employee Type</option>
                     @forelse ($allEmployeeType as $employeeType)
-                    <option {{ $singleUserDetails->employee_type_id ?? old('employee_type_id') ? 'selected' : '' }}
-                        value="{{ $employeeType->id }}">
-                        {{ $employeeType->name }}</option>
+                        <option
+                            {{ $singleUserDetails->details->employee_type_id ?? old('employee_type_id') ? 'selected' : '' }}
+                            value="{{ $employeeType->id }}">
+                            {{ $employeeType->name }}</option>
                     @empty
-                    <option value="">No Employee Type Found</option>
+                        <option value="">No Employee Type Found</option>
                     @endforelse
                 </select>
             </div>
@@ -209,12 +233,11 @@
                 <select class="form-control" name="department_id" id="department_id">
                     <option value="">Select The Department</option>
                     @forelse ($alldepartmentDetails as $departmentDetails)
-                    <option value="{{ $departmentDetails->id }}" {{ $singleUserDetails->department_id ??
-                        old('employee_type_id') ==
-                        $departmentDetails->id ? 'selected' : ''}}>
-                        {{ $departmentDetails->name }}</option>
+                        <option value="{{ $departmentDetails->id }}"
+                            {{ $singleUserDetails->details->department_id ?? '' == $departmentDetails->id ? 'selected' : '' }}>
+                            {{ $departmentDetails->name }}</option>
                     @empty
-                    <option value="">No Department Found</option>
+                        <option value="">No Department Found</option>
                     @endforelse
                 </select>
             </div>
@@ -225,53 +248,63 @@
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Branch *</label>
-                <select class="form-control" name="company_branch_id">
+                <select class="form-control" name="company_branch_id" id="company_branch_id">
                     <option value="">Please Select the Branch</option>
                     @forelse ($allBranches as $branch)
-                    <option {{ $singleUserDetails->company_branch_id ?? old('company_branch_id') ? 'selected' : '' }}
-                        value="{{ $branch->id }}">{{ $branch->name }}</option>
+                        <option
+                            {{ $singleUserDetails->details->company_branch_id ?? old('company_branch_id') ? 'selected' : '' }}
+                            value="{{ $branch->id }}">{{ $branch->name }}</option>
                     @empty
-                    <option value="">No Branches Found</option>
+                        <option value="">No Branches Found</option>
                     @endforelse
                 </select>
 
+            </div>
+            <div class="col-md-4 form-group">
+                <div>
+                    <label>Manager IDs</label>
+                    <select id="manager_id" class="form-control" data-control="select2" data-close-on-select="false"
+                        data-placeholder="Select managers" data-allow-clear="true" multiple="multiple"
+                        name="manager_id[]">
+                    </select>
+                </div>
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Shift *</label>
                 <select class="form-control" id="shift" name="shift_id">
                     <option value="">Please Select the Shift</option>
                     @forelse ($allShifts as $shift)
-                    <option {{ $singleUserDetails->shift_id ?? old('shift_id') ? 'selected' : '' }}
-                        value="{{ $shift->id }}" data-time="{{ $shift->start_time }}">{{ $shift->name }}
-                    </option>
+                        <option {{ ($singleUserDetails->details->shift_id ?? old('shift_id') )== $shift->id ? 'selected' : '' }}
+                            value="{{ $shift->id }}" data-time="{{ $shift->start_time }}">{{ $shift->name }}
+                        </option>
                     @empty
-                    <option value="">No Shift Found</option>
+                        <option value="">No Shift Found</option>
                     @endforelse
                 </select>
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Shirt Start Time</label>
                 <input class="form-control" type="time" id="start_time" readonly
-                    value="{{ $singleUserDetails->officeShift->start_time ?? '' }}">
+                    value="{{ $singleUserDetails->details->officeShift->start_time ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Offer ID *</label>
                 <input class="form-control" type="text" name="offer_letter_id"
-                    value="{{ $singleUserDetails->offer_letter_id ?? '' }}"
-                    @if(isset($singleUserDetails->offer_letter_id)) disabled @endif>
+                    value="{{ $singleUserDetails->details->offer_letter_id ?? '' }}"
+                    @if (isset($singleUserDetails->offer_letter_id)) disabled @endif>
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Official Phone Number *</label>
                 <input class="form-control" type="text" name="official_mobile_no"
-                    value="{{ $singleUserDetails->official_mobile_no ?? ''}}">
+                    value="{{ $singleUserDetails->details->official_mobile_no ?? '' }}">
             </div>
         </div>
         <div class="container">
             <div id="language_list">
                 @if (count($userLanguages) > 0)
-                @include('company.employee.languages.user_language')
+                    @include('company.employee.languages.user_language')
                 @else
-                @include('company.employee.languages.create_language')
+                    @include('company.employee.languages.create_language')
                 @endif
             </div>
         </div>
@@ -295,36 +328,26 @@
         </div>
     </form>
     @if (isset($singleUserDetails) && !empty($singleUserDetails))
-    <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary float-right">Next <i
-            class="fa fa-arrow-right"></i> </button>
+        <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary float-right">Next <i
+                class="fa fa-arrow-right"></i> </button>
     @else
-    <button class="btn btn-primary float-right" id="submit">Save & Continue</button>
+        <button class="btn btn-primary float-right" id="submit">Save & Continue</button>
     @endif
 </div>
 <script>
-    function createBasicDetails(form) {
-        var basic_details_Data = new FormData(form);
-        $.ajax({
-            url: "{{ route('employee.store') }}",
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: basic_details_Data,
-            success: function(response) {
-                if (response.data.status == 'createData') {
-                    location.href = '/company/employee/edit/' + response.data.id;
-                    setTimeout(function() {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        jQuery('.nav-pills a[href="#advance_details_tab"]').tab(
-                            'show');
-                    }, 4000);
-                } else {
+   function createBasicDetails(form) {
+    var basic_details_Data = new FormData(form);
+
+    $.ajax({
+        url: "{{ route('employee.store') }}",
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        data: basic_details_Data,
+        success: function(response) {
+            if (response.data.status == "createdEmployee") {
+                location.href = '/company/employee/edit/' + response.data.id;
+                setTimeout(function() {
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
@@ -332,36 +355,46 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    jQuery('.nav-pills a[href="#advance_details_tab"]').tab(
-                        'show');
-                }
-                // This variable is used on save all records button
-                all_data_saved = true;
-            },
-            error: function(error_messages) {
-                // This variable is used on save all records button
-                all_data_saved = false;
-                let errors = error_messages.responseJSON.error;
-                for (var error_key in errors) {
-                    $(document).find('[name=' + error_key + ']').after(
-                        '<span class="' + error_key +
-                        '_error text text-danger">' + errors[
-                            error_key] + '</span>');
-                    setTimeout(function() {
-                        jQuery("." + error_key + "_error").remove();
-                    }, 5000);
-                }
+                    jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
+                }, 4000);
+            } else {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
             }
-        });
-    }
+
+            // This variable is used on save all records button
+            all_data_saved = true;
+        },
+        error: function(error_messages) {
+            // This variable is used on save all records button
+            all_data_saved = false;
+
+            let errors = error_messages.responseJSON.errors;
+            for (var error_key in errors) {
+                $(document).find('[name=' + error_key + ']').after(
+                    '<span class="' + error_key + '_error text text-danger">' + errors[error_key] + '</span>'
+                );
+                setTimeout(function() {
+                    jQuery("." + error_key + "_error").remove();
+                }, 8000);
+            }
+        }
+    });
+}
 </script>
 <script>
     jQuery(document).ready(function() {
-        var departmentId = '{{ $singleUserDetails->department_id ?? '' }}';
+        var departmentId = '{{ $singleUserDetails->details->department_id ?? '' }}';
         const all_department_id = [departmentId];
-        var designation_id = '{{ $singleUserDetails->designation_id ?? '' }}';
+        var designation_id = '{{ $singleUserDetails->details->designation_id ?? '' }}';
         get_all_designation_using_department_id(all_department_id, designation_id);
-    });
+    });8
 
     /** get all Designation Using Department Id*/
     jQuery('#department_id').on('change', function() {
@@ -388,6 +421,54 @@
                         $.each(response.data, function(key, value) {
                             select.append('<option ' + ((designationId == value.id) ? "selected" :
                                 "") + ' value=' + value.id + '>' + value.name + '</option>');
+                        });
+                    } else {
+                        select.append('<option value="">' + response.error +
+                            '</option>');
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something Went Wrong!! Please try Again"
+                    });
+                    return false;
+                }
+            });
+        } else {
+            $('#designation_id').empty();
+        }
+
+    }
+    /** end get all Designation Using Department Id*/
+
+
+    /** get all managers using branch Id*/
+    jQuery('#company_branch_id').on('change', function() {
+        var company_branch_id = $(this).val();
+        const all_company_branch_id = [company_branch_id];
+        getAllManagersUsingBranchId(all_company_branch_id);
+    });
+
+    function getAllManagersUsingBranchId(all_company_branch_id) {
+        if (all_company_branch_id) {
+            $.ajax({
+                url: "{{ route('get.all.managers') }}",
+                type: "GET",
+                dataType: "json",
+                data: {
+                    'branch_id': all_company_branch_id
+                },
+                success: function(response) {
+                    var select = $('#manager_id');
+                    select.empty();
+                    if (response.status == true) {
+                        $('#manager_id').append(
+                            '<option>Select The Manager</option>');
+                        $.each(response.data, function(key, value) {
+                            select.append('<option value=' + value.id + '>' + value.name +
+                                '</option>');
                         });
                     } else {
                         select.append('<option value="">' + response.error +
@@ -466,6 +547,7 @@
             }
         });
     });
+
     function remove_language(language_id) {
         jQuery("#language_" + language_id).remove();
     }

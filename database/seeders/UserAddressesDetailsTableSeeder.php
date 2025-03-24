@@ -22,15 +22,15 @@ class UserAddressesDetailsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'user_id' => 1,
+                'user_id' => 2,
                 'address_type' => 'both_same',
-                'country_id' => 103,
-                'state_id' => 2,
+                'country_id' => 100,
+                'state_id' => 1,
                 'address' => 'Noida',
                 'city' => 'Noida sec 62',
                 'pin_code' => '201901',
                 'created_at' => '2024-06-21 14:58:59',
-                'updated_at' => '2024-06-21 14:58:59',
+                'updated_at' => '2025-01-30 13:12:26',
             ),
         ));
         

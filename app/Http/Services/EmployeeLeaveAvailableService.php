@@ -14,14 +14,48 @@ class EmployeeLeaveAvailableService
     $this->employeeLeaveManagementService  = $employeeLeaveManagementService;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function getAllEmployeeLeaveAvailable()
   {
     return $this->employeeLeaveAvailableRepository->paginate(10)->groupBy('user_id');
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function getAllLeaveAvailableByUserId($id)
   {
-    return $this->employeeLeaveAvailableRepository->where('user_id',$id)->paginate(10)->groupBy('leave_type_id');
+    return $this->employeeLeaveAvailableRepository->where('user_id', $id)->paginate(10)->groupBy('leave_type_id');
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $userId
+   * @param [type] $leaveTypeId
+   * @return void
+   */
+  public function getAvailableLeaveByUserIdTypeId($userId, $leaveTypeId)
+  {
+    return $this->employeeLeaveAvailableRepository->where('user_id', $userId)->where('leave_type_id', $leaveTypeId)->first();
+  }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $userId
+   * @param [type] $leaveTypeId
+   * @param [type] $creditValue
+   * @param [type] $mode
+   * @return void
+   */
   public function createDetails($userId, $leaveTypeId, $creditValue, $mode)
   {
     $existingDetails = $this->employeeLeaveAvailableRepository->where('user_id', $userId)->where('leave_type_id', $leaveTypeId)->orderBy('id', 'Desc')->first();
@@ -45,17 +79,30 @@ class EmployeeLeaveAvailableService
     }
     return $response;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $userId
+   * @param [type] $leaveTypeId
+   * @param [type] $debitValue
+   * @return void
+   */
   public function debitLeaveDetails($userId, $leaveTypeId, $debitValue)
   {
+
     $existingDetails = $this->employeeLeaveAvailableRepository->where('user_id', $userId)->where('leave_type_id', $leaveTypeId)->orderBy('id', 'Desc')->first();
-    $response = array('status'=>true,'message'=>'leave not available','data'=>[]);
-   
+    $response = array('status' => true, 'message' => 'leave not available', 'data' => []);
+
     if (isset($existingDetails) && !empty($existingDetails)) {
       $finalAvailableValue = $existingDetails->available - $debitValue;
+
       $updateDetails = $existingDetails->update(['available' => $finalAvailableValue]);
+
       if ($updateDetails) {
         $data = $this->employeeLeaveManagementService->debitLeaveDetails($userId, $existingDetails->id, $debitValue);
-        $response = array('status'=>true,'message'=>'leave not available','data'=>$data);
+
+        $response = array('status' => true, 'message' => 'leave not available', 'data' => $data);
       }
     }
     return $response;

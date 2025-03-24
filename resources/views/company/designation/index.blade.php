@@ -35,10 +35,10 @@
                             <option {{ old('status') == '1' || request()->get('status') == '1' ? 'selected' : '' }}
                                 value="1">Active</option>
                             <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
-                                value="2">Inactive</option>
+                                value="0">Inactive</option>
                         </select>
                         <select class="form-control min-w-150px me-2" id="filter_department">
-                            <option value="">Select Development</option>
+                            <option value="">Select Department</option>
                             @forelse ($allDepartments as $departments)
                                 <option value="{{ $departments->id }}"
                                     {{ request()->get('department') == $departments->id ? 'selected' : '' }}>
@@ -109,7 +109,7 @@
                         <div class="mt-3 mb-3">
                             <label>Department*</label>
                             <select class="form-control mb-3" name="department_id" id="department_id">
-                                <option value="">Select Development</option>
+                                <option value="">Select Department</option>
                                 @forelse ($allDepartments as $departments)
                                     <option value="{{ $departments->id }}">{{ $departments->name }}</option>
                                 @empty

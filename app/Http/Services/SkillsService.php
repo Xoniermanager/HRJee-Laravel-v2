@@ -11,29 +11,67 @@ class SkillsService
   {
     $this->companySkillsRepository = $companySkillsRepository;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function all()
   {
     return $this->companySkillsRepository->orderBy('id','DESC')->paginate(10);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function get_skill_ajax_call()
   {
     return $this->companySkillsRepository->orderBy('id','DESC')->get();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function create(array $data)
   {
     return $this->companySkillsRepository->create($data);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails(array $data, $id)
   {
     return $this->companySkillsRepository->find($id)->update($data);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     return $this->companySkillsRepository->find($id)->delete();
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $searchKey
+   * @return void
+   */
   public function searchInSkills($searchKey)
   {
     $data['key']    = array_key_exists('key', $searchKey) ? $searchKey['key'] : '';
@@ -50,6 +88,11 @@ class SkillsService
     })->get();
   }
   
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function getAllActiveSkills()
   {
     return $this->companySkillsRepository->where('status','1')->get();

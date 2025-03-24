@@ -5,7 +5,7 @@
                 <div class="panel-head">
                     <h4 class="">{{ $assetDetails->asset->name }}
                         <a href="#" class="btn btn-danger btn btn-sm float-right m-0"
-                            onclick="get_details_for_deallocate_asset('{{ $assetDetails->asset->name }}','{{ $assetDetails->asset->assetCategories->id }}','{{ $assetDetails->assigned_date }}','{{ $assetDetails->id }}')"><i
+                            onclick="get_details_for_deallocate_asset('{{ $assetDetails->asset->name }}','{{ $assetDetails->asset->asset_category_id }}','{{ $assetDetails->assigned_date }}','{{ $assetDetails->id }}')"><i
                                 class="fa fa-trash"></i></a>
                     </h4>
                 </div>

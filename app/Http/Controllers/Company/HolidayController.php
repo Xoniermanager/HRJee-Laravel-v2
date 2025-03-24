@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Company;
 
+use Exception;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Services\BranchServices;
 use App\Http\Services\HolidayServices;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Exception;
 
 class HolidayController extends Controller
 {
@@ -24,9 +25,11 @@ class HolidayController extends Controller
      */
     public function index()
     {
+        $companyIDs = getCompanyIDs();
+        
         return view('company.holiday.index', [
-            'allHolidaysDetails' => $this->holidayService->all(),
-            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id)
+            'allHolidaysDetails' => $this->holidayService->all($companyIDs),
+            'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId($companyIDs)
         ]);
     }
 
@@ -36,27 +39,29 @@ class HolidayController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateHolidayData  = Validator::make($request->all(), [
+            $validateHolidayData = Validator::make($request->all(), [
                 'name' => 'required|string|unique:holidays,name,',
                 'date' => 'required|date',
                 'year' => 'required',
-                'company_branch_id'    =>   'required|array',
-                'company_branch_id.*'  =>   'required',
+                'company_branch_id' => 'required|array',
+                'company_branch_id.*' => 'required',
             ]);
             if ($validateHolidayData->fails()) {
                 return response()->json(['error' => $validateHolidayData->messages()], 400);
             }
             $data = $request->all();
             if ($this->holidayService->create($data)) {
+                $companyIDs = getCompanyIDs();
+
                 return response()->json([
                     'message' => 'Holiday Created Successfully!',
-                    'data'   =>  view('company.holiday.holiday_list', [
-                        'allHolidaysDetails' => $this->holidayService->all()
+                    'data' => view('company.holiday.holiday_list', [
+                        'allHolidaysDetails' => $this->holidayService->all($companyIDs)
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -65,12 +70,12 @@ class HolidayController extends Controller
      */
     public function update(Request $request)
     {
-        $validateHolidayData  = Validator::make($request->all(), [
+        $validateHolidayData = Validator::make($request->all(), [
             'name' => 'required|string|unique:holidays,name,' . $request->id,
             'date' => 'required|date',
             'year' => 'required',
-            'company_branch_id'    =>   'required|array',
-            'company_branch_id.*'  =>   'required',
+            'company_branch_id' => 'required|array',
+            'company_branch_id.*' => 'required',
         ]);
 
         if ($validateHolidayData->fails()) {
@@ -79,11 +84,13 @@ class HolidayController extends Controller
         $updateData = $request->except(['_token', 'id']);
         $companyStatus = $this->holidayService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
+            $companyIDs = getCompanyIDs();
+
             return response()->json(
                 [
                     'message' => 'Holiday Updated Successfully!',
-                    'data'   =>  view('company.holiday.holiday_list', [
-                        'allHolidaysDetails' => $this->holidayService->all()
+                    'data' => view('company.holiday.holiday_list', [
+                        'allHolidaysDetails' => $this->holidayService->all($companyIDs)
                     ])->render()
                 ]
             );
@@ -98,10 +105,12 @@ class HolidayController extends Controller
         $id = $request->id;
         $data = $this->holidayService->deleteDetails($id);
         if ($data) {
+            $companyIDs = getCompanyIDs();
+
             return response()->json([
                 'success' => 'Holiday Deleted Successfully',
-                'data'   =>  view('company.holiday.holiday_list', [
-                    'allHolidaysDetails' => $this->holidayService->all()
+                'data' => view('company.holiday.holiday_list', [
+                    'allHolidaysDetails' => $this->holidayService->all($companyIDs)
                 ])->render()
             ]);
         } else {
@@ -110,13 +119,20 @@ class HolidayController extends Controller
     }
     public function statusUpdate(Request $request)
     {
-        $id = $request->id;
-        $data['status'] = $request->status;
-        $statusDetails = $this->holidayService->updateDetails($data, $id);
+        $statusDetails = $this->holidayService->updateStatus($request->id,$request->status);
         if ($statusDetails) {
             echo 1;
         } else {
             echo 0;
         }
+    }
+
+    public function searchFilterData(Request $request)
+    {
+        $allHolidaysDetails = $this->holidayService->searchFilterData(Auth()->user()->id, $request->all());
+        return response()->json([
+            'success' => true,
+            'data' => view('company.holiday.holiday_list', compact('allHolidaysDetails'))->render()
+        ]);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Export;
 
 use Illuminate\Http\Request;
-use App\Models\EmployeeAttendance;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EmployeeAttendanceExport;
@@ -26,10 +25,10 @@ class EmployeeAttendanceExportController extends Controller
         $employeeDetail = $this->employeeService->getUserDetailById($request->empId);
         if ($request->type == 'ByTwoDates') {
             $filename = str_replace(' ', '', $employeeDetail->name) . '-Attendance-' . $request->to . '-' . $request->from . '.xlsx';
-            $attendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date, $request->empId)->get();
+            $attendanceDetails = $this->employeeAttendanceService->getAttendanceByFromAndToDate($request->from_date, $request->to_date, $employeeDetail->id)->get();
         } else {
-            $filename = str_replace(' ', '', $employeeDetail->name) . $employeeDetail->emp_id . '-Attendance-' . $request->month . $request->year . '.xlsx';
-            $attendanceDetails = $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($request->month, $request->empId, $request->year)->get();
+            $filename = str_replace(' ', '', $employeeDetail->name) . $employeeDetail->details->emp_id . '-Attendance-' . $request->month . $request->year . '.xlsx';
+            $attendanceDetails = $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($request->month, $employeeDetail->id, $request->year)->get();
         }
         return Excel::download(new EmployeeAttendanceExport($attendanceDetails), $filename);
     }

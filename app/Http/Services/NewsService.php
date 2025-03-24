@@ -21,10 +21,23 @@ class NewsService
     $this->departmentServices = $departmentServices;
     $this->designationServices = $designationServices;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function all()
   {
     return $this->newsRepository->orderBy('id', 'DESC')->paginate(10);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @return void
+   */
   public function create(array $data)
   {
     /** for file or file Upload */
@@ -41,8 +54,9 @@ class NewsService
       }
     }
     $finalPayload = Arr::except($data, ['_token', 'department_id', 'designation_id', 'company_branch_id']);
-    $finalPayload['company_id'] = Auth::guard('company')->user()->company_id;
-    $newsCreatedDetails =  $this->newsRepository->create($finalPayload);
+    $finalPayload['company_id'] = Auth()->user()->company_id;
+    $finalPayload['created_by'] = Auth()->user()->id;
+    $newsCreatedDetails = $this->newsRepository->create($finalPayload);
     if ($newsCreatedDetails) {
       $newsDetails = News::find($newsCreatedDetails->id);
       if ($newsCreatedDetails->all_company_branch == 0) {
@@ -58,11 +72,24 @@ class NewsService
     return true;
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function findByNewsId($id)
   {
     return $this->newsRepository->find($id);
   }
 
+  /**
+   * Undocumented function
+   *
+   * @param array $data
+   * @param [type] $id
+   * @return void
+   */
   public function updateDetails(array $data, $id)
   {
     $editDetails = $this->newsRepository->find($id);
@@ -110,6 +137,13 @@ class NewsService
     }
     return true;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @return void
+   */
   public function deleteDetails($id)
   {
     $deletedData = News::find($id);
@@ -127,10 +161,25 @@ class NewsService
     $deletedData->delete();
     return true;
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $id
+   * @param [type] $statusValue
+   * @return void
+   */
   public function updateStatus($id, $statusValue)
   {
     return $this->newsRepository->find($id)->update(['status' => $statusValue]);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $request
+   * @return void
+   */
   public function serachNewsFilterList($request)
   {
     $newsDetails = $this->newsRepository;
@@ -168,18 +217,23 @@ class NewsService
     }
     return $newsDetails->orderBy('id', 'DESC')->paginate(10);
   }
+
+  /**
+   * Undocumented function
+   *
+   * @return void
+   */
   public function getAllAssignedNewsForEmployee()
   {
-    $userDetails = Auth()->guard('employee')->user() ?? auth()->guard('employee_api')->user();
-    $allNewsDetails = $this->newsRepository->where('company_id', $userDetails->company_id)->where('status', 1)->where('start_date', '<=', date('Y-m-d'))
+    $user = Auth()->user() ?? auth()->guard('employee_api')->user();
+    $allNewsDetails = $this->newsRepository->where('company_id', $user->company_id)->where('status', 1)->where('start_date', '<=', date('Y-m-d'))
       ->where('end_date', '>=', date('Y-m-d'))->get();
     $allAssignedNews = [];
     foreach ($allNewsDetails as $newsDetails) {
       $assignedCompanyBranchesIds = $this->companyBranchServices->getAllAssignedCompanyBranches($newsDetails);
       $assignedDepartmentIds = $this->departmentServices->getAllAssignedDepartment($newsDetails);
       $assignedDesignationIds = $this->designationServices->getAllAssignedDesignation($newsDetails);
-
-      if (in_array($userDetails->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
+      if (in_array($user->details->company_branch_id, $assignedCompanyBranchesIds) && in_array($user->details->department_id, $assignedDepartmentIds) && in_array($user->details->designation_id, $assignedDesignationIds)) {
         $allAssignedNews[] = $newsDetails;
       }
     }

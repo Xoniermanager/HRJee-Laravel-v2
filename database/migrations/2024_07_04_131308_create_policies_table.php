@@ -24,8 +24,9 @@ return new class extends Migration
             $table->boolean('all_company_branch')->default(false);
             $table->boolean('all_department')->default(false);
             $table->boolean('all_designation')->default(false);
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
             $table->unsignedBigInteger('company_branch_id')->nullable();
             $table->foreign('company_branch_id')->references('id')->on('company_branches');
             $table->boolean('status')->default(true);

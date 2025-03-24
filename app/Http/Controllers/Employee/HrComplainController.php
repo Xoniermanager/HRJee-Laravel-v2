@@ -21,17 +21,17 @@ class HrComplainController extends Controller
 
     public function __construct(ComplainCategoryService $complainCategoryService, EmployeeComplainService $employeeComplainService, EmployeeComplainLogService $employeeComplainLogService)
     {
-        $this->complainCategoryService =  $complainCategoryService;
-        $this->employeeComplainService =  $employeeComplainService;
-        $this->employeeComplainLogService =  $employeeComplainLogService;
+        $this->complainCategoryService = $complainCategoryService;
+        $this->employeeComplainService = $employeeComplainService;
+        $this->employeeComplainLogService = $employeeComplainLogService;
     }
     public function index()
     {
-        if (Auth()->guard('employee')->user()->role_id == 4) {
+        if (Auth()->user()->role_id == 4) {
             $allComplainDetails = $this->employeeComplainService->all();
             return view('employee.complain.index', compact('allComplainDetails'));
         } else {
-            $allComplainDetails = $this->employeeComplainService->getAllComplainDetailsByUserId(Auth()->guard('employee')->user()->id);
+            $allComplainDetails = $this->employeeComplainService->getAllComplainDetailsByUserId(Auth()->user()->id);
             return view('employee.hr_complain.index', compact('allComplainDetails'));
         }
     }
@@ -44,8 +44,8 @@ class HrComplainController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateData  = Validator::make($request->all(), [
-                'complain_category_id'  => ['required', 'exists:complain_categories,id'],
+            $validateData = Validator::make($request->all(), [
+                'complain_category_id' => ['required', 'exists:complain_categories,id'],
                 'description' => ['required', 'string']
             ]);
 
@@ -63,7 +63,7 @@ class HrComplainController extends Controller
     public function getComplainDetails($id)
     {
         $employeeComplainDetails = $this->employeeComplainService->findById($id);
-        if (Auth()->guard('employee')->user()->role_id == 4) {
+        if (Auth()->user()->role_id == 4) {
             $toId = $employeeComplainDetails->user_id;
             $fromId = 0;
         } else {

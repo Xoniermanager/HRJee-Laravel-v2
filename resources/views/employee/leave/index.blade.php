@@ -107,9 +107,8 @@
                                             <td>{{ $leaveToDay }}</td>
                                             <td>{{ $leavesDetails->leaveStatus->name }}</td>
                                             <td>
-                                                <a href="{{ route('employee.leave.tracking',$leavesDetails->id) }}">
-                                                    <img src="https://cdn-icons-png.flaticon.com/512/3273/3273365.png"
-                                                        class="h-35px leavetracking" alt="">
+                                                <a href="javascript:void(0);" class="leavetracking" data-id="{{ $leavesDetails->id }}">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/3273/3273365.png" class="h-35px" alt="Leave Tracking">
                                                 </a>
                                             </td>
                                         </tr>
@@ -120,11 +119,9 @@
                             <!--end::Table-->
                         </div>
                         <!--end::Table container-->
-
                     </div>
                 </div>
                 <!--begin::Body-->
-
             </div>
             <!--begin::Body-->
             <!--end::Row-->
@@ -132,4 +129,64 @@
         <!--end::Container-->
     </div>
 </div>
+
+<!-- Modal for Edit  form-->
+<div class="modal" id="leaveTrackingModal" tabindex="-1" aria-modal="true" role="dialog">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-500px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Modal header-->
+            <div class="modal-header pb-0">
+                <h2>Leave Tracking</h2>
+                <!--begin::Close-->
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1"
+                                transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-body scroll-y pb-5 border-top">
+                <!-- Dynamic content will be loaded here -->
+                <div id="modalContent">
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    jQuery.noConflict();
+    jQuery(document).ready(function($) {
+        $('.leavetracking').on('click', function () {
+            const leaveId = $(this).data('id');
+            $('#modalContent').html('<p>Loading...</p>'); // Show loading state
+            jQuery('#leaveTrackingModal').modal('show'); // Show modal
+
+            // Fetch data using AJAX
+            $.ajax({
+                url: '/employee/leave-tracking/'+leaveId, // Update to the correct route
+                method: 'GET',
+                success: function (response) {
+                    $('#modalContent').html(response);
+                },
+                error: function () {
+                    $('#modalContent').html('<p class="text-danger">An error occurred. Please try again.</p>');
+                }
+            });
+        });
+    });
+</script>

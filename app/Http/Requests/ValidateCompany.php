@@ -25,15 +25,15 @@ class ValidateCompany extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:255,',
             'username' => 'sometimes|required|string|max:255',
-            'contact_no' => 'sometimes|required|string|max:20',
-            'email' => 'sometimes|required|string|email|max:255|unique:companies,email',
+            'phone' => 'sometimes|required|string|max:20',
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email',
             'password' => 'sometimes|required|confirmed',
             'password_confirmation' => 'sometimes|required',
             'company_size' => 'sometimes|required|string',
             'company_url' => 'sometimes|required|string|url|max:100',
             'company_address' => 'sometimes|sometimes|required|string|max:255',
-            'industry_type' => 'sometimes|required|string|max:255',
-             'logo' => 'sometimes|max:2048', 
+            'company_type_id' => 'sometimes|required|exists:company_types,id',
+            'logo' => 'sometimes|max:2048',
         ];
     }
 }

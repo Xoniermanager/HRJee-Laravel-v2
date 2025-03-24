@@ -19,7 +19,7 @@ jQuery(document).ready(function () {
             department_id: 'required',
             designation_id: 'required',
             company_branch_id: 'required',
-            role_id: 'required',
+            // role_id: 'required',
             qualification_id: 'required',
             skill_id: 'required',  // Corrected to treat skill_id as a required field, no need for []
             shift_id: 'required',
@@ -41,7 +41,7 @@ jQuery(document).ready(function () {
             department_id: 'Please Select the Department',
             designation_id: 'Please Select the Designation',
             company_branch_id: 'Please Select the Branch',
-            role_id: 'Please Select the Roles',
+            // role_id: 'Please Select the role',
             qualification_id: 'Please select the qualification',
             skill_id: 'Please select the skill', // Corrected message for skill_id
             shift_id: 'Please Select the Shift',
@@ -126,6 +126,46 @@ jQuery(document).ready(function () {
             if (submit_handler == false) {
                 updateBankDetails(form);
             }
+        }
+    });
+
+
+
+    /** Course Details created Ajax*/
+    jQuery("#course_details_form").validate({
+        rules: {
+            title: "required",
+            description: "required",
+            video_type: "required",
+            department_id: 'required',
+            designation_id: 'required',
+            pdf_file: {
+                required: function () {
+                    return $("#video_type").val() === "pdf" && $("#id").val() === "";
+                }
+            },
+            video_url: {
+                required: function () {
+                    return $("#video_type").val() !== "pdf" && $("#id").val() === "";
+                },
+                url: true
+            }
+        },
+        messages: {
+            title: "Please enter the title",
+            description: "Please enter the description",
+            video_type: "Please select the type",
+            department_id: 'Please Select the Department',
+            designation_id: 'Please Select the Designation',
+            pdf_file: {
+                required: "Please upload a PDF file."
+            },
+            video_url: {
+                required: "Please provide a valid video URL."
+            }
+        },
+        submitHandler: function (form) {
+            createBasicDetails(form);
         }
     });
 });

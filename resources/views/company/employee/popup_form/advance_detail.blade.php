@@ -61,20 +61,9 @@
                                 <input class="form-control" type="text" name="pf_no" id="pf_no">
                             </div>
                             <div class="col-md-4 form-group">
-                                <label for="">CTC Monthly (In Probation)</label>
-                                <input class="form-control" type="text" name="ctc_monthly_in_probation"
-                                    id="ctc_monthly_in_probation">
-                            </div>
-                            <div class="col-md-4 form-group">
                                 <label for="">Probation Period (Days) </label>
                                 <input class="form-control" type="text" name="probation_period"
                                     id="probation_period">
-                            </div>
-
-                            <div class="col-md-4 form-group">
-                                <label for="">CTC Monthly (After Probation) </label>
-                                <input class="form-control" type="text" name="ctc_monthly_after_probation"
-                                    id="ctc_monthly_after_probation">
                             </div>
                         </div>
                         <button class="btn btn-primary">Update</button>
@@ -96,9 +85,8 @@
                 if (response.data != null) {
                     $('#advance_details_id').val(response.data.id);
                     $('#aadhar_no').val(response.data.aadhar_no);
-                    $('#ctc_monthly_after_probation').val(response.data.ctc_monthly_after_probation);
-                    $('#ctc_monthly_in_probation').val(response.data.ctc_monthly_in_probation);
                     $('#driving_licence_no').val(response.data.driving_licence_no);
+                    $('#insurance_no').val(response.data.insurance_no);
                     $('#esic_no').val(response.data.esic_no);
                     $('#pan_no').val(response.data.pan_no);
                     $('#pf_no').val(response.data.pf_no);

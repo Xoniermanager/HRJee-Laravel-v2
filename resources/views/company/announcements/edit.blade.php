@@ -27,7 +27,7 @@
                 <input type="hidden" name="all department" value="0">
                 <input type="hidden" name="all_designation" value="0">
                 <div class="row">
-                    <div class="col-sm-6 mb-3">
+                    <div class="col-sm-4 mb-3">
                         <label class="col-form-label required">Title</label>
                         <input type="text" class="form-control" name="title"
                             value="{{ $editAnnouncementDetails->title }}" placeholder="editAnnouncementDetails title"
@@ -35,7 +35,7 @@
                         <label class="field_error title_error"> </label>
 
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label class="col-form-label required">Start Date</label>
                         <input class="form-control" name="start_date_time" type="datetime-local"
                             value="{{ $editAnnouncementDetails->start_date_time }}">
@@ -43,7 +43,7 @@
                             <div class="text-danger">{{ $errors->first('start_date_time') }}</div>
                         @endif
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label class="col-form-label required">End Date</label>
                         <input class="form-control" name="expires_at_time" type="datetime-local"
                             value="{{ $editAnnouncementDetails->expires_at_time }}">
@@ -58,9 +58,9 @@
                             <div class="text-danger">{{ $errors->first('image') }}</div>
                         @endif
                     </div>
-                    <div class="col-md-12 form-group mb-4">
+                    <div class="col-md-6 form-group mb-4">
                         <label class="col-form-label required">Description </label>
-                        <textarea id="editor" name="description" value="{{ old('description') }}">{{ $editAnnouncementDetails->description }}</textarea>
+                        <textarea class="form-control" name="description" value="{{ old('description') }}">{{ $editAnnouncementDetails->description }}</textarea>
                         @if ($errors->has('description'))
                             <div class="text-danger">{{ $errors->first('description') }}</div>
                         @endif
@@ -237,11 +237,11 @@
         var check_all_company_branch = {{ $editAnnouncementDetails->all_company_branch }}
         var check_all_designaion = {{ $editAnnouncementDetails->all_designation }}
         var check_assign_announcement = {{ $editAnnouncementDetails->assign_announcement }}
-        if (check_condition == 0) 
+        if (check_condition == 0)
         {
             get_designation_by_department_id({{ $selectedDesignationId ?? '' }});
         }
-        if (check_condition ==  1) 
+        if (check_condition ==  1)
         {
             get_designation_by_department_id('',true,'');
         }

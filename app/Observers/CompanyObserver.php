@@ -2,20 +2,14 @@
 
 namespace App\Observers;
 
-use App\Http\Services\CompanyUserService;
 use App\Models\Company;
 use App\Models\Country;
 use Illuminate\Support\Facades\Log;
 
 class CompanyObserver
 {
-    private $companyUserServices;
 
-    public function __construct(
-        CompanyUserService $companyUserServices
-    ) {
-        $this->companyUserServices  = $companyUserServices;
-    }
+    public function __construct() {}
     /**
      * Handle the Company "created" event.
      */
@@ -35,12 +29,6 @@ class CompanyObserver
     public function updated(Company $company): void
     {
 
-        $match['company_id'] = $company->id;
-        $data['company_id'] = $company->id;
-        $data['name'] = $company->name;
-        $data['email'] = $company->email;
-
-        $this->companyUserServices->updateOrCreate($match, $data);
     }
     /**
      * Handle the Company "deleted" event.

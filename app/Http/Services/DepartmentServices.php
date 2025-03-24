@@ -15,15 +15,20 @@ class DepartmentServices
     {
         return $this->departmentRepository->orderBy('id', 'DESC')->paginate(10);
     }
-    public function create(array $data)
 
+    public function getByCompanyId($companyID)
+    {
+        return $this->departmentRepository->whereIn('created_by', $companyID)->orderBy('id', 'DESC')->paginate(10);
+    }
+
+    public function create(array $data)
     {
         return $this->departmentRepository->create($data);
     }
 
-    public function getAllDepartmentsByCompanyId()
+    public function getAllDepartmentsByCompanyId($companyID)
     {
-        return $this->departmentRepository->whereNull('company_id')->orWhere('company_id', auth()->guard('company')->user()->company_id)->get();
+        return $this->departmentRepository->whereIn('created_by', $companyID)->get();
     }
 
     public function updateDetails(array $data, $id)
@@ -35,15 +40,15 @@ class DepartmentServices
         return $this->departmentRepository->find($id)->delete();
     }
 
-    public function serachDepartmentFilterList($request)
+    public function serachDepartmentFilterList($request, $companyID)
     {
-        $departmentDetails = $this->departmentRepository;
+        $departmentDetails = $this->departmentRepository->where('company_id', $companyID);
         /**List By Search or Filter */
         if (isset($request['search']) && !empty($request['search'])) {
-            $departmentDetails = $departmentDetails->where('name', 'Like', '%' .$request['search'] . '%');
+            $departmentDetails = $departmentDetails->where('name', 'Like', '%' . $request['search'] . '%');
         }
         /**List By Status or Filter */
-        if (isset($request['status'])) {
+        if (isset($request['status']) && $request['status'] != "") {
             $departmentDetails = $departmentDetails->where('status', $request['status']);
         }
         return $departmentDetails->orderBy('id', 'DESC')->paginate(10);
@@ -55,7 +60,7 @@ class DepartmentServices
     }
     public function getAllActiveDepartmentsByCompanyId($companyId)
     {
-        return $this->departmentRepository->where('company_id', $companyId)->orwhere('company_id', NUll)->where('status', '1')->get();
+        return $this->departmentRepository->where('company_id', $companyId)->where('status', '1')->get();
     }
     public function getAllAssignedDepartment($data)
     {

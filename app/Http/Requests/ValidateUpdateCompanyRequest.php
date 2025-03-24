@@ -22,18 +22,12 @@ class ValidateUpdateCompanyRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = Auth::guard('company')->user()->id; // Assuming the route parameter is 'user'
         return [
 
-           // 'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'name' => 'sometimes|required|string|max:255',
-            'username' => 'sometimes|required|string|max:255|unique:companies,username,' . $userId,
-            'contact_no' => 'sometimes|required|string|max:20',
-            'email' => 'sometimes|required|string|email|max:255|unique:companies,email,' . $userId,
-            'company_address' => 'sometimes|string|max:255',
-            'state'   => 'sometimes|string|max:100',
-            'country' => 'sometimes|string|max:100',
-            'pincode' => 'sometimes|integer|max:20',
+            'logo' => 'sometimes|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'sometimes|string|max:255',
+            'username' => 'sometimes|string|max:255|unique:company_details,username,NULL,id,user_id,!' . auth()->user()->id,
+            'contact_no' => 'sometimes|string|max:20',
         ];
     }
 }

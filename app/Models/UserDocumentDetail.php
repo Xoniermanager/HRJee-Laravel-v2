@@ -24,12 +24,7 @@ class UserDocumentDetail extends Model
     protected function document(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => url("storage/" .  $value)
+            get: fn($value) => url("storage" .  $value)
         );
     }
-    // protected $appends = ['document'];
-    // public function getDocumentAttribute()
-    // {
-    //     return imageBasePath($this->document, 'originalAnnouncementImagePath');
-    // }
 }

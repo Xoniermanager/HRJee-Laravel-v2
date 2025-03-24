@@ -22,7 +22,7 @@ class UserPastWorkDetailsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'user_id' => 1,
+                'user_id' => 2,
                 'previous_company_id' => 1,
                 'designation' => 'Cartwright - Bernhard',
                 'from' => '2024-10-21',
@@ -31,7 +31,7 @@ class UserPastWorkDetailsTableSeeder extends Seeder
                 'current_company' => 0,
                 'created_at' => '2024-06-21 14:59:53',
                 'updated_at' => '2024-06-21 14:59:53',
-            ),
+            )
         ));
         
         

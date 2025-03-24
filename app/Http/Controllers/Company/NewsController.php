@@ -29,18 +29,21 @@ class NewsController extends Controller
     }
     public function index()
     {
+        $companyIDs = getCompanyIDs();
         $allNewsDetails = $this->newsService->all();
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->guard('company')->user()->company_id);
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         return view('company.news.index', compact('allNewsDetails', 'allNewsCategoryDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
 
     public function add()
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->guard('company')->user()->company_id);
+        $companyIDs = getCompanyIDs();
+
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
         return view('company.news.add', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'allNewsCategoryDetails'));
     }
     public function store(NewsStoreRequest $request)
@@ -57,10 +60,11 @@ class NewsController extends Controller
     }
     public function edit($id)
     {
+        $companyIDs = getCompanyIDs();
         $editNewsDetails = $this->newsService->findByNewsId($id);
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->guard('company')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
         return view('company.news.edit', compact('editNewsDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails', 'allNewsCategoryDetails'));
     }
     public function view($id)
@@ -88,7 +92,7 @@ class NewsController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'News Deleted Successfully',
-                'data'   =>  view('company.news.list', [
+                'data' => view('company.news.list', [
                     'allNewsDetails' => $this->newsService->all()
                 ])->render()
             ]);
@@ -114,7 +118,7 @@ class NewsController extends Controller
         if ($allPolicyDetails) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view('company.news.list', [
+                'data' => view('company.news.list', [
                     'allNewsDetails' => $allPolicyDetails
                 ])->render()
             ]);

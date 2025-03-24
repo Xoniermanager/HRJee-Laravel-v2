@@ -1,5 +1,4 @@
 <div class="tab-pane fade" id="advance_details_tab">
-
     <!--begin::Wrapper-->
     <form id="advance_details_form">
         @csrf
@@ -13,18 +12,15 @@
             </div>
             <div class="col-md-4 form-group">
                 <label for="">PAN Number *</label>
-                <input class="form-control" type="text" name="pan_no"
-                    value="{{ $userAdvanceDetails->pan_no ?? '' }}">
+                <input class="form-control" type="text" name="pan_no" value="{{ $userAdvanceDetails->pan_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">UAN No</label>
-                <input class="form-control" name="uan_no" type="text"
-                    value="{{ $userAdvanceDetails->uan_no ?? '' }}">
+                <input class="form-control" name="uan_no" type="text" value="{{ $userAdvanceDetails->uan_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">ESIC Number </label>
-                <input class="form-control" name="esic_no" type="text"
-                    value="{{ $userAdvanceDetails->esic_no ?? '' }}">
+                <input class="form-control" name="esic_no" type="text" value="{{ $userAdvanceDetails->esic_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Insurance Number </label>
@@ -39,13 +35,7 @@
 
             <div class="col-md-4 form-group">
                 <label for="">PF Number </label>
-                <input class="form-control" type="text" name="pf_no"
-                    value="{{ $userAdvanceDetails->pf_no ?? '' }}">
-            </div>
-            <div class="col-md-4 form-group">
-                <label for="">CTC Monthly (In Probation)</label>
-                <input class="form-control" type="text" name="ctc_monthly_in_probation"
-                    value="{{ $userAdvanceDetails->ctc_monthly_in_probation ?? '' }}">
+                <input class="form-control" type="text" name="pf_no" value="{{ $userAdvanceDetails->pf_no ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Probation Period (Days) </label>
@@ -53,17 +43,15 @@
                     value="{{ $userAdvanceDetails->probation_period ?? '' }}">
             </div>
 
-            <div class="col-md-4 form-group">
-                <label for="">CTC Monthly (After Probation) </label>
-                <input class="form-control" type="text" name="ctc_monthly_after_probation"
-                    value="{{ $userAdvanceDetails->ctc_monthly_after_probation ?? '' }}">
-            </div>
         </div>
-        <button id="submit_advance_details" class="btn btn-primary">Save & Continue</button>
+        <div class="m-auto text-center">
+            <button id="submit_advance_details" class="btn btn-primary">Save & Continue</button>
+        </div>
     </form>
-    <button onclick="show_next_tab('basic_Details_tab')" class="btn btn-primary"><i class="fa fa-arrow-left"></i>
+    <button onclick="show_next_tab('basic_Details_tab')" class="tab-btn-inline btn btn-primary"><i
+            class="fa fa-arrow-left"></i>
         Previous</button>
-    <button onclick="show_next_tab('address_tab')" class="btn btn-primary float-right">Next <i
+    <button onclick="show_next_tab('address_tab')" class="tab-btn-inline btnnext btn btn-primary float-right">Next <i
             class="fa fa-arrow-right"></i> </button>
 </div>
 <script>
@@ -73,7 +61,7 @@
             url: "{{ route('employee.advance.details') }}",
             type: 'POST',
             data: advance_details_details,
-            success: function(response) {
+            success: function (response) {
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -85,7 +73,7 @@
                 // This variable is used on save all records button
                 all_data_saved = true;
             },
-            error: function(error_messages) {
+            error: function (error_messages) {
                 // This variable is used on save all records button
                 all_data_saved = false;
 
@@ -95,8 +83,8 @@
                     $(document).find('[name=' + error_key + ']').after(
                         '<span class="' + error_key +
                         '_error text text-danger">' + errors[
-                            error_key] + '</span>');
-                    setTimeout(function() {
+                        error_key] + '</span>');
+                    setTimeout(function () {
                         jQuery("." + error_key + "_error").remove();
                     }, 5000);
                 }

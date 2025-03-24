@@ -48,7 +48,7 @@
 
                         <td>
                             <div class="product-action"><a href="#" data-bs-toggle="modal" data-bs-target="#edit_state"
-                                    onClick="edit_state_details('{{ $stateDetail->id }}', '{{ $stateDetail->name }}')">
+                                    onClick="edit_state_details('{{ $stateDetail->id }}', '{{ $stateDetail->name }}','{{ $stateDetail->country_id }}')">
                                     <svg viewBox="0 -0.5 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                         xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -113,7 +113,6 @@
     </div>
     <div class="mt-3">
 {{ $allStateDetails->links('paginate') }}
-
     </div>
 </div>
 

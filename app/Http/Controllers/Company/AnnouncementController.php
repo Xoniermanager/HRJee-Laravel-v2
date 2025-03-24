@@ -27,15 +27,26 @@ class AnnouncementController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Undocumented function
+     *
+     * @return void
      */
     public function index()
     {
+        $companyIDs = getCompanyIDs();
+
         $allAnnouncementDetails = $this->announcementService->all();
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         return view('company.announcements.index', compact('allAnnouncementDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getAllUserByBranchIds(Request $request)
     {
         $companyBranchIds = $request->company_branch_id;
@@ -47,12 +58,27 @@ class AnnouncementController extends Controller
         $allUserDetails = $this->employeeServices->getAllUserByCompanyBranchIdsAndDepartmentIdsAndDesignationIds($companyBranchIds, $departmentIds, $designationIds, $allCompanyBranches, $allDepartment, $allDesignation);
         return response()->json(['status' => true, 'allUserDetails' => $allUserDetails]);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function add()
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
+        $companyIDs = getCompanyIDs();
+
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         return view('company.announcements.create', compact('allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param AnnouncementStoreRequest $request
+     * @return void
+     */
     public function store(AnnouncementStoreRequest $request)
     {
         try {
@@ -65,13 +91,29 @@ class AnnouncementController extends Controller
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function edit($id)
     {
-        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId(Auth()->guard('company')->user()->company_id);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->guard('company')->user()->company_id);
+        $companyIDs = getCompanyIDs();
+
+        $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
         $editAnnouncementDetails = $this->announcementService->findById($id);
         return view('company.announcements.edit', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'editAnnouncementDetails'));
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param AnnouncementStoreRequest $request
+     * @param [type] $id
+     * @return void
+     */
     public function update(AnnouncementStoreRequest $request, $id)
     {
         try {
@@ -83,13 +125,24 @@ class AnnouncementController extends Controller
             return back()->withErrors($e->errors())->withInput();
         }
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function view($id)
     {
         $viewAnnouncementDetails = $this->announcementService->findById($id);
         return view('company.announcements.view', compact('viewAnnouncementDetails'));
     }
+    
     /**
-     * Remove the specified resource from storage.
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
      */
     public function destroy($id)
     {
@@ -97,7 +150,7 @@ class AnnouncementController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Annoucement Deleted Successfully',
-                'data'   =>  view('company.announcements.list', [
+                'data' => view('company.announcements.list', [
                     'allAnnouncementDetails' => $this->announcementService->all()
                 ])->render()
             ]);
@@ -106,8 +159,12 @@ class AnnouncementController extends Controller
         }
     }
 
-
-
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
@@ -120,18 +177,32 @@ class AnnouncementController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function serachAnnouncementFilterList(Request $request)
     {
         $allAnnouncementDetails = $this->announcementService->serachAnnouncementFilterList($request);
         if ($allAnnouncementDetails) {
             return response()->json([
                 'success' => 'Searching',
-                'data'   =>  view('company.announcements.list', compact('allAnnouncementDetails'))->render()
+                'data' => view('company.announcements.list', compact('allAnnouncementDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function updateAssignAnnounce(Request $request)
     {
         $data = $request->except('id');
@@ -139,7 +210,7 @@ class AnnouncementController extends Controller
         if ($allAnnouncementDetails) {
             return response()->json([
                 'message' => 'Assigned Announcement Updated Successfully',
-                'data'   =>  view('company.announcements.list', [
+                'data' => view('company.announcements.list', [
                     'allAnnouncementDetails' => $this->announcementService->all()
                 ])->render()
             ]);

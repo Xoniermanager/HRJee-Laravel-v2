@@ -11,24 +11,57 @@ class CountryServices
     {
         $this->countryRepository = $countryRepository;
     }
+
+    /**
+     * all function
+     *
+     * @return void
+     */
     public function all()
     {
         return $this->countryRepository->orderBy('id', 'DESC')->paginate(10);
     }
+
+    /**
+     * create function
+     *
+     * @param array $data
+     * @return void
+     */
     public function create(array $data)
     {
         return $this->countryRepository->create($data);
     }
 
+    /**
+     * updateDetails function
+     *
+     * @param array $data
+     * @param [type] $id
+     * @return void
+     */
     public function updateDetails(array $data, $id)
     {
         return $this->countryRepository->find($id)->update($data);
     }
+
+    /**
+     * deleteDetails function
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function deleteDetails($id)
     {
         return $this->countryRepository->find($id)->delete();
     }
 
+    /**
+     * serachFilterList function
+     *
+     * @param [type] $request
+     * @return void
+     */
     public function serachFilterList($request)
     {
         $countryDetails = $this->countryRepository;
@@ -43,6 +76,12 @@ class CountryServices
         }
         return $countryDetails->orderBy('id', 'DESC')->paginate(10);
     }
+
+    /**
+     * getAllActiveCountry function
+     *
+     * @return void
+     */
     public function getAllActiveCountry()
     {
         return $this->countryRepository->where('status', '1')->get();

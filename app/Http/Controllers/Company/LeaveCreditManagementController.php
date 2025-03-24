@@ -21,15 +21,16 @@ class LeaveCreditManagementController extends Controller
     public function __construct(BranchServices $companyBranchesService, EmployeeTypeService $employeeTypeService, LeaveTypeService $leaveTypeService, LeaveCreditManagementServices $leaveCreditManagementService)
     {
         $this->companyBranchesService = $companyBranchesService;
-        $this->employeeTypeService    = $employeeTypeService;
-        $this->leaveTypeService    = $leaveTypeService;
-        $this->leaveCreditManagementService    = $leaveCreditManagementService;
+        $this->employeeTypeService = $employeeTypeService;
+        $this->leaveTypeService = $leaveTypeService;
+        $this->leaveCreditManagementService = $leaveCreditManagementService;
     }
 
     public function index()
     {
+        $companyIDs = getCompanyIDs();
         $allLeaveCreditDetails = $this->leaveCreditManagementService->all();
-        $allCompanyBranches = $this->companyBranchesService->all(Auth()->guard('company')->user()->company_id);
+        $allCompanyBranches = $this->companyBranchesService->all($companyIDs);
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $allLeaveType = $this->leaveTypeService->getAllActiveLeaveType();
         return view('company.leave_credit_management.index', compact('allCompanyBranches', 'allEmployeeType', 'allLeaveType', 'allLeaveCreditDetails'));
@@ -42,13 +43,13 @@ class LeaveCreditManagementController extends Controller
             if ($this->leaveCreditManagementService->create($data)) {
                 return response()->json([
                     'message' => 'Leave Credit Created Successfully!',
-                    'data'   =>  view("company.leave_credit_management.leave_credit_list", [
+                    'data' => view("company.leave_credit_management.leave_credit_list", [
                         'allLeaveCreditDetails' => $this->leaveCreditManagementService->all()
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
     public function update(LeaveCreditManagementRequest $request)
@@ -58,13 +59,13 @@ class LeaveCreditManagementController extends Controller
             if ($this->leaveCreditManagementService->updateDetails($data)) {
                 return response()->json([
                     'message' => 'Leave Credit Updated Successfully!',
-                    'data'   =>  view("company.leave_credit_management.leave_credit_list", [
+                    'data' => view("company.leave_credit_management.leave_credit_list", [
                         'allLeaveCreditDetails' => $this->leaveCreditManagementService->all()
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
     /**
@@ -77,7 +78,7 @@ class LeaveCreditManagementController extends Controller
         if ($data) {
             return response()->json([
                 'success' => 'Leave Credit Deleted Successfully',
-                'data'   =>  view("company.leave_credit_management.leave_credit_list", [
+                'data' => view("company.leave_credit_management.leave_credit_list", [
                     'allLeaveCreditDetails' => $this->leaveCreditManagementService->all()
                 ])->render()
             ]);
@@ -103,7 +104,7 @@ class LeaveCreditManagementController extends Controller
         if ($allLeaveCreditDetails) {
             return response()->json([
                 'success' => 'Searching',
-                'data'    => view("company.leave_credit_management.leave_credit_list", compact('allLeaveCreditDetails'))->render()
+                'data' => view("company.leave_credit_management.leave_credit_list", compact('allLeaveCreditDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

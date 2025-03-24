@@ -18,8 +18,8 @@ class HolidaysMangementController extends Controller
     }
     public function index()
     {
-        $monthHolidayDetails = $this->holidayService->getHolidayByMonth(Auth()->guard('employee')->user()->company_id, date('Y-m'));
-        $allHolidayDetails = $this->holidayService->getListByCompanyId(Auth()->guard('employee')->user()->company_id);
+        $monthHolidayDetails = $this->holidayService->getHolidayByMonth(Auth()->user()->company_id, date('Y-m'));
+        $allHolidayDetails = $this->holidayService->getListByCompanyId([Auth()->user()->company_id], date('Y'));
         $calender = $this->showCalendar();
         return view('employee.holidays.index', compact('allHolidayDetails', 'calender', 'monthHolidayDetails'));
     }
@@ -28,8 +28,8 @@ class HolidaysMangementController extends Controller
         // First of all, lets create an array containing the names of all days in a week
         $days_of_week = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 
-        $month = (!empty($month)) ? (int)$month : date('m'); // let
-        $year  = (!empty($year)) ? (int)$year : date('Y'); // let
+        $month = (!empty($month)) ? (int) $month : date('m'); // let
+        $year = (!empty($year)) ? (int) $year : date('Y'); // let
 
         // Create a Carbon instance for the first day of the month
         $firstDayOfMonth = Carbon::create($year, $month, 1, 0, 0, 0);
@@ -87,11 +87,10 @@ class HolidaysMangementController extends Controller
             $todayClasses[] = ($date == $today_date) ? "today" : "";
             $todayId = '';
             $tittle = '';
-            if($date == $today_date)
-            {
+            if ($date == $today_date) {
                 $tittle = "Today";
             }
-            $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->guard('employee')->user()->company_id, $date)->first();
+            $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, $date)->first();
             if (isset($allHolidayDetails)) {
                 $todayClasses[] = "holiday addMore";
                 $todayId = $date;
@@ -117,11 +116,11 @@ class HolidaysMangementController extends Controller
     public function holidayByDate(Request $request)
     {
         $date = $request->date;
-        $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->guard('employee')->user()->company_id, $date)->get();
+        $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, $date)->get();
         if ($allHolidayDetails) {
             return response()->json([
                 'status' => true,
-                'data'    =>  view('employee.holidays.allholiday_list', compact('allHolidayDetails'))->render()
+                'data' => view('employee.holidays.allholiday_list', compact('allHolidayDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
@@ -134,7 +133,7 @@ class HolidaysMangementController extends Controller
         if ($updateCalenderDetails) {
             return response()->json([
                 'status' => true,
-                'data'    =>  view('employee.holidays.calendar', with(['calender' => $updateCalenderDetails]))->render()
+                'data' => view('employee.holidays.calendar', with(['calender' => $updateCalenderDetails]))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
@@ -143,11 +142,11 @@ class HolidaysMangementController extends Controller
     public function holidayByMonth(Request $request)
     {
         $date = $request->date;
-        $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->guard('employee')->user()->company_id, date('Y-m'))->get();
+        $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, date('Y-m'))->get();
         if ($allHolidayDetails) {
             return response()->json([
                 'status' => true,
-                'data'    =>  view('employee.holidays.allholiday_list', compact('allHolidayDetails'))->render()
+                'data' => view('employee.holidays.allholiday_list', compact('allHolidayDetails'))->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);

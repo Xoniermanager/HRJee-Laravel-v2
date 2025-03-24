@@ -16,39 +16,38 @@
                 </tr>
             </thead>
             @forelse ($allEmployeeDetails as $key => $employee)
-            <tbody class="">
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $employee->emp_id }}</td>
-                    <td>{{ $employee->name }}</td>
-                    <td>{{$employee->totalPresent}}</td>
-                    <td>{{$employee->totalLeave}}</td>
-                    <td>{{$employee->totalHoliday}}</td>
-                    <td>
-                        <div class="d-flex justify-content-end flex-shrink-0">
-                            <a href="{{ route('attendance.view.details',getEncryptId($employee->id)) }}"
-                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                <i class="fa fa-eye"></i>
-                            </a>
-                            <button class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                @if($employee->totalPresent > 0)
-                                class="btn"
+                <tbody class="">
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td>{{ $employee->details->emp_id }}</td>
+                        <td>{{ $employee->name }}</td>
+                        <td>{{ $employee->totalPresent }}</td>
+                        <td>{{ $employee->totalLeave }}</td>
+                        <td>{{ $employee->totalHoliday }}</td>
+                        <td>
+                            <div class="d-flex justify-content-end flex-shrink-0">
+                                <a href="{{ route('attendance.view.details', getEncryptId($employee->id)) }}"
+                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                <button class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                    @if ($employee->totalPresent > 0) class="btn"
                                 @else
                                 class="btn disabled"
-                                disabled
-                                @endif onclick="getExportData({{ $employee->id }})">
-                                <i class="fa fa-download"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
+                                disabled @endif
+                                    onclick="getExportData({{ $employee->id }})">
+                                    <i class="fa fa-download"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             @empty
-            <td colspan="3">
-                <span class="text-danger">
-                    <strong>No Attendance Found!</strong>
-                </span>
-            </td>
+                <td colspan="3">
+                    <span class="text-danger">
+                        <strong>No Attendance Found!</strong>
+                    </span>
+                </td>
             @endforelse
         </table>
     </div>
