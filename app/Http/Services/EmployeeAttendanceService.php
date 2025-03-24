@@ -126,7 +126,6 @@ class EmployeeAttendanceService
                 'user_id' => $userDetails->id,
                 'punch_in_using' => $data['punch_in_using'],
                 'punch_in' => $attendanceTime
-
             ];
             $this->employeeAttendanceRepository->create($payload);
             return ['status' => true, 'data' => 'Punch In'];
@@ -395,9 +394,14 @@ class EmployeeAttendanceService
         $fromDate = Carbon::create($year, $month, 1)->startOfMonth();
         $toDate = Carbon::create($year, $month, 1)->endOfMonth();
         return $this->employeeAttendanceRepository
-        ->where('user_id', $userId)
-        ->whereBetween('punch_in', [$fromDate, $toDate])
-        ->selectRaw('SUM(status = 1) + (SUM(status = 2) / 2) as total_present')
-        ->selectRaw('SUM(late = 1) as late_count');  // Count late days;
+            ->where('user_id', $userId)
+            ->whereBetween('punch_in', [$fromDate, $toDate])
+            ->selectRaw('SUM(status = 1) + (SUM(status = 2) / 2) as total_present')
+            ->selectRaw('SUM(late = 1) as late_count');  // Count late days;
+    }
+
+    public function createAttendanceByAttendanceRequest($data)
+    {
+        return $this->employeeAttendanceRepository->create($data);
     }
 }

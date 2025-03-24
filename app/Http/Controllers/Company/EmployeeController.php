@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use App\Models\User;
+use App\Models\UserDetail;
 use App\Imports\UserImport;
 use Illuminate\Http\Request;
 use App\Http\Services\UserService;
@@ -94,16 +95,18 @@ class EmployeeController extends Controller
     {
         $companyIDs = getCompanyIDs();
 
-        if(Auth()->user()->type == "user") {
+        if (Auth()->user()->type == "user") {
             $allUserDetails = $this->userService->getManagedUsers($request == null, Auth()->user()->id)->paginate(10);
         } else {
             $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
         }
 
         $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
-        
+
+        $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
-        
+
         $allCountries = $this->countryService->getAllActiveCountry();
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
@@ -113,7 +116,7 @@ class EmployeeController extends Controller
         $allSkills = $this->skillServices->getAllActiveSkills();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
 
-        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills','allSalaryStructured', 'activeUserCount'));
+        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills', 'allSalaryStructured', 'activeUserCount'));
     }
 
     public function add()
@@ -134,7 +137,7 @@ class EmployeeController extends Controller
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
         return view(
             'company.employee.add_employee',
-            compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails', 'languages', 'allBranches', 'allRoles', 'allShifts', 'allAssetCategory','allSalaryStructured')
+            compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails', 'languages', 'allBranches', 'allRoles', 'allShifts', 'allAssetCategory', 'allSalaryStructured')
         );
     }
 
@@ -153,7 +156,7 @@ class EmployeeController extends Controller
         $languages = $this->languagesServices->defaultLanguages();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
-        $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails','ctcDetails');
+        $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'ctcDetails');
         $allManagers = $this->qualificationService->getAllActiveQualification();
 
         return view(
@@ -372,6 +375,34 @@ class EmployeeController extends Controller
                 'status' => 'error',
                 'message' => 'An error occurred while importing the file.',
             ], 500);
+        }
+    }
+
+    public function updatePunchInRadius(Request $request)
+    {
+        try {
+            $validateData = Validator::make($request->all(), [
+                'user_id' => 'required|array|min:1',
+                'user_id.*' => 'exists:users,id',
+                'punch_in_radius' => 'required|numeric|min:500'
+            ]);
+            if ($validateData->fails()) {
+                return response()->json(['error' => $validateData->messages()], 400);
+            }
+            $updateDetails = UserDetail::whereIn('user_id', $request->user_id)->update(['punch_in_radius' => $request->punch_in_radius]);
+            if ($updateDetails) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'PunchIn radius Updated Successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unable tp Updated PunchIn radius! Please try Again'
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 }

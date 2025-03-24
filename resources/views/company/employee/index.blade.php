@@ -3,71 +3,69 @@
 @section('title', 'Employee Management')
 
 @section('content')
-    <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
-        <!--begin::Container-->
-        <div class="container-xxl" id="kt_content_container">
-            <div class="card mb-4">
-                <div class="card-header d-block cursor-pointer border-0 pb-5">
-                    <div class="row align-items-center mt-4">
-                        <div class="col-md-3">
-                            <div class="d-flex align-items-center position-relative">
-                                <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-                                <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none">
-                                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
-                                            rx="1" transform="rotate(45 17.0365 15.1223)" fill="black">
-                                        </rect>
-                                        <path
-                                            d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
-                                            fill="black"></path>
-                                    </svg>
-                                </span>
-                                <!--end::Svg Icon-->
-                                <input data-kt-patient-filter="search" class="form-control ps-14" placeholder="Search"
-                                    type="text" id="search">
-                                <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
-                            </div>
+<div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
+    <!--begin::Container-->
+    <div class="container-xxl" id="kt_content_container">
+        <div class="card mb-4">
+            <div class="card-header d-block cursor-pointer border-0 pb-5">
+                <div class="row align-items-center mt-4">
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center position-relative">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                            <span class="svg-icon svg-icon-1 position-absolute ms-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none">
+                                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
+                                        rx="1" transform="rotate(45 17.0365 15.1223)" fill="black">
+                                    </rect>
+                                    <path
+                                        d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                                        fill="black"></path>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                            <input data-kt-patient-filter="search" class="form-control ps-14" placeholder="Search"
+                                type="text" id="search">
+                            <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
                         </div>
-                        <a class="col-md-1 btn btn-sm ms-3 btn-primary align-self-center wt-space"
-                            id="export_button">Export</a>
+                    </div>
+                    <a class="col-md-1 btn btn-sm ms-3 btn-primary align-self-center wt-space"
+                        id="export_button">Export</a>
                         <div class="col-md-5">
-                            <a href="#" class="btn btn-sm ms-3 btn-primary align-self-center wt-space disabled"
-                                id="punch_in_radius">Add PunchIn Radius</a>
+                        <a class="btn btn-sm ms-3 btn-primary align-self-center wt-space disabled" data-bs-toggle="modal" data-bs-target="#modal_radius" id="punch_in_radius">Add PunchIn Radius</a>
                         </div>
                         @if ($activeUserCount < auth()->user()->companyDetails->company_size)
                             <a href="{{ route('employee.add') }}"
                                 class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
                                 Add Employee</a>
-                        
+
                         <div class="row">
 
-                            <div class="col-md-1 mt-3">
-                                <a href="{{ asset('storage/test.csv') }}"
-                                    class="btn btn-sm btn-primary align-self-center wt-space" title="Download Template"
-                                    download>
-                                    <i class="fa fa-download"></i>
-                                </a>
-                            </div>
-                            <div class="col-md-4 mt-3">
+                    <div class="col-md-1 mt-3">
+                        <a href="{{ asset('storage/test.csv') }}"
+                        class="btn btn-sm btn-primary align-self-center wt-space" title="Download Template" download>
+                            <i class="fa fa-download"></i>
+                        </a>
+                    </div>
+            <div  class="col-md-4 mt-3">
 
-                                <form class="d-flex" id="importForm" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="file" name="file" id="file" class="form-control">
-                                    <button type="submit" class="btn btn-sm ms-3 btn-primary">
-                                        <i class="fa fa-upload"></i>
-                                    </button>
-                                </form>
+                <form class="d-flex" id="importForm" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" id="file" class="form-control">
+                    <button type="submit" class="btn btn-sm ms-3 btn-primary">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                </form>
 
-                            </div>
-                        </div>
+            </div>
+                   </div>
                         @endif
-                        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
-                        <div id="validationErrors" class="alert alert-danger" style="display: none;"></div>
-                        @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
+                    <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+                    <div id="validationErrors" class="alert alert-danger" style="display: none;"></div>
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
                         @elseif (session('danger'))
                             <div class="alert alert-danger">
                                 {{ session('danger') }}
@@ -201,25 +199,25 @@
                                 </div>
                             </form>
 
-                        </div>
-
                     </div>
-                    <!--end::Action-->
 
-                    <div class="mb-5 mb-xl-10">
+                </div>
+                <!--end::Action-->
 
+                <div class="mb-5 mb-xl-10">
+
+                    <div class="">
                         <div class="">
+                            <!--begin::Body-->
                             <div class="">
-                                <!--begin::Body-->
-                                <div class="">
-                                    <div class="card-body py-3">
-                                        <!--begin::Table container-->
-                                        @include('company.employee.list')
-                                        <!--end::Table container-->
+                                <div class="card-body py-3">
+                                    <!--begin::Table container-->
+                                    @include('company.employee.list')
+                                    <!--end::Table container-->
 
-                                    </div>
                                 </div>
-                                <!--begin::Body-->
+                            </div>
+                            <!--begin::Body-->
 
                             </div>
                             <!--begin::Body-->
@@ -304,20 +302,20 @@
                                         <input class="form-check-input me-3 filter" type="checkbox"
                                             value="emp_type_div_id" checked>
 
-                                        <label for="gender">Employee Type</label>
-                                    </div>
+                                    <label for="gender">Employee Type</label>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox"
-                                            value="department_div_id" checked>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    <input class="form-check-input me-3 filter" type="checkbox"
+                                        value="department_div_id" checked>
 
-                                        <label for="gender">Department</label>
-                                    </div>
+                                    <label for="gender">Department</label>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" value="shift_div_id">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    <input class="form-check-input me-3 filter" type="checkbox" value="shift_div_id">
 
                                         <label for="gender">Sift</label>
                                     </div>
@@ -327,23 +325,22 @@
                                         <input class="form-check-input me-3 filter" type="checkbox"
                                             value="branch_div_id">
 
-                                        <label for="gender">Branch</label>
-                                    </div>
+                                    <label for="gender">Branch</label>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox"
-                                            value="qualification_div_id">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    <input class="form-check-input me-3 filter" type="checkbox"
+                                        value="qualification_div_id">
 
-                                        <label for="gender">Qualification</label>
-                                    </div>
+                                    <label for="gender">Qualification</label>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check form-switch form-check-custom form-check-solid">
-                                        <input class="form-check-input me-3 filter" type="checkbox" value="skill_div_id">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    <input class="form-check-input me-3 filter" type="checkbox" value="skill_div_id">
 
-                                        <label for="gender">Skills</label>
-                                    </div>
+                                    <label for="gender">Skills</label>
                                 </div>
                             </div>
                         </div>
@@ -351,8 +348,66 @@
                 </div>
             </div>
         </div>
-        <script>
-            let submit_handler = false;
+    </div>
+  <!-- Modal -->
+  <div class="modal fade" id="modal_radius" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-500px" role="document">
+      <div class="modal-content">
+        <div class="modal-header pb-0">
+            <!--begin::Close-->
+            <h3 class="fw-bold m-0">PunchIn Radius</h3>
+            <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                <span class="svg-icon svg-icon-1">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                        <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </div>
+            <!--end::Close-->
+        </div>
+        <div class="modal-body">
+            <form id="punchIn_radius_form">
+                @csrf
+                <!--begin::Wrapper-->
+                <div class="mw-lg-600px mx-auto p-4">
+                    <div class="mt-3">
+                        <label class="required">Employee</label>
+                        <select class="form-control mb-5 mt-3" data-control="select2"
+                            data-close-on-select="false" data-placeholder="Select the Employee"
+                            data-allow-clear="true" multiple="multiple" name="user_id[]" id="hidden_user_ids">
+                            @foreach ($allUserDetails as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mt-3">
+                        <label class="required">PunchIn Radius</label>
+                        <input class="form-control" name="punch_in_radius" type="number" value="{{ old('task_radius') ?? '0'}}" >
+                    </div>
+                </div>
+                <!--end::Wrapper-->
+                <div class="d-flex flex-end flex-row-fluid pt-2 border-top">
+                    <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="kt_modal_upgrade_plan_btn">
+                        <!--begin::Indicator label-->
+                        <span class="indicator-label">Submit</span>
+                        <!--end::Indicator label-->
+                        <!--begin::Indicator progress-->
+                        <span class="indicator-progress">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        <!--end::Indicator progress-->
+                    </button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script>
+        let submit_handler = false;
             $(".filter").on("click", function(event) {
                 let filter_id = $(this).val();
                 let selected_status = $(this).prop('checked');
@@ -403,13 +458,14 @@
 
                 return result;
             }
-            $("#search").on('input', function() {
+            $("#search").on('input',function() {
                 $.ajax({
                     type: 'GET',
                     url: company_ajax_base_url + '/employee/get/filter/list',
                     data: {
                         'search': $(this).val()
                     },
+                    success: function(response) {
                     success: function(response) {
                         $('#employee_list').replaceWith(response.data);
                     }
@@ -493,7 +549,7 @@
                     success: function(res) {
                         console.log("res => ", res)
                         if (res) {
-                            if (res.status == 200) {
+                            if(res.status == 200) {
                                 swal.fire("Done!", '', "success");
                                 jQuery('#company_branch_list').replaceWith(res.data);
                             } else {
@@ -537,9 +593,9 @@
                     }
                 });
             });
-        </script>
-        <script>
-            $(document).ready(function() {
+    </script>
+    <script>
+        $(document).ready(function() {
                 // Handle the form submission via AJAX
                 $('#importForm').on('submit', function(e) {
                     e.preventDefault();
@@ -599,19 +655,127 @@
                     });
                 });
             });
-        </script>
-        <script>
-            document.getElementById('check_all').addEventListener('click', function() {
-                const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
-                const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !allChecked;
-                });
-                if (Array.from(checkboxes).some(checkbox => checkbox.checked)) {
-                    $('#punch_in_radius').removeClass('disabled');
-                } else {
-                    $('#punch_in_radius').addClass('disabled');
+    </script>
+    <script>
+        document.getElementById('check_all').addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
+            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
+            updateHiddenInput();
+            togglePunchInRadius(); // Check the punch_in_radius state after "Check All" is clicked
+            updateCheckAllState(); // Update the Check All checkbox state
+        });
+
+        // Handle changes on individual checkboxes
+        document.querySelectorAll('input[name="user_id[]"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateHiddenInput);
+            checkbox.addEventListener('change', togglePunchInRadius); // Call this when individual checkboxes change
+            checkbox.addEventListener('change', updateCheckAllState); // Call this to update the Check All state
+        });
+
+        // Update hidden input with the checked values
+        function updateHiddenInput() {
+            const checkedValues = Array.from(document.querySelectorAll('input[name="user_id[]"]:checked'))
+                .map(checkbox => checkbox.value);
+                $('#hidden_user_ids').val(checkedValues).trigger('change');
+                // $('#hidden_user_ids').value(checkedValues);
+            // document.getElementById('hidden_user_ids').value = checkedValues.join(',');
+        }
+
+        // Toggle the "disabled" class on #punch_in_radius based on checkbox state
+        function togglePunchInRadius() {
+            const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
+            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            const punchInRadiusElement = document.getElementById('punch_in_radius');
+
+            if (anyChecked) {
+                punchInRadiusElement.classList.remove('disabled');
+            } else {
+                punchInRadiusElement.classList.add('disabled');
+            }
+        }
+
+        // Update the "Check All" checkbox state
+        function updateCheckAllState() {
+            const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
+            const checkAllCheckbox = document.getElementById('check_all');
+            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            const noneChecked = Array.from(checkboxes).every(checkbox => !checkbox.checked);
+
+            // If all checkboxes are checked, check the "Check All" checkbox
+            if (allChecked) {
+                checkAllCheckbox.checked = true;
+            }
+            // If none are checked, uncheck the "Check All" checkbox
+            else if (noneChecked) {
+                checkAllCheckbox.checked = false;
+            }
+            // If some are checked but not all, don't check the "Check All" checkbox
+            else {
+                checkAllCheckbox.checked = false;
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function()
+        {
+            jQuery("#punchIn_radius_form").validate({
+                rules: {
+            'user_id[]': {
+                required: true, // Make sure the employee field is selected
+            },
+            'punch_in_radius': {
+                required: true, // Task radius field is required
+                number: true,   // Task radius must be a number
+                min: 500          // Task radius must be greater than or equal to 1
+            }
+            },
+             messages: {
+            'user_id[]': {
+                required: "Please select at least one employee."
+            },
+            'punch_in_radius': {
+                required: "Please enter the task radius.",
+                number: "Please enter a valid number.",
+                min: "The task radius must be greater than or equal to 500."
+             }
+              },
+                submitHandler: function(form) {
+                    var radius_data = $(form).serialize();
+                    $.ajax({
+                        url: "<?= route('update.punhin.radius') ?>",
+                        type: 'post',
+                        data: radius_data,
+                        success: function(response) {
+                            if(response.status)
+                            {
+                                jQuery("#punchIn_radius_form")[0].reset();
+                                jQuery('#modal_radius').modal('hide');
+                                swal.fire("Done!", response.message, "success");
+                            }
+                            else
+                            {
+                                jQuery('#modal_radius').modal('hide');
+                                swal.fire("Error!", response.message, "error");
+                            }
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.error;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span id="' + error_key +
+                                    '_error" class="text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("#" + error_key + "_error").remove();
+                                }, 5000);
+                            }
+                        }
+                    });
                 }
             });
-        </script>
-    @endsection
+        });
+    </script>
+
+        @endsection
+
