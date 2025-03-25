@@ -30,8 +30,11 @@ class CompanyDetail extends Model
         'face_recognition_user_limit',
         'location_tracking_user_limit',
         'attendance_radius',
-        'task_radius'
+        'task_radius',
+        'onboarding_date',
+        'subscription_expiry_date'
     ];
+
     protected function logo(): Attribute
     {
         return Attribute::make(
@@ -43,6 +46,7 @@ class CompanyDetail extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function companyType()
     {
         return $this->belongsTo(CompanyType::class);
@@ -51,5 +55,10 @@ class CompanyDetail extends Model
     public function branches()
     {
         return $this->hasMany(CompanyBranch::class, 'company_id', 'user_id');
+    }
+
+    public function subscriptionPlan()
+    {
+        return $this->belongsTo(SubscriptionPlan::class, 'subscription_id', 'id');
     }
 }
