@@ -19,6 +19,7 @@ use App\Http\Controllers\Employee\AnnouncementsController;
 use App\Http\Controllers\Employee\LeaveTrackingController;
 use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
+use App\Http\Controllers\Employee\AttendanceRequestController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
@@ -170,6 +171,17 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
     Route::controller(CourseController::class)->group(function () {
         Route::get('/course', 'index')->name('employee.course');
         Route::get('/course/details/{courses:id}', 'viewDetails')->name('employee.course.details');
+    });
+
+    //Attendance Request Module
+    Route::prefix('/attendance/request')->controller(AttendanceRequestController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.attendance.request.index');
+        Route::get('/add','add')->name('employee.attendance.request.add');
+        Route::get('/edit/{id}','edit')->name('employee.attendance.request.edit');
+        Route::post('/store', 'store')->name('employee.attendance.request.store');
+        Route::post('/update/{id}','update')->name('employee.attendance.request.update');
+        Route::get('/delete','delete')->name('employee.attendance.request.delete');
+        Route::get('/search/filter', 'serachFilterList')->name('employee.attendance.request.search');
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/

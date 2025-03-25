@@ -12,6 +12,13 @@
 <script src="{{ asset('employee/assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
 <!--end::Vendors Javascript-->
 <!--begin::Custom Javascript(used for this page only)-->
+<!-- Kendo UI Styles and Scripts (ensure no duplicate entries) -->
+<link href="https://kendo.cdn.telerik.com/themes/7.2.1/default/default-main.css" rel="stylesheet" />
+<script src="https://kendo.cdn.telerik.com/2024.1.319/js/kendo.all.min.js"></script>
+
+<!-- jQuery UI Script (ensure this is before Kendo UI and other jQuery-dependent scripts) -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
 <script src="{{ asset('employee/assets/js/widgets.bundle.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script src="{{ asset('employee/assets/js/employee_custom.js') }}"></script>

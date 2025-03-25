@@ -23,8 +23,8 @@
                         <td>{{ $item->user->name }}</td>
                         <td>{{ $item->user->email }}</td>
                         <td>{{ getFormattedDate($item->date) }}</td>
-                        <td>{{ $item->punch_in }}</td>
-                        <td>{{ $item->punch_out }}</td>
+                        <td>{{ date('H:i A',strtotime($item->punch_in)) }}</td>
+                        <td>{{ date('H:i A',strtotime($item->punch_out)) }}</td>
                         <td>{{ $item->reason }}</td>
                         <td data-order="Invalid date">
                             @if($item->status == 'pending')
