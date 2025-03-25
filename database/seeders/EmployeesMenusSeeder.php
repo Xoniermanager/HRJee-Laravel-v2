@@ -24,6 +24,14 @@ class EmployeesMenusSeeder extends Seeder
                 'order_no' => 1,
                 'role' => 'employee'
             ],
+            // [
+            //     'title' => 'Request Attendance',
+            //     'slug' => '/employee/attendance/request',
+            //     'icon' => '<i class="fa fa-calendar-days"></i>',
+            //     'parent_id' => NULL,
+            //     'order_no' => 2,
+            //     'role' => 'employee'
+            // ],
             [
                 'title' => 'Announcements',
                 'slug' => '/employee/announcement',

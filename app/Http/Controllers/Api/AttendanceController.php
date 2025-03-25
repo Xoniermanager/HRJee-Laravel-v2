@@ -12,9 +12,10 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\EmployeeServices;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\AttendanceRequest;
 use App\Exports\EmployeeAttendanceExport;
-use App\Http\Services\AttendanceRequestService;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\AttendanceRequestService;
 use App\Http\Services\EmployeeAttendanceService;
 
 class AttendanceController extends Controller
@@ -238,19 +239,19 @@ class AttendanceController extends Controller
 
     public function storeAttendanceRequest(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|date|before_or_equal:today',
+            'punch_in' => 'required|date_format:H:i',
+            'punch_out' => 'required|date_format:H:i|after:punch_in',
+            'reason' => 'required|string|max:255',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
         try {
-            $validator = Validator::make($request->all(), [
-                'date' => ['required', 'before_or_equal:today'],
-                'punch_in' => ['required', 'date_format:H:i'],
-                'punch_out' => ['required', 'date_format:H:i'],
-                'reason' => ['required', 'string', 'max:2028'],
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    "error" => 'validation_error',
-                    "message" => $validator->errors(),
-                ], 400);
-            }
             $data = $request->all();
             $data['user_id'] = Auth()->user()->id;
             $data['company_id'] = Auth()->user()->company_id;
@@ -271,6 +272,82 @@ class AttendanceController extends Controller
                 "status" => false,
                 "error" => $e->getMessage(),
                 "message" => "Unable to Add the Attendance Request"
+            ], 500);
+        }
+    }
+    public function detailsAttendanceRequest($requestId)
+    {
+        try {
+            $attendanceRequestDetails = $this->attendanceRequestService->getRequestDetailsByRequestId($requestId);
+            return response()->json([
+                'status' => false,
+                'message' => "Attendance Request Details",
+                'data' => $attendanceRequestDetails
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Fetch Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function updateAttendanceRequest(Request $request, $requestId)
+    {
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|date|before_or_equal:today',
+            'punch_in' => 'required|date_format:H:i',
+            'punch_out' => 'required|date_format:H:i|after:punch_in',
+            'reason' => 'required|string|max:255',
+        ],);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        try {
+            $data = $request->all();
+            if ($this->attendanceRequestService->updateAttendanceRequest($data, $requestId)) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Attendance Request Update Successfully"
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to Update Attendance Request Please try Again"
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Update the Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function deleteAttendanceRequest($requestId)
+    {
+        try {
+            if ($this->attendanceRequestService->deleteAttendanceRequest($requestId)) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Attendance Request Deleted Successfully"
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to Deleted Attendance Request Please try Again"
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Deleted the Attendance Request"
             ], 500);
         }
     }
