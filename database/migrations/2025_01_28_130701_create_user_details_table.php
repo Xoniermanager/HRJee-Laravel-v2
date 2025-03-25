@@ -52,11 +52,12 @@ return new class extends Migration {
             $table->string('face_punchin_kyc')->nullable();
             $table->boolean('location_tracking')->default(false);
             $table->boolean('live_location_active')->default(false);
+            $table->integer('punch_in_radius')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
     }
-    
+
 
     /**
      * Reverse the migrations.

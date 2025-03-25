@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
 use Carbon\Carbon;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\UserMonthlySalary;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\EmployeeServices;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\EmployeeAttendanceExport;
+use App\Http\Services\AttendanceRequestService;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\EmployeeAttendanceService;
 
@@ -19,11 +21,13 @@ class AttendanceController extends Controller
 {
     public $employeeAttendanceService;
     public $employeeService;
+    public $attendanceRequestService;
 
-    public function __construct(EmployeeAttendanceService $employeeAttendanceService, EmployeeServices $employeeService)
+    public function __construct(EmployeeAttendanceService $employeeAttendanceService, EmployeeServices $employeeService, AttendanceRequestService $attendanceRequestService)
     {
         $this->employeeAttendanceService = $employeeAttendanceService;
         $this->employeeService = $employeeService;
+        $this->attendanceRequestService = $attendanceRequestService;
     }
     public function makeAttendance(Request $request)
     {
@@ -229,6 +233,45 @@ class AttendanceController extends Controller
                 'status' => false,
                 'message' => 'Sorry, no payslip generated for your previous month.',
             ]);
+        }
+    }
+
+    public function storeAttendanceRequest(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'date' => ['required', 'before_or_equal:today'],
+                'punch_in' => ['required', 'date_format:H:i'],
+                'punch_out' => ['required', 'date_format:H:i'],
+                'reason' => ['required', 'string', 'max:2028'],
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    "error" => 'validation_error',
+                    "message" => $validator->errors(),
+                ], 400);
+            }
+            $data = $request->all();
+            $data['user_id'] = Auth()->user()->id;
+            $data['company_id'] = Auth()->user()->company_id;
+            $data['created_by'] = Auth()->user()->id;
+            if ($this->attendanceRequestService->storeAttendanceRequest($data)) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Attendance Request Added Successfully"
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to Add Attendance Request Please try Again"
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Add the Attendance Request"
+            ], 500);
         }
     }
 }
