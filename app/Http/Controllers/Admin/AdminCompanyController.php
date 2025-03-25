@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ValidateCompany;
 use App\Http\Services\CompanyTypeService;
+use App\Http\Services\SubscriptionPlanService;
 use App\Http\Services\CompanyDetailService;
 
 class AdminCompanyController extends Controller
@@ -24,9 +25,11 @@ class AdminCompanyController extends Controller
     private $companyDetailService;
     private $userService;
     private $companyTypeService;
-    public function __construct(CompanyDetailService $companyDetailService, CompanyTypeService $companyTypeService, UserService $userService)
+    private $subscriptionPlanService;
+    public function __construct(SubscriptionPlanService $subscriptionPlanService, CompanyDetailService $companyDetailService, CompanyTypeService $companyTypeService, UserService $userService)
     {
         $this->companyDetailService = $companyDetailService;
+        $this->subscriptionPlanService = $subscriptionPlanService;
         $this->companyTypeService = $companyTypeService;
         $this->userService = $userService;
     }
@@ -48,7 +51,9 @@ class AdminCompanyController extends Controller
     public function edit_company(Request $request)
     {
         $companyDetails = $this->userService->getUserById($request->query('id'));
-        return view('admin.company.edit_company', ['companyDetails' => $companyDetails]);
+        $subscriptionPlans = $this->subscriptionPlanService->getAllActivePlans();
+
+        return view('admin.company.edit_company', ['companyDetails' => $companyDetails, 'subscriptionPlans' => $subscriptionPlans]);
     }
 
     protected function createRoleForCompany($companyId, $menuIds, $companyName)
@@ -129,13 +134,14 @@ class AdminCompanyController extends Controller
 
     public function update_company(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'username' => 'sometimes|required|string|max:255',
             'contact_no' => 'sometimes|required|string|max:20',
             'password' => 'sometimes|required|confirmed',
             'company_size' => 'sometimes|required|string',
+            'subscription_id' => 'required|string',
+            'onboarding_date' => 'required|string',
             'company_url' => 'sometimes|required|string|url|max:100',
             'company_address' => 'sometimes|required|string|max:255', // Removed duplicate 'sometimes'
             'logo' => 'sometimes|max:2048',
@@ -150,6 +156,12 @@ class AdminCompanyController extends Controller
                 $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
                 $request->merge(['logo' => $filePath]);
             }
+            
+            $subscriptionPlan = $this->subscriptionPlanService->getDetails($request->subscription_id);
+            $subscriptionDays = $subscriptionPlan ? $subscriptionPlan->days : 7;
+            $expiryDate = date('Y-m-d', strtotime($request->onboarding_date . ' + '. $subscriptionDays . 'days'));
+            $request->merge(['subscription_expiry_date' => $expiryDate]);
+
             $this->companyDetailService->updateDetails($request->except('name', '_token', 'email'), $request->id);
             DB::commit();
             return response()->json(['success' => 'Company Updated Successfully']);
