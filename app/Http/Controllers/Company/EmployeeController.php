@@ -333,15 +333,15 @@ class EmployeeController extends Controller
     public function uploadImport(Request $request)
     {
         // Validate that the file is uploaded
-        // $validator = Validator::make($request->all(), [
-        //     'file' => 'required|mimes:csv|max:2048',
-        // ]);
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'The file is required and must be an Excel or CSV file.'
-        //     ], 400);
-        // }
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:csv|max:2048',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'The file is required and must be an Excel or CSV file.'
+            ], 400);
+        }
         $import = new UserImport();
 
         try {
