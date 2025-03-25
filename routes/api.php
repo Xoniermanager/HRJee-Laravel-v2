@@ -43,8 +43,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('update/profile', [AuthController::class, 'updateProfile']);
     Route::post('change/password', [AuthController::class, 'changePassword']);
     Route::put('update/address', [AddressController::class, 'updateAddress']);
-    Route::post('user/kyc/registration', [AddressController::class, 'userKycRegistration']);
-    Route::post('user/punchIn/image', [AddressController::class, 'userPunchInImage']);
+    Route::post('user/kyc/registration', [AuthController::class, 'userKycRegistration']);
+    Route::post('user/punchIn/image', [AuthController::class, 'userPunchInImage']);
 
     /**For Leave Management API */
     Route::get('/leave-types', [LeaveManagementApiController::class, 'leaveType']);
