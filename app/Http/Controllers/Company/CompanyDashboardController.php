@@ -33,11 +33,11 @@ class CompanyDashboardController extends Controller
     {
         $companyId = Auth()->user()->id;
         $companyIDs = getCompanyIDs();
-        $subscriptionExpiry = Auth()->user()->companyDetails->subscription_expiry_date;
+        $subscriptionExpiry = date('Y-m-d', strtotime(Auth()->user()->companyDetails->subscription_expiry_date));
         
         // Check if expiry date is within 7 days
         $daysLeft = $subscriptionExpiry ? Carbon::now()->diffInDays(Carbon::parse($subscriptionExpiry), false) : null;
-
+        
         $today = today();
         $dashboardData = [
             // Total office branches

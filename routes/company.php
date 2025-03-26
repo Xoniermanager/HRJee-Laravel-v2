@@ -10,6 +10,7 @@ use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Company\CourseController;
 use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\Company\SalaryController;
+use App\Http\Controllers\Company\CompOffController;
 use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
 use App\Http\Controllers\Company\CountryController;
@@ -192,8 +193,9 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
 
     //Face Recognition Module
-    Route::prefix('/face-recognition')->controller(FaceRecognitionController::class)->group(function () {
+    Route::prefix('/face-recognitions')->controller(FaceRecognitionController::class)->group(function () {
         Route::get('/', 'index')->name('face-recognition.index');
+        Route::get('/delete', 'delete')->name('face-recognition.delete');
     });
 
     //Employee Module
@@ -722,12 +724,20 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/update/status', 'updateLocationTrackingStatus')->name('location.tracking.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
     });
-      //Attendance Request Module
-      Route::prefix('/attendance-request')->controller(AttendanceRequestController::class)->group(function () {
+    //Attendance Request Module
+    Route::prefix('/attendance-request')->controller(AttendanceRequestController::class)->group(function () {
         Route::get('/', 'index')->name('attendance.request.index');
         Route::get('/status/update', 'statusUpdateAttendanceRequest')->name('attendance.request.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
     });
+
+     //Comp Off Module
+     Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
+        Route::get('/', 'index')->name('comp-off.index');
+        Route::get('/status/update', 'statusUpdateAttendanceRequest')->name('comp-off.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
+    });
+
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');

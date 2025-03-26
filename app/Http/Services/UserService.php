@@ -51,6 +51,14 @@ class UserService
         return true;
     }
 
+    public function updateFaceRecognitionKYC($userId, $kyc)
+    {
+        $userDetails = $this->userRepository->find($userId);
+        $userDetails->details()->update(['face_kyc' => $kyc]);
+
+        return true;
+    }
+
     public function deleteUserById($userId)
     {
         $userDetails = $this->userRepository->find($userId);
@@ -277,7 +285,7 @@ class UserService
                 ->where('type', 'user')
                 ->where('company_id', $companyId)
                 ->whereHas('details', function ($query) {
-                    $query->where('allow_face_recognition', 1);
+                    $query->where('face_recognition', 1)->where('face_kyc', '!=', NULL);
                 })
                 ->whereHas('managerEmployees', function ($query) use ($managerID) {
                     $query->where('manager_id', $managerID);
@@ -287,7 +295,7 @@ class UserService
                 ->where('type', 'user')
                 ->where('company_id', $companyId)
                 ->whereHas('details', function ($query) {
-                    $query->where('allow_face_recognition', 1);
+                    $query->where('face_recognition', 1)->where('face_kyc', '!=', NULL);
                 });
         }
 

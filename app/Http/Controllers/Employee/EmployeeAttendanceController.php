@@ -14,6 +14,7 @@ class EmployeeAttendanceController extends Controller
     {
         $this->employeeAttendanceService = $employeeAttendanceService;
     }
+    
     public function makeAttendance(Request $request)
     {
         $data['punch_in_using'] = 'Web';
