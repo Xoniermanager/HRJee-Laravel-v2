@@ -122,7 +122,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
             'date_of_birth' => 'required|date_format:Y-m-d|before:today',
             'joining_date' => 'required|date_format:Y-m-d|before:today',
             'password' => 'required|string|min:8',
-            'company_branch' => 'required|exists:company_branches,name,company_id,' . Auth()->user()->id,
+            'company_branch' => 'required|exists:company_branches,name,company_id,' . Auth()->user()->company_id,
         ];
     }
 
