@@ -19,8 +19,10 @@ return new class extends Migration
             $table->dateTime('punch_out')->nullable();
             $table->string('punch_in_latitude')->nullable();
             $table->string('punch_in_longitude')->nullable();
+            $table->string('punch_in_address')->nullable();
             $table->string('punch_out_latitude')->nullable();
             $table->string('punch_out_longitude')->nullable();
+            $table->string('punch_out_address')->nullable();
             $table->enum('punch_in_using', ['Mobile', 'Web']);
             $table->enum('punch_in_by', ['Self', 'Company'])->default('Self');
             $table->enum('work_from', ['Office', 'Home'])->default('Office');

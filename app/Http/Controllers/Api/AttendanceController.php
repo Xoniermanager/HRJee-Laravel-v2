@@ -33,29 +33,39 @@ class AttendanceController extends Controller
     public function makeAttendance(Request $request)
     {
         try {
+            $data = $request->all();
             $data['punch_in_using'] = 'Mobile';
             $attendanceDetails = $this->employeeAttendanceService->create($data);
-            if ($attendanceDetails['status'] == true && $attendanceDetails['data'] == 'Puch Out') {
+            if (empty($attendanceDetails) || !isset($attendanceDetails['status'], $attendanceDetails['data'])) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "No response from attendance service."
+                ], 500);
+            }
+
+            if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch Out') {
                 return response()->json([
                     'status' => true,
-                    'puch_out' => true,
-                    'message' => "You Puch Out Successfully"
+                    'punch_out' => true,
+                    'message' => "You Punched Out Successfully"
                 ], 200);
             }
-            if ($attendanceDetails['status'] == true && $attendanceDetails['data'] == 'Puch In') {
+
+            if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch In') {
                 return response()->json([
                     'status' => true,
-                    'puch_in' => true,
-                    'message' => "You Puch In Successfully"
+                    'punch_in' => true,
+                    'message' => "You Punched In Successfully"
                 ], 200);
             }
-            if ($attendanceDetails['status'] == false) {
+            if ($attendanceDetails['status'] === false) {
                 return response()->json([
-                    'status' => true,
-                    'atttendance_Status' => true,
-                    'message' => "Don't Access you to Puch In Current Time",
+                    'status' => false,
+                    'attendance_status' => false,
+                    'message' => "You are not allowed to Punch In at this time.",
                 ], 200);
             }
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

@@ -49,7 +49,8 @@
                                     <div class="col-md-6 form-group">
                                         <label class="required">Reason</label>
                                         <Textarea class="form-control" placeholder="Enter the reason"
-                                            name="reason">{{ old('reason') }}</Textarea>
+                                            name="reason">{{ old('reason') }}
+                                        </Textarea>
                                             @if ($errors->has('reason'))
                                             <div class="text-danger">{{ $errors->first('reason') }}</div>
                                         @endif
