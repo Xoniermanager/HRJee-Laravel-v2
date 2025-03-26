@@ -62,7 +62,7 @@ class CompOffController extends Controller
 
     public function delete(Request $request)
     {
-        if ($this->compOffService->deleteAttendanceRequest($request->id)) {
+        if ($this->compOffService->deleteCompOff($request->id)) {
             $allCompOffs = $this->compOffService->getCompOffByUserId(Auth()->user()->id)->where('is_used', 1)->paginate(10);
             return response()->json([
                 'success' => 'Comp Off Deleted Successfully',

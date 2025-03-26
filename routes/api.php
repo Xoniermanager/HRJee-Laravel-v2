@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\PolicyController;
 use App\Http\Controllers\Api\PRMApiController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\HolidayController;
+use App\Http\Controllers\Api\CompOffController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\ResignationController;
 use App\Http\Controllers\Api\AnnouncementController;
@@ -66,6 +67,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/attendance/request/update/{id}', 'updateAttendanceRequest');
         Route::get('/attendance/request/delete/{id}', 'deleteAttendanceRequest');
         Route::get('/attendance/request/details/{id}', 'detailsAttendanceRequest');
+    });
+
+    /** Comp off Module  */
+    Route::prefix('comp-offs')->controller(CompOffController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/add', 'store');
+        Route::delete('/delete/{compOffId}', 'delete');
     });
 
     /** News Module  */

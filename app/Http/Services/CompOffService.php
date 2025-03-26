@@ -89,7 +89,7 @@ class CompOffService
         return $this->compOffRepository->find($requestId);
     }
 
-    public function deleteAttendanceRequest($requestId)
+    public function deleteCompOff($requestId)
     {
         return $this->compOffRepository->where('id', $requestId)->update([
             'is_used' => 0,
