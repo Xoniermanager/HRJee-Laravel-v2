@@ -20,6 +20,7 @@ use App\Http\Controllers\Employee\LeaveTrackingController;
 use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Employee\AttendanceRequestController;
+use App\Http\Controllers\Employee\CompOffController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
@@ -182,6 +183,15 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::post('/update/{id}','update')->name('employee.attendance.request.update');
         Route::get('/delete','delete')->name('employee.attendance.request.delete');
         Route::get('/search/filter', 'serachFilterList')->name('employee.attendance.request.search');
+    });
+
+    //Comp Off Module
+    Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.comp.off.index');
+        Route::get('/add','add')->name('employee.comp.off.add');
+        Route::post('/store', 'store')->name('employee.comp.off.store');
+        Route::get('/delete','delete')->name('employee.comp.off.delete');
+        Route::get('/search/filter', 'serachFilterList')->name('employee.comp.off.search');
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/

@@ -37,7 +37,7 @@ class CompanyDashboardController extends Controller
         
         // Check if expiry date is within 7 days
         $daysLeft = $subscriptionExpiry ? Carbon::now()->diffInDays(Carbon::parse($subscriptionExpiry), false) : null;
-
+        
         $today = today();
         $dashboardData = [
             // Total office branches

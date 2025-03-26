@@ -11,7 +11,7 @@
                 <!--begin::Col-->
                 <div class="col-md-12">
                     <div class="mb-5 mb-xl-10">
-                        @if ($daysLeft <= 7)
+                        @if ($daysLeft && $daysLeft <= 7)
                             <div class="alert alert-warning d-flex align-items-center" role="alert">
                                 <p class="font-bold">⚠️ Subscription Expiring Soon! Your subscription will expire in
                                     <strong>{{ $daysLeft }} day(s)</strong>.

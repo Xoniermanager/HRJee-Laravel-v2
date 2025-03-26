@@ -128,7 +128,15 @@ class EmployeesMenusSeeder extends Seeder
                 'icon' => '<i class="fas fa-book"></i>',
                 'order_no' => 14,
                 'role' => 'employee'
+            ],
+            [
+                'title' => 'Comp Offs',
+                'slug' => '/employee/comp-offs',
+                'icon' => '<i class="fas fa-book"></i>',
+                'order_no' => 14,
+                'role' => 'employee'
             ]
+
         ];
 
         Menu::where('role', 'employee')->delete();
