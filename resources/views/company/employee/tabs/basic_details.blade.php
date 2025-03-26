@@ -252,7 +252,7 @@
                     <option value="">Please Select the Branch</option>
                     @forelse ($allBranches as $branch)
                         <option
-                            {{ $singleUserDetails->details->company_branch_id ?? old('company_branch_id') ? 'selected' : '' }}
+                            {{ ($singleUserDetails->details->company_branch_id ?? old('company_branch_id')) ==  $branch->id ? 'selected' : '' }}
                             value="{{ $branch->id }}">{{ $branch->name }}</option>
                     @empty
                         <option value="">No Branches Found</option>

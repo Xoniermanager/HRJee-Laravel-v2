@@ -31,7 +31,7 @@ class AuthController extends Controller
     {
         $user = Auth()->guard('employee_api')->user();
         try {
-            $employeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'documentDetails.documentTypes');
+            $employeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'documentDetails.documentTypes','userActiveLocation');
             return response()->json([
                 'status' => true,
                 'message' => 'Employee details',
