@@ -7,7 +7,7 @@ use App\Models\UserDetail;
 use App\Models\EmployeeType;
 use App\Models\CompanyBranch;
 use App\Models\EmployeeStatus;
-use Illuminate\Support\Facades\Auth;
+use App\Models\UserActiveLocation;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Validators\Failure;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -32,7 +32,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
      */
     public function collection(Collection $collection)
     {
-        $this->count = $collection->count() - 1; 
+        $this->count = $collection->count() - 1;
 
         $activeUsers = User::where([
             'status' => 1,
@@ -40,7 +40,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
             'type' => 'user'
         ])->count();
 
-        if(($this->count + $activeUsers) < auth()->user()->companyDetails->company_size) {
+        if (($this->count + $activeUsers) < auth()->user()->companyDetails->company_size) {
             $data = $collection->skip(1);
 
             foreach ($data as $row) {
@@ -83,9 +83,23 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
                     'company_branch_id' => CompanyBranch::where('name', $row['company_branch'])->first()->id,
                 ];
                 // Insert the user details into the user_details table
-                UserDetail::create($userDetailData);
+                $userCreated = UserDetail::create($userDetailData);
+                if ($userCreated) {
+                    $branchDetails = CompanyBranch::find($userCreated->company_branch_id);
+                    $address = $branchDetails->address;
+                    $result = app('geocoder')->geocode($address)->get();
+                    $coordinates = $result[0]->getCoordinates();
+                    $lat = $coordinates->getLatitude();
+                    $long = $coordinates->getLongitude();
+                    UserActiveLocation::create([
+                        'user_id' => $user->id,
+                        'address' => $address,
+                        'latitude' => $lat,
+                        'longitude' => $long
+                    ]);
+                }
             }
-            
+
             return response()->json(false);
         } else {
 
@@ -108,7 +122,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
             'date_of_birth' => 'required|date_format:Y-m-d|before:today',
             'joining_date' => 'required|date_format:Y-m-d|before:today',
             'password' => 'required|string|min:8',
-            'company_branch' => 'required|exists:company_branches,name',
+            'company_branch' => 'required|exists:company_branches,name,company_id,' . Auth()->user()->id,
         ];
     }
 
@@ -137,7 +151,6 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
 
     public function islimitExceeded()
     {
-        dd($this->count);
         $activeUsers = User::where([
             'status' => 1,
             'company_id' => Auth()->user()->company_id,
