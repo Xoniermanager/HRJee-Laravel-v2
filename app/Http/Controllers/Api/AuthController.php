@@ -159,7 +159,7 @@ class AuthController extends Controller
                 "message" => $validator->errors(),
             ], 400);
         }
-        $updateDetails = UserDetail::find(Auth()->user()->id)->update(['face_punchin_kyc' => $request->face_punchin_kyc]);
+        $updateDetails = UserDetail::where('user_id',Auth()->user()->id)->update(['face_kyc' => $request['face_kyc']]);
         if ($updateDetails) {
             return response()->json([
                 'status' => true,
@@ -184,7 +184,7 @@ class AuthController extends Controller
                 "message" => $validator->errors(),
             ], 400);
         }
-        $updateDetails = UserDetail::find(Auth()->user()->id)->update(['face_punchin_kyc' => $request->face_punchin_kyc]);
+        $updateDetails = UserDetail::where('user_id',Auth()->user()->id)->update(['face_punchin_kyc' => $request['face_kyc']]);
         if ($updateDetails) {
             return response()->json([
                 'status' => true,
