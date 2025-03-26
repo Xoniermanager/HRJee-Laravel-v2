@@ -193,8 +193,9 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
 
     //Face Recognition Module
-    Route::prefix('/face-recognition')->controller(FaceRecognitionController::class)->group(function () {
+    Route::prefix('/face-recognitions')->controller(FaceRecognitionController::class)->group(function () {
         Route::get('/', 'index')->name('face-recognition.index');
+        Route::get('/delete', 'delete')->name('face-recognition.delete');
     });
 
     //Employee Module
