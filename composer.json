@@ -19,7 +19,8 @@
         "prettus/l5-repository": "^2.9",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-ciphersweet": "^1.6",
-        "spatie/laravel-permission": "^6.10"
+        "spatie/laravel-permission": "^6.10",
+        "toin0u/geocoder-laravel": "^5.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

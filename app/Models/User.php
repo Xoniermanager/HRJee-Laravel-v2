@@ -211,4 +211,9 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
         SalaryComponent::insert($payload);
     }
+
+    public function userActiveLocation()
+    {
+        return $this->hasOne(UserActiveLocation::class, 'user_id');
+    }
 }

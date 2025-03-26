@@ -30,7 +30,6 @@ use App\Http\Services\AssetCategoryService;
 use App\Http\Services\QualificationService;
 use App\Http\Services\EmployeeStatusService;
 use App\Http\Services\PreviousCompanyService;
-
 class EmployeeController extends Controller
 {
     private $countryService;
@@ -186,7 +185,7 @@ class EmployeeController extends Controller
         try {
             $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
 
-            if($activeUserCount >= auth()->user()->companyDetails->company_size) {
+            if ($activeUserCount >= auth()->user()->companyDetails->company_size) {
                 DB::rollBack();
                 return response()->json(['error' => 'Company size limit has been exceeded!']);
             }
@@ -349,7 +348,7 @@ class EmployeeController extends Controller
 
             $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
 
-            if(($activeUserCount + $import->count) > auth()->user()->companyDetails->company_size) {
+            if (($activeUserCount + $import->count) > auth()->user()->companyDetails->company_size) {
 
                 return response()->json([
                     'status' => 'error',
