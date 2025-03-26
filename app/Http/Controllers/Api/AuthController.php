@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Menu;
 use App\Models\User;
 use App\Models\MenuRole;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
@@ -147,7 +148,54 @@ class AuthController extends Controller
             'data' => $childMenus,
         ], 200);
     }
+    public function userKycRegistration(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'face_kyc' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        $updateDetails = UserDetail::find(Auth()->user()->id)->update(['face_punchin_kyc' => $request->face_punchin_kyc]);
+        if ($updateDetails) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Kyc updated successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to updated Kyc Registration',
+            ], 400);
+        }
 
+    }
+    public function userPunchInImage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'face_punchin_kyc' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        $updateDetails = UserDetail::find(Auth()->user()->id)->update(['face_punchin_kyc' => $request->face_punchin_kyc]);
+        if ($updateDetails) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Punch In Image updated successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to updated Punch In Image',
+            ], 400);
+        }
 
-
+    }
 }

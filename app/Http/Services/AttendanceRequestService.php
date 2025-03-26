@@ -18,12 +18,22 @@ class AttendanceRequestService
     {
         return $this->attendanceRequestRepository->where('company_id', $companyId);
     }
+    public function getAttendanceRequestByUserId($userId)
+    {
+        return $this->attendanceRequestRepository->where('user_id', $userId);
+    }
 
     public function storeAttendanceRequest($data)
     {
         $data['punch_in'] = date('Y-m-d H:i:s', strtotime($data['date'] . ' ' . $data['punch_in']));
         $data['punch_out'] = date('Y-m-d H:i:s', strtotime($data['date'] . ' ' . $data['punch_out']));
         return $this->attendanceRequestRepository->create($data);
+    }
+    public function updateAttendanceRequest($data, $requestId)
+    {
+        $data['punch_in'] = date('Y-m-d H:i:s', strtotime($data['date'] . ' ' . $data['punch_in']));
+        $data['punch_out'] = date('Y-m-d H:i:s', strtotime($data['date'] . ' ' . $data['punch_out']));
+        return $this->attendanceRequestRepository->find($requestId)->update($data);
     }
 
     public function updateStatus($data)
@@ -50,7 +60,7 @@ class AttendanceRequestService
 
     public function getFilteredRequestDetails($request)
     {
-        $assetCategoryDetails = $this->attendanceRequestRepository->where('company_id',Auth()->user()->company_id);
+        $assetCategoryDetails = $this->attendanceRequestRepository->where('company_id', Auth()->user()->company_id);
         /**List By Search or Filter */
         if (isset($request['search']) && !empty($request['search'])) {
             $searchKey = $request['search'];
@@ -62,8 +72,17 @@ class AttendanceRequestService
         }
         /**List By Status or Filter */
         if (isset($request['status'])) {
-          $assetCategoryDetails = $assetCategoryDetails->where('status', $request['status']);
+            $assetCategoryDetails = $assetCategoryDetails->where('status', $request['status']);
         }
         return $assetCategoryDetails->orderBy('id', 'DESC')->paginate(10);
+    }
+
+    public function getRequestDetailsByRequestId($requestId)
+    {
+        return $this->attendanceRequestRepository->find($requestId);
+    }
+    public function deleteAttendanceRequest($requestId)
+    {
+        return $this->attendanceRequestRepository->find($requestId)->delete();
     }
 }
