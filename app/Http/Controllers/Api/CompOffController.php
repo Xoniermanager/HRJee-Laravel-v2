@@ -55,11 +55,11 @@ class CompOffController extends Controller
             $daysDifference = $date1->diffInDays($date2);
             $getBalanceCompOff = $this->compOffService->getCompOffByUserId($data['user_id'])->where('is_used', 0)->count();
             
-            if($daysDifference > $getBalanceCompOff) {
+            if(($daysDifference + 1) > $getBalanceCompOff) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Your balance comp off is '. $getBalanceCompOff
-                ], 500);
+                ], 200);
 
             }
 
