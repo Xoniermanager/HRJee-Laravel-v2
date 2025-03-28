@@ -147,8 +147,4 @@ class AuthService
             return exceptionErrorMessage($th);
         }
     }
-
-    public function getCompanyDetails() {
-        dd(auth());
-    }
 }

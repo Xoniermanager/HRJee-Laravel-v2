@@ -745,6 +745,19 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
+                57 =>
+                array(
+                    'id' => 57,
+                    'title' => 'Address Request',
+                    'slug' => '/address-request',
+                    'icon' => '<i class="fas fa-location"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
         ));
 
 

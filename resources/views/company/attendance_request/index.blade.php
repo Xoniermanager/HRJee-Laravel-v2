@@ -53,24 +53,36 @@
         </div>
 
         <script>
-            function handleStatus(ele, requestId) {
-                $.ajax({
-                    url: "{{ route('attendance.request.statusUpdate') }}",
-                    type: 'get',
-                    data: {
-                        'requestId': requestId,
-                        'status': ele.value,
-                    },
-                    success: function (res) {
-                        if (res.status) {
-                            swal.fire("Done!", res.message, "success");
-                            $('#attendance_request_list').replaceWith(res.data);
-                        } else {
-                            swal.fire("Oops!", res.message, "error");
+             function handleStatus(ele, requestId) {
+                Swal.fire({
+                        title: "Are you sure?",
+                        text: "You are about to change the status.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, change it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: "{{ route('attendance.request.statusUpdate') }}",
+                                type: 'get',
+                                data: {
+                                    'requestId': requestId,
+                                    'status': ele.value,
+                                },
+                                success: function (res) {
+                                    if (res.status) {
+                                        Swal.fire("Done!", res.message, "success");
+                                        $('#address_request_list').replaceWith(res.data);
+                                    } else {
+                                        Swal.fire("Oops!", res.message, "error");
+                                    }
+                                }
+                            });
                         }
-                    }
-                })
-            }
+                    });
+                }
             jQuery("#search").on('input', function () {
                 search_filter_results();
             });

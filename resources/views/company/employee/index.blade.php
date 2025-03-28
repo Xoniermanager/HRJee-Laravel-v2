@@ -466,7 +466,6 @@
                         'search': $(this).val()
                     },
                     success: function(response) {
-                    success: function(response) {
                         $('#employee_list').replaceWith(response.data);
                     }
                 });
@@ -776,6 +775,5 @@
             });
         });
     </script>
-
-        @endsection
+@endsection
 

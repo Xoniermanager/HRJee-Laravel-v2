@@ -12,7 +12,6 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\EmployeeServices;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\AttendanceRequest;
 use App\Exports\EmployeeAttendanceExport;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\AttendanceRequestService;
@@ -290,7 +289,7 @@ class AttendanceController extends Controller
         try {
             $attendanceRequestDetails = $this->attendanceRequestService->getRequestDetailsByRequestId($requestId);
             return response()->json([
-                'status' => false,
+                'status' => true,
                 'message' => "Attendance Request Details",
                 'data' => $attendanceRequestDetails
             ], 200);
@@ -310,7 +309,7 @@ class AttendanceController extends Controller
             'punch_in' => 'required|date_format:H:i',
             'punch_out' => 'required|date_format:H:i|after:punch_in',
             'reason' => 'required|string|max:255',
-        ],);
+        ], );
         if ($validator->fails()) {
             return response()->json([
                 "error" => 'validation_error',
@@ -358,6 +357,24 @@ class AttendanceController extends Controller
                 "status" => false,
                 "error" => $e->getMessage(),
                 "message" => "Unable to Deleted the Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function getAllAttendanceRequestList()
+    {
+        try {
+            $attendanceRequestDetails = $this->attendanceRequestService->getAttendanceRequestByUserId(Auth()->guard('employee_api')->user()->id)->paginate(10);
+            return response()->json([
+                'status' => true,
+                'message' => "All Attendance Request List",
+                'data' => $attendanceRequestDetails
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Fetch Attendance Request"
             ], 500);
         }
     }

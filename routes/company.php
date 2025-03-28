@@ -10,9 +10,9 @@ use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Company\CourseController;
 use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\Company\SalaryController;
-use App\Http\Controllers\Company\CompOffController;
 use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
+use App\Http\Controllers\Company\CompOffController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
@@ -39,6 +39,7 @@ use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Company\LocationVisitController;
+use App\Http\Controllers\Company\AddressRequestController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
@@ -735,6 +736,13 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
      Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
         Route::get('/', 'index')->name('comp-off.index');
         Route::get('/status/update', 'statusUpdateAttendanceRequest')->name('comp-off.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
+    });
+
+    //Address Request Module
+    Route::prefix('/address-request')->controller(AddressRequestController::class)->group(function () {
+        Route::get('/', 'index')->name('address.request.index');
+        Route::get('/status/update', 'statusUpdate')->name('address.request.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
     });
 
