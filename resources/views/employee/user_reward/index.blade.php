@@ -19,13 +19,13 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="item">
                             <div class="img">
-                                <img src="{{ $item->image }}" alt="">
+                                <img src="{{ asset('assets/reward.png') }}" alt="">
                             </div>
                             <div class="info">
                                 <div class="date">
                                     <span>{{ date('d', strtotime($item->created_at)) }}<br>{{ date('M', strtotime($item->created_at)) }}</span>
                                 </div>
-                                    <h5>{{ $item->title }}</h5>
+                                    <h5>{{ $item->reward_name }}</h5>
                                 <a href="{{ route('employee.reward.details', $item->id) }}"
                                     class="user"><i class="fas fa-eye"></i>Read More</a>
                                 <a href="{{ route('employee.reward.details', $item->id) }}"
