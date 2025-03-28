@@ -60,6 +60,6 @@
         </tbody>
         <!--end::Table body-->
     </table>
+{{ $allNewsDetails->links() }}
     <!--end::Table-->
 </div>
-{{ $allNewsDetails->links() }}
