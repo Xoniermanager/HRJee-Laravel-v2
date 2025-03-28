@@ -83,7 +83,8 @@ class AuthController extends Controller
 
         #Update the new Password
         User::whereId(auth()->user()->id)->update([
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'reset_password' => false
         ]);
 
         return response()->json([

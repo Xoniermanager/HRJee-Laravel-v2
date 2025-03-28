@@ -86,7 +86,7 @@ class ForgotPasswordController extends Controller
             $code = UserCode::where(['email' => $email, 'code' => $request->otp, 'type' => 'user'])->where('updated_at', '>=', now()->subMinutes(20))->first();
 
             if($code) {
-                User::where('email', $email)->update(['password' => Hash::make($request->password),'reset_password' => false]);
+                User::where('email', $email)->update(['password' => Hash::make($request->password)]);
                 return response()->json([
                     'status' => true,
                     'message' => 'Password updated successfully',
