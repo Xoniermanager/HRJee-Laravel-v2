@@ -17,6 +17,7 @@ use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Employee\AnnouncementsController;
 use App\Http\Controllers\Employee\LeaveTrackingController;
+use App\Http\Controllers\Employee\AddressRequestController;
 use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Employee\AttendanceRequestController;
@@ -183,6 +184,14 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::post('/update/{id}','update')->name('employee.attendance.request.update');
         Route::get('/delete','delete')->name('employee.attendance.request.delete');
         Route::get('/search/filter', 'serachFilterList')->name('employee.attendance.request.search');
+    });
+     //Attendance Request Module
+     Route::prefix('/address/request')->controller(AddressRequestController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.address.request.index');
+        Route::post('/create', 'store')->name('employee.address.request.store');
+        Route::post('/update', 'update')->name('employee.address.request.update');
+        Route::get('/delete', 'destroy')->name('employee.address.request.delete');
+        Route::get('/search/filter', 'serachFilterList');
     });
 
     //Comp Off Module

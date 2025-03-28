@@ -55,9 +55,9 @@
     </div>
 
     <script>
-        
+
         jQuery.noConflict();
-       
+
 
         function handleStatus(id) {
             var checked_value = $('#checked_value_' + id).prop('checked');
@@ -82,7 +82,7 @@
             })
         }
 
-        
+
 
         jQuery("#search").on('blur', function() {
             search_filter_results();

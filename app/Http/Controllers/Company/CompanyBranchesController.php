@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use Illuminate\Http\Request;
-use App\Models\CompanyBranch;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Services\StateServices;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ValidateBranch;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
@@ -95,7 +93,14 @@ class CompanyBranchesController extends Controller
                 'contact_no' => 'required|numeric|unique:company_branches,contact_no,' . $companyBranchId,
                 'email' => 'required|email|unique:company_branches,email,' . $companyBranchId,
                 'hr_email' => 'required|email|unique:company_branches,hr_email,' . $companyBranchId,
-                'address' => 'required|string',
+                'address' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if (!app('geocoder')->geocode($value)->get()->count()) {
+                            $fail('The provided address is incorrect.');
+                        }
+                    }
+                ],
                 'city' => 'required|string',
                 'pincode' => 'required|string',
                 'country_id' => 'required_if:address_type,==,0|exists:countries,id',
