@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\AttendanceController;
 use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Company\PRMRequestController;
+use App\Http\Controllers\Company\UserRewardController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
@@ -744,6 +745,18 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/', 'index')->name('address.request.index');
         Route::get('/status/update', 'statusUpdate')->name('address.request.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
+    });
+
+      //Address Request Module
+      Route::prefix('/reward')->controller(UserRewardController::class)->group(function () {
+        Route::get('/', 'index')->name('reward.index');
+        Route::get('/add', 'add')->name('reward.add');
+        Route::post('/store', 'store')->name('reward.store');
+        Route::get('/edit/{id}', 'edit')->name('reward.edit');
+        Route::post('/update/{id}', 'update')->name('reward.update');
+        Route::get('/delete', 'destroy')->name('reward.delete');
+        Route::get('/search/filter', 'serachFilterList');
+
     });
 
 });

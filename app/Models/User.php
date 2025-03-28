@@ -215,6 +215,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function userActiveLocation()
     {
-        return $this->hasOne(UserActiveLocation::class, 'user_id');
+        return $this->hasOne(UserActiveLocation::class, 'user_id')->where('status', true);
+    }
+
+    public function userReward()
+    {
+        return $this->hasMany(UserReward::class, 'user_id', 'id');
     }
 }

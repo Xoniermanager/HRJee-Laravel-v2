@@ -143,16 +143,21 @@ class EmployeesMenusSeeder extends Seeder
                 'icon' => '<i class="fas fa-book"></i>',
                 'order_no' => 14,
                 'role' => 'employee'
+            ]  ,
+            [
+                'title' => 'My Rewards',
+                'slug' => '/employee/reward/user',
+                'icon' => '<i class="fa fa-award"></i>',
+                'parent_id' => NULL,
+                'order_no' => 2,
+                'role' => 'employee'
             ]
-
         ];
-
         Menu::where('role', 'employee')->delete();
 
         foreach($payload as $menuData) {
             Menu::create($menuData);
         }
-
         return true;
     }
 }
