@@ -45,6 +45,7 @@ use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
+use App\Http\Controllers\Company\RewardCategoryController;
 use App\Http\Controllers\Company\UserCtcDetailsController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
@@ -757,6 +758,16 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/delete', 'destroy')->name('reward.delete');
         Route::get('/search/filter', 'serachFilterList');
 
+    });
+
+    //Reward Category Module
+    Route::prefix('/reward-category')->controller(RewardCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('reward_category.index');
+        Route::post('/create', 'store')->name('reward_category.store');
+        Route::post('/update', 'update')->name('reward_category.update');
+        Route::get('/delete', 'destroy')->name('reward_category.delete');
+        Route::get('/status/update', 'statusUpdate')->name('reward_category.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
     });
 
 });

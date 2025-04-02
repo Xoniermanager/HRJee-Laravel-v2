@@ -1,6 +1,6 @@
 @extends('layouts.employee.main')
 @section('content')
-@section('title', 'Reward Detail')
+@section('title', 'Reward Details')
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
@@ -15,12 +15,16 @@
                                     <td class="fw-semibold p-3">{{ getFormattedDate($rewardDetail->date) }}</td>
                                 </tr>
                                 <tr>
+                                    <th>Reward Category</th>
+                                    <td class="fw-boldp-3">{{ $rewardDetail->rewardCategory->name }}</td>
+                                </tr>
+                                <tr>
                                     <th>Reward</th>
                                     <td class="fw-bold text-success p-3">{{ $rewardDetail->reward_name }}</td>
                                 </tr>
                                 <tr>
                                     <th>Description</th>
-                                    <td class="text-muted p-3">{{ $rewardDetail->description }}</td>
+                                    <td class="text-muted p-3">{{ $rewardDetail->description ?? ''}}</td>
                                 </tr>
                                 @if ($rewardDetail->getRawOriginal('image'))
                                 <tr>

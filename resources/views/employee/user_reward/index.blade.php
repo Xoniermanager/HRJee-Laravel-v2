@@ -1,9 +1,6 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title','Reward')
-<!--begin::Header-->
-<!--end::Header-->
-<!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--end::Container-->
 <div class="container-xxl">
@@ -25,11 +22,13 @@
                                 <div class="date">
                                     <span>{{ date('d', strtotime($item->created_at)) }}<br>{{ date('M', strtotime($item->created_at)) }}</span>
                                 </div>
-                                    <h5>{{ $item->reward_name }}</h5>
+                                <h4>{{ $item->reward_name }}</h4><span><h6>({{$item->rewardCategory->name}})</h6></span>
+                                <div>
                                 <a href="{{ route('employee.reward.details', $item->id) }}"
                                     class="user"><i class="fas fa-eye"></i>Read More</a>
                                 <a href="{{ route('employee.reward.details', $item->id) }}"
                                     class="more"><i class="fas fa-long-arrow-alt-right"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -45,5 +44,4 @@
     </section>
 </div>
 </div>
-<!--end::Content-->
 @endsection

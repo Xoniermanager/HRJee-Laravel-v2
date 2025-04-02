@@ -54,22 +54,7 @@
                                         </span>
                                         <!--end::Svg Icon-->{{ Auth::user()->details->designation->name }}
                                     </a>
-                                    <a href="#"
-                                        class="d-flex align-items-center text-hover-primary mb-2 me-5 text-gray-400">
-                                        <!--begin::Svg Icon | path: icons/duotune/general/gen018.svg-->
-                                        <span class="svg-icon svg-icon-4 me-1">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path opacity="0.3"
-                                                    d="M18.0624 15.3453L13.1624 20.7453C12.5624 21.4453 11.5624 21.4453 10.9624 20.7453L6.06242 15.3453C4.56242 13.6453 3.76242 11.4453 4.06242 8.94534C4.56242 5.34534 7.46242 2.44534 11.0624 2.04534C15.8624 1.54534 19.9624 5.24534 19.9624 9.94534C20.0624 12.0453 19.2624 13.9453 18.0624 15.3453Z"
-                                                    fill="currentColor"></path>
-                                                <path
-                                                    d="M12.0624 13.0453C13.7193 13.0453 15.0624 11.7022 15.0624 10.0453C15.0624 8.38849 13.7193 7.04535 12.0624 7.04535C10.4056 7.04535 9.06241 8.38849 9.06241 10.0453C9.06241 11.7022 10.4056 13.0453 12.0624 13.0453Z"
-                                                    fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                        <!--end::Svg Icon-->h-187, sec-63
-                                    </a>
+
                                     <a href="#"
                                         class="d-flex align-items-center text-hover-primary mb-2 text-gray-400">
                                         <!--begin::Svg Icon | path: icons/duotune/communication/com011.svg-->
@@ -412,62 +397,62 @@
                         <div class="col-md-6 form-group">
                             <label for="">Designation </label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->details->designation->name }}" disabled>
+                                value="{{ Auth::user()->details->designation->name ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Date of Joining</label>
                             <input class="form-control" name="" type="date"
-                                value="{{ Auth::user()->joining_date }}" disabled>
+                                value="{{ Auth::user()->joining_date ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Official Email ID </label>
                             <input class="form-control" name="" type="email"
-                                value="{{ Auth::user()->official_email_id }}" disabled>
+                                value="{{ Auth::user()->official_email_id ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Offer Letter ID</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->offer_letter_id }}" disabled>
+                                value="{{ Auth::user()->offer_letter_id ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Official Phone Number</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->official_mobile_no }}" disabled>
+                                value="{{ Auth::user()->official_mobile_no ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Pan Card No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->advanceDetails->aadhar_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->aadhar_no ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Aadhaar Card No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->advanceDetails->pan_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->pan_no ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">UAN No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->advanceDetails->uan_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->uan_no ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">ESIC No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->advanceDetails->esic_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->esic_no ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">PF No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->advanceDetails->pf_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->pf_no ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Insurance No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->advanceDetails->insurance_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->insurance_no ?? ''}}" disabled>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="">Driving License No.</label>
                             <input class="form-control" name="" type="text"
-                                value="{{ Auth::user()->advanceDetails->driving_licence_no }}" disabled>
+                                value="{{ Auth::user()->advanceDetails->driving_licence_no ?? ''}}" disabled>
                         </div>
                     </div>
                 </div>
@@ -492,7 +477,7 @@
                             <div class="col-md-6 form-group">
                                 <label for="">Account Holder Name*</label>
                                 <input class="form-control" name="account_name" type="text"
-                                    value="{{ Auth::user()->bankDetails->account_name }}" required>
+                                    value="{{ Auth::user()->bankDetails->account_name ?? ''}}" required>
                                 @if ($errors->has('account_name'))
                                     <div class="text-danger">{{ $errors->first('account_name') }}</div>
                                 @endif
@@ -500,7 +485,7 @@
                             <div class="col-md-6 form-group">
                                 <label for="">Account No. *</label>
                                 <input class="form-control" name="account_number" type="text"
-                                    value="{{ Auth::user()->bankDetails->account_number }}" required>
+                                    value="{{ Auth::user()->bankDetails->account_number ?? ''}}" required>
                                 @if ($errors->has('account_number'))
                                     <div class="text-danger">{{ $errors->first('account_number') }}</div>
                                 @endif
@@ -508,7 +493,7 @@
                             <div class="col-md-6 form-group">
                                 <label for="">IFSC Code *</label>
                                 <input class="form-control" name="ifsc_code" type="text"
-                                    value="{{ Auth::user()->bankDetails->ifsc_code }}" required>
+                                    value="{{ Auth::user()->bankDetails->ifsc_code ?? ''}}" required>
                                 @if ($errors->has('ifsc_code'))
                                     <div class="text-danger">{{ $errors->first('ifsc_code') }}</div>
                                 @endif
@@ -516,7 +501,7 @@
                             <div class="col-md-6 form-group">
                                 <label for="">Bank Name *</label>
                                 <input class="form-control" name="bank_name" type="text"
-                                    value="{{ Auth::user()->bankDetails->bank_name }}" required>
+                                    value="{{ Auth::user()->bankDetails->bank_name ?? ''}}" required>
                                 @if ($errors->has('bank_name'))
                                     <div class="text-danger">{{ $errors->first('bank_name') }}</div>
                                 @endif

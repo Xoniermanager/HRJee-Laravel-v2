@@ -8,6 +8,7 @@
                 <thead>
                     <tr class="fw-bold">
                         <th>Sr. No.</th>
+                        <th>Reward Category</th>
                         <th>Employee Name</th>
                         <th>Date</th>
                         <th>Reward Name</th>
@@ -23,25 +24,27 @@
                     @forelse ($allRewardDetails as $index => $item)
                         <tr>
                             <td>{{ $index + 1 }}</td>
+                            <td>{{ $item->rewardCategory->name }}</td>
                             <td>{{ $item->user->name }}</td>
                             <td>{{ getFormattedDate($item->date) }}</td>
                             <td>{{ $item->reward_name }}</td>
                             <td>{{ $item->description }}</td>
                             <td>
-                                @if ( $item->getRawOriginal('image'))
-                                <img src="{{ $item->image }}" alt="Reward Image" width="50" height="50">
+                                @if ($item->getRawOriginal('image'))
+                                    <img src="{{ $item->image }}" alt="Reward Image" width="50" height="50">
                                 @endif
                             </td>
                             <td>
-                                @if ( $item->getRawOriginal('document'))
-                                <a href="{{ $item->document }}" download>
-                                    <i class="fa fa-file" style="font-size:35px; color:red;"></i>
-                                </a>
+                                @if ($item->getRawOriginal('document'))
+                                    <a href="{{ $item->document }}" download>
+                                        <i class="fa fa-file" style="font-size:35px; color:red;"></i>
+                                    </a>
                                 @endif
                             </td>
                             <td>
                                 <div class="d-flex justify-content-end flex-shrink-0">
-                                    <a href="{{ route('reward.edit',$item->id) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    <a href="{{ route('reward.edit', $item->id) }}"
+                                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                         <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                         <i class="fa fa-edit"></i>
                                         <!--end::Svg Icon-->
@@ -50,19 +53,17 @@
                                         onclick="deleteFunction('{{ $item->id }}')">
                                         <i class="fa fa-trash"></i>
                                     </a>
-
-                                </a>
                                 </div>
                             </td>
                         </tr>
 
-                        @empty
+                    @empty
                         <td colspan="3">
                             <span class="text-danger">
                                 <strong>No Reward Found!</strong>
                             </span>
                         </td>
-                        @endforelse
+                    @endforelse
                 </tbody>
                 <!--end::Table body-->
             </table>
@@ -71,6 +72,7 @@
         <!--end::Table container-->
 
     </div>
-{{ $allRewardDetails->links() }}
-
+    <div id="paginate">
+        {{ $allRewardDetails->links() }}
+    </div>
 </div>

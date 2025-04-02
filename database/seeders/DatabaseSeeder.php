@@ -79,5 +79,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CurriculamAssignmentsTableSeeder::class);
         $this->call(EmployeeLeaveAvailablesTableSeeder::class);
         $this->call(UserActiveLocationsTableSeeder::class);
+        $this->call(RewardCategoriesTableSeeder::class);
     }
 }
