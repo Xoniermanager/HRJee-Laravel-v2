@@ -1,9 +1,6 @@
 @extends('layouts.employee.main')
 @section('content')
 @section('title','Reward')
-<!--begin::Header-->
-<!--end::Header-->
-<!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--end::Container-->
 <div class="container-xxl">
@@ -19,17 +16,19 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="item">
                             <div class="img">
-                                <img src="{{ $item->image }}" alt="">
+                                <img src="{{ asset('assets/reward.png') }}" alt="">
                             </div>
                             <div class="info">
                                 <div class="date">
                                     <span>{{ date('d', strtotime($item->created_at)) }}<br>{{ date('M', strtotime($item->created_at)) }}</span>
                                 </div>
-                                    <h5>{{ $item->title }}</h5>
+                                <h4>{{ $item->reward_name }}</h4><span><h6>({{$item->rewardCategory->name}})</h6></span>
+                                <div>
                                 <a href="{{ route('employee.reward.details', $item->id) }}"
                                     class="user"><i class="fas fa-eye"></i>Read More</a>
                                 <a href="{{ route('employee.reward.details', $item->id) }}"
                                     class="more"><i class="fas fa-long-arrow-alt-right"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -45,5 +44,4 @@
     </section>
 </div>
 </div>
-<!--end::Content-->
 @endsection

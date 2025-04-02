@@ -70,7 +70,7 @@ class EmployeeServices
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
                 $this->updateActiveLocationByUserId($data['company_branch_id'], $createdEmployee->user_id);
                 $status = 'createdEmployee';
-                $id = $createdEmployee->id;
+                $id = $createdEmployee->user_id;
             }
             $response = [
                 'status' => $status,

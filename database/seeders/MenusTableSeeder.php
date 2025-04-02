@@ -761,10 +761,36 @@ class MenusTableSeeder extends Seeder
                 58 =>
                 array(
                     'id' => 58,
-                    'title' => 'Rewards',
-                    'slug' => '/reward',
+                    'title' => 'Rewards Management',
+                    'slug' => '#',
                     'icon' => '<i class="fa fa-award"></i>',
                     'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                59 =>
+                array(
+                    'id' => 59,
+                    'title' => 'Rewards Category',
+                    'slug' => '/reward-category',
+                    'icon' => '#',
+                    'parent_id' => 58,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                60 =>
+                array(
+                    'id' => 60,
+                    'title' => 'Rewards',
+                    'slug' => '/reward',
+                    'icon' => '#',
+                    'parent_id' => 58,
                     'status' => 1,
                     'order_no' => 32,
                     'role' => 'company',

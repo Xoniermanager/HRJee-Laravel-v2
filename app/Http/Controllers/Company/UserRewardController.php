@@ -6,16 +6,19 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\EmployeeServices;
+use App\Http\Services\RewardCategoryService;
 use App\Http\Services\UserRewardService;
 
 class UserRewardController extends Controller
 {
     public $employeeService;
     public $userRewardService;
-    public function __construct(EmployeeServices $employeeService, UserRewardService $userRewardService)
+    public $rewardCategoryService;
+    public function __construct(EmployeeServices $employeeService, UserRewardService $userRewardService,RewardCategoryService $rewardCategoryService)
     {
         $this->employeeService = $employeeService;
         $this->userRewardService = $userRewardService;
+        $this->rewardCategoryService = $rewardCategoryService;
     }
     public function index()
     {
@@ -25,20 +28,23 @@ class UserRewardController extends Controller
 
     public function add()
     {
+        $allRewardCategory =  $this->rewardCategoryService->getActiveRewardCategoryDetailByComapnyId(Auth()->user()->company_id)->get();
         $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();
-        return view('company.user_reward.add', compact('allEmployeeDetails'));
+        return view('company.user_reward.add', compact('allEmployeeDetails','allRewardCategory'));
     }
 
     public function edit($rewardId)
     {
         $rewardDetail = $this->userRewardService->getRewardDetailById($rewardId);
+        $allRewardCategory =  $this->rewardCategoryService->getActiveRewardCategoryDetailByComapnyId(Auth()->user()->company_id)->get();
         $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();
-        return view('company.user_reward.edit', compact('rewardDetail', 'allEmployeeDetails'));
+        return view('company.user_reward.edit', compact('rewardDetail', 'allEmployeeDetails','allRewardCategory'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'reward_category_id' => 'required|exists:reward_categories,id',
             'user_id' => 'required|exists:users,id', // Ensures the user exists in the users table
             'reward_name' => 'required|string|max:255',
             'date' => 'required|date|before_or_equal:today',
@@ -57,6 +63,7 @@ class UserRewardController extends Controller
     public function update(Request $request, $rewardId)
     {
         $request->validate([
+            'reward_category_id' => 'required|exists:reward_categories,id',
             'user_id' => 'required|exists:users,id', // Ensures the user exists in the users table
             'reward_name' => 'required|string|max:255',
             'date' => 'required|date|before_or_equal:today',

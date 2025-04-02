@@ -4,22 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('user_rewards', function (Blueprint $table) {
+        Schema::create('reward_categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('reward_category_id');
-            $table->unsignedBigInteger('user_id');
-            $table->string('reward_name');
+            $table->string('name');
             $table->tinyText('description')->nullable();
-            $table->date('date');
-            $table->string('image')->nullable();
-            $table->string('document')->nullable();
+            $table->boolean('status')->default(true);
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_rewards');
+        Schema::dropIfExists('reward_categories');
     }
 };

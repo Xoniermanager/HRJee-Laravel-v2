@@ -20,6 +20,20 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-4">
+                                            <label for="" class="required">Reward Category</label>
+                                            <select name="reward_category_id" class="form-control">
+                                                <option value="">Please Select the Category</option>
+                                                @foreach ($allRewardCategory as $item)
+                                                    <option value="{{ $item->id }}" {{ $rewardDetail->reward_category_id == $item->id ? 'selected' : ''}}>
+                                                        {{ $item->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('reward_category_id'))
+                                                <div class="text-danger">{{ $errors->first('reward_category_id') }}</div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-4">
                                             <label for="" class="required">Employee</label>
                                             <select name="user_id" class="form-control" id="employee_list">
                                                 <option value="">Please Select the Employee</option>
@@ -40,20 +54,12 @@
                                                 <div class="text-danger">{{ $errors->first('reward_name') }}</div>
                                             @endif
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 mt-4">
                                             <label for="" class="required">Date</label>
                                             <input class="form-control" type="date" name="date" value="{{ $rewardDetail->date ?? date('Y-m-d') }}"
                                                 max="{{ date('Y-m-d') }}">
                                             @if ($errors->has('date'))
                                                 <div class="text-danger">{{ $errors->first('date') }}</div>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-6 mt-2">
-                                            <label for="" class="required">Description</label>
-                                            <textarea class="form-control" type="file" name="description"
-                                                placeholder="Enter the Description">{{ $rewardDetail->description ?? old('description') }}</textarea>
-                                            @if ($errors->has('description'))
-                                                <div class="text-danger">{{ $errors->first('description') }}</div>
                                             @endif
                                         </div>
                                         <div class="col-md-3 mt-4">
@@ -69,6 +75,14 @@
                                                 accept="application/pdf">
                                             @if ($errors->has('document'))
                                                 <div class="text-danger">{{ $errors->first('document') }}</div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6 mt-2">
+                                            <label for="" class="">Description</label>
+                                            <textarea class="form-control" type="file" name="description"
+                                                placeholder="Enter the Description">{{ $rewardDetail->description ?? old('description') }}</textarea>
+                                            @if ($errors->has('description'))
+                                                <div class="text-danger">{{ $errors->first('description') }}</div>
                                             @endif
                                         </div>
                                     </div>
