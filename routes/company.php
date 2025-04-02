@@ -69,6 +69,7 @@ use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
+use App\Http\Controllers\Company\PerformanceManagementController;
 
 // Route::get('/test',function()
 // {
@@ -731,11 +732,19 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachFilterList');
     });
 
-     //Comp Off Module
-     Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
+    //Comp Off Module
+    Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
         Route::get('/', 'index')->name('comp-off.index');
         Route::get('/status/update', 'statusUpdateAttendanceRequest')->name('comp-off.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
+    });
+
+    //Comp Off Module
+    Route::prefix('/performance-management')->controller(PerformanceManagementController::class)->group(function () {
+        Route::get('/', 'index')->name('performance-management.index');
+        Route::post('/add', 'addPerformance')->name('performance-management.add');
+        Route::get('/get-skills/{userID}', 'getSkills')->name('performance-management.get-skills');
+        Route::get('/filter', 'filterPerformance')->name('performance-management.filter-performance');
     });
 
 });

@@ -317,4 +317,9 @@ class UserService
     public function getActiveEmployees($companyId) {
         return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->where('status', 1);
     }
+    
+    public function getUserSkillsByUserId($id)
+    {
+        return $this->userRepository->where('id', $id);
+    }
 }
