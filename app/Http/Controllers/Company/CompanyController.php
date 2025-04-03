@@ -14,6 +14,7 @@ use App\Http\Services\BranchServices;
 use App\Http\Services\FileUploadService;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Http\Services\CompanyDetailService;
+use Illuminate\Validation\ValidationException;
 use App\Http\Requests\UserChangePasswordRequest;
 use App\Http\Requests\ValidateUpdateCompanyRequest;
 
@@ -26,7 +27,9 @@ class CompanyController extends Controller
     private $companyDetailService;
 
     public function __construct(
-        BranchServices $branchService,CompanyDetailService $companyDetailService, UserService $userService
+        BranchServices $branchService,
+        CompanyDetailService $companyDetailService,
+        UserService $userService
     ) {
         $this->branchService = $branchService;
         $this->userService = $userService;
@@ -38,6 +41,10 @@ class CompanyController extends Controller
     public function company_profile()
     {
         return view('company.company.company_profile');
+    }
+    public function companyConfiguartion()
+    {
+        return view('company.company.companyConfig');
     }
 
     /**
@@ -72,6 +79,24 @@ class CompanyController extends Controller
             }
         } catch (\Exception $e) {
             return $e->getMessage();
+        }
+    }
+
+    public function updateCompanyConfiguration(Request $request)
+    {
+        // dd($request->all());
+        try {
+            $request->validate([
+                'task_radius' => 'required|numeric|min:500',
+                'attendance_radius' => 'required|numeric|min:500',
+            ]);
+            $data = $request->except('_token');
+            $updatedCompanyConfiguration = $this->companyDetailService->updateCompanyDetails($data, Auth()->user()->id);
+            if ($updatedCompanyConfiguration) {
+                return back()->with('success', 'Configuartion Updated Successfully');
+            }
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
         }
     }
 }

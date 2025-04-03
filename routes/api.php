@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/attendance', 'getParticularDateAttendance');
         Route::post('/attendance/export', 'generateAttendanceExport');
         Route::get('/generatePaySlip', 'generatePaySlip');
+        Route::post('/attendance/request/store', 'storeAttendanceRequest');
     });
 
     /** News Module  */

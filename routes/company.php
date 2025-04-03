@@ -16,7 +16,6 @@ use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
 use App\Http\Controllers\Company\EmployeeController;
-use App\Http\Controllers\Company\LocationTrackingController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
@@ -55,7 +54,9 @@ use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
 use App\Http\Controllers\Company\CompanyDashboardController;
 use App\Http\Controllers\Company\ComplainCategoryController;
+use App\Http\Controllers\Company\LocationTrackingController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
+use App\Http\Controllers\Company\AttendanceRequestController;
 use App\Http\Controllers\Company\ResignationStatusController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
@@ -78,8 +79,10 @@ Route::get('/company/state/get/all/state', [StateController::class, 'getAllState
 Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
+        Route::get('configuration', 'companyConfiguartion')->name('company.configuration');
         Route::post('profile/update', 'update_company')->name('company.profile.update');
         Route::post('change/password', 'company_change_password')->name('company.change.password');
+        Route::post('configuration/update', 'updateCompanyConfiguration')->name('company.configuration.update');
     });
     Route::controller(CompanyDashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('company.dashboard');
@@ -208,6 +211,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
         Route::post('/export-file', 'uploadImport')->name('upload.file');
+        Route::post('/punchIn/radius','updatePunchInRadius')->name('update.punhin.radius');
     });
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
@@ -720,6 +724,12 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachFilterList');
         Route::get('/current-locations', 'fetchCurrentLocationOfEmployees')->name('location.tracking.currentLocations');
         Route::get('/location-tracking/get-locations', 'getLocations');
+    });
+      //Attendance Request Module
+      Route::prefix('/attendance-request')->controller(AttendanceRequestController::class)->group(function () {
+        Route::get('/', 'index')->name('attendance.request.index');
+        Route::get('/status/update', 'statusUpdateAttendanceRequest')->name('attendance.request.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
     });
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {

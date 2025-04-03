@@ -30,6 +30,8 @@ return new class extends Migration
             $table->boolean('allow_location_tracking')->default(0);
             $table->integer('face_recognition_user_limit')->default(0);
             $table->integer('location_tracking_user_limit')->default(0);
+            $table->integer('task_radius')->default(0);
+            $table->integer('attendance_radius')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

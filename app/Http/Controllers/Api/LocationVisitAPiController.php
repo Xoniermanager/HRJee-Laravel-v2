@@ -63,7 +63,7 @@ class LocationVisitAPiController extends Controller
             'document' => 'sometimes|file|mimes:pdf,xlsx,xls|max:2048', // Validate PDF or Excel file, with a max size of 2MB
             'image' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048', // Assuming 'image' should be a file, validate image type
             'user_end_status' => 'required|in:processing,completed,rejected',
-            'remark' => 'required|max:255|string', // Validate the remark as a string, required and max length 255 characters
+            'remark' => 'required|max:255|string', // Validate the remark as a string, required and max length 255 character
         ]);
         if ($validator->fails()) {
             return response()->json([

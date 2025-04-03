@@ -26,6 +26,7 @@ class AssignTasksTableSeeder extends Seeder
                 'user_end_status' => 'pending',
                 'final_status' => 'pending',
                 'response_data' => '{"name":"arjun","email":"test@gmail.com","phone":"1234567890","city":"Noida","gender":"Male"}',
+                'visit_address' => "Noida Sec 63",
                 'company_id' => 1,
                 'created_by' => 1,
                 'created_at' => '2025-02-28 14:25:00',
