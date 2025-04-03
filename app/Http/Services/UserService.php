@@ -317,6 +317,7 @@ class UserService
         });
     }
 
+
     public function getAllEmployeeAssignedLocationTracking($companyId)
     {
         return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereHas('details', function ($query) {
@@ -362,8 +363,14 @@ class UserService
         return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints);
     }
 
+
     public function getActiveEmployees($companyId)
     {
         return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->where('status', 1);
+    }
+
+    public function getAllManagerByCompanyId($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
     }
 }

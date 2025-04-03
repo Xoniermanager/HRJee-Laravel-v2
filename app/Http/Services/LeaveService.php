@@ -73,10 +73,10 @@ class LeaveService
             $payload['to_half_day'] = $data['to_half_day'] ?? '';
         }
         $appliedLeaveDetails = $this->leaveRepository->create($payload);
-        
+
         $leaveManagerPayload = [];
         $managers = auth()->user()->managers;
-        foreach($managers as $manager) {
+        foreach ($managers as $manager) {
             $leaveManagerPayload[] = [
                 'manager_id' => $manager->manager_id,
                 'leave_id' => $appliedLeaveDetails->id,
@@ -263,10 +263,15 @@ class LeaveService
      */
     public function getConfirmedLeaveByUserIDAndDate($date, $userID)
     {
-
         return $this->leaveRepository->where('user_id', $userID)->where('from', '<=', $date)
             ->where('to', '>=', $date)
             ->where('leave_status_id', 2)
             ->first();
+    }
+
+    public function getConfirmedLeaveByUserID($userID)
+    {
+        return $this->leaveRepository->where('user_id', $userID)
+            ->where('leave_status_id', 2)->with('user');
     }
 }

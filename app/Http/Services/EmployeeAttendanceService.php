@@ -36,7 +36,7 @@ class EmployeeAttendanceService
     public function create($data)
     {
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
-       
+
         $attendanceTime = date('Y/m/d H:i:s');
         $officeShiftDetails = $userDetails->details->officeShift;
         $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->start_time));
@@ -49,7 +49,6 @@ class EmployeeAttendanceService
         /** If Data Exit in Table Soo we Implement for Puch Out  */
         $existingDetails = $this->getAttendanceByDateByUserId($userDetails->id, date('Y-m-d'))->first();
         if (isset($existingDetails) && !empty($existingDetails)) {
-
             //check if user is in short attendance
             if ($officeShiftDetails->check_out_buffer > 0) {
                 $bufferTime = ' -' . $officeShiftDetails->check_out_buffer . ' minutes';
@@ -423,5 +422,10 @@ class EmployeeAttendanceService
     public function createAttendanceByAttendanceRequest($data)
     {
         return $this->employeeAttendanceRepository->create($data);
+    }
+
+    public function getAllAttendanceByUserId($userId)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId);
     }
 }
