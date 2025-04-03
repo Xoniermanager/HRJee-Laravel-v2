@@ -361,4 +361,9 @@ class UserService
     ) {
         return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints);
     }
+
+    public function getActiveEmployees($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->where('status', 1);
+    }
 }
