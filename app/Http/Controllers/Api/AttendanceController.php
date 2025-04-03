@@ -35,13 +35,6 @@ class AttendanceController extends Controller
             $data = $request->all();
             $data['punch_in_using'] = 'Mobile';
             $attendanceDetails = $this->employeeAttendanceService->create($data);
-            if (empty($attendanceDetails) || !isset($attendanceDetails['status'], $attendanceDetails['data'])) {
-                return response()->json([
-                    'status' => false,
-                    'message' => "No response from attendance service."
-                ], 500);
-            }
-
             if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch Out') {
                 return response()->json([
                     'status' => true,
@@ -49,7 +42,6 @@ class AttendanceController extends Controller
                     'message' => "You Punched Out Successfully"
                 ], 200);
             }
-
             if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch In') {
                 return response()->json([
                     'status' => true,
@@ -61,7 +53,7 @@ class AttendanceController extends Controller
                 return response()->json([
                     'status' => false,
                     'attendance_status' => false,
-                    'message' => "You are not allowed to Punch In at this time.",
+                    'message' => $attendanceDetails['message'] ?? "You are not allowed to Punch In at this time.",
                 ], 200);
             }
 

@@ -31,6 +31,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->middleware('throttle:30,1');
     Route::post('sendOtp', 'sendOtp');
     Route::post('verify/otp', 'verifyOtp')->middleware('throttle:30,1');
+    Route::post('/face/login', 'faceLogin');
 });
 
 Route::controller(ForgotPasswordController::class)->group(function () {
@@ -45,12 +46,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('profile/details', 'profileDetails');
         Route::get('company-details', 'getCompanyDetails');
         Route::get('menu-access', 'getMenuAccess');
+        Route::get('get/team/details/{userId}','getTeamDetailsByUserId');
 
         Route::post('update/profile', 'updateProfile');
         Route::post('change/password', 'changePassword');
         Route::post('user/kyc/registration', 'userKycRegistration');
         Route::post('user/punchIn/image', 'userPunchInImage');
-
     });
     Route::controller(AddressController::class)->group(function () {
         Route::put('update/address', 'updateAddress');
