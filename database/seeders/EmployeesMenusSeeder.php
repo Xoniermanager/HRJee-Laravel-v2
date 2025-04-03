@@ -25,6 +25,22 @@ class EmployeesMenusSeeder extends Seeder
                 'role' => 'employee'
             ],
             [
+                'title' => 'Request Attendance',
+                'slug' => '/employee/attendance/request',
+                'icon' => '<i class="fa fa-calendar-days"></i>',
+                'parent_id' => NULL,
+                'order_no' => 2,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Request Address',
+                'slug' => '/employee/address/request',
+                'icon' => '<i class="fa fa-location"></i>',
+                'parent_id' => NULL,
+                'order_no' => 2,
+                'role' => 'employee'
+            ],
+            [
                 'title' => 'Announcements',
                 'slug' => '/employee/announcement',
                 'icon' => '<i class="fa fa-newspaper"></i>',
@@ -120,15 +136,28 @@ class EmployeesMenusSeeder extends Seeder
                 'icon' => '<i class="fas fa-book"></i>',
                 'order_no' => 14,
                 'role' => 'employee'
+            ],
+            [
+                'title' => 'Comp Offs',
+                'slug' => '/employee/comp-offs',
+                'icon' => '<i class="fas fa-book"></i>',
+                'order_no' => 14,
+                'role' => 'employee'
+            ]  ,
+            [
+                'title' => 'My Rewards',
+                'slug' => '/employee/reward/user',
+                'icon' => '<i class="fa fa-award"></i>',
+                'parent_id' => NULL,
+                'order_no' => 2,
+                'role' => 'employee'
             ]
         ];
-
         Menu::where('role', 'employee')->delete();
 
         foreach($payload as $menuData) {
             Menu::create($menuData);
         }
-
         return true;
     }
 }

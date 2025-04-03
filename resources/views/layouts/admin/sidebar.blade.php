@@ -130,6 +130,7 @@
                             <li><a href="{{route('admin.document.type')}}">Document Type</a></li>
                             <li><a href="{{route('admin.employee_status')}}">Employee Status</a></li>
                             <li><a href="{{route('admin.employee_type')}}">Employee Type</a></li>
+                            <li><a href="{{route('admin.subscription_plan')}}">Subscription Plans</a></li>
                             <li><a href="{{route('admin.languages')}}">Languages</a></li>
                         </ul>
                     </li>

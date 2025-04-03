@@ -2,16 +2,22 @@
 
 namespace App\Http\Services;
 
-use App\Models\UserDetail;
-use App\Repositories\UserRepository;
 use Throwable;
-
 use Carbon\Carbon;
 use App\Models\UserCode;
-use App\Models\EmployeeManager;
+
+use App\Models\UserDetail;
 use App\Mail\ResetPassword;
+use Illuminate\Support\Arr;
+use App\Models\CompanyBranch;
+use App\Models\EmployeeManager;
+use App\Models\UserActiveLocation;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Services\BranchServices;
+use App\Http\Services\DepartmentServices;
+use App\Http\Services\DesignationServices;
 use App\Repositories\UserDetailRepository;
 
 class EmployeeServices
@@ -52,6 +58,9 @@ class EmployeeServices
                     $existingDetails->user->skill()->sync($data['skill_id']);
                     $this->syncEmployeeLanguages($existingDetails->user, $data['language']);
                 }
+                if ($data['company_branch_id'] != $existingDetails->company_branch_id) {
+                    $this->updateActiveLocationByUserId($data['company_branch_id'], $existingDetails->user_id, 'updated');
+                }
                 $existingDetails->update($data);
                 $status = 'updatedData';
                 $id = $existingDetails->user_id;
@@ -59,8 +68,9 @@ class EmployeeServices
                 $createdEmployee = $this->userDetailRepository->create($data);
                 $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
+                $this->updateActiveLocationByUserId($data['company_branch_id'], $createdEmployee->user_id);
                 $status = 'createdEmployee';
-                $id = $createdEmployee->id;
+                $id = $createdEmployee->user_id;
             }
             $response = [
                 'status' => $status,
@@ -120,10 +130,11 @@ class EmployeeServices
     public function getAllEmployeeByCompanyId($companyId)
     {
         return $this->userRepository->where('type', 'user')
-        ->where('company_id', $companyId)
-        ->whereHas('details', function ($query) {
-            $query->whereNull('exit_date');
-        });;
+            ->where('company_id', $companyId)
+            ->whereHas('details', function ($query) {
+                $query->whereNull('exit_date');
+            });
+        ;
     }
 
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
@@ -186,7 +197,7 @@ class EmployeeServices
     public function addManagers($userId, $managerIDs)
     {
         EmployeeManager::where('user_id', $userId)->delete();
-        if($managerIDs) {
+        if ($managerIDs) {
             $payload = [];
 
             foreach ($managerIDs as $manager) {
@@ -233,5 +244,33 @@ class EmployeeServices
             });
         }
         return $allEmployeeDetails->paginate(10);
+    }
+    public function updateActiveLocationByUserId($branchId, $userId, $type = "created")
+    {
+        $branchDetails = CompanyBranch::find($branchId);
+        $address = $branchDetails->address;
+        $result = app('geocoder')->geocode($address)->get();
+        $coordinates = $result[0]->getCoordinates();
+        $lat = $coordinates->getLatitude();
+        $long = $coordinates->getLongitude();
+        $payload =
+            [
+                'user_id' => $userId,
+                'address' => $address,
+                'latitude' => $lat,
+                'longitude' => $long
+            ];
+        if ($type == 'updated') {
+            $checkExistingDetails = UserActiveLocation::where('user_id', $userId)->where('status', true)->first();
+            if ($checkExistingDetails) {
+                $checkExistingDetails->update(Arr::except($payload, 'user_id'));
+            } else {
+                UserActiveLocation::create($payload);
+            }
+        }
+        else {
+            UserActiveLocation::create($payload);
+        }
+        return true;
     }
 }

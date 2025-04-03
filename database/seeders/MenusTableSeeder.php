@@ -732,8 +732,84 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
+            55=>
+                array(
+                    'id' => 55,
+                    'title' => 'Comp Off',
+                    'slug' => '/comp-offs',
+                    'icon' => '<i class="fas fa-book"></i>',
+                    'parent_id' => 34,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            56=>
+                array(
+                    'id' => 56,
+                    'title' => 'Face Recognition',
+                    'slug' => '/face-recognitions',
+                    'icon' => '<i class="fas fa-book"></i>',
+                    'parent_id' => 28,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                57 =>
+                array(
+                    'id' => 57,
+                    'title' => 'Address Request',
+                    'slug' => '/address-request',
+                    'icon' => '<i class="fas fa-location"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                58 =>
+                array(
+                    'id' => 58,
+                    'title' => 'Rewards Management',
+                    'slug' => '#',
+                    'icon' => '<i class="fa fa-award"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                59 =>
+                array(
+                    'id' => 59,
+                    'title' => 'Rewards Category',
+                    'slug' => '/reward-category',
+                    'icon' => '#',
+                    'parent_id' => 58,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                60 =>
+                array(
+                    'id' => 60,
+                    'title' => 'Rewards',
+                    'slug' => '/reward',
+                    'icon' => '#',
+                    'parent_id' => 58,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
         ));
-
-
     }
 }

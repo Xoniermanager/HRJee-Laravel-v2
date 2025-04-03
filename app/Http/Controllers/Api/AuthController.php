@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Menu;
 use App\Models\User;
 use App\Models\MenuRole;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
@@ -30,7 +31,14 @@ class AuthController extends Controller
     {
         $user = Auth()->guard('employee_api')->user();
         try {
-            $employeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'documentDetails.documentTypes');
+            $employeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'documentDetails.documentTypes:name,id','userActiveLocation','userReward','userReward.rewardCategory:name,id');
+            $companyAssignedMenuIds = MenuRole::where('role_id', $user->parent->role_id)->pluck('menu_id')->toArray();
+            $employeeDetails['menu_access'] = Menu::where(['status' => 1, 'role' => 'employee'])
+            ->where(function ($query) use ($companyAssignedMenuIds) {
+                $query->whereIn('parent_id', $companyAssignedMenuIds)
+                    ->orWhereNull('parent_id');
+            })
+           ->get(['title','id']);
             return response()->json([
                 'status' => true,
                 'message' => 'Employee details',
@@ -82,7 +90,8 @@ class AuthController extends Controller
 
         #Update the new Password
         User::whereId(auth()->user()->id)->update([
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'reset_password' => false
         ]);
 
         return response()->json([
@@ -147,7 +156,54 @@ class AuthController extends Controller
             'data' => $childMenus,
         ], 200);
     }
+    public function userKycRegistration(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'face_kyc' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        $updateDetails = UserDetail::where('user_id',Auth()->user()->id)->update(['face_kyc' => $request['face_kyc']]);
+        if ($updateDetails) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Kyc updated successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to updated Kyc Registration',
+            ], 400);
+        }
 
+    }
+    public function userPunchInImage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'face_punchin_kyc' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        $updateDetails = UserDetail::where('user_id',Auth()->user()->id)->update(['face_punchin_kyc' => $request['face_kyc']]);
+        if ($updateDetails) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Punch In Image updated successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to updated Punch In Image',
+            ], 400);
+        }
 
-
+    }
 }

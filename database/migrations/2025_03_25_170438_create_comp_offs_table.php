@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_live_locations', function (Blueprint $table) {
+        Schema::create('comp_offs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('latitude')->nullable();
-            $table->string('longitude')->nullable();
-            $table->boolean('read')->default(0);
+            $table->date('date')->nullable();
+            $table->boolean('is_used')->default(0);
+            $table->date('used_date')->nullable();
+            $table->enum('status', ['pending', 'accepted', 'rejected'])->nullable();
+            $table->text('user_remark')->nullable();
+            $table->text('admin_remark')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_live_locations');
+        Schema::dropIfExists('comp_offs');
     }
 };

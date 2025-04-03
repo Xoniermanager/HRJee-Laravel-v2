@@ -13,8 +13,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\EmployeeServices;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\EmployeeAttendanceExport;
-use App\Http\Services\AttendanceRequestService;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\AttendanceRequestService;
 use App\Http\Services\EmployeeAttendanceService;
 
 class AttendanceController extends Controller
@@ -32,29 +32,39 @@ class AttendanceController extends Controller
     public function makeAttendance(Request $request)
     {
         try {
+            $data = $request->all();
             $data['punch_in_using'] = 'Mobile';
             $attendanceDetails = $this->employeeAttendanceService->create($data);
-            if ($attendanceDetails['status'] == true && $attendanceDetails['data'] == 'Puch Out') {
+            if (empty($attendanceDetails) || !isset($attendanceDetails['status'], $attendanceDetails['data'])) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "No response from attendance service."
+                ], 500);
+            }
+
+            if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch Out') {
                 return response()->json([
                     'status' => true,
-                    'puch_out' => true,
-                    'message' => "You Puch Out Successfully"
+                    'punch_out' => true,
+                    'message' => "You Punched Out Successfully"
                 ], 200);
             }
-            if ($attendanceDetails['status'] == true && $attendanceDetails['data'] == 'Puch In') {
+
+            if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch In') {
                 return response()->json([
                     'status' => true,
-                    'puch_in' => true,
-                    'message' => "You Puch In Successfully"
+                    'punch_in' => true,
+                    'message' => "You Punched In Successfully"
                 ], 200);
             }
-            if ($attendanceDetails['status'] == false) {
+            if ($attendanceDetails['status'] === false) {
                 return response()->json([
-                    'status' => true,
-                    'atttendance_Status' => true,
-                    'message' => "Don't Access you to Puch In Current Time",
+                    'status' => false,
+                    'attendance_status' => false,
+                    'message' => "You are not allowed to Punch In at this time.",
                 ], 200);
             }
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -238,19 +248,19 @@ class AttendanceController extends Controller
 
     public function storeAttendanceRequest(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|date|before_or_equal:today',
+            'punch_in' => 'required|date_format:H:i',
+            'punch_out' => 'required|date_format:H:i|after:punch_in',
+            'reason' => 'required|string|max:255',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
         try {
-            $validator = Validator::make($request->all(), [
-                'date' => ['required', 'before_or_equal:today'],
-                'punch_in' => ['required', 'date_format:H:i'],
-                'punch_out' => ['required', 'date_format:H:i'],
-                'reason' => ['required', 'string', 'max:2028'],
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    "error" => 'validation_error',
-                    "message" => $validator->errors(),
-                ], 400);
-            }
             $data = $request->all();
             $data['user_id'] = Auth()->user()->id;
             $data['company_id'] = Auth()->user()->company_id;
@@ -271,6 +281,100 @@ class AttendanceController extends Controller
                 "status" => false,
                 "error" => $e->getMessage(),
                 "message" => "Unable to Add the Attendance Request"
+            ], 500);
+        }
+    }
+    public function detailsAttendanceRequest($requestId)
+    {
+        try {
+            $attendanceRequestDetails = $this->attendanceRequestService->getRequestDetailsByRequestId($requestId);
+            return response()->json([
+                'status' => true,
+                'message' => "Attendance Request Details",
+                'data' => $attendanceRequestDetails
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Fetch Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function updateAttendanceRequest(Request $request, $requestId)
+    {
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|date|before_or_equal:today',
+            'punch_in' => 'required|date_format:H:i',
+            'punch_out' => 'required|date_format:H:i|after:punch_in',
+            'reason' => 'required|string|max:255',
+        ], );
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        try {
+            $data = $request->all();
+            if ($this->attendanceRequestService->updateAttendanceRequest($data, $requestId)) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Attendance Request Update Successfully"
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to Update Attendance Request Please try Again"
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Update the Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function deleteAttendanceRequest($requestId)
+    {
+        try {
+            if ($this->attendanceRequestService->deleteAttendanceRequest($requestId)) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Attendance Request Deleted Successfully"
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to Deleted Attendance Request Please try Again"
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Deleted the Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function getAllAttendanceRequestList()
+    {
+        try {
+            $attendanceRequestDetails = $this->attendanceRequestService->getAttendanceRequestByUserId(Auth()->guard('employee_api')->user()->id)->paginate(10);
+            return response()->json([
+                'status' => true,
+                'message' => "All Attendance Request List",
+                'data' => $attendanceRequestDetails
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Fetch Attendance Request"
             ], 500);
         }
     }

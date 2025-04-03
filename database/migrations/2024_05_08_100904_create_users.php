@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('manager_id')->nullable();
             $table->enum('type', ['company', 'user'])->default('user');
             $table->boolean('status')->default(true);
+            $table->boolean('reset_password')->default(true);
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

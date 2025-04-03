@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Company;
+use App\Models\CompanyDetail;
 use App\Models\EmployeeAttendance;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -41,7 +42,11 @@ class AdminDashboard extends Controller
                 'total_punch_in' => $attendanceData->get($date, 0),  // Default to 0 if no attendance for that date
             ];
         });
-        return view('admin.dashboard', compact('dashboardData', 'allAttendanceDetails'));
+
+        $expiredDate = date('Y-m-d', strtotime('+7 days'));
+        $subscriptionExpiredCompanies = CompanyDetail::with('user', 'subscriptionPlan')->where('subscription_expiry_date', '<=', $expiredDate)->get();
+        
+        return view('admin.dashboard', compact('dashboardData', 'allAttendanceDetails', 'subscriptionExpiredCompanies'));
     }
     public function attendanceDetails()
     {

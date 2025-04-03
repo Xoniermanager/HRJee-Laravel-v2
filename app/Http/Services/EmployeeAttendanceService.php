@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Http\Services\EmployeeServices;
 use App\Http\Services\HolidayServices;
 use App\Http\Services\LeaveService;
+use App\Http\Services\CompOffService;
 use App\Http\Services\WeekendService;
 use App\Models\EmployeeAttendance;
 use App\Repositories\EmployeeAttendanceRepository;
@@ -20,26 +21,30 @@ class EmployeeAttendanceService
     private $holidayService;
     private $employeeService;
     private $weekendService;
+    private $compOffService;
 
 
-    public function __construct(EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService, WeekendService $weekendService)
+    public function __construct(CompOffService $compOffService, EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService, WeekendService $weekendService)
     {
         $this->employeeAttendanceRepository = $employeeAttendanceRepository;
         $this->leaveService = $leaveService;
         $this->holidayService = $holidayService;
         $this->employeeService = $employeeService;
         $this->weekendService = $weekendService;
+        $this->compOffService = $compOffService;
     }
     public function create($data)
     {
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
+       
         $attendanceTime = date('Y/m/d H:i:s');
         $officeShiftDetails = $userDetails->details->officeShift;
         $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->start_time));
         $officeEndTime = date('H:i:s', strtotime($officeShiftDetails->end_time));
         $payload = [
             'user_id' => $userDetails->id,
-            'punch_in_using' => $data['punch_in_using']
+            'punch_in_using' => $data['punch_in_using'],
+            'punch_in' => $attendanceTime
         ];
         /** If Data Exit in Table Soo we Implement for Puch Out  */
         $existingDetails = $this->getAttendanceByDateByUserId($userDetails->id, date('Y-m-d'))->first();
@@ -61,12 +66,14 @@ class EmployeeAttendanceService
             }
             $payload['punch_out_latitude'] = $data['punch_out_latitude'] ?? '';
             $payload['punch_out_longitude'] = $data['punch_out_longitude'] ?? '';
+            $payload['punch_out_address'] = $data['punch_out_address'] ?? '';
             $payload['punch_out'] = $attendanceTime;
             $this->employeeAttendanceRepository->find($existingDetails->id)->update($payload);
             return ['data' => 'Punch Out', 'status' => true];
         } else {
-            $payload['punch_in_latitude'] = $data['latitude'] ?? '';
-            $payload['punch_in_latitude'] = $data['longitude'] ?? '';
+            $payload['punch_in_latitude'] = $data['punch_in_latitude'] ?? '';
+            $payload['punch_in_longitude'] = $data['punch_in_longitude'] ?? '';
+            $payload['punch_in_address'] = $data['punch_in_address'] ?? '';
             if ($officeShiftDetails->login_before_shift_time > 0) {
                 $beforTime = ' -' . $officeShiftDetails->login_before_shift_time . ' minutes';
                 $loginBeforeShiftTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $beforTime));
@@ -79,13 +86,27 @@ class EmployeeAttendanceService
                 return array('status' => false, 'message' => 'Your office hours are over. ' . $officeEndTime);
             }
 
-            $todayHoliday = $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, date('Y-m-d'), $userDetails->company_branch_id);
+            $todayHoliday = $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, date('Y-m-d'), $userDetails->details->company_branch_id);
             if ($todayHoliday) {
-                return array('status' => false, 'message' => 'Today is ' . $todayHoliday->name . ' holiday');
+                $compOffPayload = [
+                    'user_id' => auth()->user()->id,
+                    'date' => date('Y-m-d'),
+                    'status' => 'pending',
+                ];
+                $this->compOffService->store($compOffPayload);
+                //return array('status' => false, 'message' => 'Today is ' . $todayHoliday->name . ' holiday');
             }
-            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->company_branch_id, $userDetails->department_id, date('Y-m-d'));
+
+            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->details->company_branch_id, $userDetails->department_id, date('Y-m-d'));
             if ($checkWeekend) {
-                return array('status' => false, 'message' => 'Punch-in cannot be processed today as it is your weekend.');
+                $compOffPayload = [
+                    'user_id' => auth()->user()->id,
+                    'date' => date('Y-m-d'),
+                    'status' => 'pending',
+                ];
+                $this->compOffService->store($compOffPayload);
+
+                //return array('status' => false, 'message' => 'Punch-in cannot be processed today as it is your weekend.');
             }
 
             $todayConfirmLeaveDeatils = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, date('Y-m-d'));
@@ -122,11 +143,10 @@ class EmployeeAttendanceService
             if (date('H:i:s') > $officeStartTime) {
                 $payload['late'] = 1;
             }
-            $payload = [
-                'user_id' => $userDetails->id,
-                'punch_in_using' => $data['punch_in_using'],
-                'punch_in' => $attendanceTime
-            ];
+            // $payload = [
+            //     'user_id' => $userDetails->id,
+            //     'punch_in_using' => $data['punch_in_using'],
+            // ];
             $this->employeeAttendanceRepository->create($payload);
             return ['status' => true, 'data' => 'Punch In'];
         }

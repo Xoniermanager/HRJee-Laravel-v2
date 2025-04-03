@@ -34,3 +34,45 @@
             <!--end::Row-->
         </div>
     @endsection
+
+    <script>
+        function deleteFunction(id) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "<?= route('face-recognition.delete') ?>",
+                        type: "get",
+                        data: {
+                            id: id
+                        },
+                        success: function(res) {
+                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            $('#employee_list').replaceWith(res.data);
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire("Error deleting!", "Please try again", "error");
+                        }
+                    });
+                }
+            });
+        }
+        jQuery("#status").on('change', function() {
+            search_filter_results();
+        });
+        jQuery(document).on('click', '#employee_list a', function(e) {
+            e.preventDefault();
+            var page_no = $(this).attr('href').split('page=')[1];
+            search_filter_results(page_no);
+        });
+
+        
+    </script>
