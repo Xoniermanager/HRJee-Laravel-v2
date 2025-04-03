@@ -47,7 +47,7 @@ class UserDetail extends Model
     protected function profileImage(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => url("storage" . $value)
+            get: fn($value) => $value ? url("storage/" . $value) : asset('assets/user_icon.png')
         );
     }
 

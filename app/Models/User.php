@@ -222,4 +222,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserReward::class, 'user_id', 'id');
     }
+
+    // Relationship: A user can have multiple employees
+    public function employees()
+    {
+        return $this->hasMany(EmployeeManager::class, 'manager_id');
+    }
+
+    // Relationship: A user can have one manager
+    public function manager()
+    {
+        return $this->belongsTo(EmployeeManager::class, 'id', 'user_id');
+    }
+
 }

@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
 use App\Http\Controllers\Company\BreakTypeController;
+use App\Http\Controllers\Company\HierarchyController;
 use App\Http\Controllers\Company\LanguagesController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
@@ -768,6 +769,10 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/delete', 'destroy')->name('reward_category.delete');
         Route::get('/status/update', 'statusUpdate')->name('reward_category.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
+    });
+    //Hierarchy Module
+    Route::prefix('/hierarchy')->controller(HierarchyController::class)->group(function () {
+        Route::get('/', 'index')->name('hierarchy.index');
     });
 
 });
