@@ -2,23 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Throwable;
+use Illuminate\Http\Request;
+use App\Models\UserAddressDetail;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\AddressRequestService;
 use App\Http\Requests\UserAddressDetailRequest;
 use App\Http\Requests\UserAddressUpdateRequest;
 use App\Http\Services\UserAddressDetailServices;
-use App\Models\UserAddressDetail;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Throwable;
 
 class AddressController extends Controller
 {
 
 
     private $userAddressServices;
-    public function __construct(UserAddressDetailServices $userAddressServices)
+    private $addressRequestService;
+    public function __construct(UserAddressDetailServices $userAddressServices,AddressRequestService $addressRequestService)
     {
         $this->userAddressServices = $userAddressServices;
+        $this->addressRequestService = $addressRequestService;
     }
     public function addressDetails(UserAddressDetailRequest $request)
     {
@@ -60,7 +65,7 @@ class AddressController extends Controller
                 unset($addressCreate['addressId']);
                 $addressCreate['address_type'] = 'both_same';
 
-                // check address type both type should not same 
+                // check address type both type should not same
                 if ($addresTwo['address_type'] == $addresOne['address_type']) {
                     return errorMessage('null', 'both address can not be same time ');
                 }
@@ -88,7 +93,7 @@ class AddressController extends Controller
                     $this->userAddressServices->update(Auth::guard('employee_api')->user()->id, $addressId, $addresOne);
                 }
 
-                // check address type both type should not same 
+                // check address type both type should not same
                 if ($addresTwo['address_type'] == $addresOne['address_type']) {
                     return errorMessage('null', 'both address can not be same time ');
                 }
@@ -102,7 +107,7 @@ class AddressController extends Controller
                     if (count($checkAddress) == 2) {
                         return errorMessage('null', 'not allowed to add more then two address,instead add you can update');
                     }
-                    
+
                     $addresTwo['user_id'] = Auth::guard('employee_api')->user()->id;
                     $addressUpdate =  $this->userAddressServices->createAddress($addresTwo);
                 }
@@ -117,6 +122,153 @@ class AddressController extends Controller
                 return errorMessage('null', 'Address not found!');
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
+        }
+    }
+
+    public function storeAddressRequest(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'address' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!app('geocoder')->geocode($value)->get()->count()) {
+                        $fail('The provided address is incorrect.');
+                    }
+                }
+            ],
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'reason' => 'required|string|max:255',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        try {
+            $data = $request->all();
+            $data['user_id'] = Auth()->user()->id;
+            $data['company_id'] = Auth()->user()->company_id;
+            $data['created_by'] = Auth()->user()->id;
+            if ($this->addressRequestService->createAddressRequestByApi($data)) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Address Request Added Successfully"
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to Add Address Request Please try Again"
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Add the Address Request"
+            ], 500);
+        }
+    }
+    public function detailsAddressRequest($requestId)
+    {
+        try {
+            $AddressRequestDetails = $this->addressRequestService->getAddressDetailsByRequestId($requestId);
+            return response()->json([
+                'status' => true,
+                'message' => "Address Request Details",
+                'data' => $AddressRequestDetails
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Fetch Address Request"
+            ], 500);
+        }
+    }
+
+    public function updateAddressRequest(Request $request, $requestId)
+    {
+        $validator = Validator::make($request->all(), [
+            'address' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!app('geocoder')->geocode($value)->get()->count()) {
+                        $fail('The provided address is incorrect.');
+                    }
+                }
+            ],
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'reason' => 'required|string|max:255',
+        ],);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        try {
+            $data = $request->all();
+            if ($this->addressRequestService->updateAddressRequestByApi($data, $requestId)) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Address Request Update Successfully"
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to Update Address Request Please try Again"
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Update the Address Request"
+            ], 500);
+        }
+    }
+
+    public function deleteAttendanceRequest($requestId)
+    {
+        try {
+            if ($this->addressRequestService->destroy($requestId)) {
+                return response()->json([
+                    'status' => true,
+                    'message' => "Attendance Request Deleted Successfully"
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Unable to Deleted Attendance Request Please try Again"
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Deleted the Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function getAllAddressRequestList()
+    {
+        try {
+            $addressRequestDetails = $this->addressRequestService->getAddressRequestByUserId(Auth()->guard('employee_api')->user()->id)->paginate(10);
+            return response()->json([
+                'status' => true,
+                'message' => "All Attendance Request List",
+                'data' => $addressRequestDetails
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Fetch Attendance Request"
+            ], 500);
         }
     }
 }

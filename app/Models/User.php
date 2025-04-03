@@ -23,7 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'company_id',
         'manager_id',
         'type',
-        'status'
+        'status',
+        'reset_password'
     ];
 
     protected $hidden = [
@@ -214,6 +215,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function userActiveLocation()
     {
-        return $this->hasOne(UserActiveLocation::class, 'user_id');
+        return $this->hasOne(UserActiveLocation::class, 'user_id')->where('status', true);
+    }
+
+    public function userReward()
+    {
+        return $this->hasMany(UserReward::class, 'user_id', 'id');
     }
 }

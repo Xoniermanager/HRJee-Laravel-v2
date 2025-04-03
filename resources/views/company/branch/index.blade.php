@@ -508,7 +508,7 @@
                                         error_key] + '</span>');
                                 setTimeout(function() {
                                     jQuery("#" + error_key + "_error").remove();
-                                }, 4000);
+                                }, 2000);
                             }
                         }
                     });

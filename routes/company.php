@@ -10,9 +10,9 @@ use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Company\CourseController;
 use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\Company\SalaryController;
-use App\Http\Controllers\Company\CompOffController;
 use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
+use App\Http\Controllers\Company\CompOffController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\EmployeeTypeController;
 use App\Http\Controllers\Company\AttendanceController;
 use App\Http\Controllers\Company\DepartmentController;
 use App\Http\Controllers\Company\PRMRequestController;
+use App\Http\Controllers\Company\UserRewardController;
 use App\Http\Controllers\Admin\AssetCategoryController;
 use App\Http\Controllers\Admin\QualificationController;
 use App\Http\Controllers\Company\OfficeShiftController;
@@ -39,10 +40,12 @@ use App\Http\Controllers\Company\DesignationsController;
 use App\Http\Controllers\Company\NewsCategoryController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Company\LocationVisitController;
+use App\Http\Controllers\Company\AddressRequestController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
+use App\Http\Controllers\Company\RewardCategoryController;
 use App\Http\Controllers\Company\UserCtcDetailsController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
@@ -739,19 +742,51 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachFilterList');
     });
 
+
     //Comp Off Module
     Route::prefix('/performance-management')->controller(PerformanceManagementController::class)->group(function () {
         Route::get('/', 'index')->name('performance-management.index');
         Route::post('/add', 'addPerformance')->name('performance-management.add');
         Route::get('/get-skills/{userID}', 'getSkills')->name('performance-management.get-skills');
         Route::get('/filter', 'filterPerformance')->name('performance-management.filter-performance');
+
+    //Address Request Module
+    Route::prefix('/address-request')->controller(AddressRequestController::class)->group(function () {
+        Route::get('/', 'index')->name('address.request.index');
+        Route::get('/status/update', 'statusUpdate')->name('address.request.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
+    });
+
+      //Address Request Module
+      Route::prefix('/reward')->controller(UserRewardController::class)->group(function () {
+        Route::get('/', 'index')->name('reward.index');
+        Route::get('/add', 'add')->name('reward.add');
+        Route::post('/store', 'store')->name('reward.store');
+        Route::get('/edit/{id}', 'edit')->name('reward.edit');
+        Route::post('/update/{id}', 'update')->name('reward.update');
+        Route::get('/delete', 'destroy')->name('reward.delete');
+        Route::get('/search/filter', 'serachFilterList');
+
+    });
+
+    //Reward Category Module
+    Route::prefix('/reward-category')->controller(RewardCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('reward_category.index');
+        Route::post('/create', 'store')->name('reward_category.store');
+        Route::post('/update', 'update')->name('reward_category.update');
+        Route::get('/delete', 'destroy')->name('reward_category.delete');
+        Route::get('/status/update', 'statusUpdate')->name('reward_category.statusUpdate');
+        Route::get('/search/filter', 'serachFilterList');
+
     });
 
 });
+
+
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
 
-
+});
 
 /**---------------End Company Panel Route----------------*/

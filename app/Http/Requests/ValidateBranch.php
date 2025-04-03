@@ -28,7 +28,14 @@ class ValidateBranch extends FormRequest
             'contact_no' => 'required|numeric|unique:company_branches,contact_no',
             'email' => 'required|email|unique:company_branches,email',
             'hr_email' => 'required|email|unique:company_branches,hr_email',
-            'address' => 'required|string',
+            'address' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!app('geocoder')->geocode($value)->get()->count()) {
+                        $fail('The provided address is incorrect.');
+                    }
+                }
+            ],
             'city' => 'required|string',
             'pincode' => 'required|string',
             'country_id' => 'required_if:address_type,==,0|exists:countries,id',

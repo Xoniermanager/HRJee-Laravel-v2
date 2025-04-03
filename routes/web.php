@@ -17,6 +17,7 @@ use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Employee\AnnouncementsController;
 use App\Http\Controllers\Employee\LeaveTrackingController;
+use App\Http\Controllers\Employee\AddressRequestController;
 use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Employee\AttendanceRequestController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
+use App\Http\Controllers\Employee\UserRewardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,13 +69,6 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::get('/delete/{id?}', 'destroy')->name('delete');
         Route::post('/cancel', 'actionResignation')->name('actionResignation');
     });
-
-    //   // Resignation Management
-    //   Route::controller(ResignationController::class)->group(function () {
-    //     Route::get('/resignation', 'index')->name('employee.resignation');
-    //     Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
-    // });
-
     //Policy Module
     Route::controller(PolicyController::class)->group(function () {
         Route::get('/policy', 'index')->name('employee.policy');
@@ -184,6 +179,14 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::get('/delete','delete')->name('employee.attendance.request.delete');
         Route::get('/search/filter', 'serachFilterList')->name('employee.attendance.request.search');
     });
+     //Attendance Request Module
+     Route::prefix('/address/request')->controller(AddressRequestController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.address.request.index');
+        Route::post('/create', 'store')->name('employee.address.request.store');
+        Route::post('/update', 'update')->name('employee.address.request.update');
+        Route::get('/delete', 'destroy')->name('employee.address.request.delete');
+        Route::get('/search/filter', 'serachFilterList');
+    });
 
     //Comp Off Module
     Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
@@ -192,6 +195,12 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::post('/store', 'store')->name('employee.comp.off.store');
         Route::get('/delete','delete')->name('employee.comp.off.delete');
         Route::get('/search/filter', 'serachFilterList')->name('employee.comp.off.search');
+    });
+
+     //Reward Module
+     Route::controller(UserRewardController::class)->group(function () {
+        Route::get('/reward/user', 'index')->name('employee.reward');
+        Route::get('/reward/details/{user_rewards:id}', 'viewDetails')->name('employee.reward.details');
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/

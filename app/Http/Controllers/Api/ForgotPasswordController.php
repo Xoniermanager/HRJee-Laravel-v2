@@ -87,7 +87,6 @@ class ForgotPasswordController extends Controller
 
             if($code) {
                 User::where('email', $email)->update(['password' => Hash::make($request->password)]);
-
                 return response()->json([
                     'status' => true,
                     'message' => 'Password updated successfully',
