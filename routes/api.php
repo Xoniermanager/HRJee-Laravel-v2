@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\LocationTrackingController;
+use Illuminate\Foundation\Console\RouteCacheCommand;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NewsController;
@@ -108,12 +110,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     /** for PRM Request and PRM Category */
     Route::controller(PRMApiController::class)->group(function () {
-        Route::get('/get/all/prm/request','getAllPRMList');
+        Route::get('/get/all/prm/request', 'getAllPRMList');
         Route::get('/get/prm/Category', 'getAllPRMCategory');
         Route::get('/get/prm/request/details/{id}', 'getPRMRequestDetails');
         Route::post('/add/prm/request', 'addPRMRequest');
         Route::post('/update/prm/request/{id}', 'updatePRMRequest');
         Route::get('/delete/prm/request/{id}', 'deletePRMRequest');
+    });
+
+    /** for Live Location Tracking */
+    Route::middleware('checkMenuAccess:location-tracking')->controller(LocationTrackingController::class)->group(function () {
+        Route::get('/location-tracking/get-locations', 'getLocations');
+        Route::post('/location-tracking/send', 'sendLocations');
     });
 });
 

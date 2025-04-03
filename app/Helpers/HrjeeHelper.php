@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use Carbon\Carbon;
 use App\Models\Menu;
 use App\Models\User;
@@ -9,8 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
-function getCompanyIDs() {
-    if(Auth()->user()->type == 'user') {
+function getCompanyIDs()
+{
+    if (Auth()->user()->type == 'user') {
         $companyIDs = [Auth()->user()->id, Auth()->user()->company_id];
     } else {
         $companyIDs = User::where('company_id', Auth()->user()->id)->pluck('id')->toArray();
@@ -280,7 +282,7 @@ function getCompanyMenuHtml()
         }
     }
 
-    if($user->type == "company" && $user->companyDetails->allow_face_recognition ) {
+    if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
         $html .= '<div class="menu-item" data-url="/company/face-recognition">
                         <a class="menu-link" href="/company/face-recognition">
                             <span class="menu-icon">
@@ -389,4 +391,11 @@ function numberToWords($num)
     }
 
     return $result;
+}
+
+function checkMenuAccess($menu)
+{
+    $company = User::where('id', Auth::user()->company_id)->first();
+    $menus = $company->menu->toArray();
+    return in_array("/$menu", array_column($menus, 'slug'));
 }

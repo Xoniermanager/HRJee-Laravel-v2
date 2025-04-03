@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
-            $table->string('timestamp')->nullable();
+            $table->boolean('read')->default(0);
             $table->timestamps();
         });
     }

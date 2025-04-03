@@ -641,6 +641,19 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
+            56 =>
+                array(
+                    'id' => 56,
+                    'title' => 'Track Live Location',
+                    'slug' => '/location-tracking',
+                    'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
+                    'parent_id' => 47,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
             51 =>
                 array(
                     'id' => 51,
@@ -680,7 +693,7 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
-            54=>
+            54 =>
                 array(
                     'id' => 54,
                     'title' => 'Course Management',

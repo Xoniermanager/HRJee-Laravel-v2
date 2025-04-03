@@ -9,7 +9,7 @@ use App\Models\Scopes\CompanyScope;
 
 class Role extends Model
 {
-    use HasFactory, SoftDeletes, CompanyScope;
+    use HasFactory, SoftDeletes;
 
     const ADMIN = '1';
     const USER = '2';

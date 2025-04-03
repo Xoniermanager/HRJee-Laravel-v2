@@ -33,18 +33,6 @@
 							</div>
 							<!--end:Menu item-->
 							{!! getCompanyMenuHtml() !!}
-                            <div class="menu-item">
-								<!--begin:Menu link-->
-								<a class="menu-link" href="{{ route('location.tracking.index') }}">
-									<span class="menu-icon">
-										<span class="svg-icon svg-icon-5">
-											<i class="fa fa-map"></i>
-										</span>
-										<!--end::Svg Icon-->
-									</span>
-									<span class="menu-title">Location Tracking</span>
-								</a>
-							</div>
 						</div>
 						<!--end:Menu item-->
 						<div class="aside-footer flex-column-auto" id="kt_aside_footer">

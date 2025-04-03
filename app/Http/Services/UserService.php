@@ -3,7 +3,10 @@
 namespace App\Http\Services;
 
 use App\Repositories\UserRepository;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
+use Request;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\EmployeeManager;
 
 class UserService
@@ -301,8 +304,53 @@ class UserService
 
     public function getAllEmployeeUnAssignedLocationTracking($companyId)
     {
-        return $this->userRepository->where('company_id', $companyId)->where('type','user')->whereHas('details', function ($query) {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereHas('details', function ($query) {
             $query->where('location_tracking', false);
         });
+    }
+
+    public function getAllEmployeeAssignedLocationTracking($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereHas('details', function ($query) {
+            $query->where('location_tracking', true);
+        });
+    }
+
+    public function fetchEmployeesCurrentLocation($companyId, $managerId = null)
+    {
+        $query = $this->userRepository->where('company_id', $companyId)->where('type', 'user');
+        if ($managerId)
+            $query->where('manager_id', $managerId);
+        $userIds = $query->pluck('id')->toArray();
+
+        $currentLocations = $this->userRepository->currentLocations($userIds);
+        dd($currentLocations);
+    }
+
+    public function saveCurrentLocationOfEmployee($locations)
+    {
+        $user = auth()->user();
+
+        // Throw error if admin or user has not enabled location tracking
+        if (!$user->details->location_tracking || !$user->details->live_location_active) {
+            throw new HttpResponseException(
+                response()->json([
+                    'success' => false,
+                    'message' => 'User does not have permission for location tracking',
+                ], Response::HTTP_FORBIDDEN)
+            );
+        }
+
+        // Save locations
+        $this->userRepository->saveCurrentLocationsOfEmployee($locations);
+    }
+
+    public function fetchLocationsOfEmployee(
+        string $userId,
+        ?string $date,
+        ?int $onlyStayPoints = 0,
+        ?int $onlyNewPoints = 0,
+    ) {
+        return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints);
     }
 }
