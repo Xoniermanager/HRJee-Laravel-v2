@@ -22,7 +22,7 @@ class CourseService
     }
     public function getCourseById($id)
     {
-        return $this->courseRepository->find($id);
+        return $this->courseRepository->with(['curriculums','curriculums.curriculamAssignment'])->find($id);
     }
     public function deleteCourseDetailsById($courseId)
     {
