@@ -50,7 +50,7 @@ class AuthController extends Controller
             }
             $credentials = $request->only('email', 'password');
             if (!Auth::attempt($credentials)) {
-                return Redirect::back()->with('error', 'Your credentials are not correct. Please enter valid credentials.');
+                return back()->with('error', 'Your credentials are not correct. Please enter valid credentials.');
             }
             else {
                 $user = Auth::user();
@@ -58,9 +58,8 @@ class AuthController extends Controller
                     return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);
                 }
                 $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, $user->type);
-
                 if ($genrateOtpresponse['status'] == true)
-                    return redirect('/verify/otp');
+                    return redirect('/verify/otp')->with('message',$genrateOtpresponse['message']);
                 else
                     return redirect('/login')->with('error', $genrateOtpresponse['message']);
             }

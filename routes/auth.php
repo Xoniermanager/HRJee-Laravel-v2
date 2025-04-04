@@ -84,10 +84,10 @@ Route::prefix('employee')->controller(EmployeeComplainController::class)->group(
 });
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('base');
-    Route::post('/login', 'login')->name('login');
+    Route::post('/login', 'login')->name('login')->middleware('log.route');
     Route::get('/logout', 'logout')->name('logout');
     Route::get('/verify/otp', 'verifyOtp')->name('verifyOtp');
-    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck');
+    Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('verifyOtpCheck')->middleware('log.route');
     Route::get('/resend/otp', 'resendOtp')->name('resendOtp');
     Route::post('/change/password', 'adminChangePassword')->name('change.password');
     Route::post('/update/change/password', 'userUpdateChangePassword')->name('user.update.password');
