@@ -41,34 +41,8 @@
                                                     <p>Add Company Account Detail </p>
                                                 </div>
                                             </a></li>
-                                        {{-- <li class="nav-item" role="presentation"> <a class="nav-link "
-                                                id="gallery-product-tab" data-bs-toggle="pill" href="#gallery-product"
-                                                role="tab" aria-controls="gallery-product" aria-selected="true">
-                                                <div class="nav-rounded">
-                                                    <div class="product-icons">
-                                                        <svg viewBox="0 0 24 24" fill="none"
-                                                            xmlns="http://www.w3.org/2000/svg">
-                                                            <g id="SVGRepo_bgCarrier" stroke-width="10"></g>
-                                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                                stroke-linejoin="round"></g>
-                                                            <g id="SVGRepo_iconCarrier">
-                                                                <path
-                                                                    d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
-                                                                    stroke="#ddd" stroke-width="2" stroke-linecap="round"
-                                                                    stroke-linejoin="round"></path>
-                                                                <path
-                                                                    d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"
-                                                                    stroke="#ddd" stroke-width="2" stroke-linecap="round"
-                                                                    stroke-linejoin="round"></path>
-                                                            </g>
-                                                        </svg>
-                                                    </div>
-                                                </div>
-                                                <div class="product-tab-content">
-                                                    <h5> Contact Person Information</h5>
-                                                    <p> Add company contact person detail</p>
-                                                </div>
-                                            </a></li> --}}
+
+
                                         <li class="nav-item" role="presentation"> <a class="nav-link"
                                                 id="category-product-tab" data-bs-toggle="pill" href="#category-product"
                                                 role="tab" aria-controls="category-product" aria-selected="false"
@@ -185,6 +159,15 @@
                                                                 placeholder="Enter User Limit for Face Recgnition"
                                                                 value="{{ $companyDetails->companyDetails->face_recognition_user_limit }}">
                                                         </div>
+                                                        @if(checkMenuAccessByMenuAndCompany("location-tracking",$companyDetails->id))
+                                                            <div class="col-md-6 col-sm-6"
+                                                                id="location_tracking_user_limit_container">
+                                                                <input class="form-control" id="location_tracking_user_limit"
+                                                                    name="location_tracking_user_limit" type="number"
+                                                                    placeholder="Enter User Limit for Location Tracking"
+                                                                    value="{{ $companyDetails->companyDetails->location_tracking_user_limit }}">
+                                                            </div>
+                                                        @endif
                                                         <div class="col-6">
                                                             <div class="row">
                                                                 <div class="col-12">
@@ -469,7 +452,7 @@
                 if ($("#companyDetailForm").valid()) {
                     var companyDetail = $('#companyDetailForm').serialize();
                     companyDetail = decodeURIComponent(
-                    companyDetail); // Decoding to prevent issues with special characters
+                        companyDetail); // Decoding to prevent issues with special characters
 
                     // Append company detail data to formData
                     var companyDetailArray = companyDetail.split('&');
@@ -491,7 +474,7 @@
                         success: function(response) {
                             Swal.fire("Done!", "It was successfully added!", "success");
                             window.location.href =
-                            "{{ route('admin.company') }}"; // Redirect on success
+                                "{{ route('admin.company') }}"; // Redirect on success
                         },
                         error: function(error_messages) {
                             let errors = error_messages.responseJSON.errors;
@@ -513,7 +496,7 @@
                                 $(document).find('[name=' + error_key + ']').after(
                                     '<span id="' + error_key +
                                     '_error" class="text text-danger">' + errors[
-                                    error_key] + '</span>'
+                                        error_key] + '</span>'
                                 );
 
                                 // Remove the error message after 5 seconds

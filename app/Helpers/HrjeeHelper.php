@@ -399,3 +399,10 @@ function checkMenuAccess($menu)
     $menus = $company->menu->toArray();
     return in_array("/$menu", array_column($menus, 'slug'));
 }
+
+function checkMenuAccessByMenuAndCompany($menu, $companyID)
+{
+    $company = User::where('id', $companyID)->first();
+    $menus = $company->menu->toArray();
+    return in_array("/$menu", array_column($menus, 'slug'));
+}

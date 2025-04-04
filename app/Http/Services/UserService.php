@@ -327,13 +327,39 @@ class UserService
 
     public function fetchEmployeesCurrentLocation($companyId, $managerId = null)
     {
+        $response = [];
         $query = $this->userRepository->where('company_id', $companyId)->where('type', 'user');
         if ($managerId)
             $query->where('manager_id', $managerId);
         $userIds = $query->pluck('id')->toArray();
 
-        $currentLocations = $this->userRepository->currentLocations($userIds);
-        dd($currentLocations);
+        $liveLocationUserID = $this->userRepository->currentLocations($userIds)->pluck('user_id')->toArray();
+        $currentLocations = $this->userRepository->currentLocations($userIds)->get();
+        foreach($currentLocations as $location) {
+            $response[] = [
+                "name" => $location->user->name,
+                "userid" => $location->user_id,
+                "longitude" => $location->longitude,
+                "latitude" => $location->latitude,
+                "last_updated" => $location->updated_at,
+                "is_location_tracking_active" => $location->user->details->live_location_active
+            ];
+        }
+
+        $punchInUserIDs = array_diff($userIds, $liveLocationUserID);
+        $punchInLocations = $this->userRepository->currentPunchInLocations($punchInUserIDs)->get();
+        foreach($punchInLocations as $location) {
+            $response[] = [
+                "name" => $location->user->name,
+                "userid" => $location->user_id,
+                "longitude" => $location->punch_in_longitude,
+                "latitude" => $location->punch_in_latitude,
+                "last_updated" => $location->updated_at,
+                "is_location_tracking_active" => $location->user->details->live_location_active
+            ];
+        }
+
+        return $response;
     }
 
     public function saveCurrentLocationOfEmployee($locations)
@@ -362,7 +388,6 @@ class UserService
     ) {
         return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints);
     }
-
 
     public function getActiveEmployees($companyId)
     {

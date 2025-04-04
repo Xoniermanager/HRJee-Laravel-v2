@@ -40,13 +40,22 @@ class LocationTrackingController extends Controller
             if ($validateData->fails()) {
                 return response()->json(['error' => $validateData->messages()], 400);
             }
+
+            $assignedUserCount = $this->userDetailRepository->countOfAssignedTrackingUsers();
+            $assignedLimit = auth()->user()->companyDetails->location_tracking_user_limit;
+
+            if((count($request->user_id) + $assignedUserCount) > $assignedLimit) {
+                return response()->json(['success' => false, 'message' => "Maximum user limit is $assignedLimit"], 200);
+            }
+
             if ($this->userDetailRepository->assignedLocationTracking($request->user_id)) {
                 return response()->json([
+                    'success' => true,
                     'message' => 'Assigned Location Tracking Successfully!',
                     'data' => view('company.location_tracking.list', [
                         'trackingEnabledEmployees' => $this->userService->getAllEmployeeAssignedLocationTracking(Auth()->user()->company_id)->paginate(10)
                     ])->render()
-                ]);
+                ], 200);
             }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
@@ -69,7 +78,17 @@ class LocationTrackingController extends Controller
 
     public function serachFilterList(Request $request)
     {
-        dd($request->all());
+        if($request->get('search') != "") {
+            $allEmployees = $this->userService->getAllEmployeeUnAssignedLocationTracking(Auth()->user()->company_id)->where('name', 'like', '%'.$request->get('search').'%')->orWhere('email', 'like', '%'.$request->get('search').'%')->paginate(10);
+        } else {
+            $allEmployees = $this->userService->getAllEmployeeUnAssignedLocationTracking(Auth()->user()->company_id)->paginate(10);
+        }
+        
+        return response()->json([
+            'data' => view('company.location_tracking.list', [
+                'trackingEnabledEmployees' => $allEmployees
+            ])->render()
+        ]); 
     }
 
     public function getLocations(Request $request)
@@ -92,6 +111,29 @@ class LocationTrackingController extends Controller
                 $request->get('only_stay_point'),
                 $request->get('only_new_locations'),
             );
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Locations retrieved successfully!',
+                'data' => $locations,
+            ], 200);
+        } catch (\Throwable $th) {
+            // dd($th);
+            if ($th instanceof HttpResponseException) {
+                return $th->getResponse();
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function fetchCurrentLocationOfEmployees(Request $request) 
+    {
+        try {
+            $locations = $this->userService->fetchEmployeesCurrentLocation(auth()->user()->company_id);
 
             return response()->json([
                 'status' => true,

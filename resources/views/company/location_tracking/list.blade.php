@@ -9,7 +9,7 @@
 					<th>Sr. No.</th>
 					<th>Name</th>
 					<th>Email</th>
-					<th>User Status</th>
+					<th>Is Currently Active ?</th>
 					<th>Assigned Status</th>
 					<th class="float-right">Action</th>
 				</tr>
