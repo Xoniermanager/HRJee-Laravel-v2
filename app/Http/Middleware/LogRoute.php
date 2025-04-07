@@ -46,6 +46,10 @@ class LogRoute
             }
             // Capture request and response details
             $log = [
+                'user_id' => Auth()->user()->id ?? NULL,
+                'company_id' => Auth()->user()->company_id ?? NULL,
+                'user_name' => Auth()->user()->name ?? NULL,
+                'user_type' => Auth()->user()->type ?? NULL,
                 'url' => $request->getUri(),
                 'method' => $request->getMethod(),
                 'request_body' => json_encode($request->except(['password', 'password_confirmation'])), // Mask sensitive data
@@ -55,7 +59,6 @@ class LogRoute
             ];
             if (app()->environment('local')) {
                 // LogActivity::create($log);
-                // Log::info(json_encode($log, JSON_PRETTY_PRINT));
             }
             return $response;
         } catch (\Exception $e) {

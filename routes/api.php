@@ -28,20 +28,21 @@ use App\Http\Controllers\Api\LeaveManagementApiController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::controller(AuthController::class)->group(function () {
-    Route::post('/login', 'login')->middleware('log.route');
+Route::middleware('log.route')->controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login');
     Route::post('sendOtp', 'sendOtp');
-    Route::post('verify/otp', 'verifyOtp')->middleware('throttle:30,1');
+    Route::post('verify/otp', 'verifyOtp');
     Route::post('/face/login', 'faceLogin');
 });
 
-Route::controller(ForgotPasswordController::class)->group(function () {
+Route::controller(ForgotPasswordController::class)->middleware('log.route')->group(function () {
     Route::post('forgot/password', 'forgotPassword');
     Route::post('reset/password', 'resetPassword');
     Route::post('password/reset', 'resetPassword');
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::middleware(['auth:sanctum','log.route'])->group(function ()
+{
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logout');
         Route::get('profile/details', 'profileDetails');

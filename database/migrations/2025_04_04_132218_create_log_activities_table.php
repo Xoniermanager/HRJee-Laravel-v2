@@ -15,9 +15,13 @@ return new class extends Migration {
             $table->string('url');
             $table->string('method');
             $table->string('ip');
-            $table->text('request_body');
+            $table->string('company_id')->nullable();
+            $table->string('user_id')->nullable();
+            $table->string('user_name')->nullable();
+            $table->string('user_type')->nullable();
+            $table->longText('request_body');
             $table->string('response_code');
-            $table->text('response_body');
+            $table->longText('response_body');
             $table->timestamps();
         });
     }

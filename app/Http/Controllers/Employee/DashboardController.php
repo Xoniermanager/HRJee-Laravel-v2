@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $this->breakTypeService = $breakTypeService;
         $this->employeeBreakHistoryService = $employeeBreakHistoryService;
     }
-    
+
     public function index()
     {
         $existingAttendanceDetail = $this->employeeAttendanceService->getExtistingDetailsByUserId(Auth()->user()->id);
