@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LogActivityController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\Admin\AdminDashboard;
@@ -201,6 +202,9 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
         Route::get('/delete', 'destroy')->name('admin.subscription_plan.delete');
         Route::get('/status/update', 'statusUpdate')->name('admin.subscription_plan.statusUpdate');
         Route::get('/search', 'search')->name('admin.subscription_plan.search');
+    });
+    Route::prefix('/log-activity')->controller(LogActivityController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.log_activity');
     });
 });
 /**----------------- End Super Admin Route ----------------------*/
