@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->job(new \App\Jobs\SubscriptionExpiry())->dailyAt('08:00');
+        $schedule->command('entries:export-delete')->daily();
 
     }
 
