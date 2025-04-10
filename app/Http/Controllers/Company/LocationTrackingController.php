@@ -105,6 +105,8 @@ class LocationTrackingController extends Controller
                 return response()->json(['error' => $validator->messages()], 400);
             }
 
+            dd($request->all());
+
             $locations = $this->userService->fetchLocationsOfEmployee(
                 $request->get('user_id'),
                 $request->get('date'),

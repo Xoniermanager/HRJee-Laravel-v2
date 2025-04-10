@@ -73,4 +73,8 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'checkMenuAccess' => \App\Http\Middleware\CheckMenuAccess::class,
     ];
+
+    protected $routeMiddleware = [
+        'log.route' => \App\Http\Middleware\LogRoute::class
+    ];
 }

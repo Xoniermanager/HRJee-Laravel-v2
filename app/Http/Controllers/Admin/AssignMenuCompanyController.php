@@ -40,12 +40,15 @@ class AssignMenuCompanyController extends Controller
         ]);
 
         $company = $this->userService->getUserById($validated['company_id']);
-        // $adminRole = $company->role;
+        $adminRole = $company->role;
+        $company_id = $company->role;
+
+        // MenuRole::where('role_id', $company->role_id)->delete();
         if(isset($validated['menu_id'])) {
             $menus = Menu::whereIn('id', $validated['menu_id'])->get();
             $syncData = [];
             foreach ($menus as $menu) {
-                $syncData[] = [
+                $syncData[$menu->id] = [
                     'menu_id' => $menu->id,
                     'role_id' => $company->role_id,
                     'can_create' => true,
@@ -63,12 +66,12 @@ class AssignMenuCompanyController extends Controller
                 //     'can_delete' => true,
                 // ];
             }
-   
-            MenuRole::insert($syncData);
-        } else {
+            // MenuRole::insert($syncData);
+            $adminRole->menus()->sync($syncData);
+        }else{
+            // $adminRole->menus()->delete();
             MenuRole::where('role_id', $company->role_id)->delete();
         }
-        // $adminRole->menus()->sync($syncData);
 
         return redirect(route('admin.assign_menu.index'))->with('success', 'Feature Updated Successfully');
     }
@@ -80,7 +83,7 @@ class AssignMenuCompanyController extends Controller
         foreach($company->menus() as $menu) {
             $menuIDs[] = $menu['id'];
         }
-        
+
         return response()->json([
             'success' => true,
             'data' => $menuIDs

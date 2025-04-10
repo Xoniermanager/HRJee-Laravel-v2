@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\CompOffController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\ResignationController;
 use App\Http\Controllers\Api\AnnouncementController;
+use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\LocationVisitAPiController;
 use App\Http\Controllers\Api\LeaveAvailableApiController;
@@ -29,8 +30,9 @@ use App\Http\Controllers\Api\LeaveManagementApiController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/login', 'login')->middleware('throttle:30,1');
+    Route::post('/login', 'login')->middleware('log.route');
     Route::post('sendOtp', 'sendOtp');
     Route::post('verify/otp', 'verifyOtp')->middleware('throttle:30,1');
     Route::post('/face/login', 'faceLogin');
@@ -48,7 +50,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('profile/details', 'profileDetails');
         Route::get('company-details', 'getCompanyDetails');
         Route::get('menu-access', 'getMenuAccess');
-        Route::get('get/team/details/{userId}','getTeamDetailsByUserId');
+        Route::get('get/team/details/{userId}', 'getTeamDetailsByUserId');
 
         Route::post('update/profile', 'updateProfile');
         Route::post('change/password', 'changePassword');
@@ -151,10 +153,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/delete/prm/request/{id}', 'deletePRMRequest');
     });
 
+
     /** for Live Location Tracking */
     Route::middleware('checkMenuAccess:location-tracking')->controller(LocationTrackingController::class)->group(function () {
         Route::get('/location-tracking/get-locations', 'getLocations');
         Route::post('/location-tracking/send', 'sendLocations');
+
+        /** Course Details Modules */
+        Route::prefix('course')->controller(CourseController::class)->group(function () {
+            Route::get('/list', 'courseList');
+            Route::get('/details/{courses:id}', 'courseDetails');
+        });
     });
 });
-
