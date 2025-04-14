@@ -119,4 +119,9 @@ class AssignTaskService
         }
         return $taskDetails->update($data);
     }
+
+    public function getTaskByUserIdAndDateAndStatus($userId, $date, $status)
+    {
+        return $this->getAssignedTaskByEmployeeId($userId)->whereDate('created_at', $date)->whereIn('user_end_status', $status);
+    }
 }

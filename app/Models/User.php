@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-
+use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -38,7 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class, 'company_id');
     }
 
     public function menu()
@@ -69,6 +69,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserDetail::class, 'user_id');
     }
+
     public function companyDetails()
     {
         if($this->type == "company") {
@@ -238,6 +239,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function manager()
     {
         return $this->belongsTo(EmployeeManager::class, 'id', 'user_id');
+    }
+
+    public function currentLocations($userIDs) {
+        $today = Carbon::today();
+
+        return UserLiveLocation::whereIn('user_id', $userIDs)->whereDate('created_at', $today)
+        ->latest('created_at')->with('user');
+    }
+
+    public function currentPunchInLocations($userIDs) {
+        $today = Carbon::today();
+
+        return EmployeeAttendance::whereIn('user_id', $userIDs)->whereDate('created_at', $today)
+        ->latest('created_at')->with('user');
     }
 
 }
