@@ -730,7 +730,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/update/status', 'updateLocationTrackingStatus')->name('location.tracking.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
         Route::get('/current-locations', 'fetchCurrentLocationOfEmployees')->name('location.tracking.currentLocations');
-        Route::get('/location-tracking/get-locations', 'getLocations');
+        Route::get('/location-tracking/get-locations', 'getLocations')->name('getLocations');
+        Route::get('/user/{userID}', 'trackLocations')->name('track-location');
     });
     //Attendance Request Module
     Route::prefix('/attendance-request')->controller(AttendanceRequestController::class)->group(function () {

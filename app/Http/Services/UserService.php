@@ -384,9 +384,9 @@ class UserService
         string $userId,
         ?string $date,
         ?int $onlyStayPoints = 0,
-        ?int $onlyNewPoints = 0,
+        ?int $onlyNewPoints = 0, $punchOutTime = null
     ) {
-        return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints);
+        return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints, $punchOutTime);
     }
 
     public function getActiveEmployees($companyId)

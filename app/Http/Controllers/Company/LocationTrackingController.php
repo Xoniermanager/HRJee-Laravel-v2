@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Company;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Services\UserService;
+use App\Http\Services\EmployeeAttendanceService;
+use App\Http\Services\AssignTaskService;
 use App\Http\Controllers\Controller;
 use App\Http\Services\EmployeeServices;
 use App\Repositories\UserDetailRepository;
@@ -15,12 +17,16 @@ class LocationTrackingController extends Controller
     public $userService;
     public $userDetailRepository;
     public $employeeService;
+    public $employeeAttendanceService;
+    public $assignTaskService;
 
-    public function __construct(UserService $userService, UserDetailRepository $userDetailRepository, EmployeeServices $employeeService)
+    public function __construct(AssignTaskService $assignTaskService, EmployeeAttendanceService $employeeAttendanceService, UserService $userService, UserDetailRepository $userDetailRepository, EmployeeServices $employeeService)
     {
         $this->userService = $userService;
+        $this->employeeAttendanceService = $employeeAttendanceService;
         $this->userDetailRepository = $userDetailRepository;
         $this->employeeService = $employeeService;
+        $this->assignTaskService = $assignTaskService;
     }
 
     public function index()
@@ -105,8 +111,6 @@ class LocationTrackingController extends Controller
                 return response()->json(['error' => $validator->messages()], 400);
             }
 
-            dd($request->all());
-
             $locations = $this->userService->fetchLocationsOfEmployee(
                 $request->get('user_id'),
                 $request->get('date'),
@@ -120,7 +124,6 @@ class LocationTrackingController extends Controller
                 'data' => $locations,
             ], 200);
         } catch (\Throwable $th) {
-            // dd($th);
             if ($th instanceof HttpResponseException) {
                 return $th->getResponse();
             }
@@ -153,5 +156,50 @@ class LocationTrackingController extends Controller
                 'message' => $th->getMessage(),
             ], 500);
         }
+    }
+
+    public function trackLocations(Request $request, $userID)
+    {
+        $date = $request->has('date') ? $request->get('date') : date("Y-m-d");
+        $maxDaysUserLocation = 2;
+        $user = $this->userService->getUserById($userID);
+        $locationData = [];
+        $attendanceDetails = $this->employeeAttendanceService->getAttendanceByDateByUserId($userID, $date)->first();
+        $punchIn = null;
+        $punchOut = null;
+        $stayPoints = [];
+
+        if($attendanceDetails) {
+            $punchIn = $attendanceDetails->punch_in;
+            if($attendanceDetails->punch_in) {
+                $locationData[] = [
+                    "latitude" => $attendanceDetails->punch_in_latitude,
+                    "longitude" => $attendanceDetails->punch_in_longitude,
+                    "created_at" => $attendanceDetails->created_at,
+                ];
+            }
+
+            $locations = $this->userService->fetchLocationsOfEmployee($userID, $date)->toArray();
+            $locationData = array_merge($locationData, $locations);
+
+            if($attendanceDetails->punch_out) {
+                $punchOut = $attendanceDetails->punch_out;
+                if($attendanceDetails->punch_out_latitude) {
+                    $locationData[] = [
+                        "latitude" => $attendanceDetails->punch_out_latitude,
+                        "longitude" => $attendanceDetails->punch_out_longitude,
+                        "created_at" => $attendanceDetails->punch_out,
+                    ];
+                }
+            }   
+        }
+
+        if($date == date("Y-m-d")) {
+            $assignedTasks = $this->assignTaskService->getTaskByUserIdAndDateAndStatus($userID, $date, ['pending','processing'])->get()->toArray();
+        } else {
+            $assignedTasks = $this->assignTaskService->getTaskByUserIdAndDateAndStatus($userID, $date, ['completed','rejected'])->get()->toArray();
+        }
+
+        return view('company.location_tracking.user_locations', compact('punchIn', 'punchOut', 'user', 'userID', 'maxDaysUserLocation', 'locationData', 'assignedTasks', 'attendanceDetails'));
     }
 }

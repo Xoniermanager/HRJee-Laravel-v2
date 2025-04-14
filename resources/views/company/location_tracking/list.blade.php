@@ -36,7 +36,7 @@
 						</td>
 						<td>
 							<div class="d-flex justify-content-end flex-shrink-0">
-								<a href="#" class="btn btn-bg-light btn-primary btn-sm me-1">
+								<a href="{{ route('track-location',$item->details->user_id)}}" class="btn btn-bg-light btn-primary btn-sm me-1">
 									View Details
 								</a>
 							</div>

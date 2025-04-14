@@ -34,7 +34,7 @@ class UserRepository extends BaseRepository
         string $userId,
         ?string $date,
         ?int $onlyStayPoints = 0,
-        ?int $onlyNewPoints = 0,
+        ?int $onlyNewPoints = 0, $punchOutTime = null
     ) {
         $date = $date ?? Carbon::now()->toDateString();
 
@@ -52,6 +52,10 @@ class UserRepository extends BaseRepository
         // Mark fetched locations as read
         if ($locations->isNotEmpty()) {
             UserLiveLocation::whereIn('id', $locations->pluck('id'))->update(['read' => 1]);
+        }
+
+        if ($onlyStayPoints) {
+            $locations = get_stay_points($locations->toArray(), $punchOutTime);
         }
 
         return $locations;
