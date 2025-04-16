@@ -21,20 +21,6 @@ class LogRoute
      */
     public function handle($request, Closure $next)
     {
-        // $response = $next($request);
-        // if (app()->environment('local')) {
-        //     $log = [
-        //         'URI' => $request->getUri(),
-        //         'METHOD' => $request->getMethod(),
-        //         'REQUEST_BODY' => $request->all(),
-        //         'IP' => $request->ip(),
-        //         'response_code' => $response->getStatusCode(),
-        //         'response_message' => session('success') ?? session('error'),
-        //     ];
-        //     \Log::info(json_encode($log));
-        // }
-        // return $response;
-
         try {
             $response = $next($request);
             if ($response instanceof RedirectResponse && $request->expectsJson()) {

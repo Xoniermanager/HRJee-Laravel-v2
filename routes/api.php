@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LogActivityController;
 use App\Http\Controllers\Api\LocationTrackingController;
 use Illuminate\Foundation\Console\RouteCacheCommand;
 use Illuminate\Support\Facades\Route;
@@ -44,8 +45,7 @@ Route::controller(ForgotPasswordController::class)->middleware('log.route')->gro
     Route::post('password/reset', 'resetPassword');
 });
 
-Route::middleware(['auth:sanctum','log.route'])->group(function ()
-{
+Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logout');
         Route::get('profile/details', 'profileDetails');
@@ -167,3 +167,8 @@ Route::middleware(['auth:sanctum','log.route'])->group(function ()
         });
     });
 });
+ /** Log Activity */
+ Route::prefix('log-activity')->controller(LogActivityController::class)->group(function () {
+    Route::post('/create', 'createActivityLog');
+});
+
