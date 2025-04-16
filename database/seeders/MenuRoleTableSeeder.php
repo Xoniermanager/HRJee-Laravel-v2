@@ -729,8 +729,8 @@ class MenuRoleTableSeeder extends Seeder
             ),
             61 =>
             array (
-                'id' => 102,
-                'menu_id' => 62,
+                'id' => 103,
+                'menu_id' => 63,
                 'role_id' => 1,
                 'can_create' => 1,
                 'can_read' => 1,
