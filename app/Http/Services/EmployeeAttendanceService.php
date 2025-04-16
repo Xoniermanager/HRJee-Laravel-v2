@@ -150,6 +150,7 @@ class EmployeeAttendanceService
             return ['status' => true, 'data' => 'Punch In'];
         }
     }
+
     public function getExtistingDetailsByUserId($userId)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', Carbon::today())->first();
@@ -228,7 +229,7 @@ class EmployeeAttendanceService
      *
      * @param [type] $userId
      * @param [type] $date
-     * @return void
+     * @return object/null
      */
     public function getAttendanceByDateByUserId($userId, $date)
     {

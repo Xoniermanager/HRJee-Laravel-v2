@@ -227,7 +227,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
     Route::controller(UserCtcDetailsController::class)->group(function () {
         Route::post('/employee/ctc/details', 'store')->name('employee.ctc.details');
-        Route::get('/salary/component/details','getComponentsDetail');
+        Route::get('/salary/component/details', 'getComponentsDetail');
     });
 
     //Address Details for employee
@@ -612,7 +612,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
 
 
     Route::prefix('/prm')->group(function () {
-       //PRM Request
+        //PRM Request
         Route::controller(PRMRequestController::class)->group(function () {
             Route::get('/request', 'index')->name('prm.request.index');
 
@@ -700,8 +700,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/store', 'curriculumStore')->name('curriculum.store');
     });
 
-     // Location Visit
-     Route::prefix('/location-visit')->controller(LocationVisitController::class)->group(function () {
+    // Location Visit
+    Route::prefix('/location-visit')->controller(LocationVisitController::class)->group(function () {
         Route::get('/', 'index')->name('location_visit.index');
         Route::post('/store', 'store')->name('location_visit.store');
         Route::get('/assign_task', 'assignTaskList')->name('location_visit.assign_task');
@@ -714,8 +714,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/task', 'searchFilterTask');
     });
 
-     //Dispostion Code Module
-     Route::prefix('/disposition-code')->controller(DispositionCodeController::class)->group(function () {
+    //Dispostion Code Module
+    Route::prefix('/disposition-code')->controller(DispositionCodeController::class)->group(function () {
         Route::get('/', 'index')->name('disposition_code.index');
         Route::post('/create', 'store')->name('disposition_code.store');
         Route::post('/update', 'update')->name('disposition_code.update');
@@ -723,12 +723,16 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/status/update', 'statusUpdate')->name('disposition_code.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
     });
-      //Dispostion Code Module
-      Route::prefix('/location-tracking')->controller(LocationTrackingController::class)->group(function () {
+
+    //Live location tracking
+    Route::prefix('/location-tracking')->controller(LocationTrackingController::class)->group(function () {
         Route::get('/', 'index')->name('location.tracking.index');
         Route::post('/create', 'store')->name('location.tracking.store');
         Route::get('/update/status', 'updateLocationTrackingStatus')->name('location.tracking.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
+        Route::get('/current-locations', 'fetchCurrentLocationOfEmployees')->name('location.tracking.currentLocations');
+        Route::get('/location-tracking/get-locations', 'getLocations')->name('getLocations');
+        Route::get('/user/{userID}', 'trackLocations')->name('track-location');
     });
     //Attendance Request Module
     Route::prefix('/attendance-request')->controller(AttendanceRequestController::class)->group(function () {

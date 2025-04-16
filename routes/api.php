@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\LogActivityController;
+use App\Http\Controllers\Api\LocationTrackingController;
+use Illuminate\Foundation\Console\RouteCacheCommand;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NewsController;
@@ -29,6 +31,7 @@ use App\Http\Controllers\Api\LeaveManagementApiController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 Route::middleware('log.route')->controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('sendOtp', 'sendOtp');
@@ -151,13 +154,19 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::get('/delete/prm/request/{id}', 'deletePRMRequest');
     });
 
-    /** Course Details Modules */
-    Route::prefix('course')->controller(CourseController::class)->group(function () {
-        Route::get('/list', 'courseList');
-        Route::get('/details/{courses:id}', 'courseDetails');
+
+    /** for Live Location Tracking */
+    Route::middleware('checkMenuAccess:location-tracking')->controller(LocationTrackingController::class)->group(function () {
+        Route::get('/location-tracking/get-locations', 'getLocations');
+        Route::post('/location-tracking/send', 'sendLocations');
+
+        /** Course Details Modules */
+        Route::prefix('course')->controller(CourseController::class)->group(function () {
+            Route::get('/list', 'courseList');
+            Route::get('/details/{courses:id}', 'courseDetails');
+        });
     });
 });
-
  /** Log Activity */
  Route::prefix('log-activity')->controller(LogActivityController::class)->group(function () {
     Route::post('/create', 'createActivityLog');
