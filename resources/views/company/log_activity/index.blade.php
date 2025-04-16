@@ -1,7 +1,37 @@
 @extends('layouts.company.main')
 @section('title', 'Log Activity')
 @section('content')
+    <style>
+        #modalResponseBody {
+            max-height: 75vh;
+            overflow-y: scroll;
+            border-top: 1px solid #a1a5a5;
+        }
 
+        /* .modal-content {
+        border-radius: 10px !important;
+    } */
+        #modalResponseBody::-webkit-scrollbar {
+            width: 10px;
+            height: 8px;
+            border-radius: 50px;
+            margin: 0 10px;
+        }
+
+        #modalResponseBody::-webkit-scrollbar-track {
+            background: transparent !important;
+            border: 1px solid blue !important;
+            border-radius: 50px;
+            margin: 0;
+        }
+
+        #modalResponseBody::-webkit-scrollbar-thumb {
+            background: blue !important;
+            border-radius: 50px;
+            cursor: grabbing;
+            margin: 1px;
+        }
+    </style>
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
@@ -50,8 +80,8 @@
                                         <th>User Name</th>
                                         <th>Request Body</th>
                                         <th>Response Code</th>
-                                        {{-- <th>Response Body</th> --}}
                                         <th>Created At</th>
+                                        <th>Response Body</th>
                                     </tr>
                                 </thead>
                                 @forelse ($allLogActivityDetails as $key => $item)
@@ -65,8 +95,14 @@
                                             <td>{{ $item->user_name }}</td>
                                             <td>{{ $item->request_body }}</td>
                                             <td>{{ $item->response_code }}</td>
-                                            {{-- <td>{{ $item->response_body }}</td> --}}
                                             <td>{{$item->created_at }}</td>
+                                            <td>
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#response_body_modal"
+                                                    class="btn btn-sm btn-primary align-self-center"
+                                                    data-item="{{ $item->response_body }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 @empty
@@ -86,4 +122,28 @@
             </div>
             <!--end::Container-->
         </div>
+        <div class="modal fade" id="response_body_modal" aria-labelledby="responseModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="responseModalLabel">Response Body</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
+
+                    </div>
+                    <div class="modal-body" id="modalResponseBody">
+                        <!-- The response body will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            const responseModal = document.getElementById('response_body_modal');
+            responseModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const responseBody = button.getAttribute('data-item');
+                const modalBody = responseModal.querySelector('#modalResponseBody');
+                modalBody.textContent = responseBody;
+            });
+        </script>
 @endsection
