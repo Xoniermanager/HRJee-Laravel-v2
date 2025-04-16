@@ -826,7 +826,7 @@ class MenusTableSeeder extends Seeder
                 62 =>
                 array(
                     'id' => 63,
-                    'title' => 'Hierarchy Management',
+                    'title' => 'Log Activity',
                     'slug' => '/log-activity/company/list',
                     'icon' => '<i class="fa fa-list-alt" aria-hidden="true"></i>',
                     'parent_id' => NULL,
