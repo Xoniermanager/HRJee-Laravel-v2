@@ -20,6 +20,7 @@ use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
+use App\Http\Controllers\Admin\LogActivityController;
 use App\Http\Controllers\Company\BreakTypeController;
 use App\Http\Controllers\Company\HierarchyController;
 use App\Http\Controllers\Company\LanguagesController;
@@ -776,11 +777,13 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/', 'index')->name('hierarchy.index');
     });
 
+    //log Activity
+    Route::prefix('/log-activity')->controller(LogActivityController::class)->group(function () {
+        Route::get('/company/list', 'companyList')->name('company.log_activity');
+    });
+
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
-
-
-
 /**---------------End Company Panel Route----------------*/

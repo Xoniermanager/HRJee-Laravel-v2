@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LogActivityController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NewsController;
@@ -41,8 +42,7 @@ Route::controller(ForgotPasswordController::class)->middleware('log.route')->gro
     Route::post('password/reset', 'resetPassword');
 });
 
-Route::middleware(['auth:sanctum','log.route'])->group(function ()
-{
+Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logout');
         Route::get('profile/details', 'profileDetails');
@@ -156,5 +156,10 @@ Route::middleware(['auth:sanctum','log.route'])->group(function ()
         Route::get('/list', 'courseList');
         Route::get('/details/{courses:id}', 'courseDetails');
     });
+});
+
+ /** Log Activity */
+ Route::prefix('log-activity')->controller(LogActivityController::class)->group(function () {
+    Route::post('/create', 'createActivityLog');
 });
 
