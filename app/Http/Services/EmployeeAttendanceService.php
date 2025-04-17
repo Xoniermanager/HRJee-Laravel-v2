@@ -483,7 +483,6 @@ class EmployeeAttendanceService
     public function updateAttendanceDetails($breakDetails, $breakHourValue)
     {
         $attendanceDetails = $this->employeeAttendanceRepository->where('id', $breakDetails->employee_attendance_id)->first();
-
         $totalBreak = '00:00:00';
         if ($attendanceDetails->total_break_time == null) {
             // Calculate the time difference between break start and break hour
