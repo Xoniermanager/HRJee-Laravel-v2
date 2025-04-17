@@ -1,25 +1,26 @@
 <?php
 
-use App\Http\Controllers\Admin\LogActivityController;
-use App\Http\Controllers\Api\LocationTrackingController;
-use Illuminate\Foundation\Console\RouteCacheCommand;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\PolicyController;
 use App\Http\Controllers\Api\PRMApiController;
 use App\Http\Controllers\Api\AddressController;
-use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\CompOffController;
+use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\ResignationController;
 use App\Http\Controllers\Api\AnnouncementController;
-use App\Http\Controllers\Api\CourseController;
+use Illuminate\Foundation\Console\RouteCacheCommand;
+use App\Http\Controllers\Admin\LogActivityController;
 use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\LocationTrackingController;
 use App\Http\Controllers\Api\LocationVisitAPiController;
 use App\Http\Controllers\Api\LeaveAvailableApiController;
 use App\Http\Controllers\Api\LeaveManagementApiController;
+use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -166,9 +167,16 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
             Route::get('/details/{courses:id}', 'courseDetails');
         });
     });
+    //Employee Break History
+    Route::controller(EmployeeBreakHistoryController::class)->group(function () {
+        Route::get('/break-type/list', 'getBreakTypeList');
+        Route::post('/break-in', 'breakIn');
+        Route::get('/break-out/{employee_break_histories:breakId}', 'breakOutbyApi');
+        Route::get('/break-details/{employee_attendances:attendanceId}', 'getBreakDetailsByAttendanceId');
+    });
 });
- /** Log Activity */
- Route::prefix('log-activity')->controller(LogActivityController::class)->group(function () {
+/** Log Activity */
+Route::prefix('log-activity')->controller(LogActivityController::class)->group(function () {
     Route::post('/create', 'createActivityLog');
 });
 

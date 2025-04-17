@@ -88,7 +88,7 @@ $(document).ready(function () {
                                     // Add force flag for backend
                                     $.ajax({
                                         url: employeeAttendanceUrl,
-                                        type: 'GET',
+                                        type: 'POST',
                                         data: {
                                             "attendance_id": $('#attendance_id').val(),
                                             "force": true // Signal to backend to skip re-check
