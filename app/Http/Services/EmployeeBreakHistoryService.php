@@ -51,7 +51,6 @@ class EmployeeBreakHistoryService
         {
             $this->employeeAttendanceService->updateAttendanceDetails($breakDetails,date('H:i:s'));
         }
-        //dd($breakDetails->employee_attendance_id);
         return $breakDetails->update(['end_time' => date('H:i')]);
     }
 
@@ -80,12 +79,12 @@ class EmployeeBreakHistoryService
         ->get()
         ->reduce(function ($carry, $break) {
             $startTime = Carbon::parse($break->created_at);
-            $endTime = $break->end_time 
+            $endTime = $break->end_time
                 ? Carbon::parse($break->updated_at)
                 : Carbon::now();
-            $breakDuration = $startTime->diffInSeconds($endTime); 
-            return $carry + $breakDuration; 
-        }, 0); 
+            $breakDuration = $startTime->diffInSeconds($endTime);
+            return $carry + $breakDuration;
+        }, 0);
 
         $hours = floor($totalSeconds / 3600);
         $minutes = floor(($totalSeconds % 3600) / 60);
@@ -93,5 +92,5 @@ class EmployeeBreakHistoryService
 
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
-    
+
 }
