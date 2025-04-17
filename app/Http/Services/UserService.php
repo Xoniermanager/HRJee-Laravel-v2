@@ -3,7 +3,10 @@
 namespace App\Http\Services;
 
 use App\Repositories\UserRepository;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
+use Request;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\EmployeeManager;
 
 class UserService
@@ -39,7 +42,7 @@ class UserService
     {
         $userDetails = $this->userRepository->find($userId);
         $userDetails->type == 'company' ? $userDetails->companyDetails()->update(['status' => $statusValue]) : $userDetails->details()->update(['status' => $statusValue]);
-        
+
         return $userDetails->update(['status' => $statusValue]);
     }
 
@@ -51,11 +54,19 @@ class UserService
         return true;
     }
 
+    public function updateFaceRecognitionKYC($userId, $kyc)
+    {
+        $userDetails = $this->userRepository->find($userId);
+        $userDetails->details()->update(['face_kyc' => $kyc]);
+
+        return true;
+    }
+
     public function deleteUserById($userId)
     {
         $userDetails = $this->userRepository->find($userId);
         $userDetails->type == 'company' ? $userDetails->companyDetails()->delete() : $userDetails->details()->delete();
-        
+
         return $userDetails->delete();
     }
 
@@ -180,9 +191,11 @@ class UserService
 
     public function getManagersByBranchId($branchIDs)
     {
-        $allManagers = $this->userRepository->where('role_id', '!=', null)->where('type', 'user')->with(['details' => function ($query) use ($branchIDs) {
-            $query->whereIn('company_branch_id', $branchIDs);
-        }])->get();
+        $allManagers = $this->userRepository->where('role_id', '!=', null)->where('type', 'user')->with([
+            'details' => function ($query) use ($branchIDs) {
+                $query->whereIn('company_branch_id', $branchIDs);
+            }
+        ])->get();
 
         return $allManagers;
     }
@@ -269,30 +282,120 @@ class UserService
 
     public function getFaceRecognitionUsers($companyId)
     {
-        if(Auth()->user()->type == "user") {
+        if (Auth()->user()->type == "user") {
             $managerID = Auth()->user()->id;
             $allEmployeeDetails = $this->userRepository
-            ->where('type', 'user')
-            ->where('company_id', $companyId)
-            ->whereHas('details', function ($query) {
-                $query->where('allow_face_recognition', 1);
-            })
-            ->whereHas('managerEmployees', function ($query) use($managerID) {
-                $query->where('manager_id', $managerID);
-            });
+                ->where('type', 'user')
+                ->where('company_id', $companyId)
+                ->whereHas('details', function ($query) {
+                    $query->where('face_recognition', 1)->where('face_kyc', '!=', NULL);
+                })
+                ->whereHas('managerEmployees', function ($query) use ($managerID) {
+                    $query->where('manager_id', $managerID);
+                });
         } else {
             $allEmployeeDetails = $this->userRepository
-            ->where('type', 'user')
-            ->where('company_id', $companyId)
-            ->whereHas('details', function ($query) {
-                $query->where('allow_face_recognition', 1);
-            });
+                ->where('type', 'user')
+                ->where('company_id', $companyId)
+                ->whereHas('details', function ($query) {
+                    $query->where('face_recognition', 1)->where('face_kyc', '!=', NULL);
+                });
         }
 
         return $allEmployeeDetails->orderBy('id', 'DESC');
     }
 
-    public function getCompanyEmployeeIDs($companyId) {
+    public function getCompanyEmployeeIDs($companyId)
+    {
         return $this->userRepository->where('company_id', $companyId)->pluck('id')->toArray();
+    }
+
+    public function getAllEmployeeUnAssignedLocationTracking($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereHas('details', function ($query) {
+            $query->where('location_tracking', false);
+        });
+    }
+
+
+    public function getAllEmployeeAssignedLocationTracking($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereHas('details', function ($query) {
+            $query->where('location_tracking', true);
+        });
+    }
+
+    public function fetchEmployeesCurrentLocation($companyId, $managerId = null)
+    {
+        $response = [];
+        $query = $this->userRepository->where('company_id', $companyId)->where('type', 'user');
+        if ($managerId)
+            $query->where('manager_id', $managerId);
+        $userIds = $query->pluck('id')->toArray();
+
+        $liveLocationUserID = $this->userRepository->currentLocations($userIds)->pluck('user_id')->toArray();
+        $currentLocations = $this->userRepository->currentLocations($userIds)->get();
+        foreach($currentLocations as $location) {
+            $response[] = [
+                "name" => $location->user->name,
+                "userid" => $location->user_id,
+                "longitude" => $location->longitude,
+                "latitude" => $location->latitude,
+                "last_updated" => $location->updated_at,
+                "is_location_tracking_active" => $location->user->details->live_location_active
+            ];
+        }
+
+        $punchInUserIDs = array_diff($userIds, $liveLocationUserID);
+        $punchInLocations = $this->userRepository->currentPunchInLocations($punchInUserIDs)->get();
+        foreach($punchInLocations as $location) {
+            $response[] = [
+                "name" => $location->user->name,
+                "userid" => $location->user_id,
+                "longitude" => $location->punch_in_longitude,
+                "latitude" => $location->punch_in_latitude,
+                "last_updated" => $location->updated_at,
+                "is_location_tracking_active" => $location->user->details->live_location_active
+            ];
+        }
+
+        return $response;
+    }
+
+    public function saveCurrentLocationOfEmployee($locations)
+    {
+        $user = auth()->user();
+
+        // Throw error if admin or user has not enabled location tracking
+        if (!$user->details->location_tracking || !$user->details->live_location_active) {
+            throw new HttpResponseException(
+                response()->json([
+                    'success' => false,
+                    'message' => 'User does not have permission for location tracking',
+                ], Response::HTTP_FORBIDDEN)
+            );
+        }
+
+        // Save locations
+        $this->userRepository->saveCurrentLocationsOfEmployee($locations);
+    }
+
+    public function fetchLocationsOfEmployee(
+        string $userId,
+        ?string $date,
+        ?int $onlyStayPoints = 0,
+        ?int $onlyNewPoints = 0, $punchOutTime = null
+    ) {
+        return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints, $punchOutTime);
+    }
+
+    public function getActiveEmployees($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->where('status', 1);
+    }
+
+    public function getAllManagerByCompanyId($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
     }
 }

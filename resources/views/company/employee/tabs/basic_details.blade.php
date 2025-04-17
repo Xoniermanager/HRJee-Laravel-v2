@@ -252,7 +252,7 @@
                     <option value="">Please Select the Branch</option>
                     @forelse ($allBranches as $branch)
                         <option
-                            {{ $singleUserDetails->details->company_branch_id ?? old('company_branch_id') ? 'selected' : '' }}
+                            {{ ($singleUserDetails->details->company_branch_id ?? old('company_branch_id')) ==  $branch->id ? 'selected' : '' }}
                             value="{{ $branch->id }}">{{ $branch->name }}</option>
                     @empty
                         <option value="">No Branches Found</option>
@@ -274,7 +274,7 @@
                 <select class="form-control" id="shift" name="shift_id">
                     <option value="">Please Select the Shift</option>
                     @forelse ($allShifts as $shift)
-                        <option {{ $singleUserDetails->details->shift_id ?? old('shift_id') ? 'selected' : '' }}
+                        <option {{ ($singleUserDetails->details->shift_id ?? old('shift_id') )== $shift->id ? 'selected' : '' }}
                             value="{{ $shift->id }}" data-time="{{ $shift->start_time }}">{{ $shift->name }}
                         </option>
                     @empty
@@ -345,9 +345,8 @@
         contentType: false,
         data: basic_details_Data,
         success: function(response) {
-            if (response.data.status == 'createData') {
+            if (response.data.status == "createdEmployee") {
                 location.href = '/company/employee/edit/' + response.data.id;
-
                 setTimeout(function() {
                     Swal.fire({
                         position: "top-end",

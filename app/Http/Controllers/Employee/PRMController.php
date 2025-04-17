@@ -27,14 +27,14 @@ class PRMController extends Controller
     public function index()
     {
         $allPRMs = $this->employeePRMService->getAllPRMByUserId(Auth()->user()->id);
-        
+
         return view('employee.prm.index', compact('allPRMs'));
     }
 
     public function add()
     {
         $allCategories = $this->prmCategoryService->getAllActiveCategoryByCompanyID([auth()->user()->company_id]);
-        
+
         return view('employee.prm.add', compact('allCategories'));
     }
 
@@ -45,33 +45,14 @@ class PRMController extends Controller
                 'category_id' => ['required', 'exists:prm_categories,id'],
                 'remark' => ['required', 'string'],
                 'bill_date' => ['required', 'string'],
-                'amount' => ['required', 'string']
+                'amount' => ['required', 'numeric', 'regex:/^\d{1,10}(\.\d{1,2})?$/'],
+                'document' => 'nullable|sometimes|mimes:jpg,jpeg,png,pdf|max:2048',
             ]);
 
             if ($validateData->fails()) {
                 return back()->withErrors($validateData->errors())->withInput();
             }
-
-            // if ($request->hasFile('document')) {
-            //     dd("hihi");
-            //     $nameForImage = removingSpaceMakingName(strtotime(date('Y-m-d H:i:s')));
-            //     $upload_path = "/user_profile_picture";
-            //     $filePath = uploadingImageorFile($request->document, $upload_path, $nameForImage);
-            //     $request->merge(['document' => $filePath]);
-            //     $request->merge(['document1' => $filePath]);
-            // }
-
-            // if ($request->document !== null) {
-            //     $upload_path = "/user_profile_picture";
-            //     $image = $request->document;
-            //     $filePath = uploadingImageorFile($image, $upload_path, 'user_profile_picture');
-            //     if ($filePath) {
-            //         $data['document'] = $filePath;
-            //     }
-            // }
-            
             $data = $request->except(['_token']);
-
             if ($this->employeePRMService->create($data)) {
                 return redirect(route('prm.index'))->with('success', 'Added successfully');
             }
@@ -85,7 +66,7 @@ class PRMController extends Controller
     {
         $prmDetails = $this->employeePRMService->findById($id);
         $allCategories = $this->prmCategoryService->getAllActiveCategoryByCompanyID([auth()->user()->company_id]);
-        
+
         return view('employee.prm.view', compact('prmDetails', 'allCategories'));
     }
 
@@ -93,7 +74,7 @@ class PRMController extends Controller
     {
         $prmDetails = $this->employeePRMService->findById($id);
         $allCategories = $this->prmCategoryService->getAllActiveCategoryByCompanyID([auth()->user()->company_id]);
-        
+
         return view('employee.prm.edit', compact('prmDetails', 'allCategories'));
     }
 
@@ -104,15 +85,15 @@ class PRMController extends Controller
                 'category_id' => ['required', 'exists:prm_categories,id'],
                 'remark' => ['required', 'string'],
                 'bill_date' => ['required', 'string'],
-                'amount' => ['required', 'string']
+                'amount' => ['required', 'numeric', 'regex:/^\d{1,10}(\.\d{1,2})?$/'],
+                'document' => 'nullable|sometimes|mimes:jpg,jpeg,png,pdf|max:2048',
             ]);
 
             if ($validateData->fails()) {
                 return back()->withErrors($validateData->errors())->withInput();
             }
-            
-            $data = $request->except(['_token']);
 
+            $data = $request->except(['_token']);
             if ($this->employeePRMService->update($data, $id)) {
                 return redirect(route('prm.index'))->with('success', 'Updated successfully');
             }
@@ -125,7 +106,7 @@ class PRMController extends Controller
     public function delete(Request $request)
     {
         try {
-            
+
             if ($this->employeePRMService->delete($request->id)) {
                 return redirect(route('prm.index'))->with('success', 'Deleted successfully');
             }

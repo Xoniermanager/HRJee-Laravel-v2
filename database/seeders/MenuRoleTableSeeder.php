@@ -631,6 +631,115 @@ class MenuRoleTableSeeder extends Seeder
                 'created_at' => '2025-02-03 15:07:08',
                 'updated_at' => '2025-02-03 15:07:08',
             ),
+            53 =>
+            array (
+                'id' => 95,
+                'menu_id' => 54,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            54 =>
+            array (
+                'id' => 96,
+                'menu_id' => 29,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            55 =>
+            array (
+                'id' => 97,
+                'menu_id' => 30,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            56 =>
+            array (
+                'id' => 98,
+                'menu_id' => 57,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            57 =>
+            array (
+                'id' => 99,
+                'menu_id' => 58,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            58 =>
+            array (
+                'id' => 100,
+                'menu_id' => 59,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            59 =>
+            array (
+                'id' => 101,
+                'menu_id' => 60,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            60 =>
+            array (
+                'id' => 102,
+                'menu_id' => 61,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
+            61 =>
+            array (
+                'id' => 103,
+                'menu_id' => 63,
+                'role_id' => 1,
+                'can_create' => 1,
+                'can_read' => 1,
+                'can_update' => 1,
+                'can_delete' => 1,
+                'created_at' => '2025-02-03 15:07:08',
+                'updated_at' => '2025-02-03 15:07:08',
+            ),
         ));
+
     }
 }

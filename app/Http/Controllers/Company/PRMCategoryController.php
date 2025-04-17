@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\company;
+namespace App\Http\Controllers\Company;
 use Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Services\PRMCategoryService;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\company;
+namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\PrmRequestService;
@@ -32,7 +32,7 @@ class PRMRequestController extends Controller
             echo 0;
         }
     }
-    public function searchPrmRequestFilterList(){
+    public function searchPrmRequestFilterList(Request $request){
         $allPRMRequestDetails = $this->prmRequestService->searchPRMRequestFilterList($request);
         if ($allPRMRequestDetails) {
             return response()->json([

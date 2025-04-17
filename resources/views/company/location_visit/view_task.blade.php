@@ -40,6 +40,10 @@
                                         <th>Task Status</th>
                                         <td>{{ ucfirst($taskdetails->user_end_status) }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Remark</th>
+                                        <td>{{ ucfirst($taskdetails->remark ?? '') }}</td>
+                                    </tr>
                                     @if(!empty($taskdetails->disposition_code_id))
                                     <tr>
                                         <th>Disposition Code</th>

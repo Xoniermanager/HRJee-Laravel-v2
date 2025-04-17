@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="mb-5 mb-xl-10">
-                    @include('company.asset_Status.asset_status_list')
+                    @include('company.asset_status.asset_status_list')
                 </div>
                 <!--end::Col-->
             </div>

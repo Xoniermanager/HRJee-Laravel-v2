@@ -23,7 +23,7 @@ class AdminCountryController extends Controller
      */
     public function index()
     {
-        
+
         return view('admin.country.index', [
             'allCountryDetails' => $this->countryService->all(),
             'timezones' => DateTimeZone::listIdentifiers()
@@ -74,7 +74,7 @@ class AdminCountryController extends Controller
             return response()->json(['error' => $validateCountryData->messages()], 400);
         }
         $updateData = $request->except(['_token', 'id']);
-        $companyStatus = $this->countryService->updateDetails($updateData, $request->company_id);
+        $companyStatus = $this->countryService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
 
             return response()->json(

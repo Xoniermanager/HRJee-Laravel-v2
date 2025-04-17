@@ -33,6 +33,16 @@ class CompanyDashboardController extends Controller
     {
         $companyId = Auth()->user()->id;
         $companyIDs = getCompanyIDs();
+        $daysLeft = 10;
+        
+        if(Auth()->user()->type == "company" && Auth()->user()->companyDetails->subscription_expiry_date) {
+            $subscriptionExpiry = date('Y-m-d', strtotime(Auth()->user()->companyDetails->subscription_expiry_date));
+        
+            // Check if expiry date is within 7 days
+            $daysLeft = $subscriptionExpiry ? Carbon::now()->diffInDays(Carbon::parse($subscriptionExpiry), false) : null;
+        
+        }
+        
         $today = today();
         $dashboardData = [
             // Total office branches
@@ -73,7 +83,7 @@ class CompanyDashboardController extends Controller
             'all_users_details' => User::where(['company_id' => $companyId, 'status' => 1, 'type' => 'user'])->with(['details','details.designation'])->get(),
         ];
         
-        return view('company.dashboard.dashboard', compact('dashboardData'));
+        return view('company.dashboard.dashboard', compact('dashboardData', 'daysLeft'));
     }
 
     public function searchFilterEmployee(Request $request)

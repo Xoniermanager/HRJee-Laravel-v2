@@ -20,6 +20,7 @@
     <meta name="url" property='og:url' content='' />
     <meta name="description" property='og:description' content='' />
     <meta name="author" content="Jyoti Mishra Web Designer at Xonier">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!--begin::Fonts(mandatory for all pages)-->
     {{--
     <link rel="stylesheet" href="{{ asset('employee/assets/css/mark-pro.css') }}" /> --}}

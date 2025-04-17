@@ -15,15 +15,15 @@ class AssignTaskService
     }
     public function create(array $data)
     {
-        $data['response_data'] = json_encode(Arr::except($data, ['_token', 'user_id', 'user_end_status', 'final_status', 'document', 'image']));
+        $data['response_data'] = json_encode(Arr::except($data, ['_token', 'user_id', 'user_end_status', 'final_status', 'document', 'image', 'disposition_code_id']));
         $data['company_id'] = Auth()->user()->company_id;
         $data['created_by'] = Auth()->user()->id;
         $userDetails = User::find($data['user_id']);
         if (isset($data['image']) && !empty($data['image'])) {
-            $data['image'] = uploadingImageorFile($data['image'], '/task_image', $userDetails->name . '-' . $userDetails->id);
+            $data['image'] = uploadingImageorFile($data['image'], '/task_image', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
         if (isset($data['document']) && !empty($data['document'])) {
-            $data['document'] = uploadingImageorFile($data['document'], '/task_document', $userDetails->name . '-' . $userDetails->id);
+            $data['document'] = uploadingImageorFile($data['document'], '/task_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
         return $this->assignTaskRepository->create(Arr::except($data, ['_token']));
     }
@@ -45,17 +45,18 @@ class AssignTaskService
             if (!empty($taskDetails->getRawOriginal('image'))) {
                 unlinkFileOrImage($taskDetails->getRawOriginal('image'));
             }
-            $payload['image'] = uploadingImageorFile($data['image'], '/task_image', $userDetails->name . '-' . $userDetails->id);
+            $payload['image'] = uploadingImageorFile($data['image'], '/task_image', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
         if (isset($data['document']) && !empty($data['document'])) {
             if (!empty($taskDetails->getRawOriginal('document'))) {
                 unlinkFileOrImage($taskDetails->getRawOriginal('document'));
             }
-            $payload['document'] = uploadingImageorFile($data['document'], '/task_document', $userDetails->name . '-' . $userDetails->id);
+            $payload['document'] = uploadingImageorFile($data['document'], '/task_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
-        $payload['response_data'] = json_encode(Arr::except($data, ['_token', 'user_id', 'document', 'image']));
+        $payload['response_data'] = json_encode(Arr::except($data, ['_token', 'user_id', 'document', 'image', 'disposition_code_id', 'user_end_status', 'final_status']));
         $payload['user_id'] = $data['user_id'];
         $payload['disposition_code_id'] = $data['disposition_code_id'];
+        $payload['visit_address'] = $data['visit_address'];
         return $taskDetails->update($payload);
     }
 
@@ -93,5 +94,34 @@ class AssignTaskService
             });
         }
         return $taskDetails->paginate(10);
+    }
+
+    public function getAssignedTaskByEmployeeId($userId)
+    {
+        return $this->assignTaskRepository->where('user_id', $userId);
+    }
+
+    public function taskStatusUpdateByApi($data,$taskId)
+    {
+        $taskDetails = $this->assignTaskRepository->find($taskId);
+        $userDetails = User::find($taskDetails->user_id);
+        if (isset($data['image']) && !empty($data['image'])) {
+            if (!empty($taskDetails->getRawOriginal('image'))) {
+                unlinkFileOrImage($taskDetails->getRawOriginal('image'));
+            }
+            $data['image'] = uploadingImageorFile($data['image'], '/task_image', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
+        }
+        if (isset($data['document']) && !empty($data['document'])) {
+            if (!empty($taskDetails->getRawOriginal('document'))) {
+                unlinkFileOrImage($taskDetails->getRawOriginal('document'));
+            }
+            $data['document'] = uploadingImageorFile($data['document'], '/task_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
+        }
+        return $taskDetails->update($data);
+    }
+
+    public function getTaskByUserIdAndDateAndStatus($userId, $date, $status)
+    {
+        return $this->getAssignedTaskByEmployeeId($userId)->whereDate('created_at', $date)->whereIn('user_end_status', $status);
     }
 }

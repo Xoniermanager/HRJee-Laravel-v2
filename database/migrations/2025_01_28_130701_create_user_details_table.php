@@ -47,14 +47,17 @@ return new class extends Migration {
             $table->date('exit_date')->nullable();
             $table->string('official_mobile_no')->unique()->nullable();
             $table->boolean('status')->default(true);
-            $table->boolean('allow_face_recognition')->default(0);
-            $table->boolean('allow_location_tracking')->default(0);
+            $table->boolean('face_recognition')->default(false);
             $table->string('face_kyc')->nullable();
             $table->string('face_punchin_kyc')->nullable();
+            $table->boolean('location_tracking')->default(false);
+            $table->boolean('live_location_active')->default(false);
+            $table->integer('punch_in_radius')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

@@ -12,7 +12,7 @@ use App\Http\Controllers\Admin\ForgetPasswordController as AdminForgetPasswordCo
 use App\Http\Controllers\Company\ForgetPasswordController as CompanyForgetPasswordController;
 
 // /**---------------Reset And Forget Password Route----------------*/
-Route::controller(ForgetPasswordController::class)->group(function () {
+Route::controller(ForgetPasswordController::class)->middleware('log.route')->group(function () {
     Route::get('/forget/password', 'index')->name('forget.password');
     Route::post('/submit/ForgetPassword/Form', 'submitForgetPasswordForm')->name('submitForgetPasswordForm');
     Route::get('reset-password/{token}', 'showResetPasswordForm')->name('reset.password.get');
@@ -79,10 +79,10 @@ Route::prefix('/admin')->controller(AdminAuthController::class)->group(function 
 // /**---------------End Super Admin Auth Route----------------*/
 
 // /** Employee Complain */
-Route::prefix('employee')->controller(EmployeeComplainController::class)->group(function () {
+Route::prefix('employee')->middleware('log.route')->controller(EmployeeComplainController::class)->group(function () {
     Route::post('/send/message/{employee_complains:id}', 'sendMessage')->name('send.message');
 });
-Route::controller(AuthController::class)->group(function () {
+Route::controller(AuthController::class)->middleware('log.route')->group(function () {
     Route::get('/', 'index')->name('base');
     Route::post('/login', 'login')->name('login');
     Route::get('/logout', 'logout')->name('logout');
@@ -95,4 +95,4 @@ Route::controller(AuthController::class)->group(function () {
 
 // Route::get('/', [AuthController::class, 'index'])->name('employee');
 
-Route::get('/employee/payslip/generate-pdf', [EmployeeSalaryController::class,'generatePDF']);
+Route::middleware('log.route')->get('/employee/payslip/generate-pdf', [EmployeeSalaryController::class,'generatePDF']);

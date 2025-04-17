@@ -16,8 +16,12 @@ return new class extends Migration {
             $table->enum('user_end_status', ['pending', 'processing', 'completed', 'rejected'])->default('pending');
             $table->enum('final_status', ['pending', 'processing', 'completed', 'rejected'])->default('pending');
             $table->text('response_data');
+            $table->tinyText('visit_address');
+            $table->string( 'longitude')->nullable();
+            $table->string('latitude')->nullable();
             $table->string('document')->nullable();
             $table->string('image')->nullable();
+            $table->string('remark')->nullable();
             $table->unsignedBigInteger('disposition_code_id')->nullable();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('created_by');

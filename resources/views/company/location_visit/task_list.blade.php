@@ -6,6 +6,7 @@
             <tr class="fw-bold">
                 <th>Sr. No.</th>
                 <th>Employee Name</th>
+                <th>Visit Address</th>
                 <th>User End Status</th>
                 <th>Final Status</th>
                 <th class="float-right">Action</th>
@@ -16,6 +17,7 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->user->name }}</td>
+                    <td>{{ $item->visit_address }}</td>
                     <td>{{ ucfirst($item->user_end_status) }}</td>
                     <td>{{  ucfirst($item->final_status) }}</td>
                     <td>

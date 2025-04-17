@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Console;
-
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,6 +12,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->job(new \App\Jobs\SubscriptionExpiry())->dailyAt('08:00');
+        $schedule->command('entries:export-delete')->daily();
+        $schedule->command('attendance:auto-punchout')->hourly();
     }
 
     /**

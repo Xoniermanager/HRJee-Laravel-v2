@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Menu;
+use App\Models\Role;
+use App\Models\MenuRole;
 use Illuminate\Http\Request;
 use App\Http\Services\MenuService;
 use App\Http\Services\UserService;
 use App\Http\Controllers\Controller;
-use App\Models\MenuRole;
 
 class AssignMenuCompanyController extends Controller
 {
@@ -39,15 +40,18 @@ class AssignMenuCompanyController extends Controller
             'menu_id.*' => 'required|exists:menus,id',
         ]);
 
-        $company = $this->userService->getUserById($validated['company_id']);
+        $company = Role::where('company_id',$validated['company_id'])->first();
+        // dd($company);
         // $adminRole = $company->role;
+
+        // MenuRole::where('role_id', $company->role_id)->delete();
         if(isset($validated['menu_id'])) {
             $menus = Menu::whereIn('id', $validated['menu_id'])->get();
             $syncData = [];
             foreach ($menus as $menu) {
-                $syncData[] = [
+                $syncData[$menu->id] = [
                     'menu_id' => $menu->id,
-                    'role_id' => $company->role_id,
+                    'role_id' => $company->id,
                     'can_create' => true,
                     'can_read' => true,
                     'can_update' => true,
@@ -63,12 +67,13 @@ class AssignMenuCompanyController extends Controller
                 //     'can_delete' => true,
                 // ];
             }
-   
-            MenuRole::insert($syncData);
-        } else {
+            // dd($adminRole);
+            // MenuRole::insert($syncData);
+            $company->menus()->sync($syncData);
+        }else{
+            // $adminRole->menus()->delete();
             MenuRole::where('role_id', $company->role_id)->delete();
         }
-        // $adminRole->menus()->sync($syncData);
 
         return redirect(route('admin.assign_menu.index'))->with('success', 'Feature Updated Successfully');
     }
@@ -80,7 +85,7 @@ class AssignMenuCompanyController extends Controller
         foreach($company->menus() as $menu) {
             $menuIDs[] = $menu['id'];
         }
-        
+
         return response()->json([
             'success' => true,
             'data' => $menuIDs

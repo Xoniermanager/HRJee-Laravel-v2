@@ -21,4 +21,21 @@ class UserDetailRepository extends BaseRepository
     {
         return UserDetail::class;
     }
+
+    public function assignedLocationTracking($userIds)
+    {
+        return $this->model->whereIn('user_id', $userIds)->update(['location_tracking' => true]);
+    }
+
+    public function updateLocationTrackingStatus($statusValue, $userId)
+    {
+        return $this->model->where('user_id', $userId)->update(['location_tracking' => $statusValue]);
+    }
+
+    public function countOfAssignedTrackingUsers()
+    {
+        return $this->model->where('location_tracking', 1)->count();
+    }
+
+
 }

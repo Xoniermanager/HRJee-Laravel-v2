@@ -39553,3 +39553,35 @@ span.relative.z-0.inline-flex.rtl\:flex-row-reverse.shadow-sm.rounded-md {
 .pb-0 {
 padding-bottom: 0 !important;
 }
+.course-row {
+    background: #f1f7fc;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #deedfa;
+}
+.assignmentDiv {
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+    border: 2px solid #deedfa;
+}
+.accordianrow {
+    display: flex  ;
+    align-items: center;
+    justify-content: space-around;
+    color: #000;
+}
+
+.userimage {
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    border: 1px solid #1642b3;
+}
+.accordion-item {
+    margin-bottom: 20px;
+    border: 2px solid !important;
+    border-radius: 10px;
+}

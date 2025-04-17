@@ -130,6 +130,7 @@
                             <li><a href="{{route('admin.document.type')}}">Document Type</a></li>
                             <li><a href="{{route('admin.employee_status')}}">Employee Status</a></li>
                             <li><a href="{{route('admin.employee_type')}}">Employee Type</a></li>
+                            <li><a href="{{route('admin.subscription_plan')}}">Subscription Plans</a></li>
                             <li><a href="{{route('admin.languages')}}">Languages</a></li>
                         </ul>
                     </li>
@@ -145,6 +146,18 @@
                             </svg>
                             <span class="">Profile</span></a>
                     </li>
+                    <li class="sidebar-list "><a class="sidebar-link " href="{{ route('admin.log_activity') }}">
+                        <svg fill="#ddd" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" stroke="#ddd">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M0 0h7v7H0V0zm2 2v3h3V2H2zM0 9h7v7H0V9zm9-9h7v7H9V0zm2 2v3h3V2h-3zM9 9h7v7H9V9zm2 2v3h3v-3h-3zm-9 0v3h3v-3H2z"
+                                    fill-rule="evenodd"></path>
+                            </g>
+                        </svg>
+                        <span class="">Log Activity</span></a>
+                </li>
                 </ul>
             </div>
             <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

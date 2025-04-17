@@ -372,9 +372,35 @@ class MenusTableSeeder extends Seeder
                 array(
                     'id' => 28,
                     'title' => 'Attendance Management',
-                    'slug' => '/attendance',
+                    'slug' => '#',
                     'icon' => '<i class="fa fa-file-alt"></i>',
                     'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 26,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:43:32',
+                    'updated_at' => '2025-01-15 17:43:32',
+                ),
+                28 =>
+                array(
+                    'id' => 29,
+                    'title' => 'Attendance',
+                    'slug' => '/attendance',
+                    'icon' => '<i class="fa fa-file-alt"></i>',
+                    'parent_id' => 28,
+                    'status' => 1,
+                    'order_no' => 26,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:43:32',
+                    'updated_at' => '2025-01-15 17:43:32',
+                ),
+                29 =>
+                array(
+                    'id' => 30,
+                    'title' => 'Attendance Request',
+                    'slug' => '/attendance-request',
+                    'icon' => '<i class="fa fa-file-alt"></i>',
+                    'parent_id' => 28,
                     'status' => 1,
                     'order_no' => 26,
                     'role' => 'company',
@@ -592,7 +618,7 @@ class MenusTableSeeder extends Seeder
             47 =>
                 array(
                     'id' => 47,
-                    'title' => 'Location Management',
+                    'title' => 'Location Visit Management',
                     'slug' => '#',
                     'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
                     'parent_id' => NULL,
@@ -641,6 +667,19 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
+            56 =>
+                array(
+                    'id' => 56,
+                    'title' => 'Track Live Location',
+                    'slug' => '/location-tracking',
+                    'icon' => '<i class="fa fa-map-marker" aria-hidden="true"></i>',
+                    'parent_id' => 47,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
             51 =>
                 array(
                     'id' => 51,
@@ -680,8 +719,123 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
+            54 =>
+                array(
+                    'id' => 54,
+                    'title' => 'Course Management',
+                    'slug' => '/courses',
+                    'icon' => '<i class="fas fa-book"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            55=>
+                array(
+                    'id' => 55,
+                    'title' => 'Comp Off',
+                    'slug' => '/comp-offs',
+                    'icon' => '<i class="fas fa-book"></i>',
+                    'parent_id' => 34,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+            56=>
+                array(
+                    'id' => 56,
+                    'title' => 'Face Recognition',
+                    'slug' => '/face-recognitions',
+                    'icon' => '<i class="fas fa-book"></i>',
+                    'parent_id' => 28,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                57 =>
+                array(
+                    'id' => 57,
+                    'title' => 'Address Request',
+                    'slug' => '/address-request',
+                    'icon' => '<i class="fas fa-location"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                58 =>
+                array(
+                    'id' => 58,
+                    'title' => 'Rewards Management',
+                    'slug' => '#',
+                    'icon' => '<i class="fa fa-award"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                59 =>
+                array(
+                    'id' => 59,
+                    'title' => 'Rewards Category',
+                    'slug' => '/reward-category',
+                    'icon' => '#',
+                    'parent_id' => 58,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                60 =>
+                array(
+                    'id' => 60,
+                    'title' => 'Rewards',
+                    'slug' => '/reward',
+                    'icon' => '#',
+                    'parent_id' => 58,
+                    'status' => 1,
+                    'order_no' => 32,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                61 =>
+                array(
+                    'id' => 61,
+                    'title' => 'Hierarchy Management',
+                    'slug' => '/hierarchy',
+                    'icon' => '<i class="fa fa-users" aria-hidden="true"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 34,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                62 =>
+                array(
+                    'id' => 63,
+                    'title' => 'Log Activity',
+                    'slug' => '/log-activity/company/list',
+                    'icon' => '<i class="fa fa-list-alt" aria-hidden="true"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 34,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
         ));
-
-
     }
 }

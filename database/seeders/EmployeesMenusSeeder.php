@@ -20,8 +20,24 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'Attendance Detail',
                 'slug' => '/employee/attendance/service',
                 'icon' => '<i class="fa fa-calendar-days"></i>',
-                'parent_id' => 28,
+                'parent_id' => NULL,
                 'order_no' => 1,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Request Attendance',
+                'slug' => '/employee/attendance/request',
+                'icon' => '<i class="fa fa-calendar-days"></i>',
+                'parent_id' => NULL,
+                'order_no' => 2,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Request Address',
+                'slug' => '/employee/address/request',
+                'icon' => '<i class="fa fa-location"></i>',
+                'parent_id' => NULL,
+                'order_no' => 2,
                 'role' => 'employee'
             ],
             [
@@ -97,17 +113,51 @@ class EmployeesMenusSeeder extends Seeder
                 'title' => 'PRM',
                 'slug' => '/employee/prm',
                 'icon' => '<i class="fas fa-money-bill-wave"></i>',
-                'order_no' => 10,
+                'order_no' => 11,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Payslip',
+                'slug' => '/employee/show/payslip',
+                'icon' => '<i class="fa fa-credit-card"></i>',
+                'order_no' => 12,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Courses',
+                'slug' => '/employee/course',
+                'icon' => '<i class="fa fa-credit-card"></i>',
+                'order_no' => 13,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Contact Us',
+                'slug' => '/employee/contact-us',
+                'icon' => '<i class="fas fa-book"></i>',
+                'order_no' => 14,
+                'role' => 'employee'
+            ],
+            [
+                'title' => 'Comp Offs',
+                'slug' => '/employee/comp-offs',
+                'icon' => '<i class="fas fa-book"></i>',
+                'order_no' => 14,
+                'role' => 'employee'
+            ]  ,
+            [
+                'title' => 'My Rewards',
+                'slug' => '/employee/reward/user',
+                'icon' => '<i class="fa fa-award"></i>',
+                'parent_id' => NULL,
+                'order_no' => 2,
                 'role' => 'employee'
             ]
         ];
-
         Menu::where('role', 'employee')->delete();
 
         foreach($payload as $menuData) {
             Menu::create($menuData);
         }
-        
         return true;
     }
 }

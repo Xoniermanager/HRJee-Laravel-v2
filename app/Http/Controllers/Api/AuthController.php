@@ -2,37 +2,60 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\SendOtpRequest;
-use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\UserRequest;
-use App\Http\Services\Api\AuthService;
+use Exception;
+use App\Models\Menu;
 use App\Models\User;
 use App\Models\MenuRole;
-use App\Models\Menu;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\SendOtpRequest;
+use App\Http\Services\Api\AuthService;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Services\EmployeeAttendanceService;
+use App\Http\Services\LeaveService;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
     private $userAuthService;
-    public function __construct(AuthService $userAuthService)
+    private $leaveService;
+    private $attendanceService;
+    public function __construct(AuthService $userAuthService, LeaveService $leaveService, EmployeeAttendanceService $attendanceService)
     {
         $this->userAuthService = $userAuthService;
+        $this->leaveService = $leaveService;
+        $this->attendanceService = $attendanceService;
     }
     public function login(UserLoginRequest $request)
     {
         return $this->userAuthService->login($request);
     }
-    public function profile(Request $request)
+    public function profileDetails()
     {
-        return $this->userAuthService->profile();
-    }
-    public function userAllDetails()
-    {
-
-      return $this->userAuthService->userAllDetails();
+        $user = Auth()->guard('employee_api')->user();
+        try {
+            $employeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'documentDetails.documentTypes:name,id', 'userActiveLocation', 'userReward', 'userReward.rewardCategory:name,id', 'managerEmployees.user.details', 'role:name,id');
+            $companyAssignedMenuIds = MenuRole::where('role_id', $user->parent->role_id)->pluck('menu_id')->toArray();
+            $employeeDetails['menu_access'] = Menu::where(['status' => 1, 'role' => 'employee'])
+                ->where(function ($query) use ($companyAssignedMenuIds) {
+                    $query->whereIn('parent_id', $companyAssignedMenuIds)
+                        ->orWhereNull('parent_id');
+                })
+                ->get(['title', 'id']);
+            return response()->json([
+                'status' => true,
+                'message' => 'Employee details',
+                'data' => $employeeDetails,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function logout(Request $request)
@@ -50,9 +73,9 @@ class AuthController extends Controller
     public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'password' => ['required','string','min:8'],
-            'old_password' => ['required','string','min:8'],
-            'confirm_password' => ['required','same:password']
+            'password' => ['required', 'string', 'min:8'],
+            'old_password' => ['required', 'string', 'min:8'],
+            'confirm_password' => ['required', 'same:password']
         ]);
 
         if ($validator->fails()) {
@@ -73,7 +96,8 @@ class AuthController extends Controller
 
         #Update the new Password
         User::whereId(auth()->user()->id)->update([
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'reset_password' => false
         ]);
 
         return response()->json([
@@ -115,13 +139,11 @@ class AuthController extends Controller
 
     public function getCompanyDetails()
     {
-        $companyDetails = auth()->user()->parent;
-        $companyDetails->details = auth()->user()->parent->companyDetails;
-
+        $details = Auth()->guard('employee_api')->user()->userCompanyDetails;
         return response()->json([
             'status' => true,
-            'message' => NULL,
-            'data' => $companyDetails,
+            'message' => "User Company Details",
+            'data' => $details,
         ], 200);
     }
 
@@ -140,7 +162,93 @@ class AuthController extends Controller
             'data' => $childMenus,
         ], 200);
     }
+    public function userKycRegistration(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'face_kyc' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        $updateDetails = UserDetail::where('user_id', Auth()->user()->id)->update(['face_kyc' => $request['face_kyc']]);
+        if ($updateDetails) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Kyc updated successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to updated Kyc Registration',
+            ], 400);
+        }
+    }
+    public function userPunchInImage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'face_punchin_kyc' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+        $updateDetails = UserDetail::where('user_id', Auth()->user()->id)->update(['face_punchin_kyc' => $request['face_kyc']]);
+        if ($updateDetails) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Punch In Image updated successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to updated Punch In Image',
+            ], 400);
+        }
+    }
 
+    public function faceLogin(Request $request)
+    {
+        $updateDetails = User::whereHas('details', function ($query) use ($request) {
+            $query->whereNull('exit_date')->where('emp_id', $request->key);
+        })->orWhere('email', $request->key)->first();
+        if ($updateDetails) {
+            $updateDetails->access_token = $updateDetails->createToken("HrJee TOKEN")->plainTextToken;
+            $updateDetails->details = $updateDetails->details;
+        }
+        if ($updateDetails) {
+            return response()->json([
+                'status' => true,
+                'message' => 'User Details',
+                'data' => $updateDetails
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Provided credentials are invalid.',
+            ], 200);
+        }
+    }
 
-
+    public function getTeamDetailsByUserId($userId)
+    {
+        $data['leave'] = $this->leaveService->getConfirmedLeaveByUserID($userId)->paginate(10);
+        $data['attendance'] = $this->attendanceService->getAllAttendanceByUserId($userId)->paginate(10);
+        if ($data) {
+            return response()->json([
+                'status' => true,
+                'message' => 'User Details Leave and Attendance',
+                'data' => $data
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to get information regarding this',
+            ], 200);
+        }
+    }
 }

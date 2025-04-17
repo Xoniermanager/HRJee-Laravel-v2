@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-
+use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,7 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'company_id',
         'manager_id',
         'type',
-        'status'
+        'status',
+        'reset_password'
     ];
 
     protected $hidden = [
@@ -37,7 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class, 'company_id');
     }
 
     public function menu()
@@ -68,11 +69,20 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserDetail::class, 'user_id');
     }
+
     public function companyDetails()
     {
-        return $this->hasOne(CompanyDetail::class, 'user_id');
+        if($this->type == "company") {
+            return $this->hasOne(CompanyDetail::class, 'user_id');
+        } else {
+            return $this->belongsTo(CompanyDetail::class, 'company_id', 'user_id');
+        }
     }
-
+    
+    public function userCompanyDetails()
+    {
+        return $this->belongsTo(CompanyDetail::class, 'company_id', 'id')->with('user');
+    }
     public function addressDetails()
     {
         return $this->hasMany(UserAddressDetail::class, 'user_id');
@@ -208,4 +218,41 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
         SalaryComponent::insert($payload);
     }
+
+    public function userActiveLocation()
+    {
+        return $this->hasOne(UserActiveLocation::class, 'user_id')->where('status', true);
+    }
+
+    public function userReward()
+    {
+        return $this->hasMany(UserReward::class, 'user_id', 'id');
+    }
+
+    // Relationship: A user can have multiple employees
+    public function employees()
+    {
+        return $this->hasMany(EmployeeManager::class, 'manager_id');
+    }
+
+    // Relationship: A user can have one manager
+    public function manager()
+    {
+        return $this->belongsTo(EmployeeManager::class, 'id', 'user_id');
+    }
+
+    public function currentLocations($userIDs) {
+        $today = Carbon::today();
+
+        return UserLiveLocation::whereIn('user_id', $userIDs)->whereDate('created_at', $today)
+        ->latest('created_at')->with('user');
+    }
+
+    public function currentPunchInLocations($userIDs) {
+        $today = Carbon::today();
+
+        return EmployeeAttendance::whereIn('user_id', $userIDs)->whereDate('created_at', $today)
+        ->latest('created_at')->with('user');
+    }
+
 }

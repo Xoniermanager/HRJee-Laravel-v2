@@ -1,27 +1,32 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Employee\PRMController;
 use App\Http\Controllers\Employee\NewsController;
+use App\Http\Controllers\Employee\CourseController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
-use App\Http\Controllers\Employee\AnnouncementsController;
-use App\Http\Controllers\Employee\ApplyLeaveController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Employee\ContactUsController;
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\HRServiceController;
+use App\Http\Controllers\Employee\ApplyLeaveController;
+use App\Http\Controllers\Employee\AttendanceController;
+use App\Http\Controllers\Employee\HrComplainController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
+use App\Http\Controllers\Employee\AnnouncementsController;
+use App\Http\Controllers\Employee\LeaveTrackingController;
+use App\Http\Controllers\Employee\AddressRequestController;
+use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
-use App\Http\Controllers\Employee\AttendanceController;
+use App\Http\Controllers\Employee\AttendanceRequestController;
+use App\Http\Controllers\Employee\CompOffController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
-use App\Http\Controllers\Employee\HrComplainController;
-use App\Http\Controllers\Employee\PRMController;
-use App\Http\Controllers\Employee\LeaveAvailableController;
-use App\Http\Controllers\Employee\LeaveTrackingController;
+use App\Http\Controllers\Employee\UserRewardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,7 +44,8 @@ use App\Http\Controllers\Employee\LeaveTrackingController;
 // });
 
 /** ---------------Employee Panel Started--------------  */
-Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group(function () {
+Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.route'])->group(function ()
+ {
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
     Route::get('/impersonate', [DashboardController::class, 'startImpersonate'])->name('employee.impersonate');
@@ -64,19 +70,12 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::get('/delete/{id?}', 'destroy')->name('delete');
         Route::post('/cancel', 'actionResignation')->name('actionResignation');
     });
-
-    //   // Resignation Management
-    //   Route::controller(ResignationController::class)->group(function () {
-    //     Route::get('/resignation', 'index')->name('employee.resignation');
-    //     Route::get('/apply/resignation', 'applyResignation')->name('employee.apply.resignation');
-    // });
-
     //Policy Module
     Route::controller(PolicyController::class)->group(function () {
         Route::get('/policy', 'index')->name('employee.policy');
         Route::get('/policy/details/{policies:id}', 'viewDetails')->name('employee.policy.details');
     });
-    
+
     //Announcement Module
     Route::controller(AnnouncementsController::class)->group(function () {
         Route::get('/announcement', 'index')->name('employee.announcement');
@@ -132,7 +131,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
     Route::get('/payslips', [PayslipsMangementController::class, 'index'])->name('employee.payslips');
 
     //Employee Attendance Management]
-    Route::get('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
+    Route::post('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
 
     //Employee Leave Available
     Route::get('get/leave/available', [LeaveAvailableController::class, 'getAllLeaveAvailableByUserId'])->name('employee.leave.available');
@@ -163,6 +162,46 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
         Route::post('/update/{id}', 'update')->name('prm.update');
         Route::get('/view/{id}', 'getDetails')->name('prm.view');
         Route::get('/delete', 'delete')->name('prm.delete');
+    });
+
+    //Course Details
+    Route::controller(CourseController::class)->group(function () {
+        Route::get('/course', 'index')->name('employee.course');
+        Route::get('/course/details/{courses:id}', 'viewDetails')->name('employee.course.details');
+    });
+
+    //Attendance Request Module
+    Route::prefix('/attendance/request')->controller(AttendanceRequestController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.attendance.request.index');
+        Route::get('/add','add')->name('employee.attendance.request.add');
+        Route::get('/edit/{id}','edit')->name('employee.attendance.request.edit');
+        Route::post('/store', 'store')->name('employee.attendance.request.store');
+        Route::post('/update/{id}','update')->name('employee.attendance.request.update');
+        Route::get('/delete','delete')->name('employee.attendance.request.delete');
+        Route::get('/search/filter', 'serachFilterList')->name('employee.attendance.request.search');
+    });
+     //Attendance Request Module
+     Route::prefix('/address/request')->controller(AddressRequestController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.address.request.index');
+        Route::post('/create', 'store')->name('employee.address.request.store');
+        Route::post('/update', 'update')->name('employee.address.request.update');
+        Route::get('/delete', 'destroy')->name('employee.address.request.delete');
+        Route::get('/search/filter', 'serachFilterList');
+    });
+
+    //Comp Off Module
+    Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
+        Route::get('/', 'index')->name('employee.comp.off.index');
+        Route::get('/add','add')->name('employee.comp.off.add');
+        Route::post('/store', 'store')->name('employee.comp.off.store');
+        Route::get('/delete','delete')->name('employee.comp.off.delete');
+        Route::get('/search/filter', 'serachFilterList')->name('employee.comp.off.search');
+    });
+
+     //Reward Module
+     Route::controller(UserRewardController::class)->group(function () {
+        Route::get('/reward/user', 'index')->name('employee.reward');
+        Route::get('/reward/details/{user_rewards:id}', 'viewDetails')->name('employee.reward.details');
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/

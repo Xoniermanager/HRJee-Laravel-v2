@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LogActivityController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\Admin\AdminDashboard;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\AdminStateController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\CompanyTypeController;
+use App\Http\Controllers\Admin\SubscriptionPlanController;
 use App\Http\Controllers\Admin\AdminCompanyController;
 use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DocumentTypeController;
@@ -191,6 +193,18 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
         Route::get('/delete', 'destroy')->name('admin.company_type.delete');
         Route::get('/status/update', 'statusUpdate')->name('admin.company_type.statusUpdate');
         Route::get('/search', 'search')->name('admin.company_type.search');
+    });
+
+    Route::prefix('/subscription-plan')->controller(SubscriptionPlanController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.subscription_plan');
+        Route::post('/create', 'store')->name('admin.subscription_plan.store');
+        Route::post('/update', 'update')->name('admin.subscription_plan.update');
+        Route::get('/delete', 'destroy')->name('admin.subscription_plan.delete');
+        Route::get('/status/update', 'statusUpdate')->name('admin.subscription_plan.statusUpdate');
+        Route::get('/search', 'search')->name('admin.subscription_plan.search');
+    });
+    Route::prefix('/log-activity')->controller(LogActivityController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.log_activity');
     });
 });
 /**----------------- End Super Admin Route ----------------------*/

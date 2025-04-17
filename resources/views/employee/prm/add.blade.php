@@ -25,7 +25,7 @@
 
                 <div class="mb-5 mb-xl-10">
                     <div class="card-body">
-                        <form method="post" action="{{ route('prm.store') }}">
+                        <form method="post" action="{{ route('prm.store') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 form-group">
@@ -70,12 +70,12 @@
                                         <div class="text-danger">{{ $errors->first('remark') }}</div>
                                     @endif
                                 </div>
-                                
+
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use Illuminate\Http\Request;
-use App\Models\CompanyBranch;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Services\StateServices;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ValidateBranch;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
@@ -36,7 +34,7 @@ class CompanyBranchesController extends Controller
         $companyIDs = getCompanyIDs();
         $branches = $this->branch_services->all($companyIDs);
         $countries = $this->countryService->getAllActiveCountry();
-        
+
         return view('company.branch.index', [
             'branches' => $branches,
             'countries' => $countries,
@@ -52,22 +50,23 @@ class CompanyBranchesController extends Controller
 
         return view('company.branch.index', compact('countries'));
     }
+
     public function store(ValidateBranch $request)
     {
+        $companyIDs = getCompanyIDs();
         try {
             $payload = $request->all();
-            
+
             if(!isset($payload['company_id'])){
                 $payload['company_id'] = auth()->user()->company_id;
             }
             $companyBranches = $this->branch_services->create($request->all());
             if ($companyBranches) {
-
                 return response()->json(
                     [
-                        'message' => 'Created Successfully!',
+                        'message' => 'Company Branches Created Successfully!',
                         'data' => view('company.branch.branches-list', [
-                            'branches' => $this->branch_services->all(Auth()->user()->id)
+                            'branches' => $this->branch_services->all($companyIDs)
                         ])->render()
                     ]
                 );
@@ -84,70 +83,55 @@ class CompanyBranchesController extends Controller
 
     public function update(Request $request)
     {
+        $companyIDs = getCompanyIDs();
+        $companyBranchId = $request->id;
         try {
             $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
-                'address' => ['required', 'string'],
-                'pincode' => ['required', 'integer'],
+                'company_id' => 'sometimes',
+                'name' => 'required|string',
+                'type' => 'required|in:primary,secondary',
+                'contact_no' => 'required|numeric|unique:company_branches,contact_no,' . $companyBranchId,
+                'email' => 'required|email|unique:company_branches,email,' . $companyBranchId,
+                'hr_email' => 'required|email|unique:company_branches,hr_email,' . $companyBranchId,
+                'address' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if (!app('geocoder')->geocode($value)->get()->count()) {
+                            $fail('The provided address is incorrect.');
+                        }
+                    }
+                ],
+                'city' => 'required|string',
+                'pincode' => 'required|string',
+                'country_id' => 'required_if:address_type,==,0|exists:countries,id',
+                'state_id' => 'required_if:address_type,==,0|exists:states,id',
+
             ]);
 
             if ($validator->fails()) {
-
                 return response()->json(['error' => $validator->messages()], 400);
             }
 
             $updateData = $request->except(['_token', 'id']);
             $companyBranches = $this->branch_services->updateDetails($updateData, $request->id);
             if ($companyBranches) {
-
                 return response()->json(
                     [
                         'message' => 'Updated Successfully!',
-                        'data' => view('company.branch.branches-list', ['branches' => $this->branch_services->all(Auth()->user()->id)])->render()
+                        'data' => view('company.branch.branches-list', ['branches' => $this->branch_services->all($companyIDs)])->render()
                     ]
                 );
             }
         } catch (Exception $e) {
-
-            return $e->getMessage();
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
-    public function updateBranch(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:company_branches,name,' . $request->id],
-                'address' => ['required', 'string'],
-                'pincode' => ['required', 'integer'],
-            ]);
-
-            if ($validator->fails()) {
-
-                return back()->withErrors($validator->errors())->withInput();
-            }
-
-            $updateData = $request->except(['_token', 'id']);
-            $companyBranches = $this->branch_services->updateDetails($updateData, $request->id);
-            if ($companyBranches) {
-
-                return response()->json(
-                    [
-                        'message' => 'Updated Successfully!',
-                        'data' => view('company.branch.branches-list', ['branches' => $this->branch_services->all(Auth()->user()->id)])->render()
-                    ]
-                );
-            }
-        } catch (Exception $e) {
-
-            return $e->getMessage();
-        }
-    }
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request)
     {
+        $companyIDs = getCompanyIDs();
         $id = $request->id;
         $data = $this->branch_services->deleteDetails($id);
         if ($data) {
@@ -155,7 +139,7 @@ class CompanyBranchesController extends Controller
             return response()->json([
                 'success' => 'Country Deleted Successfully',
                 'data' => view('company.branch.branches-list', [
-                    'branches' => $this->branch_services->all(Auth()->user()->id)
+                    'branches' => $this->branch_services->all($companyIDs)
                 ])->render()
             ]);
         } else {
@@ -166,6 +150,7 @@ class CompanyBranchesController extends Controller
 
     public function statusUpdate(Request $request)
     {
+        $companyIDs = getCompanyIDs();
         $id = $request->id;
         $data['status'] = $request->status;
         $statusDetails = $this->branch_services->updateDetails($data, $id);
@@ -174,7 +159,7 @@ class CompanyBranchesController extends Controller
             return response()->json([
                 'success' => 'Branch Status Updated Successfully',
                 'data' => view('company.branch.branches-list', [
-                    'branches' => $this->branch_services->all(Auth()->user()->id)
+                    'branches' => $this->branch_services->all($companyIDs)
                 ])->render()
             ]);
         } else {
@@ -183,6 +168,12 @@ class CompanyBranchesController extends Controller
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function searchBranchFilter(Request $request)
     {
         $branches = $this->branch_services->searchInCompanyBranch($request);
@@ -198,6 +189,12 @@ class CompanyBranchesController extends Controller
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getAllManagers(Request $request)
     {
         $branchIds = $request->branch_id;
@@ -206,7 +203,7 @@ class CompanyBranchesController extends Controller
             'status' => true,
             'data' => $allManagers
         ];
-        
+
         return json_encode($response);
     }
 }

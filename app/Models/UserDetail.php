@@ -36,16 +36,18 @@ class UserDetail extends Model
         'shift_id',
         'start_time',
         'status',
-        'allow_face_recognition',
-        'allow_location_tracking',
+        'face_recognition',
         'face_kyc',
-        'face_punchin_kyc'
+        'face_punchin_kyc',
+        'location_tracking',
+        'live_location_active',
+        'punch_in_radius'
     ];
-    
+
     protected function profileImage(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => url("storage" . $value)
+            get: fn($value) => $value ? url("storage/" . $value) : asset('assets/user_icon.png')
         );
     }
 
@@ -72,7 +74,7 @@ class UserDetail extends Model
     {
         return $this->belongsTo(EmployeeType::class, 'employee_type_id', 'id');
     }
-    
+
     public function officeShift()
     {
         return $this->belongsTo(OfficeShift::class, 'shift_id', 'id');

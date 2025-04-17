@@ -24,7 +24,7 @@ class DepartmentController extends Controller
     public function index()
     {
         $companyIDs = getCompanyIDs();
-        
+
         return view("company.department.index", [
             'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
         ]);
@@ -36,6 +36,7 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
+        $companyIDs = getCompanyIDs();
         try {
             $validateDepartments = Validator::make($request->all(), [
                 'name' => ['required', 'regex:/^[A-Za-z\s]+$/', 'alpha','unique:departments,name,NULL,id,company_id,' . auth()->user()->company_id],
@@ -50,7 +51,7 @@ class DepartmentController extends Controller
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
                     'data' => view("company.department.department_list", [
-                        'allDepartmentDetails' => $this->departmentService->getByCompanyId(auth()->user()->company_id)
+                        'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
                     ])->render()
                 ]);
             }
@@ -64,6 +65,7 @@ class DepartmentController extends Controller
      */
     public function update(Request $request)
     {
+        $companyIDs = getCompanyIDs();
         $validateDepartments = Validator::make($request->all(), [
             'name' => ['required', 'string', 'regex:/^[A-Za-z\s]+$/','unique:departments,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
         ]);
@@ -78,7 +80,7 @@ class DepartmentController extends Controller
                 [
                     'message' => 'Departments Updated Successfully!',
                     'data' => view('company.department.department_list', [
-                        'allDepartmentDetails' => $this->departmentService->getByCompanyId(auth()->user()->company_id)
+                        'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
                     ])->render()
                 ]
             );
@@ -90,13 +92,14 @@ class DepartmentController extends Controller
      */
     public function destroy(Request $request)
     {
+        $companyIDs = getCompanyIDs();
         $id = $request->id;
         $data = $this->departmentService->deleteDetails($id);
         if ($data) {
             return response()->json([
                 'success' => 'Departments Deleted Successfully',
                 'data' => view("company.department.department_list", [
-                    'allDepartmentDetails' => $this->departmentService->getByCompanyId(auth()->user()->company_id)
+                    'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
                 ])->render()
             ]);
         } else {
@@ -106,6 +109,7 @@ class DepartmentController extends Controller
 
     public function statusUpdate(Request $request)
     {
+        $companyIDs = getCompanyIDs();
         $id = $request->id;
         $data['status'] = $request->status;
         $statusDetails = $this->departmentService->updateDetails($data, $id);
@@ -113,14 +117,14 @@ class DepartmentController extends Controller
             return response()->json([
                 'success' => 'Departments Status Updated Successfully',
                 'data' => view("company.department.department_list", [
-                    'allDepartmentDetails' => $this->departmentService->getByCompanyId(auth()->user()->company_id)
+                    'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
                 ])->render()
             ]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-    
+
     public function serachDepartmentFilterList(Request $request)
     {
         $searchedItems = $this->departmentService->serachDepartmentFilterList($request, auth()->user()->company_id);
