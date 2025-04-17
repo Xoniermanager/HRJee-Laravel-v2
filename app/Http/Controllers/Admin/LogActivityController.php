@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use Exception;
 use App\Models\LogActivity;
 use Illuminate\Http\Request;
@@ -18,7 +17,7 @@ class LogActivityController extends Controller
 
     public function companyList()
     {
-        $allLogActivityDetails = LogActivity::where('company_id',Auth()->user()->company_id)->paginate(10);
+        $allLogActivityDetails = LogActivity::where('company_id', Auth()->user()->company_id)->paginate(10);
         return view('company.log_activity.index', compact('allLogActivityDetails'));
     }
 
