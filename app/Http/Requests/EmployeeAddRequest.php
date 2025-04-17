@@ -33,7 +33,9 @@ class EmployeeAddRequest extends FormRequest
             'date_of_birth' => ['required', 'date'],
             'joining_date' => ['required', 'date'],
             'phone' => ['required', 'min:10', 'numeric'],
-            'profile_image' => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048']
+            'profile_image' => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'official_mobile_no' => ['sometimes', 'unique:user_details,official_mobile_no,' . request()->get('user_details_id')],
+            'offer_letter_id' => ['sometimes', 'unique:user_details,offer_letter_id,' . request()->get('user_details_id')]
         ];
     }
 }

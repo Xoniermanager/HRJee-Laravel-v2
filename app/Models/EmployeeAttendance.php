@@ -32,7 +32,8 @@ class EmployeeAttendance extends Model
             'punch_out_latitude',
             'punch_out_longitude',
             'punch_in_address',
-            'punch_out_address'
+            'punch_out_address',
+            'is_auto_punch_out'
         ];
     public function user()
     {
