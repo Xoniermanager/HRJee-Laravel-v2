@@ -149,10 +149,10 @@ if (!function_exists('apiResponse')) {
 
 function getTotalWorkingHour($startTime, $endTime)
 {
-    $time1 = new DateTime($startTime);
-    $time2 = new DateTime($endTime);
-    $time_diff = $time1->diff($time2);
-    return $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
+    $start = new DateTime($startTime);
+    $end = new DateTime($endTime);
+    $diff = $start->diff($end);
+    return $diff->d * 24 + $diff->h . ' hours ' . $diff->i . ' minutes';
 }
 
 
@@ -409,98 +409,98 @@ function checkMenuAccessByMenuAndCompany($menu, $companyID)
 
 function get_stay_points($locations, $punchedOutTime)
 {
-	$stayPoints = [];
-	$timeThreshold = 60 * 30; // Time in seconds
-	$distanceThreshold = 0; // Distance in meters (adjust as needed)
+    $stayPoints = [];
+    $timeThreshold = 60 * 30; // Time in seconds
+    $distanceThreshold = 0; // Distance in meters (adjust as needed)
 
-	for ($i = 1; $i < count($locations); $i++) {
-		$prev = $locations[$i - 1];
-		$curr = $locations[$i];
+    for ($i = 1; $i < count($locations); $i++) {
+        $prev = $locations[$i - 1];
+        $curr = $locations[$i];
 
-		$prevTime = strtotime($prev["created_at"]);
-		$currTime = strtotime($curr["created_at"]);
-		$timeDiff = $currTime - $prevTime;
+        $prevTime = strtotime($prev["created_at"]);
+        $currTime = strtotime($curr["created_at"]);
+        $timeDiff = $currTime - $prevTime;
 
-		// Calculate distance between previous and current point  (&& $distance <= $distanceThreshold)
-		$distance = haversine_distance(
-			$prev["latitude"],
-			$prev["longitude"],
-			$curr["latitude"],
-			$curr["longitude"]
-		);
+        // Calculate distance between previous and current point  (&& $distance <= $distanceThreshold)
+        $distance = haversine_distance(
+            $prev["latitude"],
+            $prev["longitude"],
+            $curr["latitude"],
+            $curr["longitude"]
+        );
 
-		if ($timeDiff >= $timeThreshold) {
-			$address = get_address_from_coordinates($prev["latitude"], $prev["longitude"]);
+        if ($timeDiff >= $timeThreshold) {
+            $address = get_address_from_coordinates($prev["latitude"], $prev["longitude"]);
 
-			$stayPoints[] = [
-				"location" => ["lat" => $prev["latitude"], "lng" => $prev["longitude"]],
-				"address" => $address,
-				"start_time" => date("Y-m-d H:i:s", strtotime($prev["created_at"])),
-				"end_time" => date("Y-m-d H:i:s", strtotime($curr["created_at"])),
-				"duration" => format_duration($timeDiff)
-			];
-		}
-	}
+            $stayPoints[] = [
+                "location" => ["lat" => $prev["latitude"], "lng" => $prev["longitude"]],
+                "address" => $address,
+                "start_time" => date("Y-m-d H:i:s", strtotime($prev["created_at"])),
+                "end_time" => date("Y-m-d H:i:s", strtotime($curr["created_at"])),
+                "duration" => format_duration($timeDiff)
+            ];
+        }
+    }
 
-	// Handle the last record
-	$lastRecord = end($locations);
-	$lastTime = strtotime($lastRecord["created_at"]);
-	$currentTime = $punchedOutTime ? strtotime($punchedOutTime) : time();
-	$currentDuration = $currentTime - $lastTime;
+    // Handle the last record
+    $lastRecord = end($locations);
+    $lastTime = strtotime($lastRecord["created_at"]);
+    $currentTime = $punchedOutTime ? strtotime($punchedOutTime) : time();
+    $currentDuration = $currentTime - $lastTime;
 
-	if (count($locations) >= 1 && $currentDuration >= $timeThreshold) {
-		$address = get_address_from_coordinates($lastRecord["latitude"], $lastRecord["longitude"]);
+    if (count($locations) >= 1 && $currentDuration >= $timeThreshold) {
+        $address = get_address_from_coordinates($lastRecord["latitude"], $lastRecord["longitude"]);
 
-		$stayPoints[] = [
-			"location" => ["lat" => $lastRecord["latitude"], "lng" => $lastRecord["longitude"]],
-			"address" => $address,
-			"start_time" => date("Y-m-d H:i:s", strtotime($lastRecord["created_at"])),
-			"end_time" => !$punchedOutTime 
-				? "N/A (Last tracked location)"
-				: "N/A (Last tracked location) - Punch out at " . date("Y-m-d H:i:s", strtotime($punchedOutTime)),
-			"duration" => format_duration($currentDuration),
-			"status" => "Still at this location"
-		];
-	}
+        $stayPoints[] = [
+            "location" => ["lat" => $lastRecord["latitude"], "lng" => $lastRecord["longitude"]],
+            "address" => $address,
+            "start_time" => date("Y-m-d H:i:s", strtotime($lastRecord["created_at"])),
+            "end_time" => !$punchedOutTime
+                ? "N/A (Last tracked location)"
+                : "N/A (Last tracked location) - Punch out at " . date("Y-m-d H:i:s", strtotime($punchedOutTime)),
+            "duration" => format_duration($currentDuration),
+            "status" => "Still at this location"
+        ];
+    }
 
-	return array_reverse($stayPoints);
+    return array_reverse($stayPoints);
 }
 
 function format_duration($seconds)
 {
-	$hours = floor($seconds / 3600);
-	$minutes = floor(($seconds % 3600) / 60);
+    $hours = floor($seconds / 3600);
+    $minutes = floor(($seconds % 3600) / 60);
 
-	if ($hours && $minutes) {
-		return "$hours hr" . ($hours > 1 ? "s" : "") . ", $minutes min";
-	} elseif ($hours) {
-		return "$hours hr" . ($hours > 1 ? "s" : "");
-	} elseif ($minutes) {
-		return "$minutes min";
-	}
+    if ($hours && $minutes) {
+        return "$hours hr" . ($hours > 1 ? "s" : "") . ", $minutes min";
+    } elseif ($hours) {
+        return "$hours hr" . ($hours > 1 ? "s" : "");
+    } elseif ($minutes) {
+        return "$minutes min";
+    }
 
-	return "0 min";
+    return "0 min";
 }
 
 function get_address_from_coordinates($latitude, $longitude)
 {
-	$apiKey = "AIzaSyAZ6YyrIHnFZ-vpGlPT99dGmZWGkNzqcp4";
-	$url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$latitude},{$longitude}&key={$apiKey}";
+    $apiKey = "AIzaSyAZ6YyrIHnFZ-vpGlPT99dGmZWGkNzqcp4";
+    $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$latitude},{$longitude}&key={$apiKey}";
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-	$response = curl_exec($ch);
-	curl_close($ch);
+    $response = curl_exec($ch);
+    curl_close($ch);
 
-	$data = json_decode($response, true);
+    $data = json_decode($response, true);
 
-	if (isset($data["results"][0]["formatted_address"])) {
-		return $data["results"][0]["formatted_address"];
-	}
+    if (isset($data["results"][0]["formatted_address"])) {
+        return $data["results"][0]["formatted_address"];
+    }
 
-	return "Unknown Location";
+    return "Unknown Location";
 }
 
 /**
@@ -508,20 +508,20 @@ function get_address_from_coordinates($latitude, $longitude)
  */
 function haversine_distance($lat1, $lon1, $lat2, $lon2)
 {
-	$earthRadius = 6371000; // Earth's radius in meters
+    $earthRadius = 6371000; // Earth's radius in meters
 
-	$lat1 = deg2rad($lat1);
-	$lon1 = deg2rad($lon1);
-	$lat2 = deg2rad($lat2);
-	$lon2 = deg2rad($lon2);
+    $lat1 = deg2rad($lat1);
+    $lon1 = deg2rad($lon1);
+    $lat2 = deg2rad($lat2);
+    $lon2 = deg2rad($lon2);
 
-	$deltaLat = $lat2 - $lat1;
-	$deltaLon = $lon2 - $lon1;
+    $deltaLat = $lat2 - $lat1;
+    $deltaLon = $lon2 - $lon1;
 
-	$a = sin($deltaLat / 2) * sin($deltaLat / 2) +
-		cos($lat1) * cos($lat2) *
-		sin($deltaLon / 2) * sin($deltaLon / 2);
-	$c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
+        cos($lat1) * cos($lat2) *
+        sin($deltaLon / 2) * sin($deltaLon / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
-	return $earthRadius * $c; // Distance in meters
+    return $earthRadius * $c; // Distance in meters
 }

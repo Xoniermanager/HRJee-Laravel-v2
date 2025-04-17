@@ -394,7 +394,7 @@
         const all_department_id = [departmentId];
         var designation_id = '{{ $singleUserDetails->details->designation_id ?? '' }}';
         get_all_designation_using_department_id(all_department_id, designation_id);
-    });8
+    });
 
     /** get all Designation Using Department Id*/
     jQuery('#department_id').on('change', function() {

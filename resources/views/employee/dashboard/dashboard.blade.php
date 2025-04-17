@@ -184,7 +184,7 @@ border-bottom-right-radius: 30px;">
 
                                             @if ($existingAttendanceDetail && !empty($existingAttendanceDetail))
                                                 <p> PunchIn Time :
-                                                    <span>{{ date('H:i:s', strtotime($existingAttendanceDetail->punch_in)) }}</span>
+                                                    <span>{{ date('d-M-Y  H:i:s', strtotime($existingAttendanceDetail->punch_in)) }}</span>
                                                 </p>
                                                 <span data-kt-element="bullet"
                                                     class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
@@ -193,7 +193,7 @@ border-bottom-right-radius: 30px;">
 
                                             @if (!empty($existingAttendanceDetail) && $existingAttendanceDetail->punch_out != '')
                                                 <p> PunchOut Time :
-                                                    <span>{{ date('H:i:s', strtotime($existingAttendanceDetail->punch_out)) }}</span>
+                                                    <span>{{ date('d-M-Y  H:i:s', strtotime($existingAttendanceDetail->punch_out)) }}</span>
                                                 </p>
                                                 <span data-kt-element="bullet"
                                                     class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
@@ -202,11 +202,7 @@ border-bottom-right-radius: 30px;">
                                                     <span>{{ getTotalWorkingHour($existingAttendanceDetail->punch_in, $existingAttendanceDetail->punch_out) }}</span>
                                                 </p>
                                             @endif
-
-                                            @if (
-                                                !empty($existingAttendanceDetail) &&
-                                                    $existingAttendanceDetail->punch_in != '' &&
-                                                    $existingAttendanceDetail->punch_out == '')
+                                            @if ( !empty($existingAttendanceDetail) && $existingAttendanceDetail->punch_in != '' &&   $existingAttendanceDetail->punch_out == '')
                                                 <p id="working-hours"> Working Timer : <span id="punchin-timer"></span></p>
                                             @endif
 
@@ -216,7 +212,7 @@ border-bottom-right-radius: 30px;">
                                                 </button>
                                             @endif
                                             @if ($existingAttendanceDetail && $existingAttendanceDetail->punch_out == '')
-
+                                                <input type="hidden" id=attendance_id>
                                                 <button class="btn btn-sm btn-primary align-self-center" id="stop-timer">
                                                     Punch Out
                                                 </button>
@@ -348,7 +344,7 @@ border-bottom-right-radius: 30px;">
             // Pass PHP values to JavaScript and ensure proper JSON encoding
             var punchIn = @json($existingAttendanceDetail->punch_in);
             var punchOut = @json($existingAttendanceDetail->punch_out);
-
+            $('#attendance_id').val(@json($existingAttendanceDetail->id));
             get_timer_clock(punchIn, punchOut);
         @endif
 

@@ -49,6 +49,13 @@ class AttendanceController extends Controller
                     'message' => "You Punched In Successfully"
                 ], 200);
             }
+            if ($attendanceDetails['status'] == false &&  isset($response['before_punchout_confirm_required'])) {
+                return response()->json([
+                    'status' => false,
+                    'before_punchout_confirm_required' => $attendanceDetails['before_punchout_confirm_required'],
+                    'message' => $attendanceDetails['message']
+                ],200);
+            }
             if ($attendanceDetails['status'] === false) {
                 return response()->json([
                     'status' => false,

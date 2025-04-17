@@ -131,7 +131,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.rou
     Route::get('/payslips', [PayslipsMangementController::class, 'index'])->name('employee.payslips');
 
     //Employee Attendance Management]
-    Route::get('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
+    Route::post('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
 
     //Employee Leave Available
     Route::get('get/leave/available', [LeaveAvailableController::class, 'getAllLeaveAvailableByUserId'])->name('employee.leave.available');
