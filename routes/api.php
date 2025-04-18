@@ -92,6 +92,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::get('/attendance/request/delete/{id}', 'deleteAttendanceRequest');
         Route::get('/attendance/request/details/{id}', 'detailsAttendanceRequest');
         Route::get('/attendance/request/list', 'getAllAttendanceRequestList');
+        Route::get('/attendance/details/{month}', 'attendanceDetailsbyMonth');
     });
 
     /** Comp off Module  */

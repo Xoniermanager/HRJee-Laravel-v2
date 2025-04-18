@@ -34,9 +34,10 @@ class EmployeeBreakHistoryController extends Controller
             $data = $request->except('_token');
             $checkBreakHistoryDetails = $this->employeeBreakHistory->getAllBreakHistory($data['employee_attendance_id']);
             if ($checkBreakHistoryDetails->count() < 3) {
-                $this->employeeBreakHistory->breakIn($data);
+                $createdDetails = $this->employeeBreakHistory->breakIn($data);
                 return response()->json([
                     'status' => true,
+                    'data' => $createdDetails,
                     'message' => 'Break Started!'
                 ]);
             } else {
