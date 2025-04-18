@@ -80,7 +80,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
 
     /** Punch In */
     Route::controller(AttendanceController::class)->group(function () {
-        Route::get('/employee/make/attendance', 'makeAttendance');
+        Route::post('/employee/make/attendance', 'makeAttendance');
         Route::post('/search/filter/attendance', 'getAttendanceByFromAndToDate');
         Route::get('/get-today-attendance', 'getTodayAttendance');
         Route::get('/get-last-attendance', 'getLastTenDaysAttendance');
