@@ -102,7 +102,7 @@ class AttendanceController extends Controller
                 'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
                 'totalLeave'   => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
                 'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->count(),
-                'shortAttendance' => '0',
+                'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month,$employeeDetails->id,$year)->count(),
                 'totalAbsent' => '0',
                 'emp_id'    => $employeeDetails->id,
                 'allAttendanceDetails' => $allAttendanceDetails

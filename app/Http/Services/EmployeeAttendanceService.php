@@ -58,7 +58,8 @@ class EmployeeAttendanceService
         if (isset($data['attendance_id']) && !empty($data['attendance_id'])) {
             $existingAttendance = $this->employeeAttendanceRepository->find($data['attendance_id']);
             if ($existingAttendance) {
-                if (!$data['force']) {
+                if (!$data['force'])
+                {
                     if ($officeShiftDetails->check_out_buffer > 0) {
                         $bufferTime = $officeEndTime->copy()->subMinutes($officeShiftDetails->check_out_buffer);
                         if (Carbon::now()->lt($bufferTime)) {
@@ -89,10 +90,6 @@ class EmployeeAttendanceService
             // Handle Punch In
             $data['user_id'] = $userDetails->id;
             $data['punch_in'] = $attendanceTime;
-            // $payload['punch_in_using'] = $data['punch_in_using'];
-            // $payload['punch_in_latitude'] = $data['punch_in_latitude'] ?? '';
-            // $payload['punch_in_longitude'] = $data['punch_in_longitude'] ?? '';
-            // $payload['punch_in_address'] = $data['punch_in_address'] ?? '';
             // Check for login before shift time buffer
             if ($officeShiftDetails->login_before_shift_time > 0) {
                 $loginBeforeShiftTime = $officeStartTime->subMinutes($officeShiftDetails->login_before_shift_time)->format('H:i:s');
