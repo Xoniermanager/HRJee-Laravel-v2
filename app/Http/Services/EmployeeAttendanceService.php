@@ -162,7 +162,7 @@ class EmployeeAttendanceService
      * @param [type] $fromDate
      * @param [type] $toDate
      * @param [type] $userId
-     * @return void
+     * @return void/object/null
      */
     public function getAttendanceByFromAndToDate($fromDate, $toDate, $userId)
     {
@@ -204,11 +204,24 @@ class EmployeeAttendanceService
      * @param [type] $month
      * @param [type] $userId
      * @param [type] $year
-     * @return void
+     * @return void/null/object
      */
     public function getAllAttendanceByMonthByUserId($month, $userId, $year)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $month
+     * @param [type] $userId
+     * @param [type] $year
+     * @return void/null/object
+     */
+    public function getAllAttendanceByDateByUserId($startDate, $userId, $endDate)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->where('punch_in', '>=', $startDate)->where('punch_in', '<=', $endDate);
     }
 
     /**

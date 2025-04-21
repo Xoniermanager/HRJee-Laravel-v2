@@ -13,14 +13,18 @@
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
-                        <select name="year" class="form-control min-w-250px" id="year">
+                        <select name="month" class="form-control min-w-150px ml-10" id="filter-type">
+                            <option value="Monthly">Monthly</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                        <select name="year" class="form-control min-w-150px ml-10 monthly" id="year">
                             <option value="">Select Year</option>
                             @for ($i = date('Y', strtotime('-5 year')); $i <= date('Y'); $i++)
                                 <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>
                                     {{ $i }}</option>
                             @endfor
                         </select>
-                        <select name="month" class="form-control min-w-250px ml-10" id="month">
+                        <select name="month" class="form-control min-w-150px ml-10 monthly" id="month">
                             <option value="">Select Month</option>
                             @php
                                 $currentMonth = date('m');
@@ -32,6 +36,9 @@
                                 </option>
                             @endforeach
                         </select>
+                        <input type="date" name="start_date" id="start_date" value="" class="form-control ml-10 custom-date" style="display: none;">
+                        <input type="date" name="end_date" id="end_date" value="" class="form-control ml-10 custom-date" style="display: none;" disabled>
+
                     </div>
                     <button class="btn btn-sm btn-primary align-self-center" id="export_button">Export Attendance</button>
                 </div>
@@ -126,6 +133,22 @@
         }
 
         $(document.body).ready(function() {
+            $('#filter-type').on('change', function() {
+                var filterType = this.value;
+                $("#start_date").val("")
+                $("#end_date").val("")
+                $("#year").val("")
+                $("#month").val("")
+                $("#end_date").prop('disabled', true)
+                if(filterType == "Monthly") {
+                    $(".monthly").show()
+                    $(".custom-date").hide()
+                } else {
+                    $(".monthly").hide()
+                    $(".custom-date").show()
+                }
+            });
+
             $('#year').on('change', function() {
                 var yearValue = this.value;
                 var currentYear = {{ date('Y') }};
@@ -148,12 +171,32 @@
             $('#month').on('change', function() {
                 searchFilter();
             });
+
+            $('#start_date').on('change', function() {
+                $("#end_date").prop('disabled', false)
+                searchFilter();
+            });
+
+            $('#end_date').on('change', function() {
+                searchFilter();
+            });
+
             $('#search').on('input', function() {
                 searchFilter(this.value);
             });
             $('#export_button').on('click', function() {
-                exportAttendanceByUserId({{ $employeeDetail['emp_id'] }},$('#year').val(),$('#month').val())
+                var today = new Date();
+                var formattedDate = today.getFullYear() + '-' + 
+                    String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(today.getDate()).padStart(2, '0');
+
+                if($('#end_date').val() != "") {
+                    formattedDate = $('#end_date').val()
+                }   
+
+                exportAttendanceByUserId({{ $employeeDetail['emp_id'] }},$('#year').val(),$('#month').val(),$('#start_date').val(),formattedDate)
             });
+            
             function searchFilter() {
                 $.ajax({
                     method: 'GET',
@@ -161,6 +204,8 @@
                     data: {
                         'year': $('#year').val(),
                         'month': $('#month').val(),
+                        'start_date': $('#start_date').val(),
+                        'end_date': $('#end_date').val(),
                     },
                     success: function(response) {
                         $('#view_list').replaceWith(response.data);

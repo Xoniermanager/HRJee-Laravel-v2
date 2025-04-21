@@ -218,12 +218,17 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
         Route::post('/export-file', 'uploadImport')->name('upload.file');
+        Route::post('/download-attendance', 'downloadA')->name('upload.file');
         Route::post('/punchIn/radius','updatePunchInRadius')->name('update.punhin.radius');
+        Route::get('/get-manager-by-departments', 'getAllManager')->name('get.all.manager');
+
     });
+
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
         Route::get('/get/advance/details/{id}', 'getAdvanceDetails');
     });
+
     Route::controller(UserCtcDetailsController::class)->group(function () {
         Route::post('/employee/ctc/details', 'store')->name('employee.ctc.details');
         Route::get('/salary/component/details', 'getComponentsDetail');
@@ -586,6 +591,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::post('/edit', 'editAttendanceByEmployeeId');
             Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
             Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
+            Route::post('/download/attendance', 'downloadAttendance')->name('download.attendance');
+
         });
         //Attendance Status Module
         Route::prefix('/attendance-status')->controller(AttendanceStatusController::class)->group(function () {

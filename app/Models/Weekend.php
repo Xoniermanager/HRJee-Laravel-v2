@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Weekend extends Model
 {
     use HasFactory, CompanyScope;
-    protected $fillable = ['company_branch_id', 'description', 'status', 'company_id','department_id','created_by', 'weekend_dates'];
+    protected $fillable = ['company_branch_id', 'description', 'status', 'company_id','department_id','created_by', 'weekend_dates', 'designation_id'];
 
 
     protected $casts = [

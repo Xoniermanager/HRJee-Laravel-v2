@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Repositories\UserRepository;
+use App\Repositories\UserDetailRepository;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
 use Request;
@@ -12,9 +13,11 @@ use App\Models\EmployeeManager;
 class UserService
 {
     private $userRepository;
-    public function __construct(UserRepository $userRepository)
+    private $userDetailRepository;
+    public function __construct(UserRepository $userRepository, UserDetailRepository $userDetailRepository)
     {
         $this->userRepository = $userRepository;
+        $this->userDetailRepository = $userDetailRepository;
     }
 
     public function create($data)
@@ -396,6 +399,21 @@ class UserService
 
     public function getAllManagerByCompanyId($companyId)
     {
-        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
+        return $this->userRepository->whereIn('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
+    }
+
+    public function getAllManagerByDepartmentId($companyId, $deptId)
+    {
+        return $this->userRepository->whereIn('company_id', $companyId)
+        ->where('type', 'user')
+        ->whereNotNull('role_id')
+        ->whereHas('details', function ($query) use ($deptId) {
+            $query->where('department_id', $deptId);
+        })
+        ->with([
+            'managerEmployees.user.details',
+            'role:id,name'
+        ])
+        ->get();
     }
 }
