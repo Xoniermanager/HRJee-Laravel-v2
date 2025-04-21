@@ -45,7 +45,7 @@ class LeaveManagementApiController extends Controller
 
     public function allLeaves()
     {
-        $allLeaves = $this->leaveService->leavesByUserId(Auth()->user()->id);
+        $allLeaves = $this->leaveService->leavesByUserId(Auth()->guard('employee_api')->user()->id);
 
         return response()->json([
             'status' => true,
@@ -73,7 +73,7 @@ class LeaveManagementApiController extends Controller
                 ], 400);
             }
             $data = $request->all();
-            $userID = Auth()->user()->id;
+            $userID = Auth()->guard('employee_api')->user()->id;
 
             $availableLeaves = $this->employeeLeaveAvailableService->getAvailableLeaveByUserIdTypeId($userID, $data['leave_type_id']);
 
