@@ -200,6 +200,15 @@ class EmployeeServices
             });
     }
 
+    public function getEmployeeQueryByCompanyId($companyId)
+    {
+        return $this->userRepository->query()
+            ->where('company_id', $companyId)
+            ->where('type', 'user') // or whatever your employee type is
+            // ->whereNotNull('role_id') // assuming role_id is mandatory for employees
+            ->with(['details', 'managers']);
+    }
+
 
     public function addManagers($userId, $managerIDs)
     {

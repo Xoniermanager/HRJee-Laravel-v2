@@ -404,4 +404,25 @@ class EmployeeController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+
+    public function getAllManager(Request $request)
+    {
+        $companyIDs = getCompanyIDs();
+        $departmentIds = $request->department_id;
+        
+        $allManagers = $this->userService->getAllManagerByDepartmentId($companyIDs, $departmentIds);
+        
+        if (isset($allManagers) && count($allManagers) > 0) {
+            $response = [
+                'status' => true,
+                'data' => $allManagers
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'error' => 'No manager found this department'
+            ];
+        }
+        return json_encode($response);
+    }
 }

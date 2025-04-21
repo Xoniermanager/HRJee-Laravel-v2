@@ -255,4 +255,72 @@ class User extends Authenticatable implements MustVerifyEmail
         ->latest('created_at')->with('user');
     }
 
+    public function getPreviousMonthAttendanceWithLeave($month, $year)
+    {
+        $userId = $this->id;
+
+        $startDate = Carbon::create($year, $month, 1)->startOfMonth();
+        // End date (last day of the month)
+        $endDate = Carbon::create($year, $month, 1)->endOfMonth();
+
+        // $startDate = Carbon::now()->subMonth()->startOfMonth();
+        // $endDate = Carbon::now()->subMonth()->endOfMonth();
+
+        // Fetch attendance and leaves for the user for the previous month
+        $attendances = EmployeeAttendance::where('user_id', $userId)
+        ->whereBetween('punch_in', [$startDate->toDateString(), $endDate->toDateString()])
+        ->get()
+        ->groupBy(function ($item) {
+            return Carbon::parse($item->punch_in)->toDateString();
+        });
+
+        $leaves = Leave::where('user_id', $userId)
+        ->where(function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('from', [$startDate, $endDate])
+                ->orWhereBetween('to', [$startDate, $endDate])
+                ->orWhere(function ($q) use ($startDate, $endDate) {
+                    $q->where('from', '<', $startDate)
+                        ->where('to', '>', $endDate);
+                });
+        })
+        ->get();
+
+        $report = [];
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dateStr = $date->toDateString();
+            $status = 'Absent';
+            $details = null;
+
+            // Check attendance
+            if (isset($attendances[$dateStr])) {
+                $status = 'Present';
+                $details = $attendances[$dateStr];
+            } else {
+                // Check if on leave
+                $leave = $leaves->first(function ($leave) use ($dateStr) {
+                    return $dateStr >= $leave->from && $dateStr <= $leave->to;
+                });
+
+                if ($leave) {
+                    $status = 'On Leave';
+                    $details = [
+                        'leave_type_id' => $leave->leave_type_id,
+                        'leave_status_id' => $leave->leave_status_id,
+                        'is_half_day' => $leave->is_half_day,
+                        'reason' => $leave->reason,
+                    ];
+                }
+            }
+
+            $report[] = [
+                'date' => $dateStr,
+                'status' => $status,
+                'details' => $details,
+            ];
+        }
+
+        return $report;
+    }
+
 }

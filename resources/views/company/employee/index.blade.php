@@ -59,7 +59,43 @@
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     </form>
-
+                                </div>
+                                <div class="col-md-7 mt-3">
+                                    <form class="d-flex" id="downloadAttendance">
+                                        @csrf
+                                        <select class="form-control filter_form" name="emp_filter" id="emp_filter">
+                                            <option value="current_month"
+                                                {{ request()->get('emp_filter') == 'current_month' || old('emp_filter') == 'current_month' ? 'selected' : '' }}>
+                                                Current Month</option>
+                                            <option value="previous_month"
+                                                {{ request()->get('emp_filter') == 'previous_month' || old('emp_filter') == 'previous_month' ? 'selected' : '' }}>
+                                                Previous Month
+                                            </option>
+                                            <option value="current_quarter"
+                                                {{ request()->get('emp_filter') == 'current_quarter' || old('emp_filter') == 'current_quarter' ? 'selected' : '' }}>
+                                                Current Quarter
+                                            </option>
+                                            <option value="previous_quarter"
+                                                {{ request()->get('emp_filter') == 'previous_quarter' || old('emp_filter') == 'previous_quarter' ? 'selected' : '' }}>
+                                                Previous Quarter
+                                            </option>
+                                            <option value="current_year"
+                                                {{ request()->get('emp_filter') == 'current_year' || old('emp_filter') == 'current_year' ? 'selected' : '' }}>
+                                                Current Year
+                                            </option>
+                                            <option value="previous_year"
+                                                {{ request()->get('emp_filter') == 'previous_year' || old('emp_filter') == 'previous_year' ? 'selected' : '' }}>
+                                                Previous Year
+                                            </option>
+                                            <option value="custom"
+                                                {{ request()->get('emp_filter') == 'custom' || old('emp_filter') == 'custom' ? 'selected' : '' }}>
+                                                Custom
+                                            </option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm ms-3 btn-primary" title="Download Attendance">
+                                            Download Attendance
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         @endif
@@ -547,6 +583,7 @@
                     status = 0;
                     status_name = 'Inactive';
                 }
+                
                 $.ajax({
                     url: "{{ route('admin.company.facerecognitionUpdate') }}",
                     type: 'get',
@@ -662,6 +699,74 @@
                         }
                     });
                 });
+
+                $('#downloadAttendance').on('submit', function(e) {
+                    e.preventDefault();
+                    var payload  = {
+                        range: $("#emp_filter").val(),
+                        from: null,
+                        to: null
+                    };
+                    $('#errorMessage').hide();
+                    $('#validationErrors').hide();
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: '{{ route('download.attendance') }}',
+                        method: 'POST',
+                        data: JSON.stringify(payload),
+                        contentType: 'application/json', // sending JSON
+                        processData: false,
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    title: 'Sucess',
+                                    text: response.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                });
+                                $('#employee_list').replaceWith(response.data);
+                            } else if (response.status === 'error') {
+                                if (response.errors) {
+                                    let errorsHtml =
+                                        '<ul style="color: red; list-style-type: none; padding-left: 20px; margin: 0;">';
+                                    response.errors.forEach(function(error) {
+                                        // Ensure you join multiple errors with commas if needed
+                                        let errorMessages = Array.isArray(error.errors) ?
+                                            error.errors.join(', ') : error.errors;
+                                        errorsHtml +=
+                                            '<li style="color: red; margin-bottom: 5px;">Row ' +
+                                            error.row + ': ' + errorMessages + '</li>';
+                                    });
+                                    errorsHtml += '</ul>';
+
+                                    Swal.fire({
+                                        title: "The Error?",
+                                        html: errorsHtml, // Use "html" for custom HTML content
+                                        icon: "error", // "error" icon for SweetAlert
+                                        customClass: {
+                                            popup: 'swal-popup-error', // Custom class for the popup
+                                            title: 'swal-title-error', // Optional: custom class for title
+                                            content: 'swal-content-error' // Optional: custom class for content
+                                        }
+                                    });
+                                } else {
+                                    $('#errorMessage').text(response.message).show();
+                                }
+                            }
+                        },
+                        error: function(xhr) {
+                            var response = xhr.responseJSON;
+                            $('#errorMessage').text(response.message ||
+                                'An unexpected error occurred.').show();
+                        }
+                    });
+                });
+
+
             });
         </script>
         <script>
@@ -686,8 +791,6 @@
                 const checkedValues = Array.from(document.querySelectorAll('input[name="user_id[]"]:checked'))
                     .map(checkbox => checkbox.value);
                 $('#hidden_user_ids').val(checkedValues).trigger('change');
-                // $('#hidden_user_ids').value(checkedValues);
-                // document.getElementById('hidden_user_ids').value = checkedValues.join(',');
             }
 
             // Toggle the "disabled" class on #punch_in_radius based on checkbox state

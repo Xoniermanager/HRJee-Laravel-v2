@@ -46,7 +46,7 @@ class LeaveService
      * Undocumented function
      *
      * @param array $data
-     * @return void
+     * @return void/object/null
      */
     public function create(array $data)
     {

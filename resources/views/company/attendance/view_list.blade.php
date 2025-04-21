@@ -75,17 +75,22 @@
                 <tbody>
                     @php $i = '1' @endphp
                     @foreach ($employeeDetail['allAttendanceDetails'] as $key => $item)
+                    
                     @php
                     $workingHour = '';
                     $punchIn = '';
                     $punchOut = '';
                     $status = 'Absent';
+                    $statusColor = 'red';
+                    $title = "";
                     if(!empty($item->punch_in) && !empty($item->punch_out))
                     {
                     $workingHour = getTotalWorkingHour($item->punch_in,$item->punch_out);
                     $punchIn = date('h:i A',strtotime($item->punch_in));
                     $punchOut = date('h:i A',strtotime($item->punch_out));
                     $status =  ($item->is_short_attendance ? 'Short Attendance' : ($item->late ? 'Late' : 'Present'));
+                    $statusColor = ($item['leave'] ? "red" : ($item->punch_in_by == "Company" ? "orange" : ($status == "Present" ? "green" : "yellow")));
+                    $title = "Punch In By ". $item->punch_in_by . " and reason is " . $item->remark;
                     }
                     @endphp
                     @if($item['weekend'] == true)
@@ -99,7 +104,7 @@
                         <td>{{$item['leave'] ? 'N/A' : $punchIn}}</td>
                         <td>{{$item['leave'] ? 'N/A' : $punchOut}}</td>
                         <td>{{$item['leave'] ? 'N/A' : $workingHour}}</td>
-                        <td>{{($item['leave'] ? 'Leave' : $status)}}</td>
+                        <td title="{{$title}}" style="color: {{$statusColor}}; font-weight:500;">{{($item['leave'] ? 'Leave' : $status)}}</td>
                         <td>
                             <a href="" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 onClick="edit_attendance('{{ isset($item->id) ? $item->id : '' }}', '{{ isset($item->punch_in) ? date('H:i', strtotime($item->punch_in)) : date('H:i') }}', '{{ isset($item->punch_out) ? date('H:i', strtotime($item->punch_out)) : date('H:i') }}', '{{ $key }}')"
