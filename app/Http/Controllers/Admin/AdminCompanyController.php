@@ -139,7 +139,7 @@ class AdminCompanyController extends Controller
             'username' => 'sometimes|required|string|max:255',
             'contact_no' => 'sometimes|required|string|max:20',
             'password' => 'sometimes|required|confirmed',
-            'company_size' => 'sometimes|required|string',
+            'company_size' => 'sometimes|required|min:1',
             'subscription_id' => 'required|string',
             'onboarding_date' => 'required|string',
             'company_url' => 'sometimes|required|string|url|max:100',
@@ -156,7 +156,7 @@ class AdminCompanyController extends Controller
                 $filePath = uploadingImageorFile($request->logo, $upload_path, $nameForImage);
                 $request->merge(['logo' => $filePath]);
             }
-            
+
             $subscriptionPlan = $this->subscriptionPlanService->getDetails($request->subscription_id);
             $subscriptionDays = $subscriptionPlan ? $subscriptionPlan->days : 7;
             $expiryDate = date('Y-m-d', strtotime($request->onboarding_date . ' + '. $subscriptionDays . 'days'));

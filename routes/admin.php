@@ -24,7 +24,7 @@ use App\Http\Controllers\Admin\AssignMenuCompanyController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Admin\AdminPreviousCompanyController;
 
-Route::prefix('/admin')->middleware('Check2FA')->group(function () {
+Route::prefix('/admin')->middleware(['auth','Check2FA'])->group(function () {
     Route::get('/profile/details', [ProfileController::class, 'getProfile'])->name('admin.getProfile');
 
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('admin.dashboard');
