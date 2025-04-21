@@ -28,7 +28,7 @@ class EmployeeLeaveAvailableService
    * Undocumented function
    *
    * @param [type] $id
-   * @return void
+   * @return object
    */
   public function getAllLeaveAvailableByUserId($id)
   {

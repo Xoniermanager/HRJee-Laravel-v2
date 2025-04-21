@@ -12,6 +12,9 @@ class Authenticate
     public function handle(Request $request, Closure $next)
     {
         if (!Session::has('user_2fa')) {
+            if ($request->is('api/*')) {
+                return $next($request);
+            }
             $path = $request->path();
             if (str_starts_with($path, 'admin')) {
                 return redirect()->route('admin.login');
@@ -21,4 +24,5 @@ class Authenticate
         }
         return $next($request);
     }
+
 }
