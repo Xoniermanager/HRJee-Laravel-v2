@@ -13,7 +13,7 @@ use Throwable;
 
 class AdminAuthController extends Controller
 {
-    private  $authService, $sendOtpService;
+    private $authService, $sendOtpService;
 
     public function __construct(SendOtpService $sendOtpService)
     {
@@ -21,38 +21,40 @@ class AdminAuthController extends Controller
     }
     public function admin_login(Request $request)
     {
+        // Validate login form data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:admin,email',
+            'password' => 'required',
+        ]);
+
+        // If validation fails, redirect back with errors and old input
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         try {
-            // Validate login form data
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
-                'password' => 'required|min:6',
-            ]);
-
-            // If validation fails, return the error messages
-            if ($validator->fails()) {
-
-                return redirect()->back()->withErrors($validator)->withInput();
+            // Attempt to authenticate the user
+            if (!Auth::guard('admin')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with(['error' => 'These credentials do not match our records.']);
             }
-            // If authentication fails, redirect back with an error message
-            if (!Auth::guard('admin')->attempt($request->only('email', 'password'))) {
-                
-                return redirect()->back()->with(['error' => 'These credentials do not match our records.']);
+
+            // If login is successful, generate OTP
+            $generateOtpResponse = $this->sendOtpService->generateOTP($request->email, 'admin');
+            if ($generateOtpResponse['status'] === true) {
+                return redirect('/admin/verify/otp');
             } else {
-                $generateOtpResponse = $this->sendOtpService->generateOTP($request->email, 'admin');
-                if ($generateOtpResponse['status'] === true) {
-
-                    return redirect('/admin/verify/otp');
-                } else {
-
-                    return redirect('/signin')->with('error', $generateOtpResponse['message']);
-                }
+                return redirect('/signin')->with('error', $generateOtpResponse['message']);
             }
         } catch (Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+            return redirect()->back()
+                ->withInput()
+                ->with(['error' => $th->getMessage() ?? 'Something went wrong. Please try again later.']);
         }
+
     }
     public function login()
     {
@@ -69,10 +71,8 @@ class AdminAuthController extends Controller
     public function verifyOtp()
     {
         if (!auth()->guard('admin')->check()) {
-
-            return  redirect('/admin/login');
+            return redirect('/admin/login');
         }
-        
         return view('admin-verify-otp');
     }
     public function verifyOtpCheck(VerifyOtpRequest $request)
@@ -83,9 +83,9 @@ class AdminAuthController extends Controller
             $data['type'] = 'admin';
             $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'admin');
             if ($verifyOtpResponse)
-                return redirect('/admin/dashboard');
+                return redirect(route('admin.dashboard'));
             else
-                return redirect('/admin/verify/otp')->with('error',  'invalid or expired otp! ');
+                return redirect('/admin/verify/otp')->with('error', 'invalid or expired otp! ');
         } catch (Throwable $th) {
             return Redirect::back()->withErrors($th->getMessage());
         }
@@ -95,20 +95,21 @@ class AdminAuthController extends Controller
     {
         try {
             if (!auth()->guard('admin')->check()) {
-                return   redirect('/admin/login');
+                return redirect('/admin/login');
             }
             $email = auth()->guard('admin')->user()->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'admin');
             if ($otpResponse['status'] == true)
-                return redirect('admin/verify/otp')->with('success',  transLang($otpResponse['message']));
+                return redirect('admin/verify/otp')->with('success', transLang($otpResponse['message']));
             else
-                return redirect('admin/verify/otp')->with('error',  transLang($otpResponse['message']));
+                return redirect('admin/verify/otp')->with('error', transLang($otpResponse['message']));
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
     }
-    public function adminLogout(){
+    public function adminLogout()
+    {
         Auth()->guard('admin')->logout();
-        return redirect(route('admin.login.form'));
+        return redirect(route('admin.login'));
     }
 }

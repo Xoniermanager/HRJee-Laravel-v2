@@ -82,7 +82,7 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
-Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess','log.route'])->group(function ()
+Route::prefix('company')->middleware(['auth','checkAccountStatus', 'Check2FA', 'checkUrlAcess','log.route'])->group(function ()
 {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
@@ -219,12 +219,17 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
         Route::post('/export-file', 'uploadImport')->name('upload.file');
+        Route::post('/download-attendance', 'downloadA')->name('upload.file');
         Route::post('/punchIn/radius','updatePunchInRadius')->name('update.punhin.radius');
+        Route::get('/get-manager-by-departments', 'getAllManager')->name('get.all.manager');
+
     });
+
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
         Route::get('/get/advance/details/{id}', 'getAdvanceDetails');
     });
+
     Route::controller(UserCtcDetailsController::class)->group(function () {
         Route::post('/employee/ctc/details', 'store')->name('employee.ctc.details');
         Route::get('/salary/component/details', 'getComponentsDetail');
@@ -587,6 +592,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::post('/edit', 'editAttendanceByEmployeeId');
             Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
             Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
+            Route::post('/download/attendance', 'downloadAttendance')->name('download.attendance');
+
         });
         //Attendance Status Module
         Route::prefix('/attendance-status')->controller(AttendanceStatusController::class)->group(function () {

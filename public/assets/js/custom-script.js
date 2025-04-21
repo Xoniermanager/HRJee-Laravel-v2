@@ -324,7 +324,7 @@ function assignAnnouncement(value) {
         $('.notification_schedule_time').show();
     }
 }
-function exportAttendanceByUserId(empId, year, month) {
+function exportAttendanceByUserId(empId, year, month, startDate, endDate) {
     $("#export_button").prop("disabled", true);
     $.ajax({
         type: 'get',
@@ -332,7 +332,9 @@ function exportAttendanceByUserId(empId, year, month) {
         data: {
             'year': year,
             'month': month,
-            'empId': empId
+            'empId': empId,
+            startDate,
+            endDate
         },
         xhrFields: {
             responseType: 'blob'

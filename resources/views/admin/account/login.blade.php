@@ -17,7 +17,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="admin/assets/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="/admin/assets/css/font-awesome.css">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css"
@@ -44,9 +44,12 @@
     <link rel="stylesheet" type="text/css" href="{{asset('admin/assets/css/vendors/bootstrap.css')}}">
     <!-- App css-->
     <link rel="stylesheet" type="text/css" href="{{asset('admin/assets/css/style.css')}}">
-    <link id="color" rel="stylesheet" href="{{asset('admin/assets/css/color-1.css" media="screen')}}">
+    <link id="color" rel="stylesheet" href="{{asset('admin/assets/css/color-1.css')}}" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="{{asset('admin/assets/css/responsive.css')}}">
+    <!-- Add this in your <head> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body>
@@ -71,39 +74,62 @@
                                 {{ session('success') }}
                             </div>
                             @endif
-                            <form class="theme-form" method="POST" action="{{route('super.admin.login')}}">
+                            <form class="theme-form" method="POST" action="{{ route('super.admin.login') }}">
                                 @csrf
-                                <h4>Sign in to account</h4>
+                                <h4>Login in to account</h4>
                                 <p>Enter your email & password to login</p>
+
                                 <div class="form-group">
                                     <label class="col-form-label">Email Address</label>
-                                    <input class="form-control" type="email" name="email" placeholder="Test@gmail.com"
-                                        autocomplete="off">
+                                    <input class="form-control" type="email" name="email" placeholder="Test@gmail.com" value="{{ old('email') }}" >
                                     @if($errors->has('email'))
                                     <span class="text-danger" id="email_error">{{ $errors->first('email') }}</span>
                                     @endif
                                 </div>
+
                                 <div class="form-group">
                                     <label class="col-form-label">Password</label>
                                     <div class="form-input position-relative">
-                                        <input class="form-control" type="password" name="password"
-                                            placeholder="*********" autocomplete="off">
-                                        <div class="show-hide"><span class="show"> </span></div>
+                                        <input class="form-control" type="password" name="password" placeholder="*********" id="password-field" value="{{ old('password') }}">
+                                        <span class="position-absolute end-0 top-50 translate-middle-y me-3" onclick="togglePassword()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-eye" id="toggle-icon"></i>
+                                        </span>
                                     </div>
                                     @if($errors->has('password'))
                                     <span class="text-danger" id="email_error">{{ $errors->first('password') }}</span>
                                     @endif
                                 </div>
+
                                 <div class="form-group mb-0">
                                     <div class="checkbox p-0">
-                                        <input id="checkbox1" type="checkbox">
+                                        <input id="checkbox1" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
                                         <label class="text-muted" for="checkbox1">Remember password</label>
-                                    </div><a class="link" href="{{route('admin.forget.password')}}">Forgot password?</a>
+                                    </div>
+                                    <a class="link" href="{{ route('admin.forget.password') }}">Forgot password?</a>
                                     <div class="text-end mt-3">
-                                        <button class="btn btn-primary btn-block w-100" type="submit">Sign in</button>
+                                        <button class="btn btn-primary btn-block w-100" type="submit">Login</button>
                                     </div>
                                 </div>
                             </form>
+
+                            <!-- Toggle Password Script -->
+                            <script>
+                                function togglePassword() {
+                                    const passwordField = document.getElementById("password-field");
+                                    const toggleIcon = document.getElementById("toggle-icon");
+
+                                    if (passwordField.type === "password") {
+                                        passwordField.type = "text";
+                                        toggleIcon.classList.remove("fa-eye");
+                                        toggleIcon.classList.add("fa-eye-slash");
+                                    } else {
+                                        passwordField.type = "password";
+                                        toggleIcon.classList.remove("fa-eye-slash");
+                                        toggleIcon.classList.add("fa-eye");
+                                    }
+                                }
+                            </script>
+
                         </div>
                     </div>
                 </div>

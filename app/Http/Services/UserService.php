@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Repositories\UserRepository;
+use App\Repositories\UserDetailRepository;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
 use Request;
@@ -12,9 +13,11 @@ use App\Models\EmployeeManager;
 class UserService
 {
     private $userRepository;
-    public function __construct(UserRepository $userRepository)
+    private $userDetailRepository;
+    public function __construct(UserRepository $userRepository, UserDetailRepository $userDetailRepository)
     {
         $this->userRepository = $userRepository;
+        $this->userDetailRepository = $userDetailRepository;
     }
 
     public function create($data)
@@ -73,20 +76,25 @@ class UserService
     public function searchFilterCompany($searchKey)
     {
         $allCompanyDetails = $this->userRepository->where('type', 'company');
+
+        // Apply 'deletedAt' filtering for soft deletes
+        if (isset($searchKey['deletedAt']) && $searchKey['deletedAt']) {
+            $allCompanyDetails = $allCompanyDetails->onlyTrashed();
+        }
+
         // Apply company type filtering
-        $allCompanyDetails->when(isset($searchKey['companyTypeId']), function ($query) use ($searchKey) {
+        $allCompanyDetails = $allCompanyDetails->when(isset($searchKey['companyTypeId']), function ($query) use ($searchKey) {
             $query->whereHas('companyDetails', function ($query) use ($searchKey) {
                 $query->where('company_type_id', $searchKey['companyTypeId']);
             });
         });
 
         // Apply search key filtering for 'name', 'email', and fields in 'companyDetails'
-        $allCompanyDetails->when(isset($searchKey['key']), function ($query) use ($searchKey) {
+        $allCompanyDetails = $allCompanyDetails->when(isset($searchKey['key']), function ($query) use ($searchKey) {
             $query->where(function ($query) use ($searchKey) {
-                // Search in 'name' and 'email' fields on the User model
                 $query->where('name', 'like', '%' . $searchKey['key'] . '%')
                     ->orWhere('email', 'like', '%' . $searchKey['key'] . '%')
-                    // Search in 'companyDetails' fields
+                    ->orWhere('id', $searchKey['key'])
                     ->orWhereHas('companyDetails', function ($query) use ($searchKey) {
                         $query->where('username', 'like', '%' . $searchKey['key'] . '%')
                             ->orWhere('contact_no', 'like', '%' . $searchKey['key'] . '%')
@@ -97,14 +105,13 @@ class UserService
 
         // Apply 'status' filtering
         if (isset($searchKey['status'])) {
-            $allCompanyDetails->where('status', $searchKey['status']);
+            $allCompanyDetails = $allCompanyDetails->where('status', $searchKey['status']);
         }
 
-        // Apply 'deletedAt' filtering for soft deletes
-        if (isset($searchKey['deletedAt'])) {
-            $allCompanyDetails->onlyTrashed();
-        }
-
+        // Eager load 'companyDetails' including soft-deleted records
+        $allCompanyDetails = $allCompanyDetails->with(['companyDetails' => function ($query) {
+            $query->withTrashed();
+        }]);
         return $allCompanyDetails->paginate(10);
     }
 
@@ -396,6 +403,21 @@ class UserService
 
     public function getAllManagerByCompanyId($companyId)
     {
-        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
+        return $this->userRepository->whereIn('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
+    }
+
+    public function getAllManagerByDepartmentId($companyId, $deptId)
+    {
+        return $this->userRepository->whereIn('company_id', $companyId)
+        ->where('type', 'user')
+        ->whereNotNull('role_id')
+        ->whereHas('details', function ($query) use ($deptId) {
+            $query->where('department_id', $deptId);
+        })
+        ->with([
+            'managerEmployees.user.details',
+            'role:id,name'
+        ])
+        ->get();
     }
 }

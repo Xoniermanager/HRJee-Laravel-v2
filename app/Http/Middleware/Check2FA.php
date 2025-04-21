@@ -17,8 +17,9 @@ class Check2FA
     public function handle(Request $request, Closure $next): Response
     {
         if (!Session::has('user_2fa')) {
-            if ($request->segment(1) == 'admin')
-                return redirect()->route('admin.login.form');
+            $path = $request->path();
+            if (str_starts_with($path, 'admin'))
+                return redirect()->route('admin.login');
             else
                 return redirect()->route('base');
         }

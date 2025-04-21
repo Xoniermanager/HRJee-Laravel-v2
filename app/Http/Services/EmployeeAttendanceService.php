@@ -58,8 +58,7 @@ class EmployeeAttendanceService
         if (isset($data['attendance_id']) && !empty($data['attendance_id'])) {
             $existingAttendance = $this->employeeAttendanceRepository->find($data['attendance_id']);
             if ($existingAttendance) {
-                if (!$data['force'])
-                {
+                if (!$data['force']) {
                     if ($officeShiftDetails->check_out_buffer > 0) {
                         $bufferTime = $officeEndTime->copy()->subMinutes($officeShiftDetails->check_out_buffer);
                         if (Carbon::now()->lt($bufferTime)) {
@@ -283,27 +282,30 @@ class EmployeeAttendanceService
     {
         $now = Carbon::now();
         $shiftDetails = $this->getShiftDetails($userId);
-        $shiftStart = Carbon::today()->setTimeFromTimeString($shiftDetails->officeShift->start_time);
-        $shiftEnd = Carbon::today()->setTimeFromTimeString($shiftDetails->officeShift->end_time);
+        if ($shiftDetails) {
+            $shiftStart = Carbon::today()->setTimeFromTimeString($shiftDetails->officeShift->start_time);
+            $shiftEnd = Carbon::today()->setTimeFromTimeString($shiftDetails->officeShift->end_time);
 
-        // If shift ends before or at the start, it's a night shift crossing midnight
-        if ($shiftEnd->lte($shiftStart)) {
-            $shiftEnd->addDay(); // Move end to next day
+            // If shift ends before or at the start, it's a night shift crossing midnight
+            if ($shiftEnd->lte($shiftStart)) {
+                $shiftEnd->addDay(); // Move end to next day
+            }
+            // Now, determine if we are inside today's night shift OR yesterday's
+            if ($now->between($shiftStart, $shiftEnd)) {
+                // It's today's night shift
+            } else {
+                // Go back one day
+                $shiftStart->subDay();
+                $shiftEnd->subDay();
+            }
+            // dd($shiftStart, $shiftEnd);
+            return $this->employeeAttendanceRepository
+                ->where('user_id', $userId)
+                ->whereBetween('punch_in', [$shiftStart, $shiftEnd])
+                ->first();
+        } else {
+            return false;
         }
-        // Now, determine if we are inside today's night shift OR yesterday's
-        if ($now->between($shiftStart, $shiftEnd)) {
-            // It's today's night shift
-        }
-         else {
-            // Go back one day
-            $shiftStart->subDay();
-            $shiftEnd->subDay();
-        }
-        // dd($shiftStart, $shiftEnd);
-        return $this->employeeAttendanceRepository
-            ->where('user_id', $userId)
-            ->whereBetween('punch_in', [$shiftStart, $shiftEnd])
-            ->first();
     }
 
     /**
@@ -312,7 +314,7 @@ class EmployeeAttendanceService
      * @param [type] $fromDate
      * @param [type] $toDate
      * @param [type] $userId
-     * @return void
+     * @return void/object/null
      */
     public function getAttendanceByFromAndToDate($fromDate, $toDate, $userId)
     {
@@ -354,11 +356,24 @@ class EmployeeAttendanceService
      * @param [type] $month
      * @param [type] $userId
      * @param [type] $year
-     * @return void
+     * @return void/null/object
      */
     public function getAllAttendanceByMonthByUserId($month, $userId, $year)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $month
+     * @param [type] $userId
+     * @param [type] $year
+     * @return void/null/object
+     */
+    public function getAllAttendanceByDateByUserId($startDate, $userId, $endDate)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->where('punch_in', '>=', $startDate)->where('punch_in', '<=', $endDate);
     }
 
     /**
@@ -526,7 +541,6 @@ class EmployeeAttendanceService
 
         if ($leave) {
             $response['status'] = $leave->is_half_day ? 'Half Day' : 'Leave';
-
         } elseif ($attendance) {
             $response['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
             $response['punch_out'] = date('H:i A', strtotime($attendance->punch_out));
