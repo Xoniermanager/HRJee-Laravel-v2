@@ -44,7 +44,7 @@ use App\Http\Controllers\Employee\UserRewardController;
 // });
 
 /** ---------------Employee Panel Started--------------  */
-Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.route'])->group(function ()
+Route::prefix('employee')->middleware(['auth','checkAccountStatus', 'Check2FA','log.route'])->group(function ()
  {
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
