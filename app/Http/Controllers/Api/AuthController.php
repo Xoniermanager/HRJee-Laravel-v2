@@ -150,7 +150,7 @@ class AuthController extends Controller
     public function getMenuAccess()
     {
 
-        $companyAssignedMenuIds = MenuRole::where('role_id', auth()->user()->parent->role_id)->pluck('menu_id')->toArray();
+        $companyAssignedMenuIds = MenuRole::where('role_id', auth()->guard('employee_api')->user()->parent->role_id)->pluck('menu_id')->toArray();
         $childMenus = Menu::where(['status' => 1, 'role' => 'employee'])->where(function ($query) use ($companyAssignedMenuIds) {
             $query->whereIn('parent_id', $companyAssignedMenuIds)
                 ->orWhere('parent_id', NULL);
