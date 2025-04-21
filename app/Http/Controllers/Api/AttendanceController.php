@@ -232,10 +232,10 @@ class AttendanceController extends Controller
         }
     }
 
-    public function generatePaySlip()
+    public function generatePaySlip(Request $request)
     {
         $employeeDetails = User::find(Auth()->guard('employee_api')->user()->id);
-        $checkExistingMonthDetails = UserMonthlySalary::where('user_id', Auth()->guard('employee_api')->user()->id)->where('year', Carbon::now()->subMonth()->format('Y'))->where('month', Carbon::now()->subMonth()->format('n'))->first();
+        $checkExistingMonthDetails = UserMonthlySalary::where('user_id', Auth()->guard('employee_api')->user()->id)->where('year', $request->get('year'))->where('month', $request->get('month'))->first();
         $data = [];
         if (isset($checkExistingMonthDetails) && !empty($checkExistingMonthDetails)) {
             $data['getEmployeeMonthlySalary']['others'] = $checkExistingMonthDetails->toArray();
