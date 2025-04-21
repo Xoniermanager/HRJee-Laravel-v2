@@ -65,7 +65,7 @@ class EmployeeBreakHistoryController extends Controller
     public function getBreakTypeList()
     {
         try {
-            $allBreakTypeDetails = $this->breakTypeService->getAllBreakTypeByCompanyId(Auth()->user()->company_id);
+            $allBreakTypeDetails = $this->breakTypeService->getAllBreakTypeByCompanyId(Auth()->guard('employee_api')->user()->company_id);
             if ($allBreakTypeDetails) {
                 return response()->json([
                     'status' => true,
