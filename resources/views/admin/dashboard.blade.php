@@ -16,7 +16,7 @@
                         </div>
                         <div class="card-body pb-0 total-sells">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="flex-shrink-0"><i class="fa fa-building text-white"></i></div>
+                                <div class="flex-shrink-0"><i class="fa fa-building text-white text-center"></i></div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2">
                                         <h2>{{ $dashboardData['all_company'] }}</h2>
@@ -37,7 +37,7 @@
                         </div>
                         <div class="card-body pb-0 total-sells">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="flex-shrink-0"><i class="fa fa-building text-white"></i></div>
+                                <div class="flex-shrink-0"><i class="fa fa-building text-white text-center"></i></div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2">
                                         <h2>{{ $dashboardData['total_active_company'] }}</h2>
@@ -58,7 +58,7 @@
                         </div>
                         <div class="card-body pb-0 total-sells">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="flex-shrink-0"><i class="fa fa-building text-white"></i></div>
+                                <div class="flex-shrink-0"><i class="fa fa-building text-white text-center"></i></div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2">
                                         <h2>{{ $dashboardData['total_inactive_company'] }}</h2>
@@ -74,12 +74,12 @@
                     <div class="card">
                         <div class="card-header card-no-border bg-dark">
                             <div class="header-top daily-revenue-card">
-                                <h4>Total Employee</h4>
+                                <h4>Total Employees</h4>
                             </div>
                         </div>
                         <div class="card-body pb-0 total-sells-2">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="flex-shrink-0"><i class="fa fa-users text-white"></i></div>
+                                <div class="flex-shrink-0"><i class="fa fa-users text-white text-center"></i></div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2">
                                         <h2>{{ $dashboardData['all_employee'] }}</h2>
@@ -95,12 +95,12 @@
                     <div class="card">
                         <div class="card-header card-no-border bg-secondary">
                             <div class="header-top daily-revenue-card">
-                                <h4>Total Active Employee</h4>
+                                <h4>Total Active Employees</h4>
                             </div>
                         </div>
                         <div class="card-body pb-0 total-sells-3">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="flex-shrink-0"><i class="fa fa-users text-white"></i></div>
+                                <div class="flex-shrink-0"><i class="fa fa-users text-white text-center"></i></div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2">
                                         <h2>{{ $dashboardData['total_active_employee'] }}</h2>
@@ -116,12 +116,12 @@
                     <div class="card">
                         <div class="card-header card-no-border bg-danger">
                             <div class="header-top daily-revenue-card">
-                                <h4>Total Inactive Employee</h4>
+                                <h4>Total Inactive Employees</h4>
                             </div>
                         </div>
                         <div class="card-body pb-0 total-sells-4">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="flex-shrink-0"><i class="fa fa-users text-white"></i></div>
+                                <div class="flex-shrink-0"><i class="fa fa-users text-white text-center"></i></div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center gap-2">
                                         <h2>{{ $dashboardData['total_inactive_employee'] }}</h2>

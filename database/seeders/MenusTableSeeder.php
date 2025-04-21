@@ -823,6 +823,19 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
+                62 =>
+                array(
+                    'id' => 63,
+                    'title' => 'Log Activity',
+                    'slug' => '/log-activity/company/list',
+                    'icon' => '<i class="fa fa-list-alt" aria-hidden="true"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 34,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
         ));
     }
 }

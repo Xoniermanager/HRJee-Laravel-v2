@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Menu;
+use App\Models\Role;
+use App\Models\MenuRole;
 use Illuminate\Http\Request;
 use App\Http\Services\MenuService;
 use App\Http\Services\UserService;
 use App\Http\Controllers\Controller;
-use App\Models\MenuRole;
 
 class AssignMenuCompanyController extends Controller
 {
@@ -39,9 +40,9 @@ class AssignMenuCompanyController extends Controller
             'menu_id.*' => 'required|exists:menus,id',
         ]);
 
-        $company = $this->userService->getUserById($validated['company_id']);
-        $adminRole = $company->role;
-        $company_id = $company->role;
+        $company = Role::where('company_id',$validated['company_id'])->first();
+        // dd($company);
+        // $adminRole = $company->role;
 
         // MenuRole::where('role_id', $company->role_id)->delete();
         if(isset($validated['menu_id'])) {
@@ -50,7 +51,7 @@ class AssignMenuCompanyController extends Controller
             foreach ($menus as $menu) {
                 $syncData[$menu->id] = [
                     'menu_id' => $menu->id,
-                    'role_id' => $company->role_id,
+                    'role_id' => $company->id,
                     'can_create' => true,
                     'can_read' => true,
                     'can_update' => true,
@@ -66,8 +67,9 @@ class AssignMenuCompanyController extends Controller
                 //     'can_delete' => true,
                 // ];
             }
+            // dd($adminRole);
             // MenuRole::insert($syncData);
-            $adminRole->menus()->sync($syncData);
+            $company->menus()->sync($syncData);
         }else{
             // $adminRole->menus()->delete();
             MenuRole::where('role_id', $company->role_id)->delete();

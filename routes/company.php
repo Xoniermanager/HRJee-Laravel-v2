@@ -20,6 +20,7 @@ use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
+use App\Http\Controllers\Admin\LogActivityController;
 use App\Http\Controllers\Company\BreakTypeController;
 use App\Http\Controllers\Company\HierarchyController;
 use App\Http\Controllers\Company\LanguagesController;
@@ -81,7 +82,7 @@ use App\Http\Controllers\Company\UserQualificationDetailsController;
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
-Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess','log.route'])->group(function ()
+Route::prefix('company')->middleware(['auth','checkAccountStatus', 'Check2FA', 'checkUrlAcess','log.route'])->group(function ()
 {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
@@ -787,11 +788,13 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/', 'index')->name('hierarchy.index');
     });
 
+    //log Activity
+    Route::prefix('/log-activity')->controller(LogActivityController::class)->group(function () {
+        Route::get('/company/list', 'companyList')->name('company.log_activity');
+    });
+
 });
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
-
-
-
 /**---------------End Company Panel Route----------------*/

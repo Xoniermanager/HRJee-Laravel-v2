@@ -8,8 +8,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\UserMonthlySalary;
+use App\Http\Services\LeaveService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Services\WeekendService;
+use App\Http\Services\HolidayServices;
 use App\Http\Services\EmployeeServices;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\EmployeeAttendanceExport;
@@ -22,18 +26,26 @@ class AttendanceController extends Controller
     public $employeeAttendanceService;
     public $employeeService;
     public $attendanceRequestService;
+    public $leaveService;
+    public $holidayService;
+    public $weekendService;
 
-    public function __construct(EmployeeAttendanceService $employeeAttendanceService, EmployeeServices $employeeService, AttendanceRequestService $attendanceRequestService)
+    public function __construct(EmployeeAttendanceService $employeeAttendanceService, EmployeeServices $employeeService, AttendanceRequestService $attendanceRequestService, LeaveService $leaveService, HolidayServices $holidayService, WeekendService $weekendService)
     {
         $this->employeeAttendanceService = $employeeAttendanceService;
         $this->employeeService = $employeeService;
         $this->attendanceRequestService = $attendanceRequestService;
+        $this->leaveService = $leaveService;
+        $this->holidayService = $holidayService;
+        $this->weekendService = $weekendService;
+
     }
     public function makeAttendance(Request $request)
     {
         try {
             $data = $request->all();
             $data['punch_in_using'] = 'Mobile';
+            $data['force'] = $request->force;
             $attendanceDetails = $this->employeeAttendanceService->create($data);
             if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch Out') {
                 return response()->json([
@@ -47,6 +59,13 @@ class AttendanceController extends Controller
                     'status' => true,
                     'punch_in' => true,
                     'message' => "You Punched In Successfully"
+                ], 200);
+            }
+            if ($attendanceDetails['status'] == false && isset($attendanceDetails['before_punchout_confirm_required'])) {
+                return response()->json([
+                    'status' => false,
+                    'before_punchout_confirm_required' => $attendanceDetails['before_punchout_confirm_required'],
+                    'message' => $attendanceDetails['message']
                 ], 200);
             }
             if ($attendanceDetails['status'] === false) {
@@ -367,6 +386,32 @@ class AttendanceController extends Controller
                 "status" => false,
                 "error" => $e->getMessage(),
                 "message" => "Unable to Fetch Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function attendanceDetailsbyMonth($month)
+    {
+        try {
+            $year = date('Y');
+            $employeeDetails = Auth()->user();
+            $data = [
+                'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
+                'totalLeave' => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
+                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->count(),
+                'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month,$employeeDetails->id,$year)->count(),
+                'totalAbsent' => '0',
+            ];
+            return response()->json([
+                'status' => true,
+                'message' => "All Attendance Details",
+                'data' => $data
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Fetch Attendance Details"
             ], 500);
         }
     }

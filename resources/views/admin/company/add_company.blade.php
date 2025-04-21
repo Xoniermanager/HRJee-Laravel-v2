@@ -60,8 +60,8 @@
                                                                 <title>location</title>
                                                                 <desc>Created with Sketch Beta.</desc>
                                                                 <defs> </defs>
-                                                                <g id="Page-1" stroke="none" stroke-width="1"
-                                                                    fill="none" fill-rule="evenodd" sketch:type="MSPage">
+                                                                <g id="Page-1" stroke="none" stroke-width="1" fill="none"
+                                                                    fill-rule="evenodd" sketch:type="MSPage">
                                                                     <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
                                                                         transform="translate(-106.000000, -413.000000)"
                                                                         fill="#ddd">
@@ -93,16 +93,15 @@
                                                         <div class="col-12">
                                                             <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
                                                                 <div class="col-12">
-                                                                    <label class="form-label"
+                                                                    <label class="form-label required"
                                                                         for="exampleFormControlInput1">Company Name</label>
                                                                 </div>
                                                                 <div class="col-md-6 col-sm-6">
-                                                                    <input class="form-control" id="name"
-                                                                        name="name" type="text"
-                                                                        placeholder="Company Name">
+                                                                    <input class="form-control" id="name" name="name"
+                                                                        type="text" placeholder="Company Name">
                                                                 </div>
                                                                 <div class="col-md-6 col-sm-6">
-                                                                    <input class="form-control" id="contact_no"
+                                                                    <input class="form-control required" id="contact_no"
                                                                         name="contact_no" type="number"
                                                                         placeholder="Contact No.">
                                                                 </div>
@@ -112,16 +111,15 @@
                                                             <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
                                                                 <div class="col-md-6 col-sm-6">
                                                                     <input class="form-control" id="username"
-                                                                        name="username" type="text"
-                                                                        placeholder="UsernName" autocomplete="nop">
+                                                                        name="username" type="text" placeholder="UserName"
+                                                                        autocomplete="nop">
                                                                     @error('username')
                                                                         <span class="text-danger">{{ $message }}</span>
                                                                     @enderror
                                                                 </div>
                                                                 <div class="col-md-6 col-sm-6">
-                                                                    <input class="form-control" id="email"
-                                                                        name="email" type="email"
-                                                                        placeholder="Company Email">
+                                                                    <input class="form-control" id="email" name="email"
+                                                                        type="email" placeholder="Company Email">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -129,24 +127,37 @@
                                                             <div class="row gx-xl-3 gx-md-2 gy-md-0 g-2">
                                                                 <div class="col-12">
                                                                 </div>
-                                                                <div class="col-md-6 col-sm-6">
+                                                                <!-- Password Field -->
+                                                                <div class="col-md-6 col-sm-6 position-relative">
+                                                                    <label class="form-label required"
+                                                                        for="password">Password</label>
                                                                     <input class="form-control" id="password"
                                                                         name="password" type="password"
                                                                         placeholder="Enter Password">
+                                                                    <i class="fa fa-eye toggle-password"
+                                                                        onclick="togglePasswordVisibility('password', this)"
+                                                                        style="position: absolute; top: 38px; right: 15px; cursor: pointer;"></i>
                                                                 </div>
-                                                                <div class="col-md-6 col-sm-6">
+
+                                                                <!-- Confirm Password Field -->
+                                                                <div class="col-md-6 col-sm-6 position-relative">
+                                                                    <label class="form-label required"
+                                                                        for="password_confirmation">Confirm Password</label>
                                                                     <input class="form-control" id="password_confirmation"
                                                                         name="password_confirmation" type="password"
                                                                         placeholder="Enter Confirm Password">
+                                                                    <i class="fa fa-eye toggle-password"
+                                                                        onclick="togglePasswordVisibility('password_confirmation', this)"
+                                                                        style="position: absolute; top: 38px; right: 15px; cursor: pointer;"></i>
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                         <!-- Face Recognition Dropdown -->
                                                         <div class="col-md-6 col-sm-6">
                                                             <select class="form-control" id="face_recognition"
-                                                                name="allow_face_recognition"
-                                                                onchange="toggleUserLimit()">
-                                                                <option value="" disabled>Allow Face Recognition
+                                                                name="allow_face_recognition" onchange="toggleUserLimit()">
+                                                                <option value="" disabled selected>Allow Face Recognition
                                                                 </option>
                                                                 <option value="0">No</option>
                                                                 <option value="1">Yes</option>
@@ -158,15 +169,15 @@
                                                             style="display: none;">
                                                             <input class="form-control" id="face_recognition_user_limit"
                                                                 name="face_recognition_user_limit" type="number"
-                                                                placeholder="Enter User Limit for Face Recgnition"
-                                                                value="">
+                                                                placeholder="Enter User Limit for Face Recgnition" value="">
                                                         </div>
                                                         <div class="col-12">
                                                             <div class="row">
                                                                 <div class="col-12">
                                                                     <div class="image-input">
-                                                                        <input type="file" id="logo"
-                                                                            name="logo" class="form-control">
+                                                                        <input type="file" id="logo" name="logo"
+                                                                            class="form-control"
+                                                                            accept=".png, .jpeg, .jpg, .svg">
                                                                         <p for="imageInput" class="image-button"> Choose
                                                                             Logo</p>
                                                                         <img src="" class="image-preview">
@@ -186,8 +197,7 @@
                                                                     <g id="SVGRepo_iconCarrier">
                                                                         <path d="M5 12H19M19 12L13 6M19 12L13 18"
                                                                             stroke="#000000" stroke-width="2"
-                                                                            stroke-linecap="round"
-                                                                            stroke-linejoin="round">
+                                                                            stroke-linecap="round" stroke-linejoin="round">
                                                                         </path>
                                                                     </g>
                                                                 </svg>
@@ -242,8 +252,10 @@
                                                         <div class="col-12">
                                                             <div class="row bottomspace">
                                                                 <div class="col-md-12 col-sm-12">
-                                                                    <textarea class="form-control" id="text-area" row="2" name="company_address"
-                                                                        placeholder="Enter Your Company Address" id="company_address"></textarea>
+                                                                    <textarea class="form-control" id="text-area" row="2"
+                                                                        name="company_address"
+                                                                        placeholder="Enter Your Company Address"
+                                                                        id="company_address"></textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -276,8 +288,7 @@
                                                                     <g id="SVGRepo_iconCarrier">
                                                                         <path d="M5 12H19M19 12L13 6M19 12L13 18"
                                                                             stroke="#ffffff" stroke-width="2"
-                                                                            stroke-linecap="round"
-                                                                            stroke-linejoin="round">
+                                                                            stroke-linecap="round" stroke-linejoin="round">
                                                                         </path>
                                                                     </g>
                                                                 </svg>
@@ -309,12 +320,12 @@
             }
         }
         // next button script
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             let formData = new FormData();
 
             // On company account button click
-            $('.companyAccountBtn').click(function(e) {
+            $('.companyAccountBtn').click(function (e) {
                 e.preventDefault();
 
                 $("#companyAccountform").validate({
@@ -368,7 +379,7 @@
                 if ($("#companyAccountform").valid()) {
                     // Append form data
                     let form = $('#companyAccountform')[0];
-                    $.each(form.elements, function(i, element) {
+                    $.each(form.elements, function (i, element) {
                         var fieldName = element.name;
                         var fieldValue = element.value;
                         if (fieldName && fieldValue && element.type !== 'button') {
@@ -386,7 +397,7 @@
             });
 
             // On company detail button click
-            $('.companyDetailbtn').click(function(e) {
+            $('.companyDetailbtn').click(function (e) {
                 e.preventDefault();
 
                 $("#companyDetailForm").validate({
@@ -421,11 +432,11 @@
                 if ($("#companyDetailForm").valid()) {
                     var companyDetail = $('#companyDetailForm').serialize();
                     companyDetail = decodeURIComponent(
-                    companyDetail); // Decoding to prevent issues with special characters
+                        companyDetail); // Decoding to prevent issues with special characters
 
                     // Append company detail data to formData
                     var companyDetailArray = companyDetail.split('&');
-                    companyDetailArray.forEach(function(pair) {
+                    companyDetailArray.forEach(function (pair) {
                         var field = pair.split('=');
                         formData.append(field[0], field[1]);
                     });
@@ -437,12 +448,12 @@
                         data: formData,
                         processData: false, // Don't process the data
                         contentType: false, // Let FormData handle the content type
-                        success: function(response) {
+                        success: function (response) {
                             Swal.fire("Done!", "It was successfully added!", "success");
                             window.location.href =
-                            "{{ route('admin.company') }}"; // Redirect on success
+                                "{{ route('admin.company') }}"; // Redirect on success
                         },
-                        error: function(error_messages) {
+                        error: function (error_messages) {
                             let errors = error_messages.responseJSON.errors;
                             for (var error_key in errors) {
 
@@ -466,7 +477,7 @@
                                 );
 
                                 // Remove the error message after 5 seconds
-                                setTimeout(function() {
+                                setTimeout(function () {
                                     $("#" + error_key + "_error").remove();
                                 }, 10000);
                             }
@@ -476,12 +487,12 @@
             });
 
             // Previous button scripts
-            $('.previouscompanyDetailBtn').click(function(e) {
+            $('.previouscompanyDetailBtn').click(function (e) {
                 e.preventDefault();
                 $('#add-product-pills-tab a[href="#category-product"]').tab('show');
             });
 
-            $('.previousPersonDetailBtn').click(function(e) {
+            $('.previousPersonDetailBtn').click(function (e) {
                 e.preventDefault();
                 $('#add-product-pills-tab a[href="#detail-product"]').tab('show');
             });
@@ -501,4 +512,14 @@
             opacity: 0.7;
         }
     </style>
+    <script>
+        function togglePasswordVisibility(id, icon) {
+            const input = document.getElementById(id);
+            const isPassword = input.type === "password";
+            input.type = isPassword ? "text" : "password";
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        }
+    </script>
+
 @endsection

@@ -221,7 +221,7 @@
                         <div class="d-flex profile-media align-items-center"><img class="img-30 rounded-circle"
                                 src="{{ asset('admin/assets/images/avatar.png')}}" alt="">
                             <div class="flex-grow-1"><span>{{ Auth()->guard('admin')->user()->name }}</span>
-                                <p class="mb-0 font-outfit">Profile<i class="fa fa-angle-down"></i></p>
+                                {{-- <p class="mb-0 font-outfit">Profile<i class="fa fa-angle-down"></i></p> --}}
                             </div>
                         </div>
                         <ul class="profile-dropdown onhover-show-div">

@@ -20,30 +20,31 @@
     <meta name="url" property='og:url' content='' />
     <meta name="description" property='og:description' content='' />
     <meta name="author" content="Jyoti Mishra Web Designer at Xonier">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!--begin::Fonts(mandatory for all pages)-->
-    {{--
-    <link rel="stylesheet" href="{{ asset('employee/assets/css/mark-pro.css') }}" /> --}}
+
     <!--end::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <!--end::Fonts-->
     <!--begin::Vendor Stylesheets(used for this page only)-->
-    <link href="{{ asset('employee/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet"
-        type="text/css" />
-    <link href="{{ asset('employee/assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
-        type="text/css" />
-    <!--end::Vendor Stylesheets-->
-    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
-    <link href="{{ asset('employee/assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('employee/assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-    <!--end::Global Stylesheets Bundle-->
-    <link rel="icon" type="image/png" href="{{ asset('employee/assets/media/logos/favicon.png') }}">
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
-        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Stylesheets -->
+<link href="{{ asset('employee/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('employee/assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
+
+<!-- Global Stylesheets Bundle -->
+<link href="{{ asset('employee/assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('employee/assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="{{ asset('employee/assets/media/logos/favicon.png') }}">
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script> <!-- jQuery -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script> <!-- jQuery UI -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script> <!-- jQuery Validate -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> <!-- SweetAlert -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
         window.company_ajax_base_url = '{{ env('COMPANY_BASE_URL') }}';
