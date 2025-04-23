@@ -9,7 +9,7 @@
                     <th>Sr. No.</th>
                     <th>Name</th>
                     <th>Company Branch</th>
-                    <th>Shift_Hours</th>
+                    <th>Shift Hours</th>
                     <th>Half Day Hours</th>
                     <th>Min Shift Hours</th>
                     <th>Min Half Day Hours</th>

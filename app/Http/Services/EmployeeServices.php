@@ -62,7 +62,7 @@ class EmployeeServices
                 if ($data['company_branch_id'] != $existingDetails->company_branch_id) {
                     $this->updateActiveLocationByUserId($data['company_branch_id'], $existingDetails->user_id, 'updated');
                 }
-                if ($data['shift_id'] != $existingDetails->sift_id) {
+                if (isset($data['shift_id']) && $data['shift_id'] != $existingDetails->sift_id) {
                     $this->createShiftLog($existingDetails->user_id, $data['shift_id'], today());
                 }
                 $existingDetails->update($data);

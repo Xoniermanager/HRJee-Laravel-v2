@@ -252,13 +252,12 @@
                     <option value="">Please Select the Branch</option>
                     @forelse ($allBranches as $branch)
                         <option
-                            {{ ($singleUserDetails->details->company_branch_id ?? old('company_branch_id')) ==  $branch->id ? 'selected' : '' }}
+                            {{ ($singleUserDetails->details->company_branch_id ?? old('company_branch_id')) == $branch->id ? 'selected' : '' }}
                             value="{{ $branch->id }}">{{ $branch->name }}</option>
                     @empty
                         <option value="">No Branches Found</option>
                     @endforelse
                 </select>
-
             </div>
             <div class="col-md-4 form-group">
                 <div>
@@ -269,12 +268,13 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-4 form-group">
+            {{-- <div class="col-md-4 form-group">
                 <label for="">Shift *</label>
                 <select class="form-control" id="shift" name="shift_id">
                     <option value="">Please Select the Shift</option>
                     @forelse ($allShifts as $shift)
-                        <option {{ ($singleUserDetails->details->shift_id ?? old('shift_id') )== $shift->id ? 'selected' : '' }}
+                        <option
+                            {{ ($singleUserDetails->details->shift_id ?? old('shift_id')) == $shift->id ? 'selected' : '' }}
                             value="{{ $shift->id }}" data-time="{{ $shift->start_time }}">{{ $shift->name }}
                         </option>
                     @empty
@@ -286,6 +286,64 @@
                 <label for="">Shirt Start Time</label>
                 <input class="form-control" type="time" id="start_time" readonly
                     value="{{ $singleUserDetails->details->officeShift->start_time ?? '' }}">
+            </div> --}}
+
+             <!-- Shift Type Selector -->
+            @if(isset($singleUserDetails))
+                <div class="form-group col-md-4">
+                    <label for="">Shift Type:</label>
+                    <select id="shift_type_selector" class="form-control" name="shift_type">
+                        <option {{ ($singleUserDetails->details->shift_type == 'single' ? 'selected' : '') }} value="single">Single
+                            Shift (Whole Week)</option>
+                        <option value="daily" {{ $singleUserDetails->details->shift_type == 'daily' ? 'selected' : '' }}>
+                            Daily Shift
+                            (Different Each Day)</option>
+                    </select>
+                </div>
+            @else
+             <div class="form-group col-md-4">
+                <label for="">Shift Type:</label>
+                <select id="shift_type_selector" class="form-control" name="shift_type">
+                    <option value="single">Single
+                        Shift (Whole Week)</option>
+                    <option value="daily">Daily Shift (Different Each Day)</option>
+                </select>
+            </div>
+            @endif
+            <!-- Single Shift Selection -->
+            <div id="single_shift_div" class="form-group col-md-4">
+                <label for="">Office Timing:</label>
+                <select name="office_shift_id[]" id="office_shift_id" class="form-control select2-multi" multiple>
+                    <option value="">Select Shift</option>
+                    @if (isset($allShifts)) 
+                        @foreach ($allShifts as $shift) 
+                            <option value="{{ $shift->id }}" {{ in_array($shift->id, $userShifts) ? 'selected' : '' }}>
+                                {{ ucfirst($shift->name) }} ({{ date('h:i A', strtotime($shift->start_time)) }} -
+                                {{ date('h:i A', strtotime($shift->end_time)) }})
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+            <!-- Daily Shift Selection -->
+            <div id="daily_shift_div" class="row" style="display:none;">
+                <?php $weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; ?>
+                @foreach ($weekdays as $day)
+                    <div class="form-group col-md-4">
+                        <label for=""><?= $day ?> Shift:</label>
+                        <select name="office_shift_id[<?= $day ?>][]" class="form-control select2-multi" multiple>
+                            <option value="">Select Shift</option>
+                            <?php foreach ($allShifts as $shift): ?>
+                            <option value="<?= $shift->id ?>"
+                                <?= isset($userShifts[$day]) && in_array($shift->id, $userShifts[$day]) ? 'selected' : '' ?>>
+                                <?= ucfirst($shift->name) ?>
+                                (<?= date('h:i A', strtotime($shift->start_time)) ?> -
+                                <?= date('h:i A', strtotime($shift->end_time)) ?>)
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                @endforeach
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Offer ID *</label>
@@ -334,20 +392,35 @@
         <button class="btn btn-primary float-right" id="submit">Save & Continue</button>
     @endif
 </div>
-<script>
-   function createBasicDetails(form) {
-    var basic_details_Data = new FormData(form);
+<!-- Add to <head> -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    $.ajax({
-        url: "{{ route('employee.store') }}",
-        type: 'POST',
-        processData: false,
-        contentType: false,
-        data: basic_details_Data,
-        success: function(response) {
-            if (response.data.status == "createdEmployee") {
-                location.href = '/company/employee/edit/' + response.data.id;
-                setTimeout(function() {
+<!-- Add before </body> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    function createBasicDetails(form) {
+        var basic_details_Data = new FormData(form);
+        $.ajax({
+            url: "{{ route('employee.store') }}",
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: basic_details_Data,
+            success: function(response) {
+                if (response.data.status == "createdEmployee") {
+                    location.href = '/company/employee/edit/' + response.data.id;
+                    setTimeout(function() {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
+                    }, 4000);
+                } else {
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
@@ -356,40 +429,56 @@
                         timer: 1500
                     });
                     jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
-                }, 4000);
-            } else {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: response.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
-            }
+                }
 
-            // This variable is used on save all records button
-            all_data_saved = true;
-        },
-        error: function(error_messages) {
-            // This variable is used on save all records button
-            all_data_saved = false;
+                // This variable is used on save all records button
+                all_data_saved = true;
+            },
+            error: function(error_messages) {
+                // This variable is used on save all records button
+                all_data_saved = false;
 
-            let errors = error_messages.responseJSON.errors;
-            for (var error_key in errors) {
-                $(document).find('[name=' + error_key + ']').after(
-                    '<span class="' + error_key + '_error text text-danger">' + errors[error_key] + '</span>'
-                );
-                setTimeout(function() {
-                    jQuery("." + error_key + "_error").remove();
-                }, 8000);
+                let errors = error_messages.responseJSON.errors;
+                for (var error_key in errors) {
+                    $(document).find('[name=' + error_key + ']').after(
+                        '<span class="' + error_key + '_error text text-danger">' + errors[error_key] +
+                        '</span>'
+                    );
+                    setTimeout(function() {
+                        jQuery("." + error_key + "_error").remove();
+                    }, 8000);
+                }
             }
-        }
-    });
-}
+        });
+    }
 </script>
 <script>
     jQuery(document).ready(function() {
+        // Initialize Select2
+        $('.select2-multi').select2({
+            width: '100%'
+        });
+
+        // Toggle shift sections based on selected type
+        function toggleShiftSections() {
+            var shiftType = $('#shift_type_selector').val();
+            if (shiftType === 'single') {
+                $('#single_shift_div').show().find('select').prop('disabled', false);
+                $('#daily_shift_div').hide().find('select').prop('disabled', true);
+            } else if (shiftType === 'daily') {
+                $('#single_shift_div').hide().find('select').prop('disabled', true);
+                $('#daily_shift_div').show().find('select').prop('disabled', false);
+            }
+        }
+
+        // Initial toggle
+        toggleShiftSections();
+
+        // Change event for shift type
+        $('#shift_type_selector').change(function() {
+            toggleShiftSections();
+        });
+
         var departmentId = '{{ $singleUserDetails->details->department_id ?? '' }}';
         const all_department_id = [departmentId];
         var designation_id = '{{ $singleUserDetails->details->designation_id ?? '' }}';
@@ -443,7 +532,6 @@
     }
     /** end get all Designation Using Department Id*/
 
-
     /** get all managers using branch Id*/
     jQuery('#company_branch_id').on('change', function() {
         var company_branch_id = $(this).val();
@@ -487,7 +575,6 @@
         } else {
             $('#designation_id').empty();
         }
-
     }
     /** end get all Designation Using Department Id*/
 

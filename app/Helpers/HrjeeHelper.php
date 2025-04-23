@@ -525,3 +525,7 @@ function haversine_distance($lat1, $lon1, $lat2, $lon2)
 
     return $earthRadius * $c; // Distance in meters
 }
+
+function isAssociative(array $arr): bool {
+    return array_keys($arr) !== range(0, count($arr) - 1);
+}
