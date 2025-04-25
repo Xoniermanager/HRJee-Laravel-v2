@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use Carbon\Carbon;
 use App\Repositories\UserShiftRepository;
 
 class UserShiftService
@@ -63,5 +64,53 @@ class UserShiftService
         
         return $deletedData;
     }
+
+    public function getTodaysShifts($userId, $shiftType)
+    {
+        if($shiftType == "single") {
+
+            return $this->userShiftRepository->where('user_id', $userId);
+        } else {
+            $today = date('l');
+
+            return $this->userShiftRepository->where('user_id', $userId)->where('shift_day', $today);
+        }
+    }
+
+    public function isUserAllowedToPunchIn($shifts)
+    {
+        $now = Carbon::now();
+        $message = null;
+
+        foreach ($shifts as $shift) {
+            $start = Carbon::parse($shift->start_time);
+            $end = Carbon::parse($shift->end_time);
+
+            // Night shift handling
+            if ($end <= $start) {
+                $end->addDay();
+            }
+
+            $earlyWindow = $start->copy()->subMinutes($shift->check_in_buffer); // minutes before shift
+            
+            if ($now->between($earlyWindow, $end)) {
+                return [
+                    'in_shift' => true,
+                    'officeShift' => $shift,
+                    'start' => $start,
+                    'end' => $end,
+                    'message' => $message
+                ];
+            }
+            
+            $message = "You can only punch in within $shift->check_in_buffer minutes before your shift start time.";
+        }
+
+        return ['in_shift' => false, 'message' => $message];
+    }
+
+
+
+
     
 }

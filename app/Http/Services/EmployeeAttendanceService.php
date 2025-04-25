@@ -7,12 +7,15 @@ use App\Http\Services\HolidayServices;
 use App\Http\Services\LeaveService;
 use App\Http\Services\CompOffService;
 use App\Http\Services\WeekendService;
+use App\Http\Services\UserShiftService;
+use App\Http\Services\ShiftServices;
 use App\Models\UserShiftLog;
 use App\Repositories\EmployeeAttendanceRepository;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
 use Illuminate\Support\Arr;
+use Symfony\Component\Console\Output\NullOutput;
 
 use function PHPUnit\Framework\returnValue;
 
@@ -24,9 +27,11 @@ class EmployeeAttendanceService
     private $employeeService;
     private $weekendService;
     private $compOffService;
+    private $userShiftService;
+    private $shiftService;
 
 
-    public function __construct(CompOffService $compOffService, EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService, WeekendService $weekendService)
+    public function __construct(ShiftServices $shiftService, UserShiftService $userShiftService, CompOffService $compOffService, EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService, WeekendService $weekendService)
     {
         $this->employeeAttendanceRepository = $employeeAttendanceRepository;
         $this->leaveService = $leaveService;
@@ -34,27 +39,38 @@ class EmployeeAttendanceService
         $this->employeeService = $employeeService;
         $this->weekendService = $weekendService;
         $this->compOffService = $compOffService;
+        $this->userShiftService = $userShiftService;
+        $this->shiftService = $shiftService;
     }
 
     public function create($data)
     {
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
         $attendanceTime = Carbon::now()->format('Y/m/d H:i:s');
-        $shiftDetails = $this->getShiftDetails($userDetails->id);
-        if (!$shiftDetails) {
+
+        $shiftType = $userDetails->details->shift_type;
+        $shiftIDs = $this->userShiftService->getTodaysShifts($userDetails->id, $shiftType)->pluck('shift_id')->toArray();
+
+        if (count($shiftIDs) < 1) {
             return ['status' => false, 'message' => 'No shift assigned to you. Please contact your admin.'];
         }
 
-        $officeShiftDetails = $shiftDetails->officeShift;
-        $officeStartTime = Carbon::parse($officeShiftDetails->start_time);
-        $officeEndTime = Carbon::parse($officeShiftDetails->end_time);
+        $shifts = $this->shiftService->getByIdShifts($shiftIDs);
 
-        // If end time is earlier than or equal to start time, it's a night shift, move the end time to the next day
-        if ($officeEndTime <= $officeStartTime) {
-            $officeEndTime->addDay();
+        // Check if user is within allowed punch-in time for any shift
+        $shiftCheck = $this->userShiftService->isUserAllowedToPunchIn($shifts);
+        if (!$shiftCheck['in_shift']) {
+            return [
+                'status' => false,
+                'message' => $shiftCheck['message']
+            ];
         }
 
-        // If attendance ID exists, handle Punch Out
+        $officeShiftDetails = $shiftCheck['officeShift'];
+        $officeStartTime = $shiftCheck['start'];
+        $officeEndTime = $shiftCheck['end'];
+
+        // Handle Punch Out
         if (isset($data['attendance_id']) && !empty($data['attendance_id'])) {
             $existingAttendance = $this->employeeAttendanceRepository->find($data['attendance_id']);
             if ($existingAttendance) {
@@ -80,232 +96,108 @@ class EmployeeAttendanceService
                         }
                     }
                 }
-                // Update Punch Out details
+
                 $data['punch_out'] = $attendanceTime;
                 $existingAttendance->update($data);
                 return ['status' => true, 'data' => 'Punch Out'];
             }
-        } else {
-            // Handle Punch In
-            $data['user_id'] = $userDetails->id;
-            $data['punch_in'] = $attendanceTime;
-            // Check for login before shift time buffer
-            if ($officeShiftDetails->login_before_shift_time > 0) {
-                $loginBeforeShiftTime = $officeStartTime->subMinutes($officeShiftDetails->login_before_shift_time)->format('H:i:s');
-                if (Carbon::now()->lt(Carbon::parse($loginBeforeShiftTime))) {
-                    return ['status' => false, 'message' => 'You are punching before your shift time.'];
-                }
-            }
-            // Check if the office hours have passed
-            if (Carbon::now()->gt($officeEndTime)) {
-                return ['status' => false, 'message' => 'Your office hours are over.'];
-            }
-
-            // Handle holidays
-            $todayHoliday = $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, Carbon::today()->toDateString(), $userDetails->details->company_branch_id);
-            if ($todayHoliday) {
-                $compOffPayload = [
-                    'user_id' => $userDetails->id,
-                    'date' => Carbon::today()->toDateString(),
-                    'status' => 'pending',
-                ];
-                $this->compOffService->store($compOffPayload);
-            }
-
-            // Handle weekends
-            $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->details->company_branch_id, $userDetails->department_id, Carbon::today()->toDateString());
-            if ($checkWeekend) {
-                $compOffPayload = [
-                    'user_id' => $userDetails->id,
-                    'date' => Carbon::today()->toDateString(),
-                    'status' => 'pending',
-                ];
-                $this->compOffService->store($compOffPayload);
-            }
-
-            // Check for leaves
-            $todayConfirmLeaveDetails = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, Carbon::today()->toDateString());
-            $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDetails);
-            if ($checkLeaveDetails['success']) {
-                if ($checkLeaveDetails['status'] == 'Full') {
-                    return ['status' => false, 'message' => 'Today you are on leave'];
-                } elseif ($checkLeaveDetails['status'] == '1 Half') {
-                    $halfDayLoginTime = Carbon::parse($officeShiftDetails->half_day_login);
-                    if (Carbon::now()->lt($halfDayLoginTime)) {
-                        return ['status' => false, 'message' => 'Today you are on half day. Please punch in on second half.'];
-                    }
-                } else {
-                    return ['status' => false, 'message' => 'Today you are on half day'];
-                }
-            }
-
-            // Check if user is late
-            if (Carbon::now()->gt($officeStartTime)) {
-                $data['late'] = 1;
-            }
-
-            // Create the attendance record
-            $this->employeeAttendanceRepository->create($data);
-            return ['status' => true, 'data' => 'Punch In'];
         }
-    }
-    // public function create2($data)
-    // {
-    //     $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
-    //     $attendanceTime = date('Y/m/d H:i:s');
-    //     $shiftDetails = UserShiftLog::where('user_id', $userDetails->id)
-    //         ->whereDate('date', '<=', now()->toDateString())
-    //         ->latest()
-    //         ->first();
-    //     if (!isset($shiftDetails) && empty($shiftDetails)) {
-    //         return array('status' => false, 'message' => 'No shift assigned to you. Please contact your admin.');
-    //     }
-    //     $officeShiftDetails = $shiftDetails->officeShift;
-    //     $officeStartTime = strtotime($officeShiftDetails->start_time);
-    //     $officeEndTime = strtotime($officeShiftDetails->end_time);
-    //     // If end time is earlier than or equal to start time, it's a night shift
-    //     if ($officeEndTime <= $officeStartTime) {
-    //         $officeEndTime = strtotime('+1 day', $officeEndTime); // Fix: update $officeEndTime directly
-    //     }
-    //     $officeStartTime = date('Y-m-d H:i:s', $officeStartTime);
-    //     $officeEndTime = date('Y-m-d H:i:s', $officeEndTime);
 
-    //     $payload = [
-    //         'user_id' => $userDetails->id,
-    //         'punch_in_using' => $data['punch_in_using'],
-    //     ];
-    //     /** If Data Exit in Table Soo we Implement for Puch Out  */
-    //     if (isset($data['attendance_id']) && !empty($data['attendance_id'])) {
-    //         // $existingDetails = $this->getAttendanceByDateByUserId($userDetails->id, date('Y-m-d'))->first();
-    //         //check if user is in short attendance
-    //         if ($officeShiftDetails->check_out_buffer > 0) {
-    //             $bufferTime = ' -' . $officeShiftDetails->check_out_buffer . ' minutes';
-    //             $officeShortAttendanceTime = date('H:i:s', strtotime($officeEndTime . $bufferTime));
-    //             if (date('H:i:s') < $officeShortAttendanceTime) {
-    //                 return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
-    //             } elseif ((date('H:i:s') >= $officeShortAttendanceTime) && (date('H:i:s') < date('H:i:s', strtotime($officeEndTime)))) {
-    //                 $payload['is_short_attendance'] = 1;
-    //             }
-    //         } else {
-    //             if (date('H:i:s') < date('H:i:s', strtotime($officeEndTime))) {
-    //                 return array('status' => false, 'message' => 'You are punching out before your shift time. ' . date('H:i:s', strtotime($officeEndTime)));
-    //             }
-    //         }
-    //         $payload['punch_out_latitude'] = $data['punch_out_latitude'] ?? '';
-    //         $payload['punch_out_longitude'] = $data['punch_out_longitude'] ?? '';
-    //         $payload['punch_out_address'] = $data['punch_out_address'] ?? '';
-    //         $payload['punch_out'] = $attendanceTime;
-    //         $this->employeeAttendanceRepository->find($data['attendance_id'])->update($payload);
-    //         return ['data' => 'Punch Out', 'status' => true];
-    //     } else {
-    //         $payload['punch_in'] = $attendanceTime;
-    //         $payload['punch_in_latitude'] = $data['punch_in_latitude'] ?? '';
-    //         $payload['punch_in_longitude'] = $data['punch_in_longitude'] ?? '';
-    //         $payload['punch_in_address'] = $data['punch_in_address'] ?? '';
-    //         if ($officeShiftDetails->login_before_shift_time > 0) {
-    //             $beforTime = ' -' . $officeShiftDetails->login_before_shift_time . ' minutes';
-    //             $loginBeforeShiftTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $beforTime));
-    //             if (date('H:i:s') < $loginBeforeShiftTime) {
-    //                 return array('status' => false, 'message' => 'You are punching before your shift time. ' . $loginBeforeShiftTime);
-    //             }
-    //         }
+        // Handle Punch In
+        $data['user_id'] = $userDetails->id;
+        $data['punch_in'] = $attendanceTime;
 
-    //         if (date('H:i:s', strtotime($officeEndTime)) < date('H:i:s')) {
-    //             return array('status' => false, 'message' => 'Your office hours are over. ' . $officeEndTime);
-    //         }
+        // Check if shift is over
+        if (Carbon::now()->gt($officeEndTime)) {
+            return ['status' => false, 'message' => 'Your office hours are over.'];
+        }
 
-    //         $todayHoliday = $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, date('Y-m-d'), $userDetails->details->company_branch_id);
-    //         if ($todayHoliday) {
-    //             $compOffPayload = [
-    //                 'user_id' => auth()->user()->id,
-    //                 'date' => date('Y-m-d'),
-    //                 'status' => 'pending',
-    //             ];
-    //             $this->compOffService->store($compOffPayload);
-    //             //return array('status' => false, 'message' => 'Today is ' . $todayHoliday->name . ' holiday');
-    //         }
+        $alreadyPunchedIn = $this->employeeAttendanceRepository->query()
+        ->where('user_id', $userDetails->id)
+        ->whereDate('punch_in', Carbon::today())
+        ->where('shift_id', $officeShiftDetails->id)
+        ->exists();
 
-    //         $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->details->company_branch_id, $userDetails->department_id, date('Y-m-d'));
-    //         if ($checkWeekend) {
-    //             $compOffPayload = [
-    //                 'user_id' => auth()->user()->id,
-    //                 'date' => date('Y-m-d'),
-    //                 'status' => 'pending',
-    //             ];
-    //             $this->compOffService->store($compOffPayload);
+        if ($alreadyPunchedIn) {
+            return ['status' => false, 'message' => 'You have already punched in for today’s shift.'];
+        }
 
-    //             //return array('status' => false, 'message' => 'Punch-in cannot be processed today as it is your weekend.');
-    //         }
+        // Handle holidays
+        $todayHoliday = $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, Carbon::today()->toDateString(), $userDetails->details->company_branch_id);
+        if ($todayHoliday) {
+            $this->compOffService->store([
+                'user_id' => $userDetails->id,
+                'date' => Carbon::today()->toDateString(),
+                'status' => 'pending',
+            ]);
+        }
 
-    //         $todayConfirmLeaveDeatils = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, date('Y-m-d'));
-    //         $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDeatils);
+        // Handle weekends
+        $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->details->company_branch_id, $userDetails->department_id, Carbon::today()->toDateString());
+        if ($checkWeekend) {
+            $this->compOffService->store([
+                'user_id' => $userDetails->id,
+                'date' => Carbon::today()->toDateString(),
+                'status' => 'pending',
+            ]);
+        }
 
-    //         if ($officeShiftDetails->check_in_buffer > 0) {
-    //             $bufferTime = ' +' . $officeShiftDetails->check_in_buffer . ' minutes';
-    //             $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->start_time . $bufferTime));
-    //         }
-    //         if ($checkLeaveDetails['success']) {
-    //             if ($checkLeaveDetails['status'] == 'Full') {
-    //                 return array('status' => false, 'message' => 'Today you are on leave');
-    //             } else if ($checkLeaveDetails['status'] == '1 Half') {
-    //                 if (date('H:i:s', strtotime($officeShiftDetails->half_day_login)) > date('H:i:s')) {
-    //                     return array('status' => false, 'message' => 'Today you are on half day. So please punch in on second half ' . $officeShiftDetails->half_day_login);
-    //                 }
-    //                 if ($officeShiftDetails->check_in_buffer > 0) {
-    //                     $bufferTime = ' +' . $officeShiftDetails->check_in_buffer . ' minutes';
-    //                     $officeStartTime = date('H:i:s', strtotime($officeShiftDetails->half_day_login . $bufferTime));
-    //                 } else {
-    //                     $officeStartTime = $officeShiftDetails->half_day_login;
-    //                 }
-    //                 $payload['status'] = 2;
-    //             } else {
-    //                 //dd( $officeShiftDetails->half_day_login);
-    //                 if (date('H:i:s') >= date('H:i:s', strtotime($officeShiftDetails->half_day_login))) {
-    //                     return array('status' => false, 'message' => 'Today you are on half day');
-    //                 }
-    //                 $payload['status'] = 2;
-    //             }
-    //         }
-    //         if (date('H:i:s') > $officeStartTime) {
-    //             $payload['late'] = 1;
-    //         }
-    //         // $payload = [
-    //         //     'user_id' => $userDetails->id,
-    //         //     'punch_in_using' => $data['punch_in_using'],
-    //         // ];
-    //         $this->employeeAttendanceRepository->create($payload);
-    //         return ['status' => true, 'data' => 'Punch In'];
-    //     }
-    // }
-
-    public function getExtistingDetailsByUserId($userId)
-    {
-        $now = Carbon::now();
-        $shiftDetails = $this->getShiftDetails($userId);
-        if ($shiftDetails) {
-            $shiftStart = Carbon::today()->setTimeFromTimeString($shiftDetails->officeShift->start_time);
-            $shiftEnd = Carbon::today()->setTimeFromTimeString($shiftDetails->officeShift->end_time);
-
-            // If shift ends before or at the start, it's a night shift crossing midnight
-            if ($shiftEnd->lte($shiftStart)) {
-                $shiftEnd->addDay(); // Move end to next day
-            }
-            // Now, determine if we are inside today's night shift OR yesterday's
-            if ($now->between($shiftStart, $shiftEnd)) {
-                // It's today's night shift
+        // Handle leaves
+        $todayConfirmLeaveDetails = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, Carbon::today()->toDateString());
+        $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDetails);
+        if ($checkLeaveDetails['success']) {
+            if ($checkLeaveDetails['status'] == 'Full') {
+                return ['status' => false, 'message' => 'Today you are on leave'];
+            } elseif ($checkLeaveDetails['status'] == '1 Half') {
+                $halfDayLoginTime = Carbon::parse($officeShiftDetails->half_day_login);
+                if (Carbon::now()->lt($halfDayLoginTime)) {
+                    return ['status' => false, 'message' => 'Today you are on half day. Please punch in on second half.'];
+                }
             } else {
-                // Go back one day
-                $shiftStart->subDay();
-                $shiftEnd->subDay();
+                return ['status' => false, 'message' => 'Today you are on half day'];
             }
-            // dd($shiftStart, $shiftEnd);
+        }
+
+        // Check if user is late
+        if (Carbon::now()->gt($officeStartTime)) {
+            $data['late'] = 1;
+        }
+
+        $data['shift_id'] = $officeShiftDetails->id;
+        $data['shift_start_time'] = $officeStartTime;
+        $data['shift_end_time'] = $officeEndTime;
+
+        // Create attendance
+        $this->employeeAttendanceRepository->create($data);
+        return ['status' => true, 'data' => 'Punch In'];
+    }
+
+
+    public function getExtistingDetailsByUserId($userId, $shiftType = 'single')
+    {   
+        $shiftIDs = $this->userShiftService->getTodaysShifts($userId, $shiftType)->pluck('shift_id')->toArray();
+
+        if (count($shiftIDs)) {
+            
             return $this->employeeAttendanceRepository
                 ->where('user_id', $userId)
-                ->whereBetween('punch_in', [$shiftStart, $shiftEnd])
-                ->first();
+                ->whereDate('punch_in', date('Y-m-d'))
+                ->whereIn('shift_id', $shiftIDs)->with('shift')
+                ->get()->toArray();
         } else {
-            return false;
+
+            return [];
         }
+    }
+
+    public function getCurrentAttendanceByUserId($userId)
+    {   
+        
+        return $this->employeeAttendanceRepository
+        ->where('user_id', $userId)
+        ->where('punch_out', NULL)
+        ->latest('id')
+        ->first();
     }
 
     /**
@@ -529,47 +421,52 @@ class EmployeeAttendanceService
      */
     public function getAttendanceByByDate($date, $userID)
     {
-        $attendance = $this->employeeAttendanceRepository->where('user_id', $userID)->whereDate('punch_in', $date)->first();
+        $attendances = $this->employeeAttendanceRepository->where('user_id', $userID)->whereDate('punch_in', $date)->get();
         $leave = $this->leaveService->getConfirmedLeaveByUserIDAndDate('user_id', $userID);
-
+        
         $response = [
-            'punch_in' => null,
-            'punch_out' => null,
-            'total_working_hours' => 'N/A',
-            'status' => null,
+            'attendance' => [],
+            'status' => Null
         ];
 
+        $status = null;
+
         if ($leave) {
-            $response['status'] = $leave->is_half_day ? 'Half Day' : 'Leave';
-        } elseif ($attendance) {
-            $response['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
-            $response['punch_out'] = date('H:i A', strtotime($attendance->punch_out));
-            if ($attendance->punch_out) {
-                $punchIn = Carbon::parse($attendance->punch_in);
-                $punchOut = Carbon::parse($attendance->punch_out);
-                $totalBreakSeconds = 0;
-                if ($attendance->total_break_time) {
-                    $totalBreakTime = Carbon::parse($attendance->total_break_time); // 45 minutes break
-                    $totalBreakSeconds = $totalBreakTime->hour * 3600 + $totalBreakTime->minute * 60 + $totalBreakTime->second;
+            $status = $leave->is_half_day ? 'Half Day' : 'Leave';
+        } elseif (count($attendances)) {
+            foreach ($attendances as $key => $attendance) {
+                $resp = [];
+                $resp['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
+                $resp['punch_out'] = date('H:i A', strtotime($attendance->punch_out));
+                if ($attendance->punch_out) {
+                    $punchIn = Carbon::parse($attendance->punch_in);
+                    $punchOut = Carbon::parse($attendance->punch_out);
+                    $totalBreakSeconds = 0;
+                    if ($attendance->total_break_time) {
+                        $totalBreakTime = Carbon::parse($attendance->total_break_time); // 45 minutes break
+                        $totalBreakSeconds = $totalBreakTime->hour * 3600 + $totalBreakTime->minute * 60 + $totalBreakTime->second;
+                    }
+
+                    // Calculate total work duration (without break)
+                    $totalWorkDuration = $punchOut->diffInSeconds($punchIn);
+
+                    // Subtract total break time
+                    $actualWorkSeconds = $totalWorkDuration - $totalBreakSeconds;
+
+                    // Convert back to hours, minutes, seconds
+                    $hours = floor($actualWorkSeconds / 3600);
+                    $minutes = floor(($actualWorkSeconds % 3600) / 60);
+                    $seconds = $actualWorkSeconds % 60;
+                    // Format the output
+                    $resp['total_working_hours'] = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
                 }
-
-                // Calculate total work duration (without break)
-                $totalWorkDuration = $punchOut->diffInSeconds($punchIn);
-
-                // Subtract total break time
-                $actualWorkSeconds = $totalWorkDuration - $totalBreakSeconds;
-
-                // Convert back to hours, minutes, seconds
-                $hours = floor($actualWorkSeconds / 3600);
-                $minutes = floor(($actualWorkSeconds % 3600) / 60);
-                $seconds = $actualWorkSeconds % 60;
-                // Format the output
-                $response['total_working_hours'] = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-            }
-            $response['status'] = 'Present';
+                $status = 'Present';
+                $response['attendance'][] = $resp;
+            }  
         } else {
-            $response['status'] = 'Absent';
+            $status = 'Absent';
         }
+        $response['status'] = $status;
 
         return $response;
     }
@@ -610,4 +507,6 @@ class EmployeeAttendanceService
             ->latest()
             ->first();
     }
+
+
 }
