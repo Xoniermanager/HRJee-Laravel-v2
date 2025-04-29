@@ -44,7 +44,16 @@ class ShiftServices
      */
     public function updateDetails(array $data, $id)
     {
-        return $this->shiftRepository->find($id)->update($data);
+        if(isset($data['is_default']) && $data['is_default']) {
+            $alreadyDefaultShift = $this->shiftRepository->where('company_id', auth()->user()->company_id)->where('is_default', 1)->first();
+
+            if($alreadyDefaultShift) {
+                return ['success' => false, 'message' => 'Already a default shift exists'];
+            }
+        }
+        $this->shiftRepository->find($id)->update($data);
+
+        return ['success' => true, 'message' => 'Shift details updated successfully'];
     }
 
     /**
@@ -111,5 +120,10 @@ class ShiftServices
     public function getAllActiveShifts()
     {
         return $this->shiftRepository->where('status', '1')->get();
+    }
+
+    public function getByIdShifts($shiftIds)
+    {
+        return $this->shiftRepository->whereIn('id', $shiftIds)->get();
     }
 }

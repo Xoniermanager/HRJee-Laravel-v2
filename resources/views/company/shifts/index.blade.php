@@ -141,15 +141,15 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Check-in Buffer(in minutes)<span style="color: red">*</span></label>
+                                        <label>Punch-in Buffer(in minutes)<span style="color: red">*</span></label>
                                         <input class="form-control mb-5 mt-3" type="number" name="check_in_buffer"
-                                            id="check_in_buffer">
+                                            id="check_in_buffer" min="1">
                                         @error('check_in_buffer')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label>Check-out Buffer(in minutes)<span style="color: red">*</span></label>
+                                        <label>Punch-out Buffer(in minutes)<span style="color: red">*</span></label>
                                         <input class="form-control mb-5 mt-3" type="number" name="check_out_buffer"
                                             id="check_out_buffer">
                                         @error('check_out_buffer')
@@ -325,12 +325,12 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Check-in Buffer(in minutes)<span style="color: red">*</span></label>
-                                        <input class="form-control mb-5 mt-3" type="number" name="check_in_buffer"
+                                        <label>Punch-in Buffer(in minutes)<span style="color: red">*</span></label>
+                                        <input class="form-control mb-5 mt-3" type="number" min="1" name="check_in_buffer"
                                             id="check_in_buffer">
                                     </div>
                                     <div class="col-md-6">
-                                        <label>Check-out Buffer(in minutes)<span style="color: red">*</span></label>
+                                        <label>Punch-out Buffer(in minutes)<span style="color: red">*</span></label>
                                         <input class="form-control mb-5 mt-3" type="number" name="check_out_buffer"
                                             id="check_out_buffer">
                                     </div>
@@ -602,7 +602,12 @@
                     },
                     success: function (res) {
                         if (res) {
-                            swal.fire("Done!", 'Default ' + default_name + ' Updated Successfully', "success");
+                            if(res.success) {
+                                swal.fire("Done!", 'Default ' + default_name + ' Updated Successfully', "success");
+                            } else {
+                                swal.fire("Oops!", res.message, "error");
+                            }
+                            
                         } else {
                             swal.fire("Oops!", 'Something Went Wrong', "error");
                         }

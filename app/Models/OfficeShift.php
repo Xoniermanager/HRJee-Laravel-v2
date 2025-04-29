@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Scopes\CompanyScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class OfficeShift extends Model
 {
@@ -32,6 +33,13 @@ class OfficeShift extends Model
         'total_late_count',
         'total_leave_deduction',
     ];
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ucfirst($value),
+        );
+    }
 
     public function officeTimingConfigs()
     {

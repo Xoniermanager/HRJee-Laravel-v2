@@ -23,11 +23,24 @@ class ValidateMenu extends FormRequest
     public function rules(Request $request): array
     {
         return [
-            'title' => 'required|unique:menus,title|max:255',
+            'title' => [
+                'required',
+                'unique:menus,title',
+                'max:255',
+                'regex:/^[A-Za-z0-9\s]+$/'
+            ],
             'slug' => 'required|string|max:255',
             'order_no' => 'required|integer',
             'parent_id' => 'nullable|sometimes|exists:menus,id',
-            'icon'     => 'required'
+            'icon' => 'required'
         ];
     }
+
+    public function messages(): array
+{
+    return [
+        'title.regex' => 'The title must not contain special characters. Only letters, numbers, and spaces are allowed.',
+    ];
+}
+
 }

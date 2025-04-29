@@ -40,7 +40,7 @@
                                                     <label class="form-label required"
                                                         for="exampleFormControlInput1">URL</label>
                                                     <input class="form-control" name="slug" type="text"
-                                                        placeholder="URL" value="{{ $result }}">
+                                                        placeholder="URL" value="{{ $menuDetails->slug }}">
                                                     @if ($errors->has('slug'))
                                                     <div class="text-danger">{{ $errors->first('slug') }}</div>
                                                     @endif
@@ -88,7 +88,10 @@
                                         </div>
                                     </div>
                                     <div class="product-buttons">
-                                        <button type="submit"
+                                        <a href="/admin/menu" class="btn d-flex align-items-center gap-sm-2 gap-1"
+                                            style="float: left;">Cancel
+                                        </a>
+                                        <button type="submit" style="float: right;"
                                             class="companyAccountBtn btn d-flex align-items-center gap-sm-2 gap-1">Update
                                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

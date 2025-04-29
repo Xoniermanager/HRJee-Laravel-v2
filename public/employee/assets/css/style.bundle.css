@@ -38828,6 +38828,7 @@ mat-paginator {
 .card.card-flush.bgi-no-repeat.bgi-size-contain.bgi-position-x-end.h-xl-100 {
     border-top-left-radius: 0;
     border-bottom-right-radius: 0;
+    width: 100% !important;
 }
 
 .show.menu-item {

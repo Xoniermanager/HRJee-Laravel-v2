@@ -324,6 +324,7 @@ function getEmployeeMenuHtml()
 
     return $html;
 }
+
 function numberToWords($num)
 {
     $ones = array(
@@ -524,4 +525,8 @@ function haversine_distance($lat1, $lon1, $lat2, $lon2)
     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
     return $earthRadius * $c; // Distance in meters
+}
+
+function isAssociative(array $arr): bool {
+    return array_keys($arr) !== range(0, count($arr) - 1);
 }

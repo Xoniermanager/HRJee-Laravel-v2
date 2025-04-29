@@ -58,13 +58,7 @@ class AdminAuthController extends Controller
     }
     public function login()
     {
-        // \App\Models\Admin::create([
-        //     'name' => 'Admin',
-        //     'username' => 'admin',
-        //     'email' => 'admin@gmail.com',
-        //     'password' => \Illuminate\Support\Facades\Hash::make('password'),
-        //     'contact_no' => '1234567890'
-        // ]);
+        
         return view('admin.account.login');
     }
 
