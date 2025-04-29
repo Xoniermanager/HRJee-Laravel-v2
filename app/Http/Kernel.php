@@ -78,5 +78,8 @@ class Kernel extends HttpKernel
         'log.route' => \App\Http\Middleware\LogRoute::class,
         'guest.admin' => \App\Http\Middleware\RedirectIfUnauthenticatedAdmin::class,
         'auth.admin' => \App\Http\Middleware\RedirectIfAuthenticatedAdmin::class,
+        'auth.user' => \App\Http\Middleware\RedirectIfAuthenticatedUser::class,
+        'auth.employee' => \App\Http\Middleware\RedirectIfEmployee::class,
+        'auth.company' => \App\Http\Middleware\RedirectIfCompany::class,
     ];
 }

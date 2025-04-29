@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Http\Requests\VerifyOtpRequest;
 use App\Http\Services\SendOtpService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use Throwable;
 
 class AdminAuthController extends Controller
@@ -35,8 +37,18 @@ class AdminAuthController extends Controller
         }
 
         try {
+
+            // Fetch user manually
+            $admin = Admin::where('email', $request->email)->first();
+
             // Attempt to authenticate the user
-            if (!Auth::guard('admin')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            // if (!Auth::guard('admin')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            //     return redirect()->back()
+            //         ->withInput()
+            //         ->with(['error' => 'These credentials do not match our records.']);
+            // }
+
+            if (!$admin || !Hash::check($request->password, $admin->password)) {
                 return redirect()->back()
                     ->withInput()
                     ->with(['error' => 'These credentials do not match our records.']);
@@ -45,9 +57,12 @@ class AdminAuthController extends Controller
             // If login is successful, generate OTP
             $generateOtpResponse = $this->sendOtpService->generateOTP($request->email, 'admin');
             if ($generateOtpResponse['status'] === true) {
+                // Save user id or email in session temporarily
+                session(['otp_pending_admin' => $admin->id]);
+                
                 return redirect('/admin/verify/otp');
             } else {
-                return redirect('/signin')->with('error', $generateOtpResponse['message']);
+                return redirect('/admin/login')->with('error', $generateOtpResponse['message']);
             }
         } catch (Throwable $th) {
             return redirect()->back()
@@ -64,20 +79,39 @@ class AdminAuthController extends Controller
 
     public function verifyOtp()
     {
-        if (!auth()->guard('admin')->check()) {
-            return redirect('/admin/login');
-        }
+    
         return view('admin-verify-otp');
     }
     public function verifyOtpCheck(VerifyOtpRequest $request)
     {
         try {
+            
             $data = $request->all();
-            $data['email'] = auth()->guard('admin')->user()->email;
+            $adminId = session('otp_pending_admin');
+            if (!$adminId) {
+                return redirect('/admin/login')->with('error', 'Session expired. Please login again.');
+            }
+            
+            $admin = Admin::find($adminId);
+            
+            if (!$admin) {
+                return redirect('/admin/login')->with('error', 'Admin not found.');
+            }
+            // $data['email'] = auth()->guard('admin')->user()->email;
+
+            $data['email'] = $admin->email;
             $data['type'] = 'admin';
+            $data['id'] = $admin->id;
+
             $verifyOtpResponse = $this->sendOtpService->verifyOTP($data, 'admin');
-            if ($verifyOtpResponse)
+            if ($verifyOtpResponse) {
+                // OTP is correct, now login the user
+                Auth::guard('admin')->login($admin);
+
+                // Clear the session key
+                session()->forget('otp_pending_admin');
                 return redirect(route('admin.dashboard'));
+            }  
             else
                 return redirect('/admin/verify/otp')->with('error', 'invalid or expired otp! ');
         } catch (Throwable $th) {

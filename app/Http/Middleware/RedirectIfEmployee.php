@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RedirectIfUnauthenticatedAdmin
+class RedirectIfEmployee
 {
     /**
      * Handle an incoming request.
@@ -15,10 +15,10 @@ class RedirectIfUnauthenticatedAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->guard('admin')->check()) {
-            return redirect()->route('admin.dashboard'); // redirect to dashboard if already logged in
-        }
+        if (!auth()->check() || auth()->user()->type != "user") {
+            return redirect()->route('base'); // redirect to login if not already logged in
+        } 
 
-        return $next($request); // otherwise continue to login
+        return $next($request); // otherwise continue to request
     }
 }
