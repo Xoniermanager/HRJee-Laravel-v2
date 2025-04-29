@@ -11,6 +11,9 @@
 							<span class="f-light f-w-600">Company</span>
 						</th>
 						<th>
+							<span class="f-light f-w-600">Email</span>
+						</th>
+						<th>
 							<p class="f-light">Menu Name</p>
 						</th>
 					</tr>
@@ -24,7 +27,9 @@
 						<td>
 							<p class="f-light">{{ $companyDetails->name }}</p>
 						</td>
-
+						<td>
+							<p class="f-light">{{ $companyDetails->email }}</p>
+						</td>
 						<td>
 							@forelse ($companyDetails->menus() as $menu)
 								{{ ucfirst($menu['title']) }}@if (!$loop->last)
