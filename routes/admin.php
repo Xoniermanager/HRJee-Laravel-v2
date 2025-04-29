@@ -23,12 +23,26 @@ use App\Http\Controllers\Admin\AdminDesignationsController;
 use App\Http\Controllers\Admin\AssignMenuCompanyController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Admin\AdminPreviousCompanyController;
+use App\Http\Controllers\Admin\AttendanceController;
 
 Route::prefix('/admin')->middleware(['Check2FA'])->group(function () {
     Route::get('/profile/details', [ProfileController::class, 'getProfile'])->name('admin.getProfile');
 
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('admin.dashboard');
     Route::get('/attendance-details', [AdminDashboard::class, 'attendanceDetails'])->name('admin.attendance.details');
+
+
+    Route::prefix('/attendance')->group(function () {
+        //Employee Attendance Module
+        Route::controller(AttendanceController::class)->group(function () {
+            Route::get('/{companyID}', 'index')->name('attendance.index');
+            Route::get('/search/filter', 'searchFilter');
+            Route::get('/view/{empId}', 'viewAttendanceDetails')->name('attendance.view.details');
+            Route::get('/view/search/filter/{empId}', 'searchFilterByEmployeeId');
+            Route::post('/download/attendance', 'downloadAttendance')->name('download.attendance');
+
+        });
+    });
 
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
         Route::get('/', 'index')->name('admin.departments');

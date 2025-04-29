@@ -38,12 +38,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'company_id');
+        return $this->belongsTo(Role::class, 'id', 'company_id');
     }
 
     public function menu()
     {
-        return $this->role->belongsToMany(Menu::class)->with(['children']);
+        return $this->role->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
     }
 
     public function menus()
@@ -321,6 +321,29 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $report;
+    }
+
+    public function totalCompanyEmployees() {
+
+        return User::where('type', 'user')->where('company_id', $this->id)->count();
+    }
+
+    public function totalActiveEmployees() {
+        
+        return User::where(['type' => 'user', 'status' => 1])->where('company_id', $this->id)->count();
+    }
+
+    public function countTodayPunchIns()
+    {
+        return EmployeeAttendance::join('users', 'users.id', '=', 'employee_attendances.user_id')
+            ->where('users.company_id', $this->id)
+            ->whereDate('employee_attendances.punch_in', Carbon::today())
+            ->count();
+    }
+
+    public function totalInActiveEmployees() {
+        
+        return User::where(['type' => 'user', 'status' => 0])->where('company_id', $this->id)->count();
     }
 
 }

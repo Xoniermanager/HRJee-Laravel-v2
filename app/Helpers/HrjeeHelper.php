@@ -324,6 +324,7 @@ function getEmployeeMenuHtml()
 
     return $html;
 }
+
 function numberToWords($num)
 {
     $ones = array(

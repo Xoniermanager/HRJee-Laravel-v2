@@ -35,7 +35,7 @@ class ResignationStatusController extends Controller
             $userType = auth()->guard('employee_api')->user()->userDetails->roles->name;
             $data = $request->all();
             $data['action_taken_by'] = auth()->guard('employee_api')->user()->id;
-            $resignationStatus =  $this->resignationStatusService->changeStatus($data,$userType);
+            $resignationStatus =  $this->resignationStatusService->changeStatus($data, $userType);
             if ($resignationStatus['status'] == true)
                 return apiResponse($resignationStatus['msg']);
             elseif ($resignationStatus['status'] == false)

@@ -274,7 +274,7 @@ class EmployeeAttendanceService
      * @param [type] $month
      * @param [type] $userId
      * @param [type] $year
-     * @return void
+     * @return void/object/null
      */
     public function getShortAttendanceByMonthByUserId($month, $userId, $year)
     {

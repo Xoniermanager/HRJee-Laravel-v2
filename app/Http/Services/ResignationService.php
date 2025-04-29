@@ -35,7 +35,7 @@ class ResignationService
    *
    * @param [type] $statuses
    * @param [type] $userId
-   * @return void
+   * @return void/object/null
    */
   public function getResignationByResignationStatusIds($statuses, $userId)
   {
@@ -86,7 +86,7 @@ class ResignationService
   * Undocumented function
   *
   * @param [type] $resignationId
-  * @return void
+  * @return void/object/null
   */
   public function getResignationDetails($resignationId)
   {
