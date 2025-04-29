@@ -21,6 +21,7 @@ class AssignMenuCompanyController extends Controller
     public function index()
     {
         $allCompanyDetails = $this->userService->getCompanies()->paginate(10);
+        
         return view('admin.assign_menu.index', compact('allCompanyDetails'));
     }
 

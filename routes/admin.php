@@ -25,7 +25,7 @@ use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Admin\AdminPreviousCompanyController;
 use App\Http\Controllers\Admin\AttendanceController;
 
-Route::prefix('/admin')->middleware(['Check2FA'])->group(function () {
+Route::prefix('/admin')->middleware(['Check2FA', 'auth.admin'])->group(function () {
     Route::get('/profile/details', [ProfileController::class, 'getProfile'])->name('admin.getProfile');
 
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('admin.dashboard');
@@ -193,6 +193,7 @@ Route::prefix('/admin')->middleware(['Check2FA'])->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('admin.menu.statusUpdate');
         Route::get('/search', 'search')->name('admin.menu.search');
     });
+
     Route::prefix('/assign-menu')->controller(AssignMenuCompanyController::class)->group(function () {
         Route::get('/', 'index')->name('admin.assign_menu.index');
         Route::get('/add', 'assignMenu')->name('admin.assign_menu.add');
@@ -200,6 +201,7 @@ Route::prefix('/admin')->middleware(['Check2FA'])->group(function () {
         Route::get('/get-assign-feature', 'get_assign_feature')->name('admin.company.getPermission');
         Route::get('/search-filter-company', 'searchFilterMenu')->name('admin.filter.company_menu');
     });
+
     Route::prefix('/company-type')->controller(CompanyTypeController::class)->group(function () {
         Route::get('/', 'index')->name('admin.company_type');
         Route::post('/create', 'store')->name('admin.company_type.store');
@@ -217,6 +219,7 @@ Route::prefix('/admin')->middleware(['Check2FA'])->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('admin.subscription_plan.statusUpdate');
         Route::get('/search', 'search')->name('admin.subscription_plan.search');
     });
+
     Route::prefix('/log-activity')->controller(LogActivityController::class)->group(function () {
         Route::get('/', 'index')->name('admin.log_activity');
     });
