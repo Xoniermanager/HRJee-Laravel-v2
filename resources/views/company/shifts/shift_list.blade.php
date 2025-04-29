@@ -22,8 +22,8 @@
                         <td>
                             {{ $allshift->name }}
                         </td>
-                        <td>{{ $allshift->start_time }}</td>
-                        <td>{{ $allshift->end_time }}</td>
+                        <td>{{ date('h:i A', strtotime($allshift->start_time)) }}</td>
+                        <td>{{ date('h:i A', strtotime($allshift->end_time)) }}</td>
                         <td data-order="Invalid date">
                             <label class="switch">
                                 <input type="checkbox" <?= $allshift->status == '1' ? 'checked' : '' ?>
@@ -34,7 +34,7 @@
 
                         <td data-order="Invalid date">
                             <label class="switch">
-                                <input type="checkbox"
+                                <input type="checkbox" {{ $allshift->is_default == '1' ? 'checked' : '' }}
                                     onchange="handleDefault({{ $allshift->id }})" id="checked_value_default_{{$allshift->id}}">
                                 <span class="slider round"></span>
                             </label>

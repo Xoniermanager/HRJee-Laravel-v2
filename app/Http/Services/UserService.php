@@ -117,7 +117,7 @@ class UserService
 
     public function searchCompanyMenu($searchKey)
     {
-        return $this->userRepository
+        return $this->userRepository->where('type', 'company')
             ->with('role.menus')
             ->where(function ($query) use ($searchKey) {
                 if (!empty($searchKey)) {

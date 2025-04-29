@@ -5,7 +5,6 @@
         .punchinbar p {
             font-weight: 500;
         }
-
         .punchinbar p span {
             font-weight: 400;
         }
@@ -39,7 +38,6 @@
                                         style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
                                         <div class="fw-bold py-2 text-white">
-
                                             <span class="fs-2 opacity-50">Total Attendance
                                             </span>
                                         </div>
@@ -64,14 +62,12 @@
                                         <!--end::Icon-->
                                     </div>
                                     <!--end::Header-->
-
                                     <!--begin::Card footer-->
                                     <div class="card-footer"
                                         style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
                                     border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
                                         <div class="fw-bold py-2 text-white">
-
                                             <span class="fs-2 opacity-50">Monthly News</span>
                                         </div>
                                         <!--end::Progress-->
@@ -97,11 +93,9 @@
                                     <!--end::Header-->
                                     <!--begin::Card footer-->
                                     <div class="card-footer"
-                                        style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;
-border-bottom-right-radius: 30px;">
+                                        style="border-top: 1px solid rgba(255, 255, 255, 0.3);background: rgba(0, 0, 0, 0.15);    border-bottom-left-radius: 30px;border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
                                         <div class="fw-bold py-2 text-white">
-
                                             <span class="fs-2 opacity-50">HR Service </span>
                                         </div>
                                         <!--end::Progress-->
@@ -132,9 +126,7 @@ border-bottom-right-radius: 30px;">
                                     border-bottom-right-radius: 30px;">
                                         <!--begin::Progress-->
                                         <div class="fw-bold py-2 text-white">
-
-                                            <span class="fs-2 opacity-50"> Support
-                                            </span>
+                                            <span class="fs-2 opacity-50"> Support</span>
                                         </div>
                                         <!--end::Progress-->
                                     </div>
@@ -168,67 +160,94 @@ border-bottom-right-radius: 30px;">
                                                 class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
                                                 style="width: 4px;height: 80px !important;"></span>
                                         </div>
-
+                                        <style>
+                                        .working_hours {
+                                            display: flex;
+                                            gap: 10px;
+                                            background: #dff2f8;
+                                            margin-bottom: 10px;
+                                            padding: 5px 10px;
+                                            border-radius: 10px;
+                                            border: 1px solid #74d5f3;
+                                        }
+                                        </style>
                                         <div class="col-md-9 d-flex punchinbar" style="gap: 15px">
-                                            {{-- <span data-kt-element="bullet"
-                                            class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
-                                            style="width: 1px;height: 30px !important;"></span> --}}
-                                            @if ($existingAttendanceDetail && $existingAttendanceDetail->totalBreakHour != '')
-                                                <p>Break Time <span
-                                                        id="break_timer">{{ $existingAttendanceDetail->totalBreakHour }}</span>
-                                                </p>
-                                                <span data-kt-element="bullet"
-                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
-                                                    style="width: 1px;height: 30px !important;"></span>
-                                            @endif
+                                            <div class="row">
+                                                @if (count($existingAttendanceDetail))
+                                                    @foreach ($existingAttendanceDetail as $attendanceDetail)
+                                                        <div class="working_hours">
+                                                            @if ($attendanceDetail['totalBreakHour'] != '')
+                                                                @if ($currentAttendanceDetail && $attendanceDetail['id'] == $currentAttendanceDetail->id)
+                                                                    <p>Break Time <span
+                                                                            id="break_timer">{{ $attendanceDetail['totalBreakHour'] }}</span>
+                                                                    </p>
+                                                                @else
+                                                                    <p>Break Time
+                                                                        <span>{{ $attendanceDetail['totalBreakHour'] }}</span>
+                                                                    </p>
+                                                                @endif
 
-                                            @if ($existingAttendanceDetail && !empty($existingAttendanceDetail))
-                                                <p> PunchIn Time :
-                                                    <span>{{ date('d-M-Y  H:i:s', strtotime($existingAttendanceDetail->punch_in)) }}</span>
-                                                </p>
-                                                <span data-kt-element="bullet"
-                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
-                                                    style="width: 1px;height: 30px !important;"></span>
-                                            @endif
+                                                                <span data-kt-element="bullet"
+                                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary mt-3"
+                                                                    style="width: 1px;height: 30px !important;"></span>
+                                                            @endif
 
-                                            @if (!empty($existingAttendanceDetail) && $existingAttendanceDetail->punch_out != '')
-                                                <p> PunchOut Time :
-                                                    <span>{{ date('d-M-Y  H:i:s', strtotime($existingAttendanceDetail->punch_out)) }}</span>
-                                                </p>
-                                                <span data-kt-element="bullet"
-                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary"
-                                                    style="width: 1px;height: 30px !important;"></span>
-                                                <p> Working Hours :
-                                                    <span>{{ getTotalWorkingHour($existingAttendanceDetail->punch_in, $existingAttendanceDetail->punch_out) }}</span>
-                                                </p>
-                                            @endif
-                                            @if ( !empty($existingAttendanceDetail) && $existingAttendanceDetail->punch_in != '' &&   $existingAttendanceDetail->punch_out == '')
-                                                <p id="working-hours"> Working Timer : <span id="punchin-timer"></span></p>
-                                            @endif
+                                                            @if (!empty($attendanceDetail))
+                                                                <p> Punch-In Time :
+                                                                    <span>{{ date('M d, Y  h:i A', strtotime($attendanceDetail['punch_in'])) }}</span>
+                                                                </p>
+                                                                <span data-kt-element="bullet"
+                                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary mt-3"
+                                                                    style="width: 1px;height: 30px !important;"></span>
+                                                            @endif
 
-                                            @if ($existingAttendanceDetail == null)
-                                                <button class="btn btn-sm btn-primary align-self-center" id="start-timer">
-                                                    Punch In
-                                                </button>
-                                            @endif
-                                            @if ($existingAttendanceDetail && $existingAttendanceDetail->punch_out == '')
-                                                <input type="hidden" id=attendance_id>
-                                                <button class="btn btn-sm btn-primary align-self-center" id="stop-timer">
-                                                    Punch Out
-                                                </button>
-                                                @if ($takenBreakDetails && !empty($takenBreakDetails))
-                                                    <a class="btn btn-sm btn-danger align-self-center"
-                                                        href="{{ route('employee_break_out', $takenBreakDetails->id) }}">
-                                                        Break Out
-                                                    </a>
-                                                @else
-                                                    <button class="btn btn-sm btn-danger align-self-center"
-                                                        data-bs-toggle="modal" data-bs-target="#break" id="take_break">
-                                                        Take Break
-                                                    </button>
+                                                            @if (!empty($attendanceDetail) && $attendanceDetail['punch_out'] != '')
+                                                                <p> PunchOut Time :
+                                                                    <span>{{ date('M d, Y  h:i A', strtotime($attendanceDetail['punch_out'])) }}</span>
+                                                                </p>
+                                                                <span data-kt-element="bullet"
+                                                                    class="bullet bullet-vertical d-flex align-items-center h-40px bg-primary mt-3"
+                                                                    style="width: 1px;height: 30px !important;"></span>
+                                                                <p> Working Hours :
+                                                                    <span>{{ getTotalWorkingHour($attendanceDetail['punch_in'], $attendanceDetail['punch_out']) }}</span>
+                                                                </p>
+                                                            @endif
+                                                            @if (!empty($attendanceDetail) && $attendanceDetail['punch_in'] != '' && $attendanceDetail['punch_out'] == '')
+                                                                <p id="working-hours"> Working Timer : <span
+                                                                        id="punchin-timer"></span></p>
+                                                            @endif
+
+                                                            @if ($attendanceDetail && $attendanceDetail['punch_out'] == '')
+                                                                <input type="hidden" id=attendance_id>
+                                                                <button class="btn btn-sm btn-primary align-self-center"
+                                                                    id="stop-timer">
+                                                                    Punch Out
+                                                                </button>
+                                                                @if (!empty($attendanceDetail['takenBreakDetails']))
+                                                                    <a class="btn btn-sm btn-danger align-self-center"
+                                                                        href="{{ route('employee_break_out', $attendanceDetail['takenBreakDetails']->id) }}">
+                                                                        Break Out
+                                                                    </a>
+                                                                @else
+                                                                    <button class="btn btn-sm btn-danger align-self-center"
+                                                                        data-bs-toggle="modal" data-bs-target="#break"
+                                                                        id="take_break">
+                                                                        Take Break
+                                                                    </button>
+                                                                @endif
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
                                                 @endif
-                                            @endif
-
+                                                @if (count($shiftIDs) > count($existingAttendanceDetail) && !$currentAttendanceDetail)
+                                                    <div class="col-12">
+                                                        <button class="btn btn-sm btn-primary align-self-center"
+                                                            id="start-timer">
+                                                            Punch In
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                     <!--begin::Table container-->
@@ -268,7 +287,7 @@ border-bottom-right-radius: 30px;">
                     <form id="employee_break_history">
                         @csrf
                         <input type="hidden" name="employee_attendance_id"
-                            value="{{ $existingAttendanceDetail->id ?? '' }}">
+                            value="{{ $currentAttendanceDetail->id ?? '' }}">
                         <div class="col-md-12 form-group">
                             <label class="required">Select Break Type</label>
                             <select class="form-control mb-3" name="break_type_id">
@@ -340,28 +359,25 @@ border-bottom-right-radius: 30px;">
         setInterval(updateCurrentTime, 1000);
         updateCurrentTime();
 
-        @if ($existingAttendanceDetail) // Check if $existingAttendanceDetail is not null
+        @if ($currentAttendanceDetail) // Check if $existingAttendanceDetail is not null
             // Pass PHP values to JavaScript and ensure proper JSON encoding
-            var punchIn = @json($existingAttendanceDetail->punch_in);
-            var punchOut = @json($existingAttendanceDetail->punch_out);
-            $('#attendance_id').val(@json($existingAttendanceDetail->id));
+            var punchIn = @json($currentAttendanceDetail->punch_in);
+            var punchOut = @json($currentAttendanceDetail->punch_out);
+            $('#attendance_id').val(@json($currentAttendanceDetail->id));
             get_timer_clock(punchIn, punchOut);
         @endif
 
         @if (!empty($takenBreakDetails) && $takenBreakDetails)
-            var breakTime = @json($existingAttendanceDetail->totalBreakHour);
+            var breakTime = @json($currentAttendanceDetail->totalBreakHour);
             startTimer(breakTime);
             //clearInterval(refreshIntervalId);
         @endif
 
-        function get_timer_clock(punch_in, punch_out)
-        {
-            if (punch_in != '' && punch_out == null)
-            {
+        function get_timer_clock(punch_in, punch_out) {
+            if (punch_in != '' && punch_out == null) {
                 let timeLaps = '';
                 var StartedTime = new Date(punch_in).getTime();
-                refreshIntervalId = setInterval(() =>
-                {
+                refreshIntervalId = setInterval(() => {
                     var EndedTime = new Date().getTime();
                     var diff = EndedTime - StartedTime;
                     var hours = Math.floor(diff / 3.6e6);
@@ -374,12 +390,9 @@ border-bottom-right-radius: 30px;">
                     timeLaps = duration;
                     $("#punchin-timer").text(timeLaps);
                 }, 1000);
-            }
-            else if (punch_out != '')
-            {
+            } else if (punch_out != '') {
                 clearInterval(refreshIntervalId);
-                if (punch_out)
-                {
+                if (punch_out) {
                     var StartedTime = new Date(punch_in).getTime();
                     var EndedTime = new Date(punch_out).getTime();
 
@@ -393,9 +406,7 @@ border-bottom-right-radius: 30px;">
                     var duration = h + ":" + m + ":" + s;
                     timeLaps = duration;
                 }
-            }
-            else
-            {
+            } else {
                 console.log('hello');
             }
         }

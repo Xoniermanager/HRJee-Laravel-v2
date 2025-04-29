@@ -161,12 +161,11 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
     Route::middleware('checkMenuAccess:location-tracking')->controller(LocationTrackingController::class)->group(function () {
         Route::get('/location-tracking/get-locations', 'getLocations');
         Route::post('/location-tracking/send', 'sendLocations');
-
-        /** Course Details Modules */
-        Route::prefix('course')->controller(CourseController::class)->group(function () {
-            Route::get('/list', 'courseList');
-            Route::get('/details/{courses:id}', 'courseDetails');
-        });
+    });
+      /** Course Details Modules */
+      Route::prefix('course')->controller(CourseController::class)->group(function () {
+        Route::get('/list', 'courseList');
+        Route::get('/details/{courses:id}', 'courseDetails');
     });
     //Employee Break History
     Route::controller(EmployeeBreakHistoryController::class)->group(function () {

@@ -68,9 +68,9 @@
                             <a href="{{ route('admin.edit_menu', ['id' => $menuDetails->id]) }}">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            {{-- <a href="#" onclick="deleteFunction('{{ $menuDetails->id }}')">
+                            <a href="#" onclick="deleteFunction('{{ $menuDetails->id }}')">
                                 <i class="fa fa-trash"></i>
-                            </a> --}}
+                            </a>
                         </div>
                     </td>
                 </tr>

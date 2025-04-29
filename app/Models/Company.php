@@ -74,6 +74,7 @@ class Company extends Authenticatable
     {
         return $this->hasMany(User::class);
     }
+    
     public function employeeAttendances()
     {
         return $this->hasManyThrough(EmployeeAttendance::class, User::class);

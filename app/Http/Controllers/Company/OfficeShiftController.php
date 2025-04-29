@@ -109,11 +109,8 @@ class OfficeShiftController extends Controller
             $data['is_default'] =  $request->default;
         }
         $statusDetails = $this->shift_service->updateDetails($data, $id);
-        if ($statusDetails) {
-            echo 1;
-        } else {
-            echo 0;
-        }
+
+        return response()->json($statusDetails);
     }
 
     public function searchShiftFilter(Request $request)
