@@ -187,6 +187,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="product-buttons">
+                                                        <a class="btn" href="/admin/company">
+                                                            <div class="d-flex align-items-center gap-sm-2 gap-1">Cancel</div>
+                                                        </a>
+
                                                         <a class="companyAccountBtn btn" href="#">
                                                             <div class="d-flex align-items-center gap-sm-2 gap-1">Next
                                                                 <svg viewBox="0 0 24 24" fill="none"
@@ -261,6 +265,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="product-buttons">
+                                                        <a class="btn" href="/admin/company">
+                                                            <div class="d-flex align-items-center gap-sm-2 gap-1">Cancel</div>
+                                                        </a>
                                                         <a class="previousPersonDetailBtn btn" href="#">
                                                             <div class="d-flex align-items-center gap-sm-2 gap-1">
                                                                 <svg viewBox="0 0 24 24" fill="none"

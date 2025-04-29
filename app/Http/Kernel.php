@@ -75,6 +75,8 @@ class Kernel extends HttpKernel
     ];
 
     protected $routeMiddleware = [
-        'log.route' => \App\Http\Middleware\LogRoute::class
+        'log.route' => \App\Http\Middleware\LogRoute::class,
+        'guest.admin' => \App\Http\Middleware\RedirectIfUnauthenticatedAdmin::class,
+        'auth.admin' => \App\Http\Middleware\RedirectIfAuthenticatedAdmin::class,
     ];
 }

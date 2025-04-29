@@ -66,14 +66,15 @@ Route::prefix('admin')->controller(AdminForgetPasswordController::class)->group(
 // /**---------------End Company Auth Route----------------*/
 
 // /** ----------------- Super Admin Started -------------------- **/
+
 Route::prefix('/admin')->controller(AdminAuthController::class)->group(function () {
-    // Route::middleware('guest')->group(function () {
+    Route::middleware('guest.admin')->group(function () {
         Route::get('/login', 'login')->name('admin.login');
         Route::get('/verify/otp', 'verifyOtp')->name('admin.verifyOtp');
         Route::get('/resend/otp', 'resendOtp')->name('admin.resendOtp');
         Route::post('/verify/otp/submit', 'verifyOtpCheck')->name('admin.verifyOtpCheck');
         Route::post('/admin_login', 'admin_login')->name('super.admin.login');
-    // });
+    });
     Route::get('/logout', 'adminLogout')->name('admin.logout');
 });
 // /**---------------End Super Admin Auth Route----------------*/
