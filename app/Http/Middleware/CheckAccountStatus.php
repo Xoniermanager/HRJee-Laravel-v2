@@ -10,6 +10,9 @@ class CheckAccountStatus
     public function handle($request, Closure $next)
     {
         $companyDetails = Auth()->user();
+        if(!$companyDetails) {
+            return redirect()->route('base');
+        }
         if ($companyDetails && $companyDetails->status == '0') {
             Auth::logout();
             session()->flush();
