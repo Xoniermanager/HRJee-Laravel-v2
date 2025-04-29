@@ -15,9 +15,9 @@ class RedirectIfUnauthenticatedAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->guard('admin')->check()) {
-            return redirect()->route('admin.dashboard'); // redirect to dashboard if already logged in
-        }
+        // if (auth()->guard('admin')->check()) {
+        //     return redirect()->route('admin.dashboard'); // redirect to dashboard if already logged in
+        // }
 
         return $next($request); // otherwise continue to login
     }
