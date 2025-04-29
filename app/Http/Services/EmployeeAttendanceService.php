@@ -172,6 +172,18 @@ class EmployeeAttendanceService
         return ['status' => true, 'data' => 'Punch In'];
     }
 
+    public function getTodaysShifts()
+    {
+        $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
+
+        $shiftType = $userDetails->details->shift_type;
+        $shiftIDs = $this->userShiftService->getTodaysShifts($userDetails->id, $shiftType)->pluck('shift_id')->toArray();
+
+        $shifts = $this->shiftService->getByIdShifts($shiftIDs);
+
+        return $shifts;
+    }
+
 
     public function getExtistingDetailsByUserId($userId, $shiftType = 'single')
     {   
