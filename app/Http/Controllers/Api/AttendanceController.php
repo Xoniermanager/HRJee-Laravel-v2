@@ -83,6 +83,29 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
+
+
+    public function getTodaysShifts(Request $request)
+    {
+        try {
+            $shifts = $this->employeeAttendanceService->getTodaysShifts();
+            
+            return response()->json([
+                'status' => true,
+                'data' => $shifts,
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+
     public function getAttendanceByFromAndToDate(Request $request)
     {
         try {
