@@ -56,7 +56,12 @@ class ValidateBranch extends FormRequest
                 'string',
                 'regex:/^[A-Za-z0-9\s]+$/'
             ],
-            'pincode' => 'required|string',
+            'pincode' => [
+                'required',
+                'string',
+                'max:10',
+                'regex:/^[A-Za-z0-9 ]+$/', // Allows letters, numbers, and spaces
+            ],
             'country_id' => 'required_if:address_type,==,0|exists:countries,id',
             'state_id' => 'required_if:address_type,==,0|exists:states,id',
         ];
@@ -71,6 +76,7 @@ class ValidateBranch extends FormRequest
     {
         return [
             'city.regex' => 'The city must not contain special characters. Only letters, numbers, and spaces are allowed.',
+            'pincode.regex' => 'The pincode must not contain special characters. Only letters, numbers, and spaces are allowed.',
         ];
     }
 }
