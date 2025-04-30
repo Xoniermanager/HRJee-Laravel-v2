@@ -32,8 +32,11 @@
 						</td>
 						<td>
 							@forelse ($companyDetails->menus() as $menu)
-								{{ ucfirst($menu['title']) }}@if (!$loop->last)
-									,
+								@if(!count($menu['children']))
+									{{ ucfirst($menu['title']) }}
+									@if (!$loop->last)
+										,
+									@endif
 								@endif
 							@empty
 								No menu available

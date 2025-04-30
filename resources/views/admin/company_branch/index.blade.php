@@ -91,8 +91,8 @@
 
 
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Email" name="email"
+                            <label class="form-label">Office Email</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Office Email" name="email"
                                 id="email">
                             @error('email')
                                 <span class="text-denger">{{ $message}} </span>
@@ -117,20 +117,20 @@
                             @enderror
                         </div>
 
+                        
                         <div class="col-md-6">
-                            <label class="form-label">City</label>
-                            <input class="form-control" type="text" placeholder="Enter Your City" name="city" id="city">
-                            @error('city')
-                                <span class="text-denger">{{ $message}} </span>
-                            @enderror
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label class="form-label">Pincode</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Pincode" name="pincode"
-                                id="pincode">
-                            @error('pincode')
+                            <label class="form-label">Country</label>
+                            <select class="form-select" name="country_id" id="country_id">
+                                <option value="">Please Select Country</option>
+                                @forelse ($countries as $country)
+                                    <option value="{{ $country->id }}">
+                                        {{ $country->name }}
+                                    </option>
+                                @empty
+                                    <option value="">No Country Found</option>
+                                @endforelse
+                            </select>
+                            @error('country')
                                 <span class="text-denger">{{ $message}} </span>
                             @enderror
                         </div>
@@ -148,23 +148,24 @@
                                 <span class="text-denger">{{ $message}} </span>
                             @enderror
                         </div>
-
                         <div class="col-md-6">
-                            <label class="form-label">Country</label>
-                            <select class="form-select" name="country_id" id="country_id">
-                                <option value="">Please Select Country</option>
-                                @forelse ($countries as $country)
-                                    <option value="{{ $country->id }}">
-                                        {{ $country->name }}
-                                    </option>
-                                @empty
-                                    <option value="">No Country Found</option>
-                                @endforelse
-                            </select>
-                            @error('country')
+                            <label class="form-label">City</label>
+                            <input class="form-control" type="text" placeholder="Enter Your City" name="city" id="city">
+                            @error('city')
                                 <span class="text-denger">{{ $message}} </span>
                             @enderror
                         </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Pincode</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Pincode" name="pincode"
+                                id="pincode">
+                            @error('pincode')
+                                <span class="text-denger">{{ $message}} </span>
+                            @enderror
+                        </div>
+                        
 
                         <div class="col-md-12">
                             <label class="form-label">Description</label>

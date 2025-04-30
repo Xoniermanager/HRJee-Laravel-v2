@@ -28,16 +28,16 @@
                                                         <label class="form-label required"
                                                             for="exampleFormControlInput1">Menu Name</label>
                                                         <input class="form-control" id="title" name="title"
-                                                            type="text" placeholder="Menu Name">
+                                                            type="text" placeholder="Menu Name" value="{{ old('title') }}">
                                                         @if ($errors->has('title'))
                                                             <div class="text-danger">{{ $errors->first('title') }}</div>
                                                         @endif
                                                     </div>
                                                     <div class="col-md-6 col-sm-6">
                                                         <label class="form-label required"
-                                                            for="exampleFormControlInput1">URL</label>
-                                                        <input class="form-control" name="slug" type="text"
-                                                            placeholder="URL">
+                                                            for="exampleFormControlInput1">Slug</label>
+                                                        <input class="form-control" name="slug" type="text" value="{{ old('slug') }}"
+                                                            placeholder="eg: /slug or #">
                                                         @if ($errors->has('slug'))
                                                             <div class="text-danger">{{ $errors->first('slug') }}</div>
                                                         @endif
@@ -53,7 +53,7 @@
                                                         <select class="select2 form-control select-opt" name="parent_id">
                                                             <option value="">Select Menu</option>
                                                             @foreach ($allParentMenu as $header)
-                                                                <option value="{{ $header->id }}">{{ $header->title }}
+                                                                <option value="{{ $header->id }}" {{ old('parent_id') == $header->id ? 'selected' : '' }}>{{ $header->title }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -65,7 +65,7 @@
                                                         <label class="form-label required"
                                                             for="exampleFormControlInput1">Order No</label>
                                                         <input class="form-control" name="order_no" type="number"
-                                                            placeholder="Order No">
+                                                            placeholder="Order No" value="{{ old('order_no') }}">
                                                             <span class="text-warning">Sequence no. in which menus will display</span>
                                                         @if ($errors->has('order_no'))
                                                             <div class="text-danger">{{ $errors->first('order_no') }}</div>
@@ -76,7 +76,7 @@
                                                             for="exampleFormControlInput1">Menu
                                                             Icon</label>
                                                         <input class="form-control" name="icon" type="text"
-                                                            placeholder="Menu Icon">
+                                                            placeholder="eg: <i class='fa fa-newspaper'></i>" value="{{ old('icon') }}">
                                                         @if ($errors->has('icon'))
                                                             <div class="text-danger">{{ $errors->first('icon') }}</div>
                                                         @endif

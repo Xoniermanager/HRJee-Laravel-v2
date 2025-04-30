@@ -19,8 +19,26 @@ class MenuController extends Controller
 
     public function index()
     {
+        $menus = $this->menuServices->all();
+
+        $menus->getCollection()->transform(function ($menu) use (&$orderCounts) {
+            $orderNo = $menu->order_no;
+        
+            if (!isset($orderCounts[$orderNo])) {
+                $orderCounts[$orderNo] = 0;
+                // Use dynamic property for non-persistent attribute
+                $menu->order_no_label = (string) $orderNo;
+            } else {
+                $orderCounts[$orderNo]++;
+                // Set dynamic property again
+                $menu->order_no_label = $orderNo . ' (' . $orderCounts[$orderNo] . ')';
+            }
+        
+            return $menu;
+        });
+
         return view('admin.menu.index', [
-            'allMenuDetails' => $this->menuServices->all()
+            'allMenuDetails' => $menus
         ]);
     }
 

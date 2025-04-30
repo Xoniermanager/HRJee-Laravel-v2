@@ -51,7 +51,7 @@
                     </td>
 
                     <td>
-                        <p class="f-light">{{ $menuDetails->order_no }}</p>
+                        <p class="f-light">{{ $menuDetails->order_no_label }}</p>
                     </td>
 
                     <td>

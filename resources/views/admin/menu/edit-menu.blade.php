@@ -38,9 +38,9 @@
                                                 @endphp
                                                 <div class="col-md-6 col-sm-6">
                                                     <label class="form-label required"
-                                                        for="exampleFormControlInput1">URL</label>
+                                                        for="exampleFormControlInput1">Slug</label>
                                                     <input class="form-control" name="slug" type="text"
-                                                        placeholder="URL" value="{{ $menuDetails->slug }}">
+                                                        placeholder="eg: /slug or #" value="{{ $menuDetails->slug }}">
                                                     @if ($errors->has('slug'))
                                                     <div class="text-danger">{{ $errors->first('slug') }}</div>
                                                     @endif
@@ -79,7 +79,7 @@
                                                     <label class="form-label required"
                                                         for="exampleFormControlInput1">Menu Icon</label>
                                                     <input class="form-control" name="icon" type="text"
-                                                        placeholder="Menu Icon" value="{{ $menuDetails->icon }}">
+                                                        placeholder="eg: <i class='fa fa-newspaper'></i>" value="{{ $menuDetails->icon }}">
                                                     @if ($errors->has('icon'))
                                                     <div class="text-danger">{{ $errors->first('icon') }}</div>
                                                     @endif
