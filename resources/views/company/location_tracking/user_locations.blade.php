@@ -352,9 +352,6 @@
             lng: 77.23165
         }
 
-        console.log("locationData => ", locationData);
-        console.log("assignedTasks => ", assignedTasks);
-
         /**
          * Initializes the Google Map and related services.
          */
@@ -375,7 +372,6 @@
          * Draws circles for task locations and colors them based on task completion
          */
         function drawVisitCircles(tasks) {
-            console.log(" tasks => ", tasks)
             const groupedTasks = groupTasksByProximity(tasks);
             const visitLocationsContainer = document.getElementById("visitLocations");
             visitLocationsContainer.innerHTML = "<span>Assigned Tasks: </span>";
@@ -424,7 +420,7 @@
 
                 // Add group name to Assigned Tasks
                 group.tasks.sort((a, b) => a.id - b.id);
-                let firstAddress = "Unknown";
+                let firstAddress = `#${group.tasks[0]?.visit_address}` || "Unknown";
                 let additionalCount = group.tasks.length - 1;
 
                 let groupLabel = firstAddress;
@@ -571,7 +567,6 @@
 
             if (routePoints.length > 1) {
                 const totalDistance = calculateTotalDistance(routePoints);
-                console.log(`Total Distance: ${totalDistance.toFixed(2)} km`);
                 totalDistanceBox.innerText = `Total Travel Distance: ${totalDistance.toFixed(2)} km`;
 
                 if (totalDistance.toFixed(2) > 0.1) {
@@ -812,7 +807,6 @@
                             combinedResults.push(result);
                             resolve();
                         } else {
-                            console.error("Direction service failed:", status, "for chunk", i);
                             // Try with different travel mode if ZERO_RESULTS
                             if (status === "ZERO_RESULTS") {
                                 directionsService.route({
@@ -862,7 +856,6 @@
                 map.setCenter(lastPoint);
                 map.setZoom(12);
             }).catch((status) => {
-                console.error("All routing attempts failed:", status);
                 errorBox.innerText = 'Failed to fetch directions, falling back to direct path.';
                 // Fallback to drawing a simple polyline
                 drawPolyline();
@@ -915,8 +908,6 @@
             if ("{{ $punchOut }}") {
                 exitLocationBox.innerText = 'Punch out at: ' + formatPunchTime("{{ $punchOut }}");
             }
-
-            console.log("coordinates => ", coordinates)
 
             if (assignedTasks.length) {
                 drawVisitCircles(assignedTasks);
@@ -1006,11 +997,9 @@
             // Check if cached data exists and is still valid
             if (cachedData) {
                 if (now - cachedData.timestamp < cacheDuration) {
-                    console.log("Loading from cache:", cacheKey);
                     renderLocationHistory(cachedData.data);
                     return;
                 } else {
-                    console.log("Cache expired. Removing:", cacheKey);
                     localStorage.removeItem(cacheKey);
                 }
             }
@@ -1022,7 +1011,6 @@
                 data: payload,
                 dataType: "json",
                 success: function(response) {
-                    console.log("Fetched from server:", response.data);
                     if (response.status) {
                         localStorage.setItem(cacheKey, JSON.stringify({
                             timestamp: now,
