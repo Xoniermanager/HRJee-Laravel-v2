@@ -530,3 +530,32 @@ function haversine_distance($lat1, $lon1, $lat2, $lon2)
 function isAssociative(array $arr): bool {
     return array_keys($arr) !== range(0, count($arr) - 1);
 }
+
+
+function get_coordinates_from_address($address)
+{
+	$apiKey = "AIzaSyAZ6YyrIHnFZ-vpGlPT99dGmZWGkNzqcp4";
+	$encodedAddress = urlencode($address);
+	$url = "https://maps.googleapis.com/maps/api/geocode/json?address={$encodedAddress}&key={$apiKey}";
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	$response = curl_exec($ch);
+	curl_close($ch);
+
+	$data = json_decode($response, true);
+
+	if (isset($data["results"][0]["geometry"]["location"])) {
+		return [
+			"latitude" => $data["results"][0]["geometry"]["location"]["lat"],
+			"longitude" => $data["results"][0]["geometry"]["location"]["lng"]
+		];
+	} else {
+        return [
+			"latitude" => null,
+			"longitude" => null
+		];
+    }
+}
