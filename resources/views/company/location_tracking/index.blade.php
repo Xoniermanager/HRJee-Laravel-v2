@@ -14,7 +14,7 @@
 
                     </div>
                     <div class="card-title m-0">
-                        {{-- <div class="d-flex align-items-center position-relative min-w-250px my-1 me-2">
+                        <div class="d-flex align-items-center position-relative min-w-250px my-1 me-2">
                             <span class="svg-icon svg-icon-1 position-absolute ms-4" id="search-sec">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none">
@@ -28,7 +28,7 @@
 
                             <input class="form-control form-control-solid ps-14" placeholder="Search by name/email"
                                 type="text" name="search" value="{{ request()->get('search') }}" id="search">
-                        </div> --}}
+                        </div>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#assign_location_tracking"
                             class="btn btn-sm btn-primary align-self-center">
                             Assign Location Tracking
@@ -151,11 +151,11 @@
             search_filter_results();
         });
 
-        jQuery(document).on('click', '#tracking_list a', function(e) {
-            e.preventDefault();
-            var page_no = $(this).attr('href').split('page=')[1];
-            search_filter_results(page_no);
-        });
+        // jQuery(document).on('click', '#tracking_list a', function(e) {
+        //     e.preventDefault();
+        //     var page_no = $(this).attr('href').split('page=')[1];
+        //     search_filter_results(page_no);
+        // });
 
         function handleStatus(userId) {
             var checked_value = $('#checked_value_' + userId).prop('checked');

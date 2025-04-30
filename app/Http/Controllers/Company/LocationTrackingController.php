@@ -195,10 +195,15 @@ class LocationTrackingController extends Controller
         }
 
         if($date == date("Y-m-d")) {
-            $assignedTasks = $this->assignTaskService->getTaskByUserIdAndDateAndStatus($userID, $date, ['pending','processing'])->get()->toArray();
+            $assignedTasks = $this->assignTaskService->getTaskByUserIdAndDateAndStatus($userID, $date, ['pending','processing', 'completed','rejected'])->get()->toArray();
         } else {
             $assignedTasks = $this->assignTaskService->getTaskByUserIdAndDateAndStatus($userID, $date, ['completed','rejected'])->get()->toArray();
         }
+
+
+        foreach ($assignedTasks as $key => $value) {
+			$assignedTasks[$key]["visit_coords"] = get_coordinates_from_address($value['visit_address']);
+		}
 
         return view('company.location_tracking.user_locations', compact('punchIn', 'punchOut', 'user', 'userID', 'maxDaysUserLocation', 'locationData', 'assignedTasks', 'attendanceDetails'));
     }
