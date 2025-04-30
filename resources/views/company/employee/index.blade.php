@@ -61,7 +61,7 @@
                                     </form>
                                 </div>
                                 <div class="col-md-7 mt-3">
-                                    <form class="d-flex" id="downloadAttendance">
+                                    {{-- <form class="d-flex" id="downloadAttendance">
                                         @csrf
                                         <select class="form-control filter_form" name="emp_filter" id="emp_filter">
                                             <option value="current_month"
@@ -95,7 +95,7 @@
                                         <button type="submit" class="btn btn-sm ms-3 btn-primary" title="Download Attendance">
                                             Download Attendance
                                         </button>
-                                    </form>
+                                    </form> --}}
                                 </div>
                             </div>
                         @endif
