@@ -69,7 +69,7 @@
                                                     <p class="f-light">{{ $companiesDetails->id }}</p>
                                                 </td>
                                                 <td>
-                                                    <a href="company_detail.html">
+                                                    <a href="/admin/attendance/{{$companiesDetails->id}}">
                                                         <p class="f-light">{{ $companiesDetails->name }}</p>
                                                     </a>
                                                 </td>
@@ -77,19 +77,19 @@
                                                     <p class="f-light">{{ $companiesDetails->email }}</p>
                                                 </td>
                                                 <td>
-                                                    <p class="f-light">{{ $companiesDetails->contact_no }}</p>
+                                                    <p class="f-light">{{ $companiesDetails->companyDetails->contact_no }}</p>
                                                 </td>
                                                 <td>
-                                                    <p class="f-light">{{ $companiesDetails->company_address }}</p>
+                                                    <p class="f-light">{{ $companiesDetails->companyDetails->company_address }}</p>
                                                 </td>
                                                 <td class="text-center"><span
-                                                        class="badge badge-primary p-2">{{ $companiesDetails->activeEmployee }}</span>
+                                                        class="badge badge-primary p-2">{{ $companiesDetails->totalActiveEmployees() }}</span>
                                                 </td>
                                                 <td class="text-center"><span
-                                                        class="badge badge-danger p-2 text-center">{{ $companiesDetails->inactiveEmployee }}</span>
+                                                        class="badge badge-danger p-2 text-center">{{ $companiesDetails->totalInActiveEmployees() }}</span>
                                                 </td>
                                                 <td class="text-center"><span
-                                                        class="badge badge-info p-2 text-center">{{ $companiesDetails->totalAttendance }}</span>
+                                                        class="badge badge-info p-2 text-center">{{ $companiesDetails->countTodayPunchIns() }}</span>
                                                 </td>
                                             </tr>
                                         @empty

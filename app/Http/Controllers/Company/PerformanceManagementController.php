@@ -8,6 +8,7 @@ use App\Models\EmployeeAttendance;
 use App\Models\Holiday;
 use App\Models\Weekend;
 use App\Models\PerformanceManagement;
+use App\Models\CategoryPerformanceRecord;
 use App\Models\Leave;
 use App\Http\Services\LeaveService;
 use App\Http\Controllers\Controller;
@@ -16,6 +17,8 @@ use App\Http\Services\EmployeeServices;
 use App\Http\Services\EmployeeAttendanceService;
 use App\Http\Services\WeekendService;
 use App\Http\Services\UserService;
+use App\Http\Services\PerformanceManagementService;
+use App\Http\Services\PerformanceCategoryService;
 use Carbon\Carbon;
 
 
@@ -27,8 +30,10 @@ class PerformanceManagementController extends Controller
     public $leaveService;
     public $weekendService;
     public $userService;
+    public $performanceManagementService;
+    public $performanceCategoryService;
 
-    public function __construct(UserService $userService, EmployeeServices $employeeService, EmployeeAttendanceService $employeeAttendanceService, HolidayServices $holidayService, LeaveService $leaveService, WeekendService $weekendService)
+    public function __construct(PerformanceCategoryService $performanceCategoryService, PerformanceManagementService $performanceManagementService, UserService $userService, EmployeeServices $employeeService, EmployeeAttendanceService $employeeAttendanceService, HolidayServices $holidayService, LeaveService $leaveService, WeekendService $weekendService)
     {
         $this->employeeService = $employeeService;
         $this->employeeAttendanceService = $employeeAttendanceService;
@@ -36,24 +41,15 @@ class PerformanceManagementController extends Controller
         $this->leaveService = $leaveService;
         $this->weekendService = $weekendService;
         $this->userService = $userService;
+        $this->performanceManagementService = $performanceManagementService;
+        $this->performanceCategoryService = $performanceCategoryService;
     }
 
     public function index()
     {
-        $allEmployeeDetails = $this->userService->getActiveEmployees(auth()->user()->id)->get();
+        $allPerformances = $this->performanceManagementService->getPerformancesByCompanyId(auth()->user()->id)->get();
 
-        return view('company.performance_management.add', compact('allEmployeeDetails'));
-    }
-
-    public function getSkills($userID)
-    {
-        $user = $this->userService->getUserSkillsByUserId($userID)->with('skill')->first();
-        
-        return response()->json([
-            'data' => $user->skill,
-            'status' => true
-        ]);
-        
+        return view('company.performance_management.index', compact('allPerformances'));
     }
 
     public function filterPerformance(Request $request)
@@ -63,6 +59,11 @@ class PerformanceManagementController extends Controller
         $startDate = $dates[0];
         $endDate = $dates[1];
         $userID = $request->userID;
+
+        if($userID == "" || $dates == "") {
+
+            return response()->json(['success' => false, "message" => "Please select user and date range"]);
+        }
 
         $startDate = Carbon::parse($startDate)->startOfDay(); // Ensure start of the day
         $endDate = Carbon::parse($endDate)->endOfDay(); // Ensure end of the day
@@ -91,10 +92,20 @@ class PerformanceManagementController extends Controller
 
         //Performance Score Calculation
         $attendancePercentage = ($presentDays / $workingDays) * 100;
-        $attendanceRank = ($attendancePercentage >= 100 ? "Good" : ($attendancePercentage < 90 && $attendancePercentage < 80 ? "Moderate" : "Low"));
-        $leaveRank = ($unapprovedLeaves < 1 ? "Good" : ($unapprovedLeaves <= 3 ? "Moderate" : "Low"));
+        $attendanceRank = ($attendancePercentage >= 90 ? "EXCELLENT" : ($attendancePercentage < 90 && $attendancePercentage > 80 ? "GOOD" : (($attendancePercentage < 80 && $attendancePercentage < 70) ? "SATISFACTORY" : "UNSATISFACTORY")));
+
+        $leaveRank = ($unapprovedLeaves < 1 ? "EXCELLENT" : ($unapprovedLeaves <= 2 ? "GOOD" :  (($unapprovedLeaves <= 3) ? "SATISFACTORY" : "UNSATISFACTORY")));
         
-        return response()->json(['attendanceRank' => $attendanceRank, "leaveRank" => $leaveRank]);
+        return response()->json(['success' => true, 'attendanceRank' => $attendanceRank, "leaveRank" => $leaveRank]);
+    }
+
+    public function add(Request $request) {
+        $companyIDs = getCompanyIDs();
+
+        $allEmployeeDetails = $this->userService->getActiveEmployees($companyIDs)->get();
+        $allCategories = $this->performanceCategoryService->all($companyIDs);
+
+        return view('company.performance_management.add', compact('allEmployeeDetails', 'allCategories'));
     }
 
     public function addPerformance(Request $request) {
@@ -103,10 +114,29 @@ class PerformanceManagementController extends Controller
         $startDate = $dates[0];
         $endDate = $dates[1];
 
-        $data['company_id'] = auth()->user()->id;
-        $data['start_date'] = $startDate;
-        $data['end_date'] = $endDate;
-        PerformanceManagement::create($data);
+        $payload = [
+            'company_id' => auth()->user()->id,
+            'user_id' => $data['user_id'],
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'leave_ranking' => $data['leave_ranking'],
+            'attendance_ranking' => $data['attendance_ranking'],
+            'manager_review' => $data['manager_review'],
+        ];
+        $performance = PerformanceManagement::create($payload);
+
+        $categoryPayload = [];
+        foreach($data['categories'] as $key => $value) {
+            $categoryPayload[] = [
+                'performance_management_id' => $performance->id,
+                'performance_category_id' => $key,
+                'performance' => $value,
+                'created_at' =>date("Y-m-d H:i:s"),
+                'updated_at' =>date("Y-m-d H:i:s"),
+            ];
+        }
+        CategoryPerformanceRecord::insert($categoryPayload);
+
 
         return redirect(route('performance-management.index'))->with('success', 'Review Submitted Succesfully');
 

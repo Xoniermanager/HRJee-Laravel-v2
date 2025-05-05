@@ -8,8 +8,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\UserMonthlySalary;
+use App\Http\Services\LeaveService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Services\WeekendService;
+use App\Http\Services\HolidayServices;
 use App\Http\Services\EmployeeServices;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\EmployeeAttendanceExport;
@@ -22,26 +26,27 @@ class AttendanceController extends Controller
     public $employeeAttendanceService;
     public $employeeService;
     public $attendanceRequestService;
+    public $leaveService;
+    public $holidayService;
+    public $weekendService;
 
-    public function __construct(EmployeeAttendanceService $employeeAttendanceService, EmployeeServices $employeeService, AttendanceRequestService $attendanceRequestService)
+    public function __construct(EmployeeAttendanceService $employeeAttendanceService, EmployeeServices $employeeService, AttendanceRequestService $attendanceRequestService, LeaveService $leaveService, HolidayServices $holidayService, WeekendService $weekendService)
     {
         $this->employeeAttendanceService = $employeeAttendanceService;
         $this->employeeService = $employeeService;
         $this->attendanceRequestService = $attendanceRequestService;
+        $this->leaveService = $leaveService;
+        $this->holidayService = $holidayService;
+        $this->weekendService = $weekendService;
+
     }
     public function makeAttendance(Request $request)
     {
         try {
             $data = $request->all();
             $data['punch_in_using'] = 'Mobile';
+            $data['force'] = $request->force;
             $attendanceDetails = $this->employeeAttendanceService->create($data);
-            if (empty($attendanceDetails) || !isset($attendanceDetails['status'], $attendanceDetails['data'])) {
-                return response()->json([
-                    'status' => false,
-                    'message' => "No response from attendance service."
-                ], 500);
-            }
-
             if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch Out') {
                 return response()->json([
                     'status' => true,
@@ -49,7 +54,6 @@ class AttendanceController extends Controller
                     'message' => "You Punched Out Successfully"
                 ], 200);
             }
-
             if ($attendanceDetails['status'] === true && $attendanceDetails['data'] === 'Punch In') {
                 return response()->json([
                     'status' => true,
@@ -57,11 +61,18 @@ class AttendanceController extends Controller
                     'message' => "You Punched In Successfully"
                 ], 200);
             }
+            if ($attendanceDetails['status'] == false && isset($attendanceDetails['before_punchout_confirm_required'])) {
+                return response()->json([
+                    'status' => false,
+                    'before_punchout_confirm_required' => $attendanceDetails['before_punchout_confirm_required'],
+                    'message' => $attendanceDetails['message']
+                ], 200);
+            }
             if ($attendanceDetails['status'] === false) {
                 return response()->json([
                     'status' => false,
                     'attendance_status' => false,
-                    'message' => "You are not allowed to Punch In at this time.",
+                    'message' => $attendanceDetails['message'] ?? "You are not allowed to Punch In at this time.",
                 ], 200);
             }
 
@@ -72,6 +83,29 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
+
+
+    public function getTodaysShifts(Request $request)
+    {
+        try {
+            $shifts = $this->employeeAttendanceService->getTodaysShifts();
+            
+            return response()->json([
+                'status' => true,
+                'data' => $shifts,
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+
     public function getAttendanceByFromAndToDate(Request $request)
     {
         try {
@@ -221,10 +255,10 @@ class AttendanceController extends Controller
         }
     }
 
-    public function generatePaySlip()
+    public function generatePaySlip(Request $request)
     {
         $employeeDetails = User::find(Auth()->guard('employee_api')->user()->id);
-        $checkExistingMonthDetails = UserMonthlySalary::where('user_id', Auth()->guard('employee_api')->user()->id)->where('year', Carbon::now()->subMonth()->format('Y'))->where('month', Carbon::now()->subMonth()->format('n'))->first();
+        $checkExistingMonthDetails = UserMonthlySalary::where('user_id', Auth()->guard('employee_api')->user()->id)->where('year', $request->get('year'))->where('month', $request->get('month'))->first();
         $data = [];
         if (isset($checkExistingMonthDetails) && !empty($checkExistingMonthDetails)) {
             $data['getEmployeeMonthlySalary']['others'] = $checkExistingMonthDetails->toArray();
@@ -375,6 +409,32 @@ class AttendanceController extends Controller
                 "status" => false,
                 "error" => $e->getMessage(),
                 "message" => "Unable to Fetch Attendance Request"
+            ], 500);
+        }
+    }
+
+    public function attendanceDetailsbyMonth($month)
+    {
+        try {
+            $year = date('Y');
+            $employeeDetails = Auth()->user();
+            $data = [
+                'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
+                'totalLeave' => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
+                'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->count(),
+                'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month,$employeeDetails->id,$year)->count(),
+                'totalAbsent' => '0',
+            ];
+            return response()->json([
+                'status' => true,
+                'message' => "All Attendance Details",
+                'data' => $data
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => false,
+                "error" => $e->getMessage(),
+                "message" => "Unable to Fetch Attendance Details"
             ], 500);
         }
     }

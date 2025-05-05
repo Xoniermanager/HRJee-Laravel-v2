@@ -139,6 +139,13 @@ class AdminDesignationsController extends Controller
         }
         return json_encode($response);
     }
+
+    /**
+     * Designation search
+     *
+     * @param Request $request
+     * @return void/object/null
+     */
     public function search(Request $request)
     {
         $searchedItems = $this->designationService->serachDesignationFilterList($request->all());

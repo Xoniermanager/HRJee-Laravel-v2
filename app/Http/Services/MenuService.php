@@ -15,11 +15,11 @@ class MenuService
     /**
      * Undocumented function
      *
-     * @return void
+     * @return void/object/null
      */
     public function all()
     {
-        return $this->menuRepository->with('parent')->paginate(10);
+        return $this->menuRepository->with('parent')->orderBy('title', 'asc')->paginate(10);
     }
 
     /**
@@ -78,7 +78,19 @@ class MenuService
      */
     public function deleteDetails($id)
     {
-        return $this->menuRepository->find($id)->delete();
+        if($this->menuRepository->find($id)->roles()->count() > 0) {
+            return [
+                'success' => false,
+                'message' => "This menu is already assigned to companies"
+            ];
+        } else {
+            $this->menuRepository->find($id)->delete();
+
+            return [
+                'success' => true,
+                'message' => "Menu has been deleted successfully"
+            ];
+        }
     }
 
     /**
@@ -100,7 +112,7 @@ class MenuService
             if (isset($data['status'])) {
                 $query->where('status', $data['status']);
             }
-        })->paginate(10);
+        })->orderBy('title', 'asc')->paginate(10);
     }
 
     /**

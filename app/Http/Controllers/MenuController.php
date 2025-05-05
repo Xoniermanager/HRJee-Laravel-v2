@@ -19,8 +19,26 @@ class MenuController extends Controller
 
     public function index()
     {
+        $menus = $this->menuServices->all();
+
+        $menus->getCollection()->transform(function ($menu) use (&$orderCounts) {
+            $orderNo = $menu->order_no;
+        
+            if (!isset($orderCounts[$orderNo])) {
+                $orderCounts[$orderNo] = 0;
+                // Use dynamic property for non-persistent attribute
+                $menu->order_no_label = (string) $orderNo;
+            } else {
+                $orderCounts[$orderNo]++;
+                // Set dynamic property again
+                $menu->order_no_label = $orderNo . ' (' . $orderCounts[$orderNo] . ')';
+            }
+        
+            return $menu;
+        });
+
         return view('admin.menu.index', [
-            'allMenuDetails' => $this->menuServices->all()
+            'allMenuDetails' => $menus
         ]);
     }
 
@@ -42,6 +60,7 @@ class MenuController extends Controller
         $this->menuServices->create($validated);
         return redirect(route('admin.menu'))->with('success','Menu Created Succesfully');
     }
+    
     public function update_menu(Request $request,$menuId)
     {
         $validated = $request->validate([
@@ -61,13 +80,15 @@ class MenuController extends Controller
     {
         $id = $request->id;
         $data = $this->menuServices->deleteDetails($id);
-        if ($data) {
+        if ($data['success'] == true) {
             return response()->json([
                 'success' => 'Menu Deleted Successfully',
                 'data'   =>  view("admin.menu.menu-list", [
                     'allMenuDetails' => $this->menuServices->all()
                 ])->render()
             ]);
+        } elseif($data['success'] == false) {
+            return response()->json(['error' => $data['message']]);
         } else {
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }

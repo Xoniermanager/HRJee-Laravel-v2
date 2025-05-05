@@ -44,7 +44,8 @@ use App\Http\Controllers\Employee\UserRewardController;
 // });
 
 /** ---------------Employee Panel Started--------------  */
-Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group(function () {
+Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.route', 'auth.employee'])->group(function ()
+ {
     //Employee Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('employee.dashboard');
     Route::get('/impersonate', [DashboardController::class, 'startImpersonate'])->name('employee.impersonate');
@@ -130,7 +131,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA'])->group
     Route::get('/payslips', [PayslipsMangementController::class, 'index'])->name('employee.payslips');
 
     //Employee Attendance Management]
-    Route::get('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
+    Route::post('/employee/attendance', [EmployeeAttendanceController::class, 'makeAttendance'])->name('employee.attendance');
 
     //Employee Leave Available
     Route::get('get/leave/available', [LeaveAvailableController::class, 'getAllLeaveAvailableByUserId'])->name('employee.leave.available');

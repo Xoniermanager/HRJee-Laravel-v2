@@ -113,7 +113,7 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Shift_Hours<span style="color: red">*</span></label>
+                                    <label>Shift Hours<span style="color: red">*</span></label>
                                     <input class="form-control mb-5 mt-3" type="number" name="shift_hours"
                                         id="shift_hours">
                                     @error('shift_hours')
@@ -121,7 +121,7 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Half_day_hours<span style="color: red">*</span></label>
+                                    <label>Half Day Hours<span style="color: red">*</span></label>
                                     <input class="form-control mb-5 mt-3" type="number" name="half_day_hours"
                                         id="half_day_hours">
                                     @error('half_day_hours')
@@ -132,7 +132,7 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Min_shift_Hours<span style="color: red">*</span></label>
+                                    <label>Min Shift Hours<span style="color: red">*</span></label>
                                     <input class="form-control mb-5 mt-3" type="number" name="min_shift_Hours"
                                         id="min_shift_Hours">
                                     @error('min_shift_Hours')
@@ -140,7 +140,7 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Min_half_day_hours<span style="color: red">*</span></label>
+                                    <label>Min Half Day Hours<span style="color: red">*</span></label>
                                     <input class="form-control mb-5 mt-3" type="number" name="min_half_day_hours"
                                         id="min_half_day_hours">
                                     @error('min_half_day_hours')
@@ -230,14 +230,14 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Shift_Hours<span style="color: red">*</span></label>
+                                    <label>Shift Hours<span style="color: red">*</span></label>
                                     <input class="form-control mb-5 mt-3" type="number" name="shift_hours">
                                     @error('shift_hours')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Half_day_hours<span style="color: red">*</span></label>
+                                    <label>Half Day Hours<span style="color: red">*</span></label>
                                     <input class="form-control mb-5 mt-3" type="number" name="half_day_hours">
                                     @error('half_day_hours')
                                         <span class="text-danger">{{ $message }}</span>
@@ -247,14 +247,14 @@
 
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Min_shift_Hours<span style="color: red">*</span></label>
+                                    <label>Min Shift Hours<span style="color: red">*</span></label>
                                     <input class="form-control mb-5 mt-3" type="number" name="min_shift_Hours">
                                     @error('min_shift_Hours')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Min_half_day_hours<span style="color: red">*</span></label>
+                                    <label>Min Half Day Hours<span style="color: red">*</span></label>
                                     <input class="form-control mb-5 mt-3" type="number" name="min_half_day_hours">
                                     @error('min_half_day_hours')
                                         <span class="text-danger">{{ $message }}</span>

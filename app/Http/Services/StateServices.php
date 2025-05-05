@@ -15,7 +15,7 @@ class StateServices
     /**
      * Undocumented function
      *
-     * @return void
+     * @return void/object/null
      */
     public function all()
     {

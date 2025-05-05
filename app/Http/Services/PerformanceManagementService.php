@@ -4,18 +4,27 @@ namespace App\Http\Services;
 
 use App\Repositories\CompOffRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\PerformanceManagementRepository;
 use Carbon\Carbon;
 
 class PerformanceManagementService
 {
     private $compOffRepository;
     private $userRepository;
+    private $performanceManagementRepository;
 
-    public function __construct(UserRepository $userRepository, CompOffRepository $compOffRepository)
+    public function __construct(PerformanceManagementRepository $performanceManagementRepository, UserRepository $userRepository, CompOffRepository $compOffRepository)
     {
+        $this->performanceManagementRepository = $performanceManagementRepository;
         $this->compOffRepository = $compOffRepository;
         $this->userRepository = $userRepository;
     }
+
+    public function getPerformancesByCompanyId($companyId)
+    {
+        return $this->performanceManagementRepository->where('company_id', $companyId)->with(['user']);
+    }
+
 
     public function getCompOffsByCompanyId($companyId)
     {

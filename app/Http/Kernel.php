@@ -71,5 +71,15 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        'checkMenuAccess' => \App\Http\Middleware\CheckMenuAccess::class,
+    ];
+
+    protected $routeMiddleware = [
+        'log.route' => \App\Http\Middleware\LogRoute::class,
+        'guest.admin' => \App\Http\Middleware\RedirectIfUnauthenticatedAdmin::class,
+        'auth.admin' => \App\Http\Middleware\RedirectIfAuthenticatedAdmin::class,
+        'auth.user' => \App\Http\Middleware\RedirectIfAuthenticatedUser::class,
+        'auth.employee' => \App\Http\Middleware\RedirectIfEmployee::class,
+        'auth.company' => \App\Http\Middleware\RedirectIfCompany::class,
     ];
 }

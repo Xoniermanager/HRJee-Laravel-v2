@@ -15,6 +15,7 @@ use App\Http\Services\RolesServices;
 use App\Http\Services\SalaryService;
 use App\Http\Services\ShiftServices;
 use App\Http\Services\SkillsService;
+use App\Http\Services\UserShiftService;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Services\BranchServices;
 use App\Http\Services\CountryServices;
@@ -49,6 +50,9 @@ class EmployeeController extends Controller
     private $skillServices;
     private $assetCategoryServices;
     private $salaryService;
+    private $userShiftService;
+
+
     public function __construct(
         CountryServices $countryService,
         PreviousCompanyService $previousCompanyService,
@@ -66,8 +70,8 @@ class EmployeeController extends Controller
         AssetCategoryService $assetCategoryServices,
         CustomRoleService $customRoleService,
         UserService $userService,
-        SalaryService $salaryService
-
+        SalaryService $salaryService,
+        UserShiftService $userShiftService
     ) {
         $this->countryService = $countryService;
         $this->previousCompanyService = $previousCompanyService;
@@ -86,7 +90,9 @@ class EmployeeController extends Controller
         $this->assetCategoryServices = $assetCategoryServices;
         $this->userService = $userService;
         $this->salaryService = $salaryService;
+        $this->userShiftService = $userShiftService;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -100,9 +106,9 @@ class EmployeeController extends Controller
             $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
         }
 
-        $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+        $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
-        $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+        $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
 
@@ -134,9 +140,10 @@ class EmployeeController extends Controller
         $allShifts = $this->shiftService->getAllActiveShifts();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
+        $userShifts = [];
         return view(
             'company.employee.add_employee',
-            compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails', 'languages', 'allBranches', 'allRoles', 'allShifts', 'allAssetCategory', 'allSalaryStructured')
+            compact('allCountries', 'allPreviousCompany', 'allQualification', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allDocumentTypeDetails', 'languages', 'allBranches', 'allRoles', 'allShifts', 'allAssetCategory', 'allSalaryStructured', 'userShifts')
         );
     }
 
@@ -157,6 +164,20 @@ class EmployeeController extends Controller
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
         $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'ctcDetails');
         $allManagers = $this->qualificationService->getAllActiveQualification();
+        $userAllShifts = $this->userShiftService->getByUserId([$user->id])->get()->groupBy('shift_day');
+
+        $userShifts = [];
+        foreach($userAllShifts as $key => $shifts) {
+            if(str_contains($key, 'day')) {
+                foreach($shifts as $shift){
+                    $userShifts[$key][] = $shift->shift_id;
+                }
+            } else {
+                foreach($shifts as $shift){
+                    $userShifts[] = $shift->shift_id;
+                } 
+            }   
+        }
 
         return view(
             'company.employee.add_employee',
@@ -174,7 +195,8 @@ class EmployeeController extends Controller
                 'allShifts',
                 'languages',
                 'allAssetCategory',
-                'allSalaryStructured'
+                'allSalaryStructured',
+                'userShifts'
             )
         );
     }
@@ -183,7 +205,8 @@ class EmployeeController extends Controller
     {
         DB::beginTransaction();
         try {
-            $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+            $companyIDs = getCompanyIDs();
+            $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
             if ($activeUserCount >= auth()->user()->companyDetails->company_size) {
                 DB::rollBack();
@@ -201,6 +224,7 @@ class EmployeeController extends Controller
             if ($userCreated) {
                 $userDetails = $this->employeeService->create($request->except('password', 'email', '_token', 'company_id'));
                 $this->employeeService->addManagers($request['user_id'], $request->get('manager_id'));
+                $this->userShiftService->add($request->get('office_shift_id'), $request['user_id']);
                 DB::commit();
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
@@ -344,9 +368,10 @@ class EmployeeController extends Controller
         $import = new UserImport();
 
         try {
+            $companyIDs = getCompanyIDs();
             $importedData = Excel::import($import, $request->file('file'));
 
-            $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+            $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
             if (($activeUserCount + $import->count) > auth()->user()->companyDetails->company_size) {
 
@@ -403,5 +428,26 @@ class EmployeeController extends Controller
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
+    }
+
+    public function getAllManager(Request $request)
+    {
+        $companyIDs = getCompanyIDs();
+        $departmentIds = $request->department_id;
+        
+        $allManagers = $this->userService->getAllManagerByDepartmentId($companyIDs, $departmentIds);
+        
+        if (isset($allManagers) && count($allManagers) > 0) {
+            $response = [
+                'status' => true,
+                'data' => $allManagers
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'error' => 'No manager found this department'
+            ];
+        }
+        return json_encode($response);
     }
 }

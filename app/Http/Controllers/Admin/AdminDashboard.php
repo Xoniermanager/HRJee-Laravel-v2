@@ -48,19 +48,11 @@ class AdminDashboard extends Controller
         
         return view('admin.dashboard', compact('dashboardData', 'allAttendanceDetails', 'subscriptionExpiredCompanies'));
     }
+    
     public function attendanceDetails()
     {
-        $allCompanyDetails = Company::select('id', 'name', 'email', 'contact_no', 'company_address')
-            ->withCount(['users as activeEmployee' => function ($query) {
-                $query->where('status', 1);
-            }])
-            ->withCount(['users as inactiveEmployee' => function ($query) {
-                $query->where('status', 0);
-            }])
-            ->withCount(['employeeAttendances as totalAttendance' => function ($query) {
-                $query->whereDate('punch_in', today());
-            }])
-            ->paginate(10);
+        $allCompanyDetails = User::where('type', 'company')->paginate(10); 
+
         return view('admin.attendance', compact('allCompanyDetails'));
     }
 }

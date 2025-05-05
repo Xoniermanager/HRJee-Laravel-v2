@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
+use Illuminate\Support\Facades\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -23,9 +24,23 @@ class ValidateBranch extends FormRequest
     {
         return [
             'company_id' => 'sometimes',
-            'name' => 'required|string',
-            'type' => 'required|in:primary,secondary',
-            'contact_no' => 'required|numeric|unique:company_branches,contact_no',
+            'name' => 'required|string|max:50',
+            'type' => [
+                'required',
+                'in:primary,secondary',
+                function ($attribute, $value, $fail) {
+                    if ($value === 'primary') {
+                        $exists = \App\Models\CompanyBranch::where('company_id', auth()->user()->company_id)
+                            ->where('type', 'primary')
+                            ->exists();
+        
+                        if ($exists) {
+                            $fail('A primary branch already exists for this company.');
+                        }
+                    }
+                },
+            ],
+            'contact_no' => 'required|numeric|digits_between:10,12|unique:company_branches,contact_no',
             'email' => 'required|email|unique:company_branches,email',
             'hr_email' => 'required|email|unique:company_branches,hr_email',
             'address' => [
@@ -36,8 +51,17 @@ class ValidateBranch extends FormRequest
                     }
                 }
             ],
-            'city' => 'required|string',
-            'pincode' => 'required|string',
+            'city' => [
+                'required',
+                'string',
+                'regex:/^[A-Za-z0-9\s]+$/'
+            ],
+            'pincode' => [
+                'required',
+                'string',
+                'max:10',
+                'regex:/^[A-Za-z0-9 ]+$/', // Allows letters, numbers, and spaces
+            ],
             'country_id' => 'required_if:address_type,==,0|exists:countries,id',
             'state_id' => 'required_if:address_type,==,0|exists:states,id',
         ];
@@ -50,6 +74,9 @@ class ValidateBranch extends FormRequest
      */
     public function messages()
     {
-        return [];
+        return [
+            'city.regex' => 'The city must not contain special characters. Only letters, numbers, and spaces are allowed.',
+            'pincode.regex' => 'The pincode must not contain special characters. Only letters, numbers, and spaces are allowed.',
+        ];
     }
 }

@@ -20,7 +20,9 @@ use App\Http\Controllers\Company\EmployeeController;
 use App\Http\Controllers\Admin\AssetStatusController;
 use App\Http\Controllers\Admin\CompanySizeController;
 use App\Http\Controllers\Admin\LeaveStatusController;
+use App\Http\Controllers\Admin\LogActivityController;
 use App\Http\Controllers\Company\BreakTypeController;
+use App\Http\Controllers\Company\HierarchyController;
 use App\Http\Controllers\Company\LanguagesController;
 use App\Http\Controllers\Admin\DocumentTypeController;
 use App\Http\Controllers\Admin\EmployeeTypeController;
@@ -73,6 +75,7 @@ use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 use App\Http\Controllers\Company\PerformanceManagementController;
+use App\Http\Controllers\Company\PerformanceCategoryController;
 
 // Route::get('/test',function()
 // {
@@ -81,7 +84,8 @@ use App\Http\Controllers\Company\PerformanceManagementController;
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
-Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess'])->group(function () {
+Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess','log.route', 'auth.company'])->group(function ()
+{
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
         Route::get('configuration', 'companyConfiguartion')->name('company.configuration');
@@ -217,15 +221,20 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
         Route::post('/export-file', 'uploadImport')->name('upload.file');
+        Route::post('/download-attendance', 'downloadA')->name('upload.file');
         Route::post('/punchIn/radius','updatePunchInRadius')->name('update.punhin.radius');
+        Route::get('/get-manager-by-departments', 'getAllManager')->name('get.all.manager');
+
     });
+
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
         Route::post('/employee/advance/details', 'store')->name('employee.advance.details');
         Route::get('/get/advance/details/{id}', 'getAdvanceDetails');
     });
+
     Route::controller(UserCtcDetailsController::class)->group(function () {
         Route::post('/employee/ctc/details', 'store')->name('employee.ctc.details');
-        Route::get('/salary/component/details','getComponentsDetail');
+        Route::get('/salary/component/details', 'getComponentsDetail');
     });
 
     //Address Details for employee
@@ -585,6 +594,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::post('/edit', 'editAttendanceByEmployeeId');
             Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
             Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
+            Route::post('/download/attendance', 'downloadAttendance')->name('download.attendance');
+
         });
         //Attendance Status Module
         Route::prefix('/attendance-status')->controller(AttendanceStatusController::class)->group(function () {
@@ -610,7 +621,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
 
 
     Route::prefix('/prm')->group(function () {
-       //PRM Request
+        //PRM Request
         Route::controller(PRMRequestController::class)->group(function () {
             Route::get('/request', 'index')->name('prm.request.index');
 
@@ -698,8 +709,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/store', 'curriculumStore')->name('curriculum.store');
     });
 
-     // Location Visit
-     Route::prefix('/location-visit')->controller(LocationVisitController::class)->group(function () {
+    // Location Visit
+    Route::prefix('/location-visit')->controller(LocationVisitController::class)->group(function () {
         Route::get('/', 'index')->name('location_visit.index');
         Route::post('/store', 'store')->name('location_visit.store');
         Route::get('/assign_task', 'assignTaskList')->name('location_visit.assign_task');
@@ -712,8 +723,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/task', 'searchFilterTask');
     });
 
-     //Dispostion Code Module
-     Route::prefix('/disposition-code')->controller(DispositionCodeController::class)->group(function () {
+    //Dispostion Code Module
+    Route::prefix('/disposition-code')->controller(DispositionCodeController::class)->group(function () {
         Route::get('/', 'index')->name('disposition_code.index');
         Route::post('/create', 'store')->name('disposition_code.store');
         Route::post('/update', 'update')->name('disposition_code.update');
@@ -721,12 +732,16 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/status/update', 'statusUpdate')->name('disposition_code.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
     });
-      //Dispostion Code Module
-      Route::prefix('/location-tracking')->controller(LocationTrackingController::class)->group(function () {
+
+    //Live location tracking
+    Route::prefix('/location-tracking')->controller(LocationTrackingController::class)->group(function () {
         Route::get('/', 'index')->name('location.tracking.index');
         Route::post('/create', 'store')->name('location.tracking.store');
         Route::get('/update/status', 'updateLocationTrackingStatus')->name('location.tracking.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
+        Route::get('/current-locations', 'fetchCurrentLocationOfEmployees')->name('location.tracking.currentLocations');
+        Route::get('/location-tracking/get-locations', 'getLocations')->name('getLocations');
+        Route::get('/user/{userID}', 'trackLocations')->name('track-location');
     });
     //Attendance Request Module
     Route::prefix('/attendance-request')->controller(AttendanceRequestController::class)->group(function () {
@@ -743,12 +758,23 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
 
 
-    //Comp Off Module
+    //Performance Mgmt Module
     Route::prefix('/performance-management')->controller(PerformanceManagementController::class)->group(function () {
         Route::get('/', 'index')->name('performance-management.index');
-        Route::post('/add', 'addPerformance')->name('performance-management.add');
+        Route::get('/add', 'add')->name('performance-management.add');
+        Route::post('/add', 'addPerformance')->name('performance-management.store');
         Route::get('/get-skills/{userID}', 'getSkills')->name('performance-management.get-skills');
         Route::get('/filter', 'filterPerformance')->name('performance-management.filter-performance');
+    });
+
+    //Performance Category Module
+    Route::prefix('/performance-categories')->controller(PerformanceCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('performance-categories');
+        Route::post('/create', 'store')->name('performance-categories.store');
+        Route::post('/update', 'update')->name('performance-categories.update');
+        Route::get('/delete', 'destroy')->name('performance-categories.delete');
+        Route::get('/search', 'search')->name('performance-categories.search');
+    });
 
     //Address Request Module
     Route::prefix('/address-request')->controller(AddressRequestController::class)->group(function () {
@@ -779,14 +805,21 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachFilterList');
 
     });
+    //Hierarchy Module
+    Route::prefix('/hierarchy')->controller(HierarchyController::class)->group(function () {
+        Route::get('/', 'index')->name('hierarchy.index');
+    });
+
+    //log Activity
+    Route::prefix('/log-activity')->controller(LogActivityController::class)->group(function () {
+        Route::get('/company/list', 'companyList')->name('company.log_activity');
+    });
 
 });
 
 
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
-});
-
 });
 
 /**---------------End Company Panel Route----------------*/

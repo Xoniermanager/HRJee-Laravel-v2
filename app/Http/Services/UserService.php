@@ -3,15 +3,21 @@
 namespace App\Http\Services;
 
 use App\Repositories\UserRepository;
+use App\Repositories\UserDetailRepository;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
+use Request;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\EmployeeManager;
 
 class UserService
 {
     private $userRepository;
-    public function __construct(UserRepository $userRepository)
+    private $userDetailRepository;
+    public function __construct(UserRepository $userRepository, UserDetailRepository $userDetailRepository)
     {
         $this->userRepository = $userRepository;
+        $this->userDetailRepository = $userDetailRepository;
     }
 
     public function create($data)
@@ -70,20 +76,25 @@ class UserService
     public function searchFilterCompany($searchKey)
     {
         $allCompanyDetails = $this->userRepository->where('type', 'company');
+
+        // Apply 'deletedAt' filtering for soft deletes
+        if (isset($searchKey['deletedAt']) && $searchKey['deletedAt']) {
+            $allCompanyDetails = $allCompanyDetails->onlyTrashed();
+        }
+
         // Apply company type filtering
-        $allCompanyDetails->when(isset($searchKey['companyTypeId']), function ($query) use ($searchKey) {
+        $allCompanyDetails = $allCompanyDetails->when(isset($searchKey['companyTypeId']), function ($query) use ($searchKey) {
             $query->whereHas('companyDetails', function ($query) use ($searchKey) {
                 $query->where('company_type_id', $searchKey['companyTypeId']);
             });
         });
 
         // Apply search key filtering for 'name', 'email', and fields in 'companyDetails'
-        $allCompanyDetails->when(isset($searchKey['key']), function ($query) use ($searchKey) {
+        $allCompanyDetails = $allCompanyDetails->when(isset($searchKey['key']), function ($query) use ($searchKey) {
             $query->where(function ($query) use ($searchKey) {
-                // Search in 'name' and 'email' fields on the User model
                 $query->where('name', 'like', '%' . $searchKey['key'] . '%')
                     ->orWhere('email', 'like', '%' . $searchKey['key'] . '%')
-                    // Search in 'companyDetails' fields
+                    ->orWhere('id', $searchKey['key'])
                     ->orWhereHas('companyDetails', function ($query) use ($searchKey) {
                         $query->where('username', 'like', '%' . $searchKey['key'] . '%')
                             ->orWhere('contact_no', 'like', '%' . $searchKey['key'] . '%')
@@ -94,20 +105,19 @@ class UserService
 
         // Apply 'status' filtering
         if (isset($searchKey['status'])) {
-            $allCompanyDetails->where('status', $searchKey['status']);
+            $allCompanyDetails = $allCompanyDetails->where('status', $searchKey['status']);
         }
 
-        // Apply 'deletedAt' filtering for soft deletes
-        if (isset($searchKey['deletedAt'])) {
-            $allCompanyDetails->onlyTrashed();
-        }
-
+        // Eager load 'companyDetails' including soft-deleted records
+        $allCompanyDetails = $allCompanyDetails->with(['companyDetails' => function ($query) {
+            $query->withTrashed();
+        }]);
         return $allCompanyDetails->paginate(10);
     }
 
     public function searchCompanyMenu($searchKey)
     {
-        return $this->userRepository
+        return $this->userRepository->where('type', 'company')
             ->with('role.menus')
             ->where(function ($query) use ($searchKey) {
                 if (!empty($searchKey)) {
@@ -309,17 +319,112 @@ class UserService
 
     public function getAllEmployeeUnAssignedLocationTracking($companyId)
     {
-        return $this->userRepository->where('company_id', $companyId)->where('type','user')->whereHas('details', function ($query) {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereHas('details', function ($query) {
             $query->where('location_tracking', false);
         });
     }
 
-    public function getActiveEmployees($companyId) {
-        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->where('status', 1);
+
+    public function getAllEmployeeAssignedLocationTracking($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->whereHas('details', function ($query) {
+            $query->where('location_tracking', true);
+        });
     }
+
+    public function fetchEmployeesCurrentLocation($companyId, $managerId = null)
+    {
+        $response = [];
+        $query = $this->userRepository->where('company_id', $companyId)->where('type', 'user');
+        if ($managerId)
+            $query->where('manager_id', $managerId);
+        $userIds = $query->pluck('id')->toArray();
+
+        $liveLocationUserID = $this->userRepository->currentLocations($userIds)->pluck('user_id')->toArray();
+        $currentLocations = $this->userRepository->currentLocations($userIds)->get();
+        foreach($currentLocations as $location) {
+            $response[] = [
+                "name" => $location->user->name,
+                "userid" => $location->user_id,
+                "longitude" => $location->longitude,
+                "latitude" => $location->latitude,
+                "last_updated" => $location->updated_at,
+                "is_location_tracking_active" => $location->user->details->live_location_active
+            ];
+        }
+
+        $punchInUserIDs = array_diff($userIds, $liveLocationUserID);
+        $punchInLocations = $this->userRepository->currentPunchInLocations($punchInUserIDs)->get();
+        foreach($punchInLocations as $location) {
+            $response[] = [
+                "name" => $location->user->name,
+                "userid" => $location->user_id,
+                "longitude" => $location->punch_in_longitude,
+                "latitude" => $location->punch_in_latitude,
+                "last_updated" => $location->updated_at,
+                "is_location_tracking_active" => $location->user->details->live_location_active
+            ];
+        }
+
+        return $response;
+    }
+
+    public function saveCurrentLocationOfEmployee($locations)
+    {
+        $user = auth()->user();
+
+        // Throw error if admin or user has not enabled location tracking
+        if (!$user->details->location_tracking || !$user->details->live_location_active) {
+            throw new HttpResponseException(
+                response()->json([
+                    'success' => false,
+                    'message' => 'User does not have permission for location tracking',
+                ], Response::HTTP_FORBIDDEN)
+            );
+        }
+
+        // Save locations
+        $this->userRepository->saveCurrentLocationsOfEmployee($locations);
+    }
+
+    public function fetchLocationsOfEmployee(
+        string $userId,
+        ?string $date,
+        ?int $onlyStayPoints = 0,
+        ?int $onlyNewPoints = 0, $punchOutTime = null
+    ) {
+        return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints, $punchOutTime);
+    }
+
+    public function getActiveEmployees($companyIds)
+    {
+        return $this->userRepository->whereIn('company_id', $companyIds)->where('type', 'user')->where('status', 1);
+    }
+
     
     public function getUserSkillsByUserId($id)
     {
         return $this->userRepository->where('id', $id);
+    }
+
+    public function getAllManagerByCompanyId($companyId)
+    {
+        return $this->userRepository->whereIn('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
+    }
+
+    public function getAllManagerByDepartmentId($companyId, $deptId)
+    {
+        return $this->userRepository->whereIn('company_id', $companyId)
+        ->where('type', 'user')
+        ->whereNotNull('role_id')
+        ->whereHas('details', function ($query) use ($deptId) {
+            $query->where('department_id', $deptId);
+        })
+        ->with([
+            'managerEmployees.user.details',
+            'role:id,name'
+        ])
+        ->get();
+
     }
 }

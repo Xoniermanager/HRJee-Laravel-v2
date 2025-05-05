@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use Carbon\Carbon;
 use App\Models\Menu;
 use App\Models\User;
@@ -9,8 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
-function getCompanyIDs() {
-    if(Auth()->user()->type == 'user') {
+function getCompanyIDs()
+{
+    if (Auth()->user()->type == 'user') {
         $companyIDs = [Auth()->user()->id, Auth()->user()->company_id];
     } else {
         $companyIDs = User::where('company_id', Auth()->user()->id)->pluck('id')->toArray();
@@ -147,10 +149,10 @@ if (!function_exists('apiResponse')) {
 
 function getTotalWorkingHour($startTime, $endTime)
 {
-    $time1 = new DateTime($startTime);
-    $time2 = new DateTime($endTime);
-    $time_diff = $time1->diff($time2);
-    return $time_diff->h . ' hours' . '  ' . $time_diff->i . ' minutes';
+    $start = new DateTime($startTime);
+    $end = new DateTime($endTime);
+    $diff = $start->diff($end);
+    return $diff->d * 24 + $diff->h . ' hours ' . $diff->i . ' minutes';
 }
 
 
@@ -280,7 +282,7 @@ function getCompanyMenuHtml()
         }
     }
 
-    if($user->type == "company" && $user->companyDetails->allow_face_recognition ) {
+    if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
         $html .= '<div class="menu-item" data-url="/company/face-recognition">
                         <a class="menu-link" href="/company/face-recognition">
                             <span class="menu-icon">
@@ -322,6 +324,7 @@ function getEmployeeMenuHtml()
 
     return $html;
 }
+
 function numberToWords($num)
 {
     $ones = array(
@@ -389,4 +392,170 @@ function numberToWords($num)
     }
 
     return $result;
+}
+
+function checkMenuAccess($menu)
+{
+    $company = User::where('id', Auth::user()->company_id)->first();
+    $menus = $company->menu->toArray();
+    return in_array("/$menu", array_column($menus, 'slug'));
+}
+
+function checkMenuAccessByMenuAndCompany($menu, $companyID)
+{
+    $company = User::where('id', $companyID)->first();
+    $menus = $company->menu->toArray();
+    return in_array("/$menu", array_column($menus, 'slug'));
+}
+
+function get_stay_points($locations, $punchedOutTime)
+{
+    $stayPoints = [];
+    $timeThreshold = 60 * 30; // Time in seconds
+    $distanceThreshold = 0; // Distance in meters (adjust as needed)
+
+    for ($i = 1; $i < count($locations); $i++) {
+        $prev = $locations[$i - 1];
+        $curr = $locations[$i];
+
+        $prevTime = strtotime($prev["created_at"]);
+        $currTime = strtotime($curr["created_at"]);
+        $timeDiff = $currTime - $prevTime;
+
+        // Calculate distance between previous and current point  (&& $distance <= $distanceThreshold)
+        $distance = haversine_distance(
+            $prev["latitude"],
+            $prev["longitude"],
+            $curr["latitude"],
+            $curr["longitude"]
+        );
+
+        if ($timeDiff >= $timeThreshold) {
+            $address = get_address_from_coordinates($prev["latitude"], $prev["longitude"]);
+
+            $stayPoints[] = [
+                "location" => ["lat" => $prev["latitude"], "lng" => $prev["longitude"]],
+                "address" => $address,
+                "start_time" => date("Y-m-d H:i:s", strtotime($prev["created_at"])),
+                "end_time" => date("Y-m-d H:i:s", strtotime($curr["created_at"])),
+                "duration" => format_duration($timeDiff)
+            ];
+        }
+    }
+
+    // Handle the last record
+    $lastRecord = end($locations);
+    $lastTime = strtotime($lastRecord["created_at"]);
+    $currentTime = $punchedOutTime ? strtotime($punchedOutTime) : time();
+    $currentDuration = $currentTime - $lastTime;
+
+    if (count($locations) >= 1 && $currentDuration >= $timeThreshold) {
+        $address = get_address_from_coordinates($lastRecord["latitude"], $lastRecord["longitude"]);
+
+        $stayPoints[] = [
+            "location" => ["lat" => $lastRecord["latitude"], "lng" => $lastRecord["longitude"]],
+            "address" => $address,
+            "start_time" => date("Y-m-d H:i:s", strtotime($lastRecord["created_at"])),
+            "end_time" => !$punchedOutTime
+                ? "N/A (Last tracked location)"
+                : "N/A (Last tracked location) - Punch out at " . date("Y-m-d H:i:s", strtotime($punchedOutTime)),
+            "duration" => format_duration($currentDuration),
+            "status" => "Still at this location"
+        ];
+    }
+
+    return array_reverse($stayPoints);
+}
+
+function format_duration($seconds)
+{
+    $hours = floor($seconds / 3600);
+    $minutes = floor(($seconds % 3600) / 60);
+
+    if ($hours && $minutes) {
+        return "$hours hr" . ($hours > 1 ? "s" : "") . ", $minutes min";
+    } elseif ($hours) {
+        return "$hours hr" . ($hours > 1 ? "s" : "");
+    } elseif ($minutes) {
+        return "$minutes min";
+    }
+
+    return "0 min";
+}
+
+function get_address_from_coordinates($latitude, $longitude)
+{
+    $apiKey = "AIzaSyAZ6YyrIHnFZ-vpGlPT99dGmZWGkNzqcp4";
+    $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$latitude},{$longitude}&key={$apiKey}";
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $data = json_decode($response, true);
+
+    if (isset($data["results"][0]["formatted_address"])) {
+        return $data["results"][0]["formatted_address"];
+    }
+
+    return "Unknown Location";
+}
+
+/**
+ * Calculate the distance between two points using the Haversine formula
+ */
+function haversine_distance($lat1, $lon1, $lat2, $lon2)
+{
+    $earthRadius = 6371000; // Earth's radius in meters
+
+    $lat1 = deg2rad($lat1);
+    $lon1 = deg2rad($lon1);
+    $lat2 = deg2rad($lat2);
+    $lon2 = deg2rad($lon2);
+
+    $deltaLat = $lat2 - $lat1;
+    $deltaLon = $lon2 - $lon1;
+
+    $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
+        cos($lat1) * cos($lat2) *
+        sin($deltaLon / 2) * sin($deltaLon / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+    return $earthRadius * $c; // Distance in meters
+}
+
+function isAssociative(array $arr): bool {
+    return array_keys($arr) !== range(0, count($arr) - 1);
+}
+
+
+function get_coordinates_from_address($address)
+{
+	$apiKey = "AIzaSyAZ6YyrIHnFZ-vpGlPT99dGmZWGkNzqcp4";
+	$encodedAddress = urlencode($address);
+	$url = "https://maps.googleapis.com/maps/api/geocode/json?address={$encodedAddress}&key={$apiKey}";
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	$response = curl_exec($ch);
+	curl_close($ch);
+
+	$data = json_decode($response, true);
+
+	if (isset($data["results"][0]["geometry"]["location"])) {
+		return [
+			"latitude" => $data["results"][0]["geometry"]["location"]["lat"],
+			"longitude" => $data["results"][0]["geometry"]["location"]["lng"]
+		];
+	} else {
+        return [
+			"latitude" => null,
+			"longitude" => null
+		];
+    }
 }

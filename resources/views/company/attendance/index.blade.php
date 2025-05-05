@@ -13,7 +13,7 @@ Attendance Management
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
-                        <div class="d-flex align-items-center position-relative my-1  min-w-250px me-2">
+                        {{-- <div class="d-flex align-items-center position-relative my-1  min-w-250px me-2">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                             <span class="svg-icon svg-icon-1 position-absolute ms-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -28,15 +28,33 @@ Attendance Management
                             <!--end::Svg Icon-->
                             <input class="form-control form-control-solid ps-14" placeholder="Search By Name & Emp ID"
                                 type="text" name="search" id="search">
-                        </div>
-                        <select name="year" class="form-control min-w-250px" id="year">
+                        </div> --}}
+                        <select name="branch" class="form-control min-w-150px" id="branch">
+                            <option value="">All Branches</option>
+                            @foreach ($branches as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>
+                            @endforeach
+                        </select>
+                        <select name="department" class="form-control min-w-150px ml-10" id="department" onchange="getManagerByDept()">
+                            <option value="">All Departments</option>
+                            @foreach ($departments as $department)
+                                <option value="{{$department->id}}">{{$department->name}}</option>
+                            @endforeach
+                        </select>
+                        <select name="manager" class="form-control min-w-150px ml-10" id="manager">
+                            <option value="">All Managers</option>
+                            @foreach ($managers as $manager)
+                                <option value="{{$manager->id}}">{{$manager->name}}</option>
+                            @endforeach
+                        </select>
+                        <select name="year" class="form-control min-w-150px ml-10" id="year">
                             <option value="">Select Year</option>
                             @for ($i = date('Y', strtotime('-5 year')); $i <= date('Y'); $i++) <option value="{{ $i }}"
                                 {{ $i==date('Y') ? 'selected' : '' }}>
                                 {{ $i }}</option>
                                 @endfor
                         </select>
-                        <select name="month" class="form-control min-w-250px ml-10" id="month">
+                        <select name="month" class="form-control min-w-150px ml-10" id="month">
                             <option value="">Select Month</option>
                             @php
                             $currentMonth = date('m');
@@ -49,6 +67,8 @@ Attendance Management
                             @endforeach
                         </select>
                     </div>
+                    <button onclick="exportAllAttendance()" class="btn btn-sm btn-primary align-self-center">Download</button>
+
                     <a href="{{ route('attendance.add.bulk') }}" class="btn btn-sm btn-primary align-self-center">Add
                         Bulk Attendance</a>
                 </div>
@@ -72,6 +92,42 @@ Attendance Management
         <!--end::Container-->
     </div>
     <script>
+        function getManagerByDept() {
+            const deptId = $("#department").val()
+            $('#manager').empty();
+            $.ajax({
+                url: "{{ route('get.all.manager') }}",
+                type: "GET",
+                dataType: "json",
+                data: {
+                    'department_id': deptId
+                },
+                success: function(response) {
+                    var select = $('#manager');
+                    select.empty();
+                    if (response.status == true) {
+                        $('#manager').append(
+                            '<option value="">Select The Manager</option>');
+                        $.each(response.data, function(key, value) {
+                            select.append('<option value=' + value.id + '>' + value.name + '</option>');
+                        });
+                    } else {
+                        select.append('<option value="">' + response.error +
+                            '</option>');
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something Went Wrong!! Please try Again"
+                    });
+                    return false;
+                }
+            });
+            searchFilter();
+        }
+
         var months = @json(fullMonthList());
         $('#year').on('change', function() {
             var yearValue = this.value;
@@ -95,6 +151,12 @@ Attendance Management
         $('#month').on('change', function() {
             searchFilter();
         });
+        $('#branch').on('change', function() {
+            searchFilter();
+        });
+        $('#manager').on('change', function() {
+            searchFilter();
+        });
         $('#search').on('input', function() {
             searchFilter(this.value);
         });
@@ -103,12 +165,43 @@ Attendance Management
                 method: 'GET',
                 url: company_ajax_base_url + '/attendance/search/filter',
                 data: {
+                    'branch': $('#branch').val(),
+                    'department': $('#department').val(),
+                    'manager': $('#manager').val(),
                     'year': $('#year').val(),
                     'month': $('#month').val(),
                     'search': $('#search').val()
                 },
                 success: function(response) {
                     $('#attendance_list').replaceWith(response.data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                }
+            });
+        }
+
+        function exportAllAttendance() {
+            $.ajax({
+                method: 'GET',
+                url: company_ajax_base_url + '/attendance/search/filter',
+                data: {
+                    'branch': $('#branch').val(),
+                    'department': $('#department').val(),
+                    'manager': $('#manager').val(),
+                    'year': $('#year').val(),
+                    'month': $('#month').val(),
+                    'search': $('#search').val(),
+                    'export': true
+                },
+                success: function(response) {
+                    Swal.fire({
+                title: 'Request Send',
+                text: 'Attendance report will be send on your mail shortly',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+                    // alert("Attendance report will be send on your mail shortly")
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);

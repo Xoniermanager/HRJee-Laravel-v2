@@ -9,10 +9,10 @@
                     <th>Sr. No.</th>
                     <th>Name</th>
                     <th>Company Branch</th>
-                    <th>Shift_Hours</th>
-                    <th>Half_day_hours</th>
-                    <th>Min_shift_Hours</th>
-                    <th>Min_half_day_hours</th>
+                    <th>Shift Hours</th>
+                    <th>Half Day Hours</th>
+                    <th>Min Shift Hours</th>
+                    <th>Min Half Day Hours</th>
                     <th class="float-right">Action</th>
                 </tr>
             </thead>

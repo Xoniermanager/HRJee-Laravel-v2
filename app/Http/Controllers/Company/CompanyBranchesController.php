@@ -56,7 +56,6 @@ class CompanyBranchesController extends Controller
         $companyIDs = getCompanyIDs();
         try {
             $payload = $request->all();
-
             if(!isset($payload['company_id'])){
                 $payload['company_id'] = auth()->user()->company_id;
             }

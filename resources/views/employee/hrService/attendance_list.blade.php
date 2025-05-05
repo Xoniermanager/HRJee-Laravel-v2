@@ -16,7 +16,7 @@
                 @forelse ($allAttendanceDetails as $key =>$attendanceDetails)
                 <tr>
                     <td>{{$key+1}}</td>
-                    <td>{{ date('j F, Y', strtotime($attendanceDetails->punch_in)) }}</td>
+                    <td>{{ date('j F, Y', strtotime($attendanceDetails->punch_in)) }} ({{($attendanceDetails->shift ? $attendanceDetails->shift->name : null)}} {{$attendanceDetails->shift_start_time .' - '. $attendanceDetails->shift_end_time}})</td>
                     <td>{{ date('h:i A', strtotime($attendanceDetails->punch_in)) }}</td>
                     <td>{{ isset($attendanceDetails->punch_out) ?  date('h:i A', strtotime($attendanceDetails->punch_out)) : 'N A' }}</td>
                     <td>{{ (isset($attendanceDetails->punch_in) && isset($attendanceDetails->punch_out)) ? getTotalWorkingHour($attendanceDetails->punch_in, $attendanceDetails->punch_out) : 'N A'}}</td>

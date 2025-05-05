@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use App\Mail\EmployeePayslipFile;
@@ -42,7 +43,7 @@ class EmployeePayslipGenerateJob implements ShouldQueue
                 }
             }
         } catch (\Exception $e) {
-            \Log::error('Error sending file: ' . $e->getMessage());
+            Log::error('Error sending file: ' . $e->getMessage());
         }
     }
 }

@@ -68,11 +68,17 @@ class SendOtpService
       if($requestType == "api") {
         return ['status' => true, 'message' => 'otp_sent_on_mail'];
       } else {
-        if($guardType){
-          Session::put('user_2fa', Auth::guard($guardType)->user()->id);
-        }else{
+        if($data['id']) {
+          Session::put('user_2fa', $data['id']);
+        } else {
           Session::put('user_2fa', Auth::guard($guardType)->user()->id);
         }
+        // if($guardType){
+          // Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+        //   Session::put('user_2fa', $data['id']);
+        // }else{
+          // Session::put('user_2fa', Auth::guard($guardType)->user()->id);
+        // }
   
         return true;
       }

@@ -142,6 +142,7 @@
                             <label class="form-label">Hr Email</label>
                             <input class="form-control" type="text" placeholder="Enter Your Hr Email"
                                 name="hr_email" id="hr_email">
+                                <span>If no HR present then enter same email as branch email</span>
                             @error('hr_email')
                                 <span class="text-denger">{{ $message }} </span>
                             @enderror
@@ -152,25 +153,6 @@
                             <input class="form-control" type="text" placeholder="Enter Your Address"
                                 name="address" id="address">
                             @error('address')
-                                <span class="text-denger">{{ $message }} </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">City</label>
-                            <input class="form-control" type="text" placeholder="Enter Your City" name="city"
-                                id="city">
-                            @error('city')
-                                <span class="text-denger">{{ $message }} </span>
-                            @enderror
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label class="form-label">Pincode</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Pincode"
-                                name="pincode" id="pincode">
-                            @error('pincode')
                                 <span class="text-denger">{{ $message }} </span>
                             @enderror
                         </div>
@@ -196,6 +178,24 @@
                             <select class="form-select" name="state_id" id="edit_state">
                             </select>
                             @error('state_id')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">City</label>
+                            <input class="form-control" type="text" placeholder="Enter Your City" name="city"
+                                id="city">
+                            @error('city')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Pincode</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Pincode"
+                                name="pincode" id="pincode">
+                            @error('pincode')
                                 <span class="text-denger">{{ $message }} </span>
                             @enderror
                         </div>
@@ -284,6 +284,7 @@
                             <label class="form-label">Hr Email</label>
                             <input class="form-control" type="text" placeholder="Enter Your Hr Email"
                                 name="hr_email" id="hr_email">
+                                <span class="text-warning">If no HR present then enter same email as branch email</span>
                             @error('hr_email')
                                 <span class="text-denger">{{ $message }} </span>
                             @enderror
@@ -294,25 +295,6 @@
                             <input class="form-control" type="text" placeholder="Enter Your Address"
                                 name="address" id="address">
                             @error('address')
-                                <span class="text-denger">{{ $message }} </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">City</label>
-                            <input class="form-control" type="text" placeholder="Enter Your City" name="city"
-                                id="city">
-                            @error('city')
-                                <span class="text-denger">{{ $message }} </span>
-                            @enderror
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label class="form-label">Pincode</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Pincode"
-                                name="pincode" id="pincode">
-                            @error('pincode')
                                 <span class="text-denger">{{ $message }} </span>
                             @enderror
                         </div>
@@ -337,6 +319,24 @@
                             <select class="form-select" name="state_id" id="state">
                             </select>
                             @error('state_id')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">City</label>
+                            <input class="form-control" type="text" placeholder="Enter Your City" name="city"
+                                id="city">
+                            @error('city')
+                                <span class="text-denger">{{ $message }} </span>
+                            @enderror
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label class="form-label">Pincode</label>
+                            <input class="form-control" type="text" placeholder="Enter Your Pincode"
+                                name="pincode" id="pincode">
+                            @error('pincode')
                                 <span class="text-denger">{{ $message }} </span>
                             @enderror
                         </div>

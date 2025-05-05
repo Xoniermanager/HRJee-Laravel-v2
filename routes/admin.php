@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LogActivityController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\Admin\AdminDashboard;
@@ -22,12 +23,26 @@ use App\Http\Controllers\Admin\AdminDesignationsController;
 use App\Http\Controllers\Admin\AssignMenuCompanyController;
 use App\Http\Controllers\Admin\AdminCompanyBranchesController;
 use App\Http\Controllers\Admin\AdminPreviousCompanyController;
+use App\Http\Controllers\Admin\AttendanceController;
 
-Route::prefix('/admin')->middleware('Check2FA')->group(function () {
+Route::prefix('/admin')->middleware(['Check2FA', 'auth.admin'])->group(function () {
     Route::get('/profile/details', [ProfileController::class, 'getProfile'])->name('admin.getProfile');
 
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('admin.dashboard');
     Route::get('/attendance-details', [AdminDashboard::class, 'attendanceDetails'])->name('admin.attendance.details');
+
+
+    Route::prefix('/attendance')->group(function () {
+        //Employee Attendance Module
+        Route::controller(AttendanceController::class)->group(function () {
+            Route::get('/{companyID}', 'index')->name('attendance.index');
+            Route::get('/search/filter', 'searchFilter');
+            Route::get('/view/{empId}', 'viewAttendanceDetails')->name('attendance.view.details');
+            Route::get('/view/search/filter/{empId}', 'searchFilterByEmployeeId');
+            Route::post('/download/attendance', 'downloadAttendance')->name('download.attendance');
+
+        });
+    });
 
     Route::prefix('/department')->controller(AdminDepartmentController::class)->group(function () {
         Route::get('/', 'index')->name('admin.departments');
@@ -178,6 +193,7 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
         Route::get('/status/update', 'statusUpdate')->name('admin.menu.statusUpdate');
         Route::get('/search', 'search')->name('admin.menu.search');
     });
+
     Route::prefix('/assign-menu')->controller(AssignMenuCompanyController::class)->group(function () {
         Route::get('/', 'index')->name('admin.assign_menu.index');
         Route::get('/add', 'assignMenu')->name('admin.assign_menu.add');
@@ -185,6 +201,7 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
         Route::get('/get-assign-feature', 'get_assign_feature')->name('admin.company.getPermission');
         Route::get('/search-filter-company', 'searchFilterMenu')->name('admin.filter.company_menu');
     });
+
     Route::prefix('/company-type')->controller(CompanyTypeController::class)->group(function () {
         Route::get('/', 'index')->name('admin.company_type');
         Route::post('/create', 'store')->name('admin.company_type.store');
@@ -201,6 +218,10 @@ Route::prefix('/admin')->middleware('Check2FA')->group(function () {
         Route::get('/delete', 'destroy')->name('admin.subscription_plan.delete');
         Route::get('/status/update', 'statusUpdate')->name('admin.subscription_plan.statusUpdate');
         Route::get('/search', 'search')->name('admin.subscription_plan.search');
+    });
+
+    Route::prefix('/log-activity')->controller(LogActivityController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.log_activity');
     });
 });
 /**----------------- End Super Admin Route ----------------------*/

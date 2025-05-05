@@ -4,18 +4,23 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\PolicyController;
 use App\Http\Controllers\Api\PRMApiController;
 use App\Http\Controllers\Api\AddressController;
-use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\CompOffController;
+use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\ResignationController;
 use App\Http\Controllers\Api\AnnouncementController;
+use Illuminate\Foundation\Console\RouteCacheCommand;
+use App\Http\Controllers\Admin\LogActivityController;
 use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\LocationTrackingController;
 use App\Http\Controllers\Api\LocationVisitAPiController;
 use App\Http\Controllers\Api\LeaveAvailableApiController;
 use App\Http\Controllers\Api\LeaveManagementApiController;
+use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,30 +32,32 @@ use App\Http\Controllers\Api\LeaveManagementApiController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::controller(AuthController::class)->group(function () {
-    Route::post('/login', 'login')->middleware('throttle:30,1');
+
+Route::middleware('log.route')->controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login');
     Route::post('sendOtp', 'sendOtp');
-    Route::post('verify/otp', 'verifyOtp')->middleware('throttle:30,1');
+    Route::post('verify/otp', 'verifyOtp');
+    Route::post('/face/login', 'faceLogin');
 });
 
-Route::controller(ForgotPasswordController::class)->group(function () {
+Route::controller(ForgotPasswordController::class)->middleware('log.route')->group(function () {
     Route::post('forgot/password', 'forgotPassword');
     Route::post('reset/password', 'resetPassword');
     Route::post('password/reset', 'resetPassword');
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logout');
         Route::get('profile/details', 'profileDetails');
         Route::get('company-details', 'getCompanyDetails');
         Route::get('menu-access', 'getMenuAccess');
+        Route::get('get/team/details/{userId}', 'getTeamDetailsByUserId');
 
         Route::post('update/profile', 'updateProfile');
         Route::post('change/password', 'changePassword');
         Route::post('user/kyc/registration', 'userKycRegistration');
         Route::post('user/punchIn/image', 'userPunchInImage');
-
     });
     Route::controller(AddressController::class)->group(function () {
         Route::put('update/address', 'updateAddress');
@@ -73,7 +80,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     /** Punch In */
     Route::controller(AttendanceController::class)->group(function () {
-        Route::get('/employee/make/attendance', 'makeAttendance');
+        Route::post('/employee/make/attendance', 'makeAttendance');
+        Route::get('/employee/shifts', 'getTodaysShifts');
         Route::post('/search/filter/attendance', 'getAttendanceByFromAndToDate');
         Route::get('/get-today-attendance', 'getTodayAttendance');
         Route::get('/get-last-attendance', 'getLastTenDaysAttendance');
@@ -85,6 +93,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/attendance/request/delete/{id}', 'deleteAttendanceRequest');
         Route::get('/attendance/request/details/{id}', 'detailsAttendanceRequest');
         Route::get('/attendance/request/list', 'getAllAttendanceRequestList');
+        Route::get('/attendance/details/{month}', 'attendanceDetailsbyMonth');
     });
 
     /** Comp off Module  */
@@ -147,5 +156,28 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/update/prm/request/{id}', 'updatePRMRequest');
         Route::get('/delete/prm/request/{id}', 'deletePRMRequest');
     });
+
+
+    /** for Live Location Tracking */
+    Route::middleware('checkMenuAccess:location-tracking')->controller(LocationTrackingController::class)->group(function () {
+        Route::get('/location-tracking/get-locations', 'getLocations');
+        Route::post('/location-tracking/send', 'sendLocations');
+    });
+      /** Course Details Modules */
+      Route::prefix('course')->controller(CourseController::class)->group(function () {
+        Route::get('/list', 'courseList');
+        Route::get('/details/{courses:id}', 'courseDetails');
+    });
+    //Employee Break History
+    Route::controller(EmployeeBreakHistoryController::class)->group(function () {
+        Route::get('/break-type/list', 'getBreakTypeList');
+        Route::post('/break-in', 'breakIn');
+        Route::get('/break-out/{employee_break_histories:breakId}', 'breakOutbyApi');
+        Route::get('/break-details/{employee_attendances:attendanceId}', 'getBreakDetailsByAttendanceId');
+    });
+});
+/** Log Activity */
+Route::prefix('log-activity')->controller(LogActivityController::class)->group(function () {
+    Route::post('/create', 'createActivityLog');
 });
 

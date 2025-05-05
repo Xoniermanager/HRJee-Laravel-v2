@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-
+use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -38,12 +38,22 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class, 'id', 'company_id');
+    }
+
+    public function userRole()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
     public function menu()
     {
-        return $this->role->belongsToMany(Menu::class)->with(['children']);
+        if($this->role) {
+            return $this->role->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
+        } else {
+            return $this->userRole->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
+        }
+        
     }
 
     public function menus()
@@ -69,10 +79,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserDetail::class, 'user_id');
     }
+
     public function companyDetails()
     {
-        return $this->hasOne(CompanyDetail::class, 'user_id');
+        if($this->type == "company") {
+            return $this->hasOne(CompanyDetail::class, 'user_id');
+        } else {
+            return $this->belongsTo(CompanyDetail::class, 'company_id', 'user_id');
+        }
     }
+    
     public function userCompanyDetails()
     {
         return $this->belongsTo(CompanyDetail::class, 'company_id', 'id')->with('user');
@@ -222,4 +238,122 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserReward::class, 'user_id', 'id');
     }
+
+    // Relationship: A user can have multiple employees
+    public function employees()
+    {
+        return $this->hasMany(EmployeeManager::class, 'manager_id');
+    }
+
+    // Relationship: A user can have one manager
+    public function manager()
+    {
+        return $this->belongsTo(EmployeeManager::class, 'id', 'user_id');
+    }
+
+    public function currentLocations($userIDs) {
+        $today = Carbon::today();
+
+        return UserLiveLocation::whereIn('user_id', $userIDs)->whereDate('created_at', $today)
+        ->latest('created_at')->with('user');
+    }
+
+    public function currentPunchInLocations($userIDs) {
+        $today = Carbon::today();
+
+        return EmployeeAttendance::whereIn('user_id', $userIDs)->whereDate('created_at', $today)
+        ->latest('created_at')->with('user');
+    }
+
+    public function getPreviousMonthAttendanceWithLeave($month, $year)
+    {
+        $userId = $this->id;
+
+        $startDate = Carbon::create($year, $month, 1)->startOfMonth();
+        // End date (last day of the month)
+        $endDate = Carbon::create($year, $month, 1)->endOfMonth();
+
+        // $startDate = Carbon::now()->subMonth()->startOfMonth();
+        // $endDate = Carbon::now()->subMonth()->endOfMonth();
+
+        // Fetch attendance and leaves for the user for the previous month
+        $attendances = EmployeeAttendance::where('user_id', $userId)
+        ->whereBetween('punch_in', [$startDate->toDateString(), $endDate->toDateString()])
+        ->get()
+        ->groupBy(function ($item) {
+            return Carbon::parse($item->punch_in)->toDateString();
+        });
+
+        $leaves = Leave::where('user_id', $userId)
+        ->where(function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('from', [$startDate, $endDate])
+                ->orWhereBetween('to', [$startDate, $endDate])
+                ->orWhere(function ($q) use ($startDate, $endDate) {
+                    $q->where('from', '<', $startDate)
+                        ->where('to', '>', $endDate);
+                });
+        })
+        ->get();
+
+        $report = [];
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dateStr = $date->toDateString();
+            $status = 'Absent';
+            $details = null;
+
+            // Check attendance
+            if (isset($attendances[$dateStr])) {
+                $status = 'Present';
+                $details = $attendances[$dateStr];
+            } else {
+                // Check if on leave
+                $leave = $leaves->first(function ($leave) use ($dateStr) {
+                    return $dateStr >= $leave->from && $dateStr <= $leave->to;
+                });
+
+                if ($leave) {
+                    $status = 'On Leave';
+                    $details = [
+                        'leave_type_id' => $leave->leave_type_id,
+                        'leave_status_id' => $leave->leave_status_id,
+                        'is_half_day' => $leave->is_half_day,
+                        'reason' => $leave->reason,
+                    ];
+                }
+            }
+
+            $report[] = [
+                'date' => $dateStr,
+                'status' => $status,
+                'details' => $details,
+            ];
+        }
+
+        return $report;
+    }
+
+    public function totalCompanyEmployees() {
+
+        return User::where('type', 'user')->where('company_id', $this->id)->count();
+    }
+
+    public function totalActiveEmployees() {
+        
+        return User::where(['type' => 'user', 'status' => 1])->where('company_id', $this->id)->count();
+    }
+
+    public function countTodayPunchIns()
+    {
+        return EmployeeAttendance::join('users', 'users.id', '=', 'employee_attendances.user_id')
+            ->where('users.company_id', $this->id)
+            ->whereDate('employee_attendances.punch_in', Carbon::today())
+            ->count();
+    }
+
+    public function totalInActiveEmployees() {
+        
+        return User::where(['type' => 'user', 'status' => 0])->where('company_id', $this->id)->count();
+    }
+
 }

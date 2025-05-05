@@ -18,6 +18,13 @@
                                         id="search">
                                 </div>
                             </form>
+                            <div class="ml-10px" style="margin-left: 10px;">
+                                <select class="form-select h-50px" name="filterByStatus" id="filterByStatus">
+                                    <option value="">Select Status</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
                             <div class="flex-grow-1 text-end">
                                 <a class="d-inline-flex" href="{{ route('admin.add_menu') }}">
                                     <div class="btn bg-blue text-white">
@@ -53,35 +60,6 @@
     </div>
     <!-- Container-fluid Ends-->
 </div>
-<div class="modal fade" id="edit_department" tabindex="-1" aria-labelledby="edit_department" aria-hidden="true"
-    style="display: none;">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content dark-sign-up overflow-hidden">
-            <div class="modal-body social-profile text-start">
-                <div class="modal-toggle-wrapper">
-                    <h4 class="text-dark">Edit Department</h4>
-                    <p>
-                        Fill in your information below to continue.</p>
-                    <form class="row g-3" id="department_update_form">
-                        @csrf
-                        <input type="hidden" name="id" id="id">
-                        <div class="col-md-12">
-                            <label class="form-label">Name</label>
-                            <input class="form-control" type="text" placeholder="Enter Your Department Name" name="name"
-                                id="name">
-                            @error('name')
-                            <span class="text-denger">{{ $message }} </span>
-                            @enderror
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     function deleteFunction(id) {
@@ -103,8 +81,14 @@
                             id: id
                         },
                         success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            $('#menu_list').replaceWith(res.data);
+                            console.log("res => ", res)
+                            if(res.success) {
+                                Swal.fire("Done!", "It was succesfully deleted!", "success");
+                                $('#menu_list').replaceWith(res.data);
+                            } else {
+                                Swal.fire("Error deleting!", res.error, "sucerrorcess");
+                            }
+                            
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             Swal.fire("Error deleting!", "Please try again", "error");
