@@ -32,9 +32,6 @@ use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::controller(AttendanceController::class)->group(function () {
-    Route::post('/employee/face/attendance', 'makeAttendanceUsingFace');
-});
 
 Route::middleware('log.route')->controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
@@ -84,6 +81,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
     /** Punch In */
     Route::controller(AttendanceController::class)->group(function () {
         Route::post('/employee/make/attendance', 'makeAttendance');
+        Route::post('/employee/face/attendance', 'makeAttendanceUsingFace');
         Route::get('/employee/shifts', 'getTodaysShifts');
         Route::post('/search/filter/attendance', 'getAttendanceByFromAndToDate');
         Route::get('/get-today-attendance', 'getTodayAttendance');

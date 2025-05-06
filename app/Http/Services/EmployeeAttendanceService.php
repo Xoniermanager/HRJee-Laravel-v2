@@ -177,7 +177,11 @@ class EmployeeAttendanceService
 
     public function createUsingFace($data)
     {
+        $authDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
         $userDetails = $this->userService->getUserById($data['user_id']);
+        if($authDetails->id != $userDetails->company_id) {
+            return ['status' => false, 'message' => 'Invalid User.'];
+        }
         $attendanceTime = Carbon::now()->format('Y/m/d H:i:s');
 
         $shiftType = $userDetails->details->shift_type;
