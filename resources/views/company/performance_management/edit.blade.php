@@ -28,21 +28,20 @@
                 <div class="mb-5 mb-xl-10">
                     <div class="mb-5 mb-xl-10">
                         <div class="card-body py-3">
-                            <form method="POST" action="{{ route('performance-management.add') }}">
+                            <form method="POST" action="{{ route('performance-management.update', $performance->id) }}">
                                 @csrf
                                 <div class="form-body">
 
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-4 col-md-4">
                                             <div class="form-group employee_id">
-                                                <label for="exampleInput">Review Cycle<span
+                                                <label for="exampleInput">Employee Name<span
                                                         class="validateRq">*</span></label>
-                                                <select name="user_id" class="form-control" id="employee_id">
+                                                <select name="user_id" class="form-control" id="employee_id" readonly>
                                                     <option value="">--- Please Select ---</option>
                                                     @foreach ($allEmployeeDetails as $employee)
                                                         @if($employee->id != auth()->user()->id)
-                                                        <option value="{{ $employee->id }}">{{ $employee->name }}
-                                                        </option>
+                                                            <option value="{{ $employee->id }}" {{ ($employee->id == $performance->user_id ? "selected" : "") }}>{{ $employee->name }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -50,27 +49,11 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-4 col-md-4">
                                             <div class="form-group employee_id">
-                                                <label for="exampleInput">Employee Name<span
-                                                        class="validateRq">*</span></label>
-                                                <select name="user_id" class="form-control" id="employee_id">
-                                                    <option value="">--- Please Select ---</option>
-                                                    @foreach ($allEmployeeDetails as $employee)
-                                                        @if($employee->id != auth()->user()->id)
-                                                        <option value="{{ $employee->id }}">{{ $employee->name }}
-                                                        </option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
+                                                <label for="exampleInput">Date<span class="validateRq">*</span></label>
+                                                <input readonly type="text" id="daterange" name="daterange"
+                                                    class="form-control min-w-250px ml-10" value="{{$performance->start_date.' - '.$performance->end_date}}">
                                             </div>
                                         </div>
-                                        {{-- <div class="col-xs-12 col-sm-4 col-md-4">
-                                            <div class="form-group employee_id">
-                                                <label for="exampleInput">Date<span class="validateRq">*</span></label>
-                                                <input type="text" id="daterange" name="daterange"
-                                                    class="form-control min-w-250px ml-10">
-                                            </div>
-                                        </div> --}}
-                                        <input type="hidden" id="daterange" name="daterange" class="form-control">
                                     </div>
                                     {{-- <h3 class="box-title">Criteria List</h3> --}}
                                     <div class="row">
@@ -79,8 +62,7 @@
                                                 <label for="exampleInput">Leave Ranking<span
                                                         class="validateRq">*</span></label>
                                                 <select name="leave_ranking" class="form-control" id="leave_ranking" readonly>
-                                                    <option value="">--- Please Select ---</option>
-                                                    
+                                                    <option>{{ $performance->leave_ranking }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -89,36 +71,35 @@
                                                 <label for="exampleInput">Attendance Ranking<span
                                                         class="validateRq">*</span></label>
                                                 <select name="attendance_ranking" class="form-control" id="attendance_ranking" readonly>
-                                                    <option value="">--- Please Select ---</option>
+                                                    <option>{{ $performance->attendance_ranking }}</option>
                                                 </select>
                                             </div>
                                         </div>
                                         @foreach ($allCategories as $category)
-                                            <div class="col-xs-12 col-sm-4 col-md-4">
-                                                <div class="form-group employee_id">
-                                                    <label for="exampleInput">{{$category->name}}</label>
-                                                    <select name="categories[{{$category->id}}]" class="form-control">
-                                                        <option value="">--- Please Select ---</option>
-                                                        <option>UNSATISFACTORY</option>
-                                                        <option>SATISFACTORY</option>
-                                                        <option>GOOD</option>
-                                                        <option>EXCELLENT</option>
-                                                    </select>
-                                                </div>
-                                            </div> 
+                                        @if (isset($categories[$category->id]))
+                                        <div class="col-xs-12 col-sm-4 col-md-4">
+                                            <div class="form-group employee_id">
+                                                <label for="exampleInput">{{$category->name}}</label>
+                                                <select name="categories[{{$category->id}}]" class="form-control" readonly>
+                                                    <option  >{{$categories[$category->id]}}</option>
+                                                </select>
+                                            </div>
+                                        </div> 
+                                        @endif
+                                            
                                         @endforeach
                                         <div class="col-xs-12 col-sm-12 col-md-12">
                                             <div class="form-group employee_id">
                                                 <label for="exampleInput">HR's Review<span
                                                         class="validateRq">*</span></label>
-                                                <textarea name="hr_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name == "HR" ? "" : "disabled"}} ></textarea>
+                                                <textarea name="hr_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name == "HR" ? "" : "readonly"}} >{{$performance->hr_review}}</textarea>
                                             </div>
                                         </div> 
                                         <div class="col-xs-12 col-sm-12 col-md-12">
                                             <div class="form-group employee_id">
                                                 <label for="exampleInput">Manager's Review<span
                                                         class="validateRq">*</span></label>
-                                                <textarea name="manager_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name != "HR" ? "" : "disabled"}} ></textarea>
+                                                <textarea name="manager_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name != "HR" ? "" : "readonly"}} >{{$performance->manager_review}}</textarea>
                                             </div>
                                         </div>
                                     </div>

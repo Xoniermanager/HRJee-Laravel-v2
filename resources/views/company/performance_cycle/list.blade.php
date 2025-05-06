@@ -7,40 +7,35 @@
             <thead>
                 <tr class="fw-bold">
                     <th>Sr. No.</th>
-                    <th>Employee Name</th>
-                    <th>Employee Email</th>
-                    {{-- <th>Employee Phone No.</th> --}}
+                    <th>Name</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    {{-- <th>Average Performance</th> --}}
-                    {{-- <th>Last Updated Date</th> --}}
+                    {{-- <th>Status</th> --}}
                     <th class="float-right">Action</th>
                 </tr>
             </thead>
             <!--end::Table head-->
             <!--begin::Table body-->
-            @forelse ($allPerformances as $key => $performance)
+            @forelse ($performanceCategories as $key => $cycle)
                 <tbody class="">
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td> {{ $performance->user->name }}</td>
-                        <td> {{ $performance->user->email }}</td>
-                        {{-- <td> {{ $performance->user->details->phone }}</td> --}}
-                        <td> {{ $performance->start_date }}</td>
-                        <td> {{ $performance->end_date }}</td>
-                        {{-- <td> Satisfactory</td> --}}
-                        {{-- <td> {{ date("Y-m-d", strtotime($performance->created_at)) }}</td> --}}
+                        <td> <a href="#">{{ $cycle->title }}</a></td>
+                        <td> <a href="#">{{ $cycle->start_date }}</a></td>
+                        <td> <a href="#">{{ $cycle->end_date }}</a></td>
                         <td>
                             <div class="d-flex justify-content-end flex-shrink-0">
-                                <a href="{{route('performance-management.edit', $performance->id)}}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                <a href="#" data-bs-toggle="modal"
+                                    onClick="editPerformanceCycle('{{ $cycle->id }}')"
+                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                     <i class="fa fa-edit"></i>
                                     <!--end::Svg Icon-->
                                 </a>
-                                {{-- <a href="#"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                    onclick="deleteFunction('{{ $cycle->id }}')">
                                     <i class="fa fa-trash"></i>
-                                </a> --}}
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -48,7 +43,7 @@
             @empty
                 <td colspan="3">
                     <span class="text-danger">
-                        <strong>No Record Found!</strong>
+                        <strong>No Cycle Found!</strong>
                     </span>
                 </td>
             @endforelse
@@ -56,8 +51,9 @@
         </table>
         <!--end::Table-->
     </div>
-    {{-- <div class="mt-3">
-        {{ $allPerformances->links('paginate') }}
-    </div> --}}
+    <div class="mt-3">
+{{ $performanceCategories->links('paginate') }}
+
+    </div>
     <!--end::Table container-->
 </div>

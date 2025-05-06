@@ -76,6 +76,7 @@ use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
 use App\Http\Controllers\Company\PerformanceManagementController;
 use App\Http\Controllers\Company\PerformanceCategoryController;
+use App\Http\Controllers\Company\PerformanceReviewCycleController;
 
 // Route::get('/test',function()
 // {
@@ -763,6 +764,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/', 'index')->name('performance-management.index');
         Route::get('/add', 'add')->name('performance-management.add');
         Route::post('/add', 'addPerformance')->name('performance-management.store');
+        Route::get('/edit/{id}', 'edit')->name('performance-management.edit');
+        Route::post('/update/{id}', 'update')->name('performance-management.update');
         Route::get('/get-skills/{userID}', 'getSkills')->name('performance-management.get-skills');
         Route::get('/filter', 'filterPerformance')->name('performance-management.filter-performance');
     });
@@ -774,6 +777,16 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/update', 'update')->name('performance-categories.update');
         Route::get('/delete', 'destroy')->name('performance-categories.delete');
         Route::get('/search', 'search')->name('performance-categories.search');
+    });
+
+    //Performance Review Cycle Module
+    Route::prefix('/performance-review-cycles')->controller(PerformanceReviewCycleController::class)->group(function () {
+        Route::get('/', 'index')->name('performance-cycle');
+        Route::post('/create', 'store')->name('performance-cycle.store');
+        Route::get('/edit/{id}', 'edit')->name('performance-cycle.edit');
+        Route::post('/update', 'update')->name('performance-cycle.update');
+        Route::get('/delete', 'destroy')->name('performance-cycle.delete');
+        Route::get('/search', 'search')->name('performance-cycle.search');
     });
 
     //Address Request Module

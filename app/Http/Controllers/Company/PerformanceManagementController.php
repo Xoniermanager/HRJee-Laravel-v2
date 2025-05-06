@@ -20,6 +20,7 @@ use App\Http\Services\UserService;
 use App\Http\Services\PerformanceManagementService;
 use App\Http\Services\PerformanceCategoryService;
 use Carbon\Carbon;
+use App\Http\Services\PerformanceCycleService;
 
 
 class PerformanceManagementController extends Controller
@@ -32,8 +33,9 @@ class PerformanceManagementController extends Controller
     public $userService;
     public $performanceManagementService;
     public $performanceCategoryService;
+    private $performanceCycleService;
 
-    public function __construct(PerformanceCategoryService $performanceCategoryService, PerformanceManagementService $performanceManagementService, UserService $userService, EmployeeServices $employeeService, EmployeeAttendanceService $employeeAttendanceService, HolidayServices $holidayService, LeaveService $leaveService, WeekendService $weekendService)
+    public function __construct(PerformanceCategoryService $performanceCategoryService, PerformanceManagementService $performanceManagementService, UserService $userService, EmployeeServices $employeeService, EmployeeAttendanceService $employeeAttendanceService, HolidayServices $holidayService, LeaveService $leaveService, WeekendService $weekendService, PerformanceCycleService $performanceCycleService)
     {
         $this->employeeService = $employeeService;
         $this->employeeAttendanceService = $employeeAttendanceService;
@@ -43,11 +45,13 @@ class PerformanceManagementController extends Controller
         $this->userService = $userService;
         $this->performanceManagementService = $performanceManagementService;
         $this->performanceCategoryService = $performanceCategoryService;
+        $this->performanceCycleService = $performanceCycleService;
     }
 
     public function index()
     {
-        $allPerformances = $this->performanceManagementService->getPerformancesByCompanyId(auth()->user()->id)->get();
+        $companyIDs = getCompanyIDs();
+        $allPerformances = $this->performanceManagementService->getPerformancesByCompanyId($companyIDs)->get();
 
         return view('company.performance_management.index', compact('allPerformances'));
     }
@@ -101,11 +105,11 @@ class PerformanceManagementController extends Controller
 
     public function add(Request $request) {
         $companyIDs = getCompanyIDs();
-
         $allEmployeeDetails = $this->userService->getActiveEmployees($companyIDs)->get();
         $allCategories = $this->performanceCategoryService->all($companyIDs);
+        $performanceCycles = $this->performanceCycleService->all($companyIDs);
 
-        return view('company.performance_management.add', compact('allEmployeeDetails', 'allCategories'));
+        return view('company.performance_management.add', compact('allEmployeeDetails', 'allCategories', 'performanceCycles'));
     }
 
     public function addPerformance(Request $request) {
@@ -121,7 +125,8 @@ class PerformanceManagementController extends Controller
             'end_date' => $endDate,
             'leave_ranking' => $data['leave_ranking'],
             'attendance_ranking' => $data['attendance_ranking'],
-            'manager_review' => $data['manager_review'],
+            'manager_review' => isset($data['manager_review']) ? $data['manager_review'] : NULL,
+            'hr_review' => isset($data['hr_review']) ? $data['hr_review'] : NULL,
         ];
         $performance = PerformanceManagement::create($payload);
 
@@ -141,5 +146,31 @@ class PerformanceManagementController extends Controller
         return redirect(route('performance-management.index'))->with('success', 'Review Submitted Succesfully');
 
     }
-    
+
+    public function edit(Request $request, $id) {
+        
+        $companyIDs = getCompanyIDs();
+        $allEmployeeDetails = $this->userService->getActiveEmployees($companyIDs)->get();
+        $allCategories = $this->performanceCategoryService->all($companyIDs);
+        $performance = $this->performanceManagementService->getDetailsById($id);
+        $categories = [];
+        foreach($performance->categoryRecords as $categoryRecord) {
+            $categories[$categoryRecord->performance_category_id] = $categoryRecord->performance;
+        }
+
+        return view('company.performance_management.edit', compact('allEmployeeDetails', 'allCategories', 'performance', 'categories'));
+    }
+
+    public function update(Request $request, $id) {
+        
+        $data = $request->all();
+        $performance = $this->performanceManagementService->getDetailsById($id);
+
+        $performance->update([
+            'manager_review' => isset($data['manager_review']) ? $data['manager_review'] : $performance->manager_review,
+            'hr_review' => isset($data['hr_review']) ? $data['hr_review'] : $performance->hr_review,
+        ]);
+        
+        return redirect(route('performance-management.index'))->with('success', 'Review Submitted Succesfully');
+    }
 }
