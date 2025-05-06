@@ -32,6 +32,9 @@ use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::controller(AttendanceController::class)->group(function () {
+    Route::post('/employee/face/attendance', 'makeAttendanceUsingFace');
+});
 
 Route::middleware('log.route')->controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
