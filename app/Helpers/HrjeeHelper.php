@@ -28,14 +28,6 @@ function removingSpaceMakingName($name)
     return $finalName;
 }
 
-function unlinkFileOrImage($file)
-{
-    if (file_exists(storage_path('app/public') . $file)) {
-        unlink(storage_path('app/public') . $file);
-    }
-    return true;
-}
-
 function uploadingImageorFile($file, string $path, $namePrefix = '')
 {
     $image = $namePrefix . '-' . time() . '.' . $file->getClientOriginalExtension();

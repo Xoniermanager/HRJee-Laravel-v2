@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SmsController;
 use App\Http\Controllers\Employee\PRMController;
 use App\Http\Controllers\Employee\NewsController;
 use App\Http\Controllers\Employee\CourseController;
 use App\Http\Controllers\Employee\PolicyController;
 use App\Http\Controllers\Employee\AccountController;
+use App\Http\Controllers\Employee\CompOffController;
 use App\Http\Controllers\Employee\SupportController;
 use App\Http\Controllers\Employee\ContactUsController;
 use App\Http\Controllers\Employee\DashboardController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\Employee\HRServiceController;
 use App\Http\Controllers\Employee\ApplyLeaveController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\HrComplainController;
+use App\Http\Controllers\Employee\UserRewardController;
 use App\Http\Controllers\Employee\ResignationController;
 use App\Http\Controllers\Employee\NotificationController;
 use App\Http\Controllers\Employee\AnnouncementsController;
@@ -21,12 +24,10 @@ use App\Http\Controllers\Employee\AddressRequestController;
 use App\Http\Controllers\Employee\LeaveAvailableController;
 use App\Http\Controllers\Employee\DailyAttendanceController;
 use App\Http\Controllers\Employee\AttendanceRequestController;
-use App\Http\Controllers\Employee\CompOffController;
 use App\Http\Controllers\Employee\HolidaysMangementController;
 use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
-use App\Http\Controllers\Employee\UserRewardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -205,3 +206,4 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.rou
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/
+Route::get('/send-sms', [SmsController::class, 'send']);
