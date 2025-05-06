@@ -84,6 +84,54 @@ class AttendanceController extends Controller
         }
     }
 
+    public function makeAttendanceUsingFace(Request $request)
+    {
+        try {
+            $data = $request->all();
+            // $data['punch_in_using'] = 'Face';
+            $data['punch_in_using'] = 'Mobile';
+
+            $attendanceDetails = $this->employeeAttendanceService->createUsingFace($data);
+            
+            if ($attendanceDetails['status'] === true && $attendanceDetails['message'] === 'Punch Out') {
+                return response()->json([
+                    'status' => true,
+                    'punch_out' => true,
+                    'message' => "You Punched Out Successfully",
+                    'data' => $attendanceDetails['data']
+                ], 200);
+            }
+            if ($attendanceDetails['status'] === true && $attendanceDetails['message'] === 'Punch In') {
+                return response()->json([
+                    'status' => true,
+                    'punch_in' => true,
+                    'message' => "You Punched In Successfully",
+                    'data' => $attendanceDetails['data']
+                ], 200);
+            }
+            if ($attendanceDetails['status'] == false && isset($attendanceDetails['before_punchout_confirm_required'])) {
+                return response()->json([
+                    'status' => false,
+                    'before_punchout_confirm_required' => $attendanceDetails['before_punchout_confirm_required'],
+                    'message' => $attendanceDetails['message']
+                ], 200);
+            }
+            if ($attendanceDetails['status'] === false) {
+                return response()->json([
+                    'status' => false,
+                    'attendance_status' => false,
+                    'message' => $attendanceDetails['message'] ?? "You are not allowed to Punch In at this time.",
+                ], 200);
+            }
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 
     public function getTodaysShifts(Request $request)
     {
