@@ -9,6 +9,7 @@ use App\Http\Services\CompOffService;
 use App\Http\Services\WeekendService;
 use App\Http\Services\UserShiftService;
 use App\Http\Services\ShiftServices;
+use App\Http\Services\UserService;
 use App\Models\UserShiftLog;
 use App\Repositories\EmployeeAttendanceRepository;
 use Carbon\Carbon;
@@ -29,9 +30,10 @@ class EmployeeAttendanceService
     private $compOffService;
     private $userShiftService;
     private $shiftService;
+    private $userService;
 
 
-    public function __construct(ShiftServices $shiftService, UserShiftService $userShiftService, CompOffService $compOffService, EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService, WeekendService $weekendService)
+    public function __construct(UserService $userService, ShiftServices $shiftService, UserShiftService $userShiftService, CompOffService $compOffService, EmployeeAttendanceRepository $employeeAttendanceRepository, LeaveService $leaveService, HolidayServices $holidayService, EmployeeServices $employeeService, WeekendService $weekendService)
     {
         $this->employeeAttendanceRepository = $employeeAttendanceRepository;
         $this->leaveService = $leaveService;
@@ -41,6 +43,7 @@ class EmployeeAttendanceService
         $this->compOffService = $compOffService;
         $this->userShiftService = $userShiftService;
         $this->shiftService = $shiftService;
+        $this->userService = $userService;
     }
 
     public function create($data)
@@ -170,6 +173,135 @@ class EmployeeAttendanceService
         // Create attendance
         $this->employeeAttendanceRepository->create($data);
         return ['status' => true, 'data' => 'Punch In'];
+    }
+
+    public function createUsingFace($data)
+    {
+        $authDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
+        $userDetails = $this->userService->getUserById($data['user_id']);
+        if($authDetails->id != $userDetails->company_id) {
+            return ['status' => false, 'message' => 'Invalid User.'];
+        }
+        $attendanceTime = Carbon::now()->format('Y/m/d H:i:s');
+
+        $shiftType = $userDetails->details->shift_type;
+        $shiftIDs = $this->userShiftService->getTodaysShifts($userDetails->id, $shiftType)->pluck('shift_id')->toArray();
+
+        if (count($shiftIDs) < 1) {
+            return ['status' => false, 'message' => 'No shift assigned to you. Please contact your admin.'];
+        }
+
+        $shifts = $this->shiftService->getByIdShifts($shiftIDs);
+
+        // Check if user is within allowed punch-in time for any shift
+        $shiftCheck = $this->userShiftService->isUserAllowedToPunchIn($shifts);
+        if (!$shiftCheck['in_shift']) {
+            return [
+                'status' => false,
+                'message' => $shiftCheck['message']
+            ];
+        }
+
+        $officeShiftDetails = $shiftCheck['officeShift'];
+        $officeStartTime = $shiftCheck['start'];
+        $officeEndTime = $shiftCheck['end'];
+
+        // Handle Punch In
+        $data['user_id'] = $userDetails->id;
+        $data['punch_in'] = $attendanceTime;
+
+        // Check if shift is over
+        if (Carbon::now()->gt($officeEndTime)) {
+            return ['status' => false, 'message' => 'Your office hours are over.'];
+        }
+
+        $alreadyPunchedIn = $this->employeeAttendanceRepository->query()
+        ->where('user_id', $userDetails->id)
+        ->whereDate('punch_in', Carbon::today())
+        ->where('shift_id', $officeShiftDetails->id)
+        ->exists();
+
+        // Handle Punch Out
+        if ($alreadyPunchedIn) {
+            $existingAttendance = $this->employeeAttendanceRepository->query()
+            ->where('user_id', $userDetails->id)
+            ->whereDate('punch_in', Carbon::today())
+            ->where('shift_id', $officeShiftDetails->id)
+            ->first();
+            if ($officeShiftDetails->check_out_buffer > 0) {
+                $bufferTime = $officeEndTime->copy()->subMinutes($officeShiftDetails->check_out_buffer);
+                if (Carbon::now()->lt($bufferTime)) {
+                    return [
+                        'status' => false,
+                        'before_punchout_confirm_required' => true,
+                        'message' => 'You are punching out before your shift end time. Do you still want to continue?'
+                    ];
+                } elseif (Carbon::now()->between($bufferTime, $officeEndTime)) {
+                    $data['is_short_attendance'] = 1;
+                }
+            } else {
+                if (Carbon::now()->lt($officeEndTime)) {
+                    return [
+                        'status' => false,
+                        'before_punchout_confirm_required' => true,
+                        'message' => 'You are punching out before your shift end time. Do you still want to continue?'
+                    ];
+                }
+            }
+
+            $data['punch_out'] = $attendanceTime;
+            $existingAttendance->update($data);
+            return ['status' => true, 'message' => 'Punch Out', 'data' => $userDetails];
+        }
+
+        // Handle holidays
+        $todayHoliday = $this->holidayService->getHolidayByCompanyBranchId($userDetails->company_id, Carbon::today()->toDateString(), $userDetails->details->company_branch_id);
+        if ($todayHoliday) {
+            $this->compOffService->store([
+                'user_id' => $userDetails->id,
+                'date' => Carbon::today()->toDateString(),
+                'status' => 'pending',
+            ]);
+        }
+
+        // Handle weekends
+        $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($userDetails->company_id, $userDetails->details->company_branch_id, $userDetails->department_id, Carbon::today()->toDateString());
+        if ($checkWeekend) {
+            $this->compOffService->store([
+                'user_id' => $userDetails->id,
+                'date' => Carbon::today()->toDateString(),
+                'status' => 'pending',
+            ]);
+        }
+
+        // Handle leaves
+        $todayConfirmLeaveDetails = $this->leaveService->getUserConfirmLeaveByDate($userDetails->id, Carbon::today()->toDateString());
+        $checkLeaveDetails = $this->leaveService->checkTodayLeaveData($todayConfirmLeaveDetails);
+        if ($checkLeaveDetails['success']) {
+            if ($checkLeaveDetails['status'] == 'Full') {
+                return ['status' => false, 'message' => 'Today you are on leave'];
+            } elseif ($checkLeaveDetails['status'] == '1 Half') {
+                $halfDayLoginTime = Carbon::parse($officeShiftDetails->half_day_login);
+                if (Carbon::now()->lt($halfDayLoginTime)) {
+                    return ['status' => false, 'message' => 'Today you are on half day. Please punch in on second half.'];
+                }
+            } else {
+                return ['status' => false, 'message' => 'Today you are on half day'];
+            }
+        }
+
+        // Check if user is late
+        if (Carbon::now()->gt($officeStartTime)) {
+            $data['late'] = 1;
+        }
+
+        $data['shift_id'] = $officeShiftDetails->id;
+        $data['shift_start_time'] = $officeStartTime;
+        $data['shift_end_time'] = $officeEndTime;
+
+        // Create attendance
+        $this->employeeAttendanceRepository->create($data);
+        return ['status' => true, 'message' => 'Punch In', 'data' => $userDetails];
     }
 
     public function getTodaysShifts()
