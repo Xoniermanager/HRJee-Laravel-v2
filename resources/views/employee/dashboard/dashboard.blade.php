@@ -239,6 +239,8 @@
                                                         </div>
                                                     @endforeach
                                                 @endif
+
+                                                
                                                 @if (count($shiftIDs) > count($existingAttendanceDetail) && !$currentAttendanceDetail)
                                                     <div class="col-12">
                                                         <button class="btn btn-sm btn-primary align-self-center"

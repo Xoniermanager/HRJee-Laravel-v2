@@ -106,9 +106,9 @@ class EmployeeController extends Controller
             $allUserDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->paginate(10);
         }
 
-        $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+        $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
-        $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+        $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
 
@@ -205,7 +205,8 @@ class EmployeeController extends Controller
     {
         DB::beginTransaction();
         try {
-            $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+            $companyIDs = getCompanyIDs();
+            $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
             if ($activeUserCount >= auth()->user()->companyDetails->company_size) {
                 DB::rollBack();
@@ -367,9 +368,10 @@ class EmployeeController extends Controller
         $import = new UserImport();
 
         try {
+            $companyIDs = getCompanyIDs();
             $importedData = Excel::import($import, $request->file('file'));
 
-            $activeUserCount = $this->userService->getActiveEmployees(Auth()->user()->company_id)->count();
+            $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
             if (($activeUserCount + $import->count) > auth()->user()->companyDetails->company_size) {
 
