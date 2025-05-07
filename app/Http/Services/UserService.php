@@ -442,9 +442,6 @@ class UserService
         ->whereHas('details', function ($query) use ($deptId) {
             $query->whereIn('department_id', $deptId);
         })
-        ->with([
-            'user.details'
-        ])
         ->get();
     }
 }

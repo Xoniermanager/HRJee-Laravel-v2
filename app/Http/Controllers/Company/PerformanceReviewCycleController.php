@@ -51,9 +51,9 @@ class PerformanceReviewCycleController extends Controller
                 'title' => [
                     'required',
                     'string',
-                    Rule::unique('performance_review_cycles')->where(function ($query) use ($request) {
-                        return $query->where('company_id', auth()->user()->company_id);
-                    }),
+                    // Rule::unique('performance_review_cycles')->where(function ($query) use ($request) {
+                    //     return $query->where('company_id', auth()->user()->company_id);
+                    // }),
                 ],
             ]);
 
@@ -61,21 +61,45 @@ class PerformanceReviewCycleController extends Controller
 
                 return response()->json(['error' => $validateData->messages()], 400);
             }
-            $data = $request->all();
-            $dates = explode(' - ', $data['daterange']);
 
-            $data['company_id'] = auth()->user()->id;
-            $data['start_date'] = $dates[0];
-            $data['end_date'] = $dates[1];
-            if ($this->performanceCycleService->create($data)) {
+            if($request->get('id') != "") {
+                $updateData = $request->except(['_token', 'id']);
+                $dates = explode(' - ', $updateData['daterange']);
 
-                return response()->json([
-                    'message' => 'Cycle Created Successfully!',
-                    'data'   =>  view('company.performance_cycle.list', [
-                        'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
-                    ])->render()
-                ]);
+                
+                $updateData['start_date'] = $dates[0];
+                $updateData['end_date'] = $dates[1];
+                $companyStatus = $this->performanceCycleService->updateDetails($updateData, $request->id);
+
+                if ($companyStatus) {
+
+                    return response()->json(
+                        [
+                            'message' => 'Cycle Updated Successfully!',
+                            'data'   =>  view('company.performance_cycle.list', [
+                                'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
+                            ])->render()
+                        ]
+                    );
+                }
+            } else {
+                $data = $request->all();
+                $dates = explode(' - ', $data['daterange']);
+
+                $data['company_id'] = auth()->user()->id;
+                $data['start_date'] = $dates[0];
+                $data['end_date'] = $dates[1];
+                if ($this->performanceCycleService->create($data)) {
+
+                    return response()->json([
+                        'message' => 'Cycle Created Successfully!',
+                        'data'   =>  view('company.performance_cycle.list', [
+                            'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
+                        ])->render()
+                    ]);
+                }
             }
+            
         } catch (Exception $e) {
             return response()->json(['error' =>  $e->getMessage()], 400);
         }
@@ -93,6 +117,8 @@ class PerformanceReviewCycleController extends Controller
             $cycle = $this->performanceCycleService->getCycle($id); 
 
             $cycle->employee_ids = $cycle->userList();
+            $cycle->department_ids = explode(',',  $cycle->department_id);
+
 
             return response()->json([
                 'status' => true,
@@ -157,25 +183,6 @@ class PerformanceReviewCycleController extends Controller
             return response()->json([
                 'success' => 'Cycle Deleted Successfully',
                 'data'   =>  view('company.performance_cycle.list', [
-                    'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
-                ])->render()
-            ]);
-        } else {
-
-            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
-        }
-    }
-    
-    public function statusUpdate(Request $request)
-    {
-        $id = $request->id;
-        $data['status'] = $request->status;
-        $statusDetails = $this->performanceCycleService->updateDetails($data, $id);
-        if ($statusDetails) {
-
-            return response()->json([
-                'success' => 'Status Updated Successfully',
-                'data'   =>  view("company.performance_cycle.list", [
                     'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
                 ])->render()
             ]);
