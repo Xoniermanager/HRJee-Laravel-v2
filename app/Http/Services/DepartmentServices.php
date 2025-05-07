@@ -60,7 +60,11 @@ class DepartmentServices
     }
     public function getAllActiveDepartmentsByCompanyId($companyId)
     {
-        return $this->departmentRepository->where('company_id', $companyId)->where('status', '1')->get();
+        if(is_array($companyId)) {
+            return $this->departmentRepository->whereIn('company_id', $companyId)->where('status', '1')->get();
+        } else {
+            return $this->departmentRepository->where('company_id', $companyId)->where('status', '1')->get();
+        }
     }
     public function getAllAssignedDepartment($data)
     {

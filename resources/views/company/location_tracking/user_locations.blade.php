@@ -347,6 +347,8 @@
             anchor: new google.maps.Point(16, 35)
         }
 
+        console.log("Dfadsf");
+
         const mapCenter = {
             lat: 28.65553,
             lng: 77.23165
@@ -355,7 +357,9 @@
         /**
          * Initializes the Google Map and related services.
          */
+         console.log("Dfadsfcccccc");
         (function() {
+            console.log("Dfadsfdcdcdcdcdc");
             map = new google.maps.Map(document.getElementById('map'), {
                 center: mapCenter,
                 zoom: 12
@@ -366,6 +370,7 @@
                 suppressMarkers: true
             });
             directionsRenderer.setMap(map);
+            console.log("Dfadssdfdf");
         })();
 
         /**
@@ -893,6 +898,7 @@
         (function() {
             jQuery('.loader-outer').hide();
             let locations = locationData;
+            console.log("locations => ", locations)
             if ("{{ $punchIn }}") {
                 firstLocationBox.innerText = 'Punch in at: ' + formatPunchTime("{{ $punchIn }}");
             }

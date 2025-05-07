@@ -27,6 +27,7 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 use App\Http\Controllers\Employee\UserRewardController;
+use App\Http\Controllers\Employee\PerformanceManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -202,6 +203,12 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.rou
      Route::controller(UserRewardController::class)->group(function () {
         Route::get('/reward/user', 'index')->name('employee.reward');
         Route::get('/reward/details/{user_rewards:id}', 'viewDetails')->name('employee.reward.details');
+    });
+
+    //Performance Mgmt Module
+    Route::prefix('/performance-reviews')->controller(PerformanceManagementController::class)->group(function () {
+        Route::get('/', 'index')->name('performance-management.index');
+        Route::get('/edit/{id}', 'edit')->name('performance-management.edit');
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/

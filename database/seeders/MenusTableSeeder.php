@@ -849,6 +849,59 @@ class MenusTableSeeder extends Seeder
                     'created_at' => '2025-01-15 17:54:47',
                     'updated_at' => '2025-01-23 12:27:40',
                 ),
+                65 =>
+                array(
+                    'id' => 65,
+                    'title' => 'Performance Management',
+                    'slug' => '/performance-management',
+                    'icon' => '<i class="fa fa-award" aria-hidden="true"></i>',
+                    'parent_id' => NULL,
+                    'status' => 1,
+                    'order_no' => 65,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                66 =>
+                array(
+                    'id' => 66,
+                    'title' => 'Performance Category',
+                    'slug' => '/performance-categories',
+                    'icon' => "",
+                    'parent_id' => 65,
+                    'status' => 1,
+                    'order_no' => 2,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                67 =>
+                array(
+                    'id' => 67,
+                    'title' => 'Employee Performance',
+                    'slug' => '/performance-management',
+                    'icon' => "",
+                    'parent_id' => 65,
+                    'status' => 1,
+                    'order_no' => 3,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                68 =>
+                array(
+                    'id' => 68,
+                    'title' => 'Performance Review Cycle',
+                    'slug' => '/performance-review-cycles',
+                    'icon' => "",
+                    'parent_id' => 65,
+                    'status' => 1,
+                    'order_no' => 1,
+                    'role' => 'company',
+                    'created_at' => '2025-01-15 17:54:47',
+                    'updated_at' => '2025-01-23 12:27:40',
+                ),
+                
         ));
     }
 }

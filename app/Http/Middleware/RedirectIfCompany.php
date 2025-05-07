@@ -16,7 +16,7 @@ class RedirectIfCompany
     public function handle(Request $request, Closure $next): Response
     {
         
-        if (!auth()->check() || auth()->user()->type != "company") {
+        if (!auth()->check() || (auth()->user()->type != "company" && !auth()->user()->userRole)) {
             return redirect()->route('base'); // redirect to login if not already logged in
         } 
         

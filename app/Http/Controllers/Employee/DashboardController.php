@@ -44,9 +44,10 @@ class DashboardController extends Controller
         })->first();
 
         if ($nextUpcomingShift && $currentAttendanceDetail) {
+            $attendanceDate = date("Y-m-d", strtotime($currentAttendanceDetail->punch_in));
             $startTime = Carbon::parse($nextUpcomingShift->shift->start_time);
             $currentShiftStartTime = Carbon::parse($currentAttendanceDetail->shift_start_time);
-            $currentShiftEndTime = Carbon::parse($currentAttendanceDetail->shift_end_time);
+            $currentShiftEndTime = Carbon::parse($attendanceDate . ' ' . $currentAttendanceDetail->shift_end_time);
 
             // Check if current time is within check_out_buffer minutes before the shift starts and also the current shift time is over
             $timeGap = $now->between($startTime->copy()->subMinutes($nextUpcomingShift->shift->check_in_buffer), $startTime);

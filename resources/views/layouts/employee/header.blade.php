@@ -15,9 +15,9 @@
 			data-kt-swapper="true" data-kt-swapper-mode="prepend"
 			data-kt-swapper-parent="{default: '#kt_content_container', lg: '#kt_header_container'}">
 			<!--begin::Heading-->
-			@if (Auth()->user()->role)
+			@if (Auth()->user()->userRole)
 				<a href="/employee/impersonate" class="btn btn-sm btn-primary align-self-center">
-					Switch as {{ Auth()->user()->role->name }}
+					Switch as {{ Auth()->user()->userRole->name }}
 				</a>
 			@endif
 			<!--end::Heading-->

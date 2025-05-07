@@ -233,8 +233,7 @@ class EmployeeAttendanceService
                 if (Carbon::now()->lt($bufferTime)) {
                     return [
                         'status' => false,
-                        'before_punchout_confirm_required' => true,
-                        'message' => 'You are punching out before your shift end time. Do you still want to continue?'
+                        'message' => 'You can not punch out before your shift end time.'
                     ];
                 } elseif (Carbon::now()->between($bufferTime, $officeEndTime)) {
                     $data['is_short_attendance'] = 1;
@@ -243,8 +242,7 @@ class EmployeeAttendanceService
                 if (Carbon::now()->lt($officeEndTime)) {
                     return [
                         'status' => false,
-                        'before_punchout_confirm_required' => true,
-                        'message' => 'You are punching out before your shift end time. Do you still want to continue?'
+                        'message' => 'You can not punch out before your shift end time.'
                     ];
                 }
             }

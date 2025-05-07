@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Services\Api\AuthService;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserLoginByEmpIdRequest;
 use App\Http\Services\EmployeeAttendanceService;
 use App\Http\Services\LeaveService;
 use Illuminate\Support\Facades\Validator;
@@ -33,6 +34,12 @@ class AuthController extends Controller
     {
         return $this->userAuthService->login($request);
     }
+
+    public function loginByEmpId(UserLoginByEmpIdRequest $request)
+    {
+        return $this->userAuthService->loginByEmpId($request);
+    }
+
     public function profileDetails()
     {
         $user = Auth()->guard('employee_api')->user();
