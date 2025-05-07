@@ -53,7 +53,6 @@ class User extends Authenticatable implements MustVerifyEmail
         } else {
             return $this->userRole->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
         }
-        
     }
 
     public function menus()

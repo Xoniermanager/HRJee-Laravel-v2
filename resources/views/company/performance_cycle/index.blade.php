@@ -71,6 +71,18 @@
                                 class="form-control min-w-250px ml-10">
                     </div>
                     <div class="col-md-12 form-group">
+                        <label>Departments</label>
+                        <select id="department_id" class="form-control" data-control="select2" data-close-on-select="false"
+                            data-placeholder="Select departments" data-allow-clear="true" multiple="multiple"
+                            name="department_id[]">
+                            @foreach ($allDepartments as $department)
+                            <option value={{$department->id}}>{{$department->name}}</option>
+                            @endforeach
+                            
+                        </select>
+                    </div>
+
+                    <div class="col-md-12 form-group">
                         <label>Employees</label>
                         <select id="manager_id" class="form-control" data-control="select2" data-close-on-select="false"
                             data-placeholder="Select employees" data-allow-clear="true" multiple="multiple"

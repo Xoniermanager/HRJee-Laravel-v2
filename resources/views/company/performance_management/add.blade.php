@@ -37,13 +37,11 @@
                                             <div class="form-group employee_id">
                                                 <label for="exampleInput">Review Cycle<span
                                                         class="validateRq">*</span></label>
-                                                <select name="user_id" class="form-control" id="employee_id">
+                                                <select name="cycle_id" class="form-control" id="review_cycle_id">
                                                     <option value="">--- Please Select ---</option>
-                                                    @foreach ($allEmployeeDetails as $employee)
-                                                        @if($employee->id != auth()->user()->id)
-                                                        <option value="{{ $employee->id }}">{{ $employee->name }}
+                                                    @foreach ($performanceCycles as $cycle)
+                                                        <option value="{{ $cycle->id.' - '.$cycle->start_date.' - '.$cycle->end_date }}">{{ $cycle->title }}
                                                         </option>
-                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -67,7 +65,7 @@
                                             <div class="form-group employee_id">
                                                 <label for="exampleInput">Date<span class="validateRq">*</span></label>
                                                 <input type="text" id="daterange" name="daterange"
-                                                    class="form-control min-w-250px ml-10">
+                                                    class="form-control min-w-250px ml-10" readonly>
                                             </div>
                                         </div> --}}
                                         <input type="hidden" id="daterange" name="daterange" class="form-control">
@@ -109,16 +107,9 @@
                                         @endforeach
                                         <div class="col-xs-12 col-sm-12 col-md-12">
                                             <div class="form-group employee_id">
-                                                <label for="exampleInput">HR's Review<span
+                                                <label for="exampleInput">Review<span
                                                         class="validateRq">*</span></label>
-                                                <textarea name="hr_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name == "HR" ? "" : "disabled"}} ></textarea>
-                                            </div>
-                                        </div> 
-                                        <div class="col-xs-12 col-sm-12 col-md-12">
-                                            <div class="form-group employee_id">
-                                                <label for="exampleInput">Manager's Review<span
-                                                        class="validateRq">*</span></label>
-                                                <textarea name="manager_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name != "HR" ? "" : "disabled"}} ></textarea>
+                                                <textarea name="review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name != "HR" ? "" : "disabled"}} ></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -152,6 +143,39 @@
                 },
                 autoApply: true,
             });
+
+            $('#review_cycle_id').on('change', function () {
+                const values = $(this).val();
+                const arr = values.split(" - ");
+                const cycleId = arr[0];
+                const startDate = arr[1];
+                const endDate = arr[2];
+                $("#daterange").val(`${startDate} - ${endDate}`);
+                if (!cycleId) {
+                    $('#employee_id').html('<option value="">--- Please Select ---</option>');
+                    return;
+                }
+
+                $.ajax({
+                    url: company_ajax_base_url + '/performance-review-cycles/employees/' + cycleId,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            let options = '<option value="">--- Please Select ---</option>';
+                            response.employees.forEach(emp => {
+                                options += `<option value="${emp.id}">${emp.name}</option>`;
+                            });
+                            $('#employee_id').html(options);
+                        } else {
+                            alert(response.message || "Unable to fetch employees.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error fetching employees.");
+                    }
+                });
+            });
+
 
             $('#employee_id').on('change', function() {
                 let dateRange = $("#daterange").val();

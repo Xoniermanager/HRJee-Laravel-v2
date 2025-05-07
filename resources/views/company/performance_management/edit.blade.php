@@ -35,9 +35,22 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-4 col-md-4">
                                             <div class="form-group employee_id">
+                                                <label for="exampleInput">Review Cycle<span
+                                                        class="validateRq">*</span></label>
+                                                <select name="cycle_id" class="form-control" id="review_cycle_id" disabled>
+                                                    <option value="">--- Please Select ---</option>
+                                                    @foreach ($performanceCycles as $cycle)
+                                                        <option value="{{ $cycle->id.' - '.$cycle->start_date.' - '.$cycle->end_date }}" {{ ($cycle->id == $performance->cycle_id ? "selected" : "") }}>{{ $cycle->title }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-4 col-md-4">
+                                            <div class="form-group employee_id">
                                                 <label for="exampleInput">Employee Name<span
                                                         class="validateRq">*</span></label>
-                                                <select name="user_id" class="form-control" id="employee_id" readonly>
+                                                <select name="user_id" class="form-control" id="employee_id" disabled>
                                                     <option value="">--- Please Select ---</option>
                                                     @foreach ($allEmployeeDetails as $employee)
                                                         @if($employee->id != auth()->user()->id)
@@ -47,13 +60,13 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-xs-12 col-sm-4 col-md-4">
+                                        {{-- <div class="col-xs-12 col-sm-4 col-md-4">
                                             <div class="form-group employee_id">
                                                 <label for="exampleInput">Date<span class="validateRq">*</span></label>
                                                 <input readonly type="text" id="daterange" name="daterange"
                                                     class="form-control min-w-250px ml-10" value="{{$performance->start_date.' - '.$performance->end_date}}">
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     {{-- <h3 class="box-title">Criteria List</h3> --}}
                                     <div class="row">
@@ -76,30 +89,34 @@
                                             </div>
                                         </div>
                                         @foreach ($allCategories as $category)
-                                        @if (isset($categories[$category->id]))
-                                        <div class="col-xs-12 col-sm-4 col-md-4">
-                                            <div class="form-group employee_id">
-                                                <label for="exampleInput">{{$category->name}}</label>
-                                                <select name="categories[{{$category->id}}]" class="form-control" readonly>
-                                                    <option  >{{$categories[$category->id]}}</option>
-                                                </select>
-                                            </div>
-                                        </div> 
-                                        @endif
+                                            @if (isset($categories[$category->id]))
+                                                <div class="col-xs-12 col-sm-4 col-md-4">
+                                                    <div class="form-group employee_id">
+                                                        <label for="exampleInput">{{$category->name}}</label>
+                                                        <select name="categories[{{$category->id}}]" class="form-control" readonly>
+                                                            <option  >{{$categories[$category->id]}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div> 
+                                            @endif 
+                                        @endforeach
+                                        @foreach ($performance->reviews as $review)
+                                            
+                                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                                <div class="form-group employee_id">
+                                                    <label for="exampleInput">{{$review->user && $review->user->type == "company" ? "Admin" : $review->user->name}}'s Review<span
+                                                            class="validateRq">*</span></label>
+                                                    <textarea name="hr_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->id == $review->manager_id ? "" : "readonly"}} >{{$review->review}}</textarea>
+                                                </div>
+                                            </div>  
                                             
                                         @endforeach
+
                                         <div class="col-xs-12 col-sm-12 col-md-12">
                                             <div class="form-group employee_id">
-                                                <label for="exampleInput">HR's Review<span
+                                                <label for="exampleInput">Review<span
                                                         class="validateRq">*</span></label>
-                                                <textarea name="hr_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name == "HR" ? "" : "readonly"}} >{{$performance->hr_review}}</textarea>
-                                            </div>
-                                        </div> 
-                                        <div class="col-xs-12 col-sm-12 col-md-12">
-                                            <div class="form-group employee_id">
-                                                <label for="exampleInput">Manager's Review<span
-                                                        class="validateRq">*</span></label>
-                                                <textarea name="manager_review" id="" cols="30" rows="5" class="form-control" {{auth()->user()->userRole->name != "HR" ? "" : "readonly"}} >{{$performance->manager_review}}</textarea>
+                                                <textarea name="review" id="" cols="30" rows="5" class="form-control">{{$performance->manager_review}}</textarea>
                                             </div>
                                         </div>
                                     </div>

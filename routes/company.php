@@ -787,6 +787,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/update', 'update')->name('performance-cycle.update');
         Route::get('/delete', 'destroy')->name('performance-cycle.delete');
         Route::get('/search', 'search')->name('performance-cycle.search');
+        Route::get('/employees/{cycleId}', 'getEmployeesByCycle')->name('performance-cycle.employees');
     });
 
     //Address Request Module

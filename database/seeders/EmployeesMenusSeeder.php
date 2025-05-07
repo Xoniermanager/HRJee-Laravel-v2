@@ -151,6 +151,14 @@ class EmployeesMenusSeeder extends Seeder
                 'parent_id' => NULL,
                 'order_no' => 2,
                 'role' => 'employee'
+            ],
+            [
+                'title' => 'Performance Review',
+                'slug' => '/employee/performance-reviews',
+                'icon' => '<i class="fa fa-award"></i>',
+                'parent_id' => NULL,
+                'order_no' => 2,
+                'role' => 'employee'
             ]
         ];
         Menu::where('role', 'employee')->delete();

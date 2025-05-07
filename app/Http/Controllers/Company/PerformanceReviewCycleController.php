@@ -9,18 +9,22 @@ use App\Http\Services\PerformanceCycleService;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\UserService;
 use Illuminate\Validation\Rule;
-
+use App\Models\ReviewCycleUser;
+use App\Models\User;
+use App\Http\Services\DepartmentServices;
 
 class PerformanceReviewCycleController extends Controller
 {
 
     private $performanceCycleService;
     public $userService;
+    private $departmentService;
 
-    public function __construct(UserService $userService, PerformanceCycleService $performanceCycleService)
+    public function __construct(DepartmentServices $departmentService, UserService $userService, PerformanceCycleService $performanceCycleService)
     {
         $this->performanceCycleService = $performanceCycleService;
         $this->userService = $userService;
+        $this->departmentService = $departmentService;
     }
 
     /**
@@ -32,7 +36,8 @@ class PerformanceReviewCycleController extends Controller
         
         return view('company.performance_cycle.index', [
             'performanceCategories' => $this->performanceCycleService->all($companyIDs),
-            'allEmployeeDetails' => $this->userService->getActiveEmployees($companyIDs)->get()
+            'allEmployeeDetails' => $this->userService->getActiveEmployees($companyIDs)->get(),
+            'allDepartments' => $this->departmentService->getAllActiveDepartmentsByCompanyId($companyIDs)
         ]);
     }
 
@@ -76,6 +81,12 @@ class PerformanceReviewCycleController extends Controller
         }
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void/null/object
+     */
     public function edit($id)
     {
         try {
@@ -189,5 +200,24 @@ class PerformanceReviewCycleController extends Controller
 
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
+    }
+
+    public function getEmployeesByCycle($id)
+    {
+        $employee_ids = ReviewCycleUser::where('performance_review_cycle_id', $id)->pluck('user_id')->toArray();
+        if(auth()->user()->type == "company") {
+            $employees = User::whereIn('id', $employee_ids ?? [])->doesntHave('managerEmployees')->select('id', 'name')->get();
+
+            // $employees = User::whereIn('id', $employee_ids ?? [])->select('id', 'name')->get();
+        } else {
+            $employees = User::whereIn('id', $employee_ids ?? [])->whereHas('managerEmployees', function ($query) {
+                $query->where('manager_id', auth()->user()->id);
+            })->get();
+        }
+
+        return response()->json([
+            'success' => true,
+            'employees' => $employees
+        ]);
     }
 }

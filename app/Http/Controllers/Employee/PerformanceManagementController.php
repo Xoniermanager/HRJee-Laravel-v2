@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Company;
+namespace App\Http\Controllers\Employee;
 
 use Exception;
 use Illuminate\Http\Request;
