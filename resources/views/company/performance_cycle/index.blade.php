@@ -262,6 +262,7 @@
                 });
             }
         });
+        
         $("#editCycleForm").validate({
             rules: {
                 title: "required",

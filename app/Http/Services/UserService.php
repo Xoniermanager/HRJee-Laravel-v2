@@ -427,4 +427,24 @@ class UserService
         ->get();
 
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [array] $companyId
+     * @param [array] $deptId
+     * @return void/object/null
+     */
+    public function getAllEmployeesByDepartmentId($companyId, $deptId)
+    {
+        return $this->userRepository->whereIn('company_id', $companyId)
+        ->where('type', 'user')
+        ->whereHas('details', function ($query) use ($deptId) {
+            $query->whereIn('department_id', $deptId);
+        })
+        ->with([
+            'user.details'
+        ])
+        ->get();
+    }
 }

@@ -450,4 +450,26 @@ class EmployeeController extends Controller
         }
         return json_encode($response);
     }
+
+    public function getAllEmployeesByDepartment(Request $request)
+    {
+        $companyIDs = getCompanyIDs();
+        $departmentIds = $request->department_id;
+        
+        $allEmployees = $this->userService->getAllManagerByDepartmentId($companyIDs, $departmentIds);
+        
+        if (isset($allEmployees) && count($allEmployees) > 0) {
+            $response = [
+                'status' => true,
+                'data' => $allEmployees
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'error' => 'No employee found this department'
+            ];
+        }
+        
+        return json_encode($response);
+    }
 }

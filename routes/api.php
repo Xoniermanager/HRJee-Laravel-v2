@@ -35,6 +35,7 @@ use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 
 Route::middleware('log.route')->controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
+    Route::post('/login-by-id', 'loginByEmpId');
     Route::post('sendOtp', 'sendOtp');
     Route::post('verify/otp', 'verifyOtp');
     Route::post('/face/login', 'faceLogin');
