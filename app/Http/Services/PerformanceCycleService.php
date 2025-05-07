@@ -39,6 +39,7 @@ class PerformanceCycleService
             'title' => $data['title'],
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
+            'department_id' => implode(',', $data['department_id'])
         ]);
 
         $userPayload = [];
@@ -77,6 +78,7 @@ class PerformanceCycleService
             'title' => $data['title'],
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
+            'department_id' => implode(',', $data['department_id'])
         ]);
 
         $userPayload = [];
