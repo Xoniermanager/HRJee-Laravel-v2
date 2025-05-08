@@ -9,7 +9,7 @@ class PerformanceReviewCycle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['company_id', 'title', 'start_date', 'end_date', 'department_id'];
+    protected $fillable = ['company_id', 'title', 'start_date', 'end_date', 'department_id', 'created_by'];
 
     public function users()
     {

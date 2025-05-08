@@ -86,7 +86,8 @@ class PerformanceReviewCycleController extends Controller
                 $data = $request->all();
                 $dates = explode(' - ', $data['daterange']);
 
-                $data['company_id'] = auth()->user()->id;
+                $data['company_id'] = auth()->user()->company_id;
+                $data['created_by'] = auth()->user()->id;
                 $data['start_date'] = $dates[0];
                 $data['end_date'] = $dates[1];
                 if ($this->performanceCycleService->create($data)) {

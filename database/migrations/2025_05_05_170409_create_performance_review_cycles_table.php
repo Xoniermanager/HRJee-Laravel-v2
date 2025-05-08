@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('performance_review_cycles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->string('title')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();

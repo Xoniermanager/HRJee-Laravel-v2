@@ -57,6 +57,7 @@ class ResignationService
   {
     $data['user_id'] = $userId;
     $data['company_id'] = auth()->user()->company_id;
+    $data['created_by'] = auth()->user()->id;
     $checkActionStatus = $this->resignationRepository->create($data);
     if ($checkActionStatus)
       return true;

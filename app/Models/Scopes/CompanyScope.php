@@ -14,11 +14,11 @@ trait CompanyScope
                 return;
             }
             $user = Auth::user();
-            if ($user->type === 'user') {
-                $builder->whereIn('created_by', [$user->company_id, $user->id]);
-            } else if ($user->type === 'company') {
+            // if ($user->type === 'user') {
+            //     $builder->whereIn('created_by', [$user->company_id, $user->id]);
+            // } else if ($user->type === 'company') {
                 $builder->where('company_id', $user->company_id);
-            }
+            // }
         });
     }
 }

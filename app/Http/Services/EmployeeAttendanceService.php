@@ -10,7 +10,6 @@ use App\Http\Services\WeekendService;
 use App\Http\Services\UserShiftService;
 use App\Http\Services\ShiftServices;
 use App\Http\Services\UserService;
-use App\Models\UserShiftLog;
 use App\Repositories\EmployeeAttendanceRepository;
 use Carbon\Carbon;
 use DateInterval;
@@ -640,14 +639,6 @@ class EmployeeAttendanceService
     public function getAllAttendanceByUserId($userId)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId);
-    }
-
-    public function getShiftDetails($userId)
-    {
-        return UserShiftLog::where('user_id', $userId)
-            ->whereDate('date', '<=', now()->toDateString())
-            ->latest()
-            ->first();
     }
 
 

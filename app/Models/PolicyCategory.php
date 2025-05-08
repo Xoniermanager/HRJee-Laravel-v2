@@ -9,5 +9,5 @@ class PolicyCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','status','company_id'];
+    protected $fillable = ['name','status','company_id', 'created_by'];
 }

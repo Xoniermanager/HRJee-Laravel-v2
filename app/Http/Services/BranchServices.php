@@ -21,7 +21,7 @@ class BranchServices
      */
     public function all($companyId)
     {
-        return $this->branchRepository->with('country', 'state')->whereIn('created_by', $companyId)->orderBy('id', 'DESC')->paginate(10);
+        return $this->branchRepository->with('country', 'state')->whereIn('company_id', $companyId)->orderBy('id', 'DESC')->paginate(10);
     }
 
     /**
@@ -42,8 +42,9 @@ class BranchServices
      */
     public function getAllCompanyBranchByCompanyId($companyId)
     {
-        return $this->branchRepository->whereIn('created_by', $companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
+        return $this->branchRepository->whereIn('company_id', $companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
     }
+    
     public function create($data)
     {
         $data['company_id'] = Auth()->user()->company_id ?? $data['company_id'];

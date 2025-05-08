@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('performance_categories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('created_by');
             $table->string('name')->nullable();
             $table->timestamps();
         });

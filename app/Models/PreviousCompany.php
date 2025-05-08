@@ -10,6 +10,6 @@ class PreviousCompany extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'company_id', 'status'
+        'name', 'company_id', 'status', 'created_by'
     ];
 }
