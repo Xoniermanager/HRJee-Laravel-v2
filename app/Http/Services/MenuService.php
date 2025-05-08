@@ -97,7 +97,7 @@ class MenuService
      * Undocumented function
      *
      * @param [type] $searchKey
-     * @return void
+     * @return void/null/object
      */
     public function searchMenu($searchKey)
     {

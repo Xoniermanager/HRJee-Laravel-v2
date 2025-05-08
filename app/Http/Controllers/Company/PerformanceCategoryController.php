@@ -43,7 +43,8 @@ class PerformanceCategoryController extends Controller
                 return response()->json(['error' => $validateCountryData->messages()], 400);
             }
             $data = $request->all();
-            $data['company_id'] = auth()->user()->id;
+            $data['company_id'] = auth()->user()->company_id;
+            $data['created_by'] = auth()->user()->id;
             if ($this->performanceCategoryService->create($data)) {
 
                 return response()->json([

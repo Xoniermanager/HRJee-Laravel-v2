@@ -9,7 +9,7 @@ class PerformanceManagement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['cycle_id', 'company_id', 'user_id', 'start_date', 'end_date', 'leave_ranking', 'attendance_ranking', 'task_ranking', 'is_approved'];
+    protected $fillable = ['cycle_id', 'company_id', 'user_id', 'start_date', 'end_date', 'leave_ranking', 'attendance_ranking', 'task_ranking', 'is_approved', 'created_by'];
 
     public function user()
     {

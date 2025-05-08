@@ -40,6 +40,8 @@ class PreviousCompanyService
    */
   public function create(array $data)
   {
+    $data['created_by'] = auth()->user()->id;
+    
     return $this->previousCompanyRepository->create($data);
   }
 

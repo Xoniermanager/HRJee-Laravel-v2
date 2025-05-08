@@ -44,6 +44,7 @@ class QualificationController extends Controller
                 // return redirect(route('company-status.index'))->withErrors();
             }
             $data = $request->all();
+            $data['created_by'] = auth()->user()->id;
             if ($this->qualificationService->create($data)) {
                 return response()->json([
                     'message' => 'Qualification Created Successfully!',

@@ -10,6 +10,6 @@ class Qualification extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description','status'
+        'name', 'description','status', 'created_by'
     ];
 }

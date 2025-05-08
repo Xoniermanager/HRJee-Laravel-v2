@@ -9,7 +9,6 @@ use App\Models\UserCode;
 use App\Models\UserDetail;
 use App\Mail\ResetPassword;
 use Illuminate\Support\Arr;
-use App\Models\UserShiftLog;
 use App\Models\CompanyBranch;
 use App\Models\EmployeeManager;
 use App\Models\UserActiveLocation;
@@ -62,17 +61,13 @@ class EmployeeServices
                 if ($data['company_branch_id'] != $existingDetails->company_branch_id) {
                     $this->updateActiveLocationByUserId($data['company_branch_id'], $existingDetails->user_id, 'updated');
                 }
-                if (isset($data['shift_id']) && $data['shift_id'] != $existingDetails->sift_id) {
-                    $this->createShiftLog($existingDetails->user_id, $data['shift_id'], today());
-                }
+                
                 $existingDetails->update($data);
                 $status = 'updatedData';
                 $id = $existingDetails->user_id;
             } else {
                 $createdEmployee = $this->userDetailRepository->create($data);
-                if (isset($data['shift_id']) && !empty($data['shift_id'])) {
-                    $this->createShiftLog($createdEmployee->user_id, $data['shift_id'], today());
-                }
+                
                 $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
                 $this->updateActiveLocationByUserId($data['company_branch_id'], $createdEmployee->user_id);
@@ -287,10 +282,5 @@ class EmployeeServices
             UserActiveLocation::create($payload);
         }
         return true;
-    }
-
-    public function createShiftLog($userID, $shiftID, $date)
-    {
-        return UserShiftLog::create(['user_id' => $userID, 'shift_id' => $shiftID, 'date' => $date]);
     }
 }
