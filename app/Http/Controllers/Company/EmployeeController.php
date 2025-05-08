@@ -454,9 +454,9 @@ class EmployeeController extends Controller
     public function getAllEmployeesByDepartment(Request $request)
     {
         $companyIDs = getCompanyIDs();
-        $departmentIds = $request->department_id;
+        $departmentIds = $request->department_ids;
         
-        $allEmployees = $this->userService->getAllManagerByDepartmentId($companyIDs, $departmentIds);
+        $allEmployees = $this->userService->getAllEmployeesByDepartmentId($companyIDs, $departmentIds);
         
         if (isset($allEmployees) && count($allEmployees) > 0) {
             $response = [
@@ -466,10 +466,11 @@ class EmployeeController extends Controller
         } else {
             $response = [
                 'status' => false,
+                'data' => [],
                 'error' => 'No employee found this department'
             ];
         }
-        
-        return json_encode($response);
+
+        return response()->json($response);
     }
 }
