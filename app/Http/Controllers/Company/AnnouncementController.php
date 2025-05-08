@@ -37,7 +37,7 @@ class AnnouncementController extends Controller
 
         $allAnnouncementDetails = $this->announcementService->all();
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId($companyIDs);
         return view('company.announcements.index', compact('allAnnouncementDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
 
@@ -69,7 +69,7 @@ class AnnouncementController extends Controller
         $companyIDs = getCompanyIDs();
 
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId($companyIDs);
         return view('company.announcements.create', compact('allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
 
@@ -102,7 +102,7 @@ class AnnouncementController extends Controller
         $companyIDs = getCompanyIDs();
 
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentServices->getAllActiveDepartmentsByCompanyId($companyIDs);
         $editAnnouncementDetails = $this->announcementService->findById($id);
         return view('company.announcements.edit', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'editAnnouncementDetails'));
     }

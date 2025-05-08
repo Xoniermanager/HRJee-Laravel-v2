@@ -23,7 +23,7 @@
                         <td><a href="#" data-bs-toggle="modal"
                                 onClick="edit_office_time_details('{{ $officeTimeDetail->id }}', '{{ $officeTimeDetail->name }}','{{ $officeTimeDetail->company_branch_id }}','{{$officeTimeDetail->shift_hours}}','{{$officeTimeDetail->half_day_hours}}','{{$officeTimeDetail->min_shift_Hours}}','{{$officeTimeDetail->min_half_day_hours}}')">{{ $officeTimeDetail->name }}</a>
                         </td>
-                        <td>{{$officeTimeDetail->companyBranch->name}}</td>
+                        <td>{{$officeTimeDetail->companyBranch ? $officeTimeDetail->companyBranch->name : 'NA'}}</td>
                         <td>{{ isset($officeTimeDetail->shift_hours)? $officeTimeDetail->shift_hours:''}}</td>
                         <td>{{ isset($officeTimeDetail->half_day_hours)? $officeTimeDetail->half_day_hours:''}}</td>
                         <td>{{ isset($officeTimeDetail->min_shift_Hours)?$officeTimeDetail->min_shift_Hours :''}}</td>

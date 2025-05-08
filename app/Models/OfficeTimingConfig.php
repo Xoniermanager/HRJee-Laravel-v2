@@ -21,6 +21,7 @@ class OfficeTimingConfig extends Model
         'company_id',
         'created_by',
     ];
+    
     public function companyBranch()
     {
         return $this->belongsTo(CompanyBranch::class, 'company_branch_id', 'id');

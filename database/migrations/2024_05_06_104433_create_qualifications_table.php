@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->boolean('status')->default(true);
             $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
         });
     }

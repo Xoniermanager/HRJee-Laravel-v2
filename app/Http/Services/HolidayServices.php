@@ -17,7 +17,7 @@ class HolidayServices
     }
     public function all($companyIDs)
     {
-        return $this->holidayRepository->whereIn('created_by', $companyIDs)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
+        return $this->holidayRepository->whereIn('company_id', $companyIDs)->with('companyBranch')->orderBy('id', 'DESC')->paginate(10);
     }
     public function create(array $data)
     {

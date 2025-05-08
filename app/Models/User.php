@@ -24,7 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'manager_id',
         'type',
         'status',
-        'reset_password'
+        'reset_password',
+        'created_by'
     ];
 
     protected $hidden = [

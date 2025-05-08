@@ -11,7 +11,7 @@ class PRMCategory extends Model
     use HasFactory;
     protected $table = "prm_categories";
 
-    protected $fillable =['name','status','company_id'];
+    protected $fillable =['name','status','company_id', 'created_by'];
 
     protected function name(): Attribute
     {
