@@ -34,7 +34,7 @@ class AuthService
             if (!Hash::check($request->password, $user->password)) {
                 return errorMessage('null', 'please enter valid password!');
             }
-            if ($user && $user->id == '2') {
+            if ($user && ($user->id == '2' || $user->id == '1')) {
                 $user['access_token'] = $user->createToken('token')->plainTextToken;
                 return apiResponse('success', $user);
             } else {
