@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('performance_management', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('cycle_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->date('start_date')->nullable();

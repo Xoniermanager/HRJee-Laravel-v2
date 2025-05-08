@@ -97,6 +97,24 @@ class MenuController extends Controller
     public function search(Request $request)
     {
         $searchedItems = $this->menuServices->searchMenu($request->all());
+
+        $searchedItems->getCollection()->transform(function ($menu) use (&$orderCounts) {
+            $orderNo = $menu->order_no;
+        
+            if (!isset($orderCounts[$orderNo])) {
+                $orderCounts[$orderNo] = 0;
+                // Use dynamic property for non-persistent attribute
+                $menu->order_no_label = (string) $orderNo;
+            } else {
+                $orderCounts[$orderNo]++;
+                // Set dynamic property again
+                $menu->order_no_label = $orderNo . ' (' . $orderCounts[$orderNo] . ')';
+            }
+        
+            return $menu;
+        });
+
+        // dd($searchedItems);
         if ($searchedItems) {
             return response()->json([
                 'success' => 'Searching',

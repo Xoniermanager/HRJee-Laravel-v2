@@ -11,6 +11,7 @@ class PerformanceCategory extends Model
 
     protected $fillable = [
         'company_id',
-        'name'
+        'name',
+        'created_by'
     ];
 }

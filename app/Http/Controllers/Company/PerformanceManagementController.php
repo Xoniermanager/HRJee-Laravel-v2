@@ -123,7 +123,8 @@ class PerformanceManagementController extends Controller
         $data['cycle_id'] = $cycleId[0];
 
         $payload = [
-            'company_id' => auth()->user()->id,
+            'company_id' => auth()->user()->company_id,
+            'created_by' => auth()->user()->id,
             'user_id' => $data['user_id'],
             'cycle_id' => $data['cycle_id'],
             'start_date' => $startDate,
