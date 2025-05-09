@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->integer('days');
+            $table->decimal('per_person_amount', $precision = 8, $scale = 2);
             $table->boolean('status')->default(1);
             $table->timestamps();
         });
