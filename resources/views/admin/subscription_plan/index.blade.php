@@ -63,6 +63,14 @@
                                     <span class="text-denger">{{ $message }} </span>
                                 @enderror
                             </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Amount (Per User)</label>
+                                <input class="form-control" type="number" name="per_person_amount"
+                                    placeholder="Enter the amount per user" id="per_person_amount">
+                                @error('per_person_amount')
+                                    <span class="text-denger">{{ $message }} </span>
+                                @enderror
+                            </div>
                             <div class="col-12">
                                 <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Update</button>
                             </div>
@@ -86,7 +94,7 @@
                             <div class="col-md-12">
                                 <label class="form-label">Title</label>
                                 <input class="form-control" type="text" name="title"
-                                    placeholder="Enter Your Subscription Plan Name" id="title">
+                                    placeholder="Enter Your Plan Name" id="title">
                                 @error('title')
                                     <span class="text-denger">{{ $message }} </span>
                                 @enderror
@@ -94,8 +102,16 @@
                             <div class="col-md-12">
                                 <label class="form-label">Days</label>
                                 <input class="form-control" type="number" name="days"
-                                    placeholder="Enter Your Subscription Plan Days" id="days">
-                                @error('name')
+                                    placeholder="Enter the days till plan would be active" id="days">
+                                @error('days')
+                                    <span class="text-denger">{{ $message }} </span>
+                                @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Amount (Per User)</label>
+                                <input class="form-control" type="number" name="per_person_amount"
+                                    placeholder="Enter the amount per user">
+                                @error('per_person_amount')
                                     <span class="text-denger">{{ $message }} </span>
                                 @enderror
                             </div>
@@ -135,10 +151,11 @@
             })
         }
 
-        function edit_subscription_plan_details(id, title, days) {
+        function edit_subscription_plan_details(id, title, days, per_person_amount) {
             $('#id').val(id);
             $('#title').val(title);
             $('#days').val(days);
+            $('#per_person_amount').val(per_person_amount);
             jQuery('#edit_subscription_plan').modal('show');
         }
 

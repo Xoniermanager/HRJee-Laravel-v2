@@ -14,7 +14,8 @@
                         @if ($daysLeft && $daysLeft <= 7)
                             <div class="alert alert-warning d-flex align-items-center" role="alert">
                                 <p class="font-bold">⚠️ Subscription Expiring Soon! Your subscription will expire in
-                                    <strong>{{ $daysLeft }} day(s)</strong>.
+                                    <strong>{{ $daysLeft }} day(s) <button class="btn btn-primary mx-auto mt-3" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#contactUsModal">Contact Us</button></strong>.
                                 </p>
                             </div>
                         @endif
@@ -243,6 +244,41 @@
     </div>
     <!--end::Container-->
     </div>
+    <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="contactUsModal"
+        aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content dark-sign-up overflow-hidden">
+                <div class="modal-body social-profile text-start">
+                    <div class="modal-toggle-wrapper">
+                        <h4 class="text-dark">Contact Us</h4>
+                        <p>
+                            Fill in your information below to continue.</p>
+                        <form class="row g-3" id="contact_us_form">
+                            @csrf
+                            <div class="col-md-12">
+                                <label class="form-label">Subject</label>
+                                <input class="form-control" type="text" name="subject"
+                                    placeholder="Enter Subject" id="subject">
+                                @error('subject')
+                                    <span class="text-denger">{{ $message }} </span>
+                                @enderror
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Message</label>
+                                <textarea class="form-control" placeholder="Enter Message" name="message" id="" cols="30" rows="10"></textarea>
+                                @error('message')
+                                    <span class="text-denger">{{ $message }} </span>
+                                @enderror
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary" type="submit">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         /** get all Designation Using Department Id*/
         jQuery('#department_id').on('change', function() {
@@ -309,5 +345,43 @@
                 }
             })
         }
+        jQuery(document).ready(function($) {
+            jQuery("#contact_us_form").validate({
+                rules: {
+                    subject: "required",
+                    message: "required",
+                },
+                messages: {
+                    subject: "Please enter subject",
+                    message: "Please enter message",
+                },
+                submitHandler: function(form) {
+                    var companyTypeData = $(form).serialize();
+                    $.ajax({
+                        url: "{{ route('company.send-enquiry') }}",
+                        type: 'POST',
+                        data: companyTypeData,
+                        success: function(response) {
+                            jQuery('#contactUsModal').modal('hide');
+                            swal.fire("Done!", response.message, "success");
+                            jQuery("#contact_us_form")[0].reset();
+
+                        },
+                        error: function(error_messages) {
+                            let errors = error_messages.responseJSON.error;
+                            for (var error_key in errors) {
+                                $(document).find('[name=' + error_key + ']').after(
+                                    '<span class="' + error_key +
+                                    '_error text text-danger">' + errors[
+                                        error_key] + '</span>');
+                                setTimeout(function() {
+                                    jQuery("." + error_key + "_error").remove();
+                                }, 5000);
+                            }
+                        }
+                    });
+                }
+            });
+        });
     </script>
 @endsection

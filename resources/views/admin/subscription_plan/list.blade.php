@@ -15,6 +15,9 @@
                                 <span class="f-light f-w-600">Days</span>
                             </th>
                             <th>
+                                <span class="f-light f-w-600">Amount (Per User)</span>
+                            </th>
+                            <th>
                                 <span class="f-light f-w-600">Status</span>
                             </th>
                             <th>
@@ -35,6 +38,9 @@
                                 <p class="f-light">{{ $subscriptionPlanDetail->days }}</p>
                             </td>
                             <td>
+                                <p class="f-light">{{ $subscriptionPlanDetail->per_person_amount }}</p>
+                            </td>
+                            <td>
                                 <div class="form-check form-switch form-check-inline">
                                     <input type="checkbox"
                                         <?= $subscriptionPlanDetail->status == '1' ? 'checked' : '' ?>
@@ -47,7 +53,7 @@
                             <td>
                                 <div class="product-action"><a href="#" data-bs-toggle="modal"
                                         data-bs-target="#edit_country"
-                                        onClick="edit_subscription_plan_details('{{ $subscriptionPlanDetail->id }}', '{{ $subscriptionPlanDetail->title }}', '{{ $subscriptionPlanDetail->days }}')">
+                                        onClick="edit_subscription_plan_details('{{ $subscriptionPlanDetail->id }}', '{{ $subscriptionPlanDetail->title }}', '{{ $subscriptionPlanDetail->days }}', '{{ $subscriptionPlanDetail->per_person_amount }}')">
                                         <svg viewBox="0 -0.5 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                             xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -102,7 +108,7 @@
                     @empty
                         <td colspan="3">
                             <span class="text-danger">
-                                <strong>No Company Type Found!</strong>
+                                <strong>No Subscription Plan Found!</strong>
                             </span>
                         </td>
                     @endforelse

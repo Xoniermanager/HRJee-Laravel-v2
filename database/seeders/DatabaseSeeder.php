@@ -80,5 +80,6 @@ class DatabaseSeeder extends Seeder
         $this->call(EmployeeLeaveAvailablesTableSeeder::class);
         $this->call(UserActiveLocationsTableSeeder::class);
         $this->call(RewardCategoriesTableSeeder::class);
+        $this->call(SubscriptionPlanSeeder::class);
     }
 }

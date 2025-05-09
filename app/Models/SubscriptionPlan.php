@@ -9,6 +9,6 @@ class SubscriptionPlan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'status', 'days'];
+    protected $fillable = ['title', 'status', 'days', 'per_person_amount'];
 
 }

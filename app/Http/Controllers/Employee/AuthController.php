@@ -65,6 +65,13 @@ class AuthController extends Controller
                 if ($user->status == '0') {
                     return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);
                 }
+                
+                $companyDetails = $user->companyDetails;
+                
+                if ($companyDetails->subscription_expiry_date < date('Y-m-d')) {
+                    return redirect()->back()->with(['error' => 'Your subscription has been expired. Please Contact to Admin']);
+                }
+
                 $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, $user->type);
                 if ($genrateOtpresponse['status'] == true){
                     session(['otp_pending_user' => $user->id]);

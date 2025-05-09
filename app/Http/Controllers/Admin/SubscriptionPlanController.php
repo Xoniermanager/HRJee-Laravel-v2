@@ -36,7 +36,13 @@ class SubscriptionPlanController extends Controller
             $validateCountryData  = Validator::make($request->all(), [
                 'title' => ['required', 'string'],
                 'days' => ['required', 'string'],
+                'per_person_amount' => [
+                    'required',
+                    'numeric',
+                    'regex:/^\d+(\.\d{1,2})?$/'
+                ],
             ]);
+
             if ($validateCountryData->fails()) {
                 return response()->json(['error' => $validateCountryData->messages()], 400);
             }
