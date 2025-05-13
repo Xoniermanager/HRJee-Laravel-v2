@@ -32,7 +32,7 @@ class ForgetPasswordController extends Controller
             ['token' => $token, 'created_at' => Carbon::now()]
         );
         Mail::send('email.forgetPasswordLink', ['token' => $token], function ($message) use ($request) {
-            $message->to('arjun@xoniertechnologies.com');
+            $message->to($request->email);
             $message->subject('Reset Password');
         });
 

@@ -82,7 +82,7 @@ Announcements
                                 <div class="form-group notification_schedule_time mb-0">
                                     <label class="required">Schedule Date</label>
                                     <input class="form-control" name="notification_schedule_time" type="datetime-local"
-                                        value="{{ old('notification_schedule_time') }}">
+                                    value="{{ date('Y-m-d\TH:i') }}">
                                 </div>
                             </div>
                         </div>

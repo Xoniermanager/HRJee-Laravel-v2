@@ -21,21 +21,9 @@
     <meta name="url" property='og:url' content='' />
     <meta name="description" property='og:description' content='' />
     <meta name="author" content="Jyoti Mishra Web Designer at Xonier">
-    <!--begin::Fonts(mandatory for all pages)-->
-    <link rel="stylesheet" href="{{ asset('assets/css/mark-pro.css') }}" />
-    <!--end::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-    <!--end::Fonts-->
-    <!--begin::Vendor Stylesheets(used for this page only)-->
-    <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet"
-        type="text/css" />
-    <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
-        type="text/css" />
-    <!--end::Vendor Stylesheets-->
-    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-    <!--end::Global Stylesheets Bundle-->
     <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
 
 </head>
@@ -51,8 +39,7 @@
         <!--begin::Authentication - Sign-in -->
         <div class="d-flex flex-column flex-lg-row flex-column-fluid overflow-hidden">
             <!--begin::Aside-->
-            <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-lg-2 order-1"
-                style="background-image: url(assets/media/misc/bg7.jpg);background-size: cover;height: 100%;">
+            <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-lg-2 order-1" style="background-image: url(assets/media/misc/bg7.jpg);background-size: cover;height: 100%;">
                 <!--begin::Content-->
                 <div class="d-flex flex-column flex-center w-100">
 
@@ -75,51 +62,54 @@
                             </div>
                             @endif
                             <!--begin::Form-->
-                            <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden"
-                                id="kt_sign_in_form" data-kt-redirect-url="/metronic8/demo3/../demo3/index.html"
-                                action="{{ route('login') }}" method="POST">
+                            <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden" id="kt_sign_in_form" action="{{ route('login') }}" method="POST">
                                 @csrf
-                                <!--begin::Input group=-->
+
+                                <!--begin::Email input-->
                                 <div class="fv-row fv-plugins-icon-container mb-8">
-                                    <!--begin::Email-->
                                     <label>Email</label>
-                                    <input type="text" name="email" value="{{ old('email') }}" autocomplete="off"
-                                        class="form-control-signin animate-left">
+                                    <input type="text" name="email" value="{{ old('email') }}" autocomplete="off" class="form-control-signin animate-left">
                                     @if ($errors->has('email'))
                                     <div class="text-danger">{{ $errors->first('email') }}</div>
                                     @endif
-                                    <!--end::Email-->
                                     <div class="fv-plugins-message-container invalid-feedback"></div>
                                 </div>
-                                <!--end::Input group=-->
+
+                                <!--begin::Password input-->
                                 <div class="fv-row fv-plugins-icon-container mb-3">
-                                    <!--begin::Password-->
-                                    <label class="w-100">Password <a href="{{ route('forget.password') }}"
-                                            class="text-primary float-right">Forgot
-                                            Password ?</a></label>
-                                    <input type="password" name="password" autocomplete="off"
-                                        class="form-control-signin animate-left" value="{{ old('password') }}">
+                                    <label class="w-100">
+                                        Password
+                                        <a href="{{ route('forget.password') }}" class="text-primary float-right">Forgot Password ?</a>
+                                    </label>
+                                    <div style="position: relative;">
+                                        <input type="password" name="password" autocomplete="off" class="form-control-signin animate-left" id="passwordInput" value="{{ old('password') }}">
+                                        <span toggle="#passwordInput" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">
+                                            <i class="fa fa-eye-slash" id="toggleIcon"></i>
+                                        </span>
+                                    </div>
                                     @if ($errors->has('password'))
                                     <div class="text-danger">{{ $errors->first('password') }}</div>
                                     @endif
                                     <div class="fv-plugins-message-container invalid-feedback"></div>
                                 </div>
-                                <!--end::Input group=-->
+
+                                <!--begin::Remember me-->
+                                <div class="fv-row mb-3">
+                                    <label class="form-check form-check-custom form-check-solid">
+                                        <input class="form-check-input" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                        <span class="form-check-label">Remember me</span>
+                                    </label>
+                                </div>
+
                                 <!--begin::Submit button-->
                                 <div class="mt-10 text-center">
                                     <button id="kt_sign_in_submit" class="btn btn-primary signin-btn">
-                                        <!--begin::Indicator label-->
                                         <span class="indicator-label">Sign In</span>
-                                        <!--end::Indicator label-->
-                                        <!--begin::Indicator progress-->
                                         <span class="indicator-progress">Please wait...
-                                            <span
-                                                class="spinner-border spinner-border-sm ms-2 align-middle"></span></span>
-                                        <!--end::Indicator progress-->
+                                            <span class="spinner-border spinner-border-sm ms-2 align-middle"></span>
+                                        </span>
                                     </button>
                                 </div>
-                                <!--end::Submit button-->
-
                             </form>
                             <!--end::Form-->
                         </div>
@@ -135,24 +125,36 @@
     </div>
     <script>
         var hostUrl = "assets/index.html";
+
     </script>
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
-    <!--end::Global Javascript Bundle-->
-    <!--begin::Vendors Javascript(used for this page only)-->
-    <script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
-    <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
-    <!--end::Vendors Javascript-->
-    <!--begin::Custom Javascript(used for this page only)-->
     <script src="{{ asset('assets/js/widgets.bundle.js') }}"></script>
     <!--end::Custom Javascript-->
     <!--end::Custom Javascript-->
     <script>
         setTimeout(function() {
-				$('.alert').fadeOut('fast');
-			}, 4000);
+            $('.alert').fadeOut('fast');
+        }, 4000);
+
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector('.toggle-password').addEventListener('click', function() {
+                const passwordInput = document.querySelector('#passwordInput');
+                const icon = document.querySelector('#toggleIcon');
+
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+        });
+
+    </script>
+
 </body>
 <!--end::Body-->
 
 </html>
+

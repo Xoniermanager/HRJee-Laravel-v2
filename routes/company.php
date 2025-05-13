@@ -96,8 +96,9 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
     Route::controller(CompanyDashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('company.dashboard');
+        Route::get('/employee-search-filter', 'filterEmployees')->name('company.employee_search.filter');
         Route::post('/send-enquiry', 'sendMailForSubscription')->name('company.send-enquiry');
-        Route::get('/employee-search-filter', 'searchFilterEmployee')->name('company.employee_search.filter');
+
     });
 
     Route::controller(CompanyBranchesController::class)->group(function () {

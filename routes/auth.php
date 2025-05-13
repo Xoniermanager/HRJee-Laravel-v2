@@ -70,7 +70,7 @@ Route::prefix('admin')->controller(AdminForgetPasswordController::class)->group(
 Route::prefix('/admin')->controller(AdminAuthController::class)->group(function () {
     Route::middleware('guest.admin')->group(function () {
         Route::get('/login', 'login')->name('admin.login');
-        
+
         Route::post('/admin_login', 'admin_login')->name('super.admin.login');
     });
     Route::get('/verify/otp', 'verifyOtp')->name('admin.verifyOtp');
