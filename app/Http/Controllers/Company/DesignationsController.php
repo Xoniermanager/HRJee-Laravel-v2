@@ -41,7 +41,7 @@ class DesignationsController extends Controller
         $companyIDs = getCompanyIDs();
         try {
             $validateDesignation = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'regex:/^[A-Za-z\s]+$/', 'unique:designations,name,NULL,id,company_id,' . auth()->user()->company_id],
+                'name' => ['required','max:255' ,'string', 'regex:/^[A-Za-z\s]+$/', 'unique:designations,name,NULL,id,company_id,' . auth()->user()->company_id],
             ]);
             if ($validateDesignation->fails()) {
                 return response()->json(['error' => $validateDesignation->messages()], 400);
@@ -71,7 +71,7 @@ class DesignationsController extends Controller
     {
         $companyIDs = getCompanyIDs();
         $validateDesignation = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'regex:/^[A-Za-z\s]+$/', 'unique:designations,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
+            'name' => ['required','max:255' , 'string', 'regex:/^[A-Za-z\s]+$/', 'unique:designations,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
         ]);
 
         if ($validateDesignation->fails()) {

@@ -292,13 +292,13 @@ function get_all_user(all_company_branch = false, all_department = false, all_de
                     $.each(response.allUserDetails, function (key, value) {
                         userDetailsHtml += ` <div class="d-flex align-items-center mb-3">
                                             <div class="symbol symbol-45px me-5">
-                                                <img src="${value.user.profile_image}" alt="">
+                                                <img src="${value.profile_image}" alt="">
                                             </div>
                                             <div class="d-flex justify-content-start flex-column">
-                                                <a href="#" class="text-dark fw-bold text-hover-primary fs-6">Full
+                                                <a href="#" class="text-dark fw-bold text-hover-primary fs-6">
                                                     ${value.user.name}</a>
                                                 <span
-                                                    class="text-muted fw-semibold text-muted d-block fs-7">${value.user.official_email_id}</span>
+                                                    class="text-muted fw-semibold text-muted d-block fs-7">${value.official_email_id}</span>
                                             </div>
                                         </div>`;
                     });

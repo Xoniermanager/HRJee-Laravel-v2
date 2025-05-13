@@ -255,6 +255,7 @@
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
                         for (var error_key in errors) {
+                            $(document).find('.' + error_key + '_error').remove();
                             $(document).find('[name=' + error_key + ']').after(
                                 '<span class="' + error_key +
                                 '_error text text-danger">' + errors[
@@ -291,6 +292,7 @@
                     error: function(error_messages) {
                         let errors = error_messages.responseJSON.error;
                         for (var error_key in errors) {
+                            $(document).find('.' + error_key + '_error').remove();
                             $(document).find('[name=' + error_key + ']').after(
                                 '<span id="' + error_key +
                                 '_error" class="text text-danger">' + errors[
@@ -356,7 +358,7 @@
                         $('#designation_list').replaceWith(res.data);
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
-                        Swal.fire("Error deleting!", "Please try again", "error");
+                        Swal.fire("Deletion Error", "This Designation is assigned to a user, so it cannot be deleted.", "error");
                     }
                 });
             }

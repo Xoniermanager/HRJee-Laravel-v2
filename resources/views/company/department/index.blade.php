@@ -212,13 +212,14 @@
                         error: function(error_messages) {
                             let errors = error_messages.responseJSON.error;
                             for (var error_key in errors) {
+                                $(document).find('.' + error_key + '_error').remove();
                                 $(document).find('[name=' + error_key + ']').after(
                                     '<span class="' + error_key +
                                     '_error text text-danger">' + errors[
                                         error_key] + '</span>');
                                 setTimeout(function() {
                                     jQuery("." + error_key + "_error").remove();
-                                }, 5000);
+                                }, 4000);
                             }
                         }
                     });
@@ -244,15 +245,17 @@
                             jQuery('#department_list').replaceWith(response.data);
                         },
                         error: function(error_messages) {
+                            // $('.text-danger').remove();
                             let errors = error_messages.responseJSON.error;
                             for (var error_key in errors) {
+                                $(document).find('.' + error_key + '_error').remove();
                                 $(document).find('[name=' + error_key + ']').after(
                                     '<span id="' + error_key +
                                     '_error" class="text text-danger">' + errors[
                                         error_key] + '</span>');
                                 setTimeout(function() {
                                     jQuery("#" + error_key + "_error").remove();
-                                }, 5000);
+                                }, 4000);
                             }
                         }
                     });
@@ -311,7 +314,7 @@
                             $('#department_list').replaceWith(res.data);
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
-                            Swal.fire("Error deleting!", "Please try again", "error");
+                            Swal.fire("Deletion Error", "This department is assigned to a user, so it cannot be deleted.", "error");
                         }
                     });
                 }

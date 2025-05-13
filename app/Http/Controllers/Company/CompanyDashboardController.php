@@ -34,15 +34,15 @@ class CompanyDashboardController extends Controller
         $companyId = Auth()->user()->id;
         $companyIDs = getCompanyIDs();
         $daysLeft = 10;
-        
+
         if(Auth()->user()->type == "company" && Auth()->user()->companyDetails->subscription_expiry_date) {
             $subscriptionExpiry = date('Y-m-d', strtotime(Auth()->user()->companyDetails->subscription_expiry_date));
-        
+
             // Check if expiry date is within 7 days
             $daysLeft = $subscriptionExpiry ? Carbon::now()->diffInDays(Carbon::parse($subscriptionExpiry), false) : null;
-        
+
         }
-        
+
         $today = today();
         $dashboardData = [
             // Total office branches
@@ -80,14 +80,46 @@ class CompanyDashboardController extends Controller
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
                 ->count(),
 
-            'all_users_details' => User::where(['company_id' => $companyId, 'status' => 1, 'type' => 'user'])->with(['details','details.designation'])->get(),
+            'all_users_details' => User::where(['company_id' => $companyId, 'status' => 1, 'type' => 'user'])->with(['details','details.designation'])->paginate(10),
         ];
-        
         return view('company.dashboard.dashboard', compact('dashboardData', 'daysLeft'));
     }
 
-    public function searchFilterEmployee(Request $request)
+    public function filterEmployees(Request $request)
     {
-        dd($request->all());
+        $companyId = auth()->user()->id;
+        $query = User::with(['details', 'details.designation'])
+            ->where('company_id', $companyId)
+            ->where('type', 'user');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('branch')) {
+            $query->whereHas('details', function ($q) use ($request) {
+                $q->where('company_branch_id', $request->branch);
+            });
+        }
+
+        if ($request->filled('department')) {
+            $query->whereHas('details', function ($q) use ($request) {
+                $q->where('department_id', $request->department);
+            });
+        }
+
+        if ($request->filled('designation')) {
+            $query->whereHas('details', function ($q) use ($request) {
+                $q->where('designation_id', $request->designation);
+            });
+        }
+
+        $employees = $query->paginate(10);
+
+        return view('company.dashboard.list', compact('employees'))->render();
     }
 }

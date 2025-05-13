@@ -37,7 +37,7 @@ class CompanyDetail extends Model
     protected function logo(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => url("storage" . $value)
+            get: fn($value) => $value ? url("storage/" . $value) : asset('assets/company_logo.png')
         );
     }
 
