@@ -396,9 +396,15 @@ class UserService
         return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints, $punchOutTime);
     }
 
-    public function getActiveEmployees($companyId)
+    public function getActiveEmployees($companyIds)
     {
-        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->where('status', 1);
+        return $this->userRepository->whereIn('company_id', $companyIds)->where('type', 'user')->where('status', 1);
+    }
+
+    
+    public function getUserSkillsByUserId($id)
+    {
+        return $this->userRepository->where('id', $id);
     }
 
     public function getAllManagerByCompanyId($companyId)
@@ -418,6 +424,24 @@ class UserService
             'managerEmployees.user.details',
             'role:id,name'
         ])
+        ->get();
+
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param [array] $companyId
+     * @param [array] $deptId
+     * @return void/object/null
+     */
+    public function getAllEmployeesByDepartmentId($companyId, $deptId)
+    {
+        return $this->userRepository->whereIn('company_id', $companyId)
+        ->where('type', 'user')
+        ->whereHas('details', function ($query) use ($deptId) {
+            $query->whereIn('department_id', $deptId);
+        })
         ->get();
     }
 }

@@ -74,6 +74,9 @@ use App\Http\Controllers\Company\LeaveCreditManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
+use App\Http\Controllers\Company\PerformanceManagementController;
+use App\Http\Controllers\Company\PerformanceCategoryController;
+use App\Http\Controllers\Company\PerformanceReviewCycleController;
 
 // Route::get('/test',function()
 // {
@@ -94,6 +97,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::controller(CompanyDashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('company.dashboard');
         Route::get('/employee-search-filter', 'filterEmployees')->name('company.employee_search.filter');
+        Route::post('/send-enquiry', 'sendMailForSubscription')->name('company.send-enquiry');
+
     });
 
     Route::controller(CompanyBranchesController::class)->group(function () {
@@ -222,6 +227,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/download-attendance', 'downloadA')->name('upload.file');
         Route::post('/punchIn/radius','updatePunchInRadius')->name('update.punhin.radius');
         Route::get('/get-manager-by-departments', 'getAllManager')->name('get.all.manager');
+        Route::post('/get-employees-by-departments', 'getAllEmployeesByDepartment')->name('get.all-emp-by-dept');
 
     });
 
@@ -748,11 +754,43 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachFilterList');
     });
 
-     //Comp Off Module
-     Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
+    //Comp Off Module
+    Route::prefix('/comp-offs')->controller(CompOffController::class)->group(function () {
         Route::get('/', 'index')->name('comp-off.index');
         Route::get('/status/update', 'statusUpdateAttendanceRequest')->name('comp-off.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
+    });
+
+
+    //Performance Mgmt Module
+    Route::prefix('/performance-management')->controller(PerformanceManagementController::class)->group(function () {
+        Route::get('/', 'index')->name('performance-management.index');
+        Route::get('/add', 'add')->name('performance-management.add');
+        Route::post('/add', 'addPerformance')->name('performance-management.store');
+        Route::get('/edit/{id}', 'edit')->name('performance-management.edit');
+        Route::post('/update/{id}', 'update')->name('performance-management.update');
+        Route::get('/get-skills/{userID}', 'getSkills')->name('performance-management.get-skills');
+        Route::get('/filter', 'filterPerformance')->name('performance-management.filter-performance');
+    });
+
+    //Performance Category Module
+    Route::prefix('/performance-categories')->controller(PerformanceCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('performance-categories');
+        Route::post('/create', 'store')->name('performance-categories.store');
+        Route::post('/update', 'update')->name('performance-categories.update');
+        Route::get('/delete', 'destroy')->name('performance-categories.delete');
+        Route::get('/search', 'search')->name('performance-categories.search');
+    });
+
+    //Performance Review Cycle Module
+    Route::prefix('/performance-review-cycles')->controller(PerformanceReviewCycleController::class)->group(function () {
+        Route::get('/', 'index')->name('performance-cycle');
+        Route::post('/create', 'store')->name('performance-cycle.store');
+        Route::get('/edit/{id}', 'edit')->name('performance-cycle.edit');
+        Route::post('/update', 'update')->name('performance-cycle.update');
+        Route::get('/delete', 'destroy')->name('performance-cycle.delete');
+        Route::get('/search', 'search')->name('performance-cycle.search');
+        Route::get('/employees/{cycleId}', 'getEmployeesByCycle')->name('performance-cycle.employees');
     });
 
     //Address Request Module
@@ -782,6 +820,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/delete', 'destroy')->name('reward_category.delete');
         Route::get('/status/update', 'statusUpdate')->name('reward_category.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
+
     });
     //Hierarchy Module
     Route::prefix('/hierarchy')->controller(HierarchyController::class)->group(function () {
@@ -794,7 +833,10 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
 
 });
+
+
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
+
 /**---------------End Company Panel Route----------------*/

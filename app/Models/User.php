@@ -24,7 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'manager_id',
         'type',
         'status',
-        'reset_password'
+        'reset_password',
+        'created_by'
     ];
 
     protected $hidden = [
@@ -41,9 +42,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class, 'id', 'company_id');
     }
 
+    public function userRole()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
     public function menu()
     {
-        return $this->role->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
+        if($this->role) {
+            return $this->role->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
+        } else {
+            return $this->userRole->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
+        }
     }
 
     public function menus()

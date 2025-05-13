@@ -6,13 +6,16 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Leave;
 use Illuminate\Http\Request;
-use App\Models\CompanyBranch;
 use App\Models\EmployeeAttendance;
 use App\Http\Controllers\Controller;
 use App\Http\Services\BranchServices;
 use App\Http\Services\DepartmentServices;
 use App\Http\Services\DesignationServices;
 use App\Http\Services\EmployeeServices;
+use App\Mail\ContactUsMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+
 
 class CompanyDashboardController extends Controller
 {
@@ -121,5 +124,29 @@ class CompanyDashboardController extends Controller
         $employees = $query->paginate(10);
 
         return view('company.dashboard.list', compact('employees'))->render();
+    }
+
+    public function sendMailForSubscription(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:2000',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        $payload = [
+            "name" => auth()->user()->name,
+            "email" => auth()->user()->email,
+            "subject" => $request->get('subject'),
+            "message" => $request->get('message'),
+        ];
+        
+        // Email
+        Mail::to("hr@xonierconnect.com")->send(new ContactUsMail($payload['name'], $payload['email'], $payload['subject'], $payload['message']));
+
+        return response()->json(['status' => true, 'message' => 'Your enquiry has been submitted. We will get back to you soon!']);
     }
 }

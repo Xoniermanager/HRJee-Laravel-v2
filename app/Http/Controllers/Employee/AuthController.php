@@ -59,25 +59,18 @@ class AuthController extends Controller
                     ->withInput()
                     ->with('error', 'These credentials do not match our records.');
             }
-
-            // Check user status
-            if ($user->status == '0') {
-                return redirect()->back()
-                    ->with('error', 'Your account is not active. Please contact the administrator.');
-            }
-
-            // Login user with remember me
-            $remember = $request->has('remember'); // checkbox named "remember"
-            Auth::login($user, $remember);
-            // Generate OTP
-            $generateOtpResponse = $this->sendOtpService->generateOTP($request->email, $user->type);
-
-            if ($generateOtpResponse['status'] === true) {
-                session(['otp_pending_user' => $user->id]);
-                return redirect('/verify/otp')->with('message', $generateOtpResponse['message']);
-            } else {
-                Auth::logout(); // logout since OTP failed
-                return redirect('/login')->with('error', $generateOtpResponse['message']);
+            else {
+                // $user = Auth::user();
+                if ($user->status == '0') {
+                    return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);
+                }
+                $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, $user->type);
+                if ($genrateOtpresponse['status'] == true){
+                    session(['otp_pending_user' => $user->id]);
+                    return redirect('/verify/otp')->with('message',$genrateOtpresponse['message']);
+                }
+                else
+                    return redirect('/login')->with('error', $genrateOtpresponse['message']);
             }
 
         } catch (\Throwable $th) {

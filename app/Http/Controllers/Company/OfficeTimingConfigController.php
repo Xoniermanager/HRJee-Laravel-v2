@@ -24,6 +24,7 @@ class OfficeTimingConfigController extends Controller
         $companyIDs = getCompanyIDs();
         $branches = $this->branch_services->all($companyIDs);
         $allOfficeTimeDetails = $this->office_time_config_service->all();
+        // dd($allOfficeTimeDetails);
 
         return view('company.office_time_config.index', [
             'allBranch' => $branches,

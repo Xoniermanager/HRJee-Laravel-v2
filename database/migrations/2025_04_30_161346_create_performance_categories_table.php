@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_shift_logs', function (Blueprint $table) {
+        Schema::create('performance_categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('shift_id');
-            $table->date('date');
-            $table->foreign('shift_id')->references('id')->on('shifts');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('created_by');
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_shift_logs');
+        Schema::dropIfExists('performance_categories');
     }
 };

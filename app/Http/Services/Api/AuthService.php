@@ -2,30 +2,28 @@
 
 namespace App\Http\Services\Api;
 
-use App\Http\Services\CountryServices;
 use App\Http\Services\SendOtpService;
-use App\Http\Services\StateServices;
-use App\Mail\LoginVerification;
-use App\Models\Employee;
 use App\Models\User;
-use App\Models\UserCode;
-use Carbon\Carbon;
+use App\Models\UserDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
 use Throwable;
 
 class AuthService
 {
-    private  $authService, $sendOtpService, $countryServices, $stateServices;
+    private  $sendOtpService;
 
-    public function __construct(SendOtpService $sendOtpService, CountryServices $countryServices, StateServices $stateServices)
+    public function __construct(SendOtpService $sendOtpService)
     {
         $this->sendOtpService = $sendOtpService;
-        $this->countryServices = $countryServices;
-        $this->stateServices = $stateServices;
     }
+
+    /**
+     * login function
+     *
+     * @param [type] $request
+     * @return void/null/object
+     */
     public function login($request)
     {
         try {
@@ -36,7 +34,7 @@ class AuthService
             if (!Hash::check($request->password, $user->password)) {
                 return errorMessage('null', 'please enter valid password!');
             }
-            if ($user && $user->id == '2') {
+            if ($user && ($user->id == '2' || $user->id == '1')) {
                 $user['access_token'] = $user->createToken('token')->plainTextToken;
                 return apiResponse('success', $user);
             } else {
@@ -51,6 +49,44 @@ class AuthService
             return exceptionErrorMessage($th);
         }
     }
+
+    /**
+     * loginByEmpId function
+     *
+     * @param [type] $request
+     * @return void/null/object
+     */
+    public function loginByEmpId($request)
+    {
+        try {
+            $userDetail = UserDetail::where('emp_id', $request->emp_id)->first();
+            if (!$userDetail) {
+                return errorMessage('null', 'please enter valid employee id!');
+            }
+
+            $user = $userDetail->user;
+            if (!$user) {
+                return errorMessage('null', 'please enter valid employee id!');
+            }
+
+            if (!Hash::check($request->password, $user->password)) {
+                return errorMessage('null', 'please enter valid password!');
+            }
+            
+            $user['access_token'] = $user->createToken('token')->plainTextToken;
+
+            return apiResponse('success', $user);
+            
+        } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
+    }
+
+    /**
+     * profile function
+     *
+     * @return void/object/null
+     */
     public function profile()
     {
         try {
@@ -60,11 +96,26 @@ class AuthService
             return exceptionErrorMessage($th);
         }
     }
+
+    /**
+     * logout function
+     *
+     * @param [type] $request
+     * @return void/null/object
+     */
     public function logout($request)
     {
         auth()->guard('employee_api')->user()->currentAccessToken()->delete();
         return apiResponse('logut');
     }
+
+    /**
+     * sendOtp function
+     *
+     * @param [type] $request
+     * @param [type] $type
+     * @return void/null/object
+     */
     public function sendOtp($request, $type)
     {
         try {
@@ -77,6 +128,13 @@ class AuthService
             return exceptionErrorMessage($th);
         }
     }
+
+    /**
+     * verifyOtp function
+     *
+     * @param [type] $request
+     * @return void/null/object
+     */
     public function verifyOtp($request)
     {
         try {
@@ -105,7 +163,12 @@ class AuthService
         }
     }
 
-
+    /**
+     * changePassword function
+     *
+     * @param [type] $request
+     * @return void/null/object
+     */
     public function changePassword($request)
     {
         try {
@@ -122,6 +185,13 @@ class AuthService
             return exceptionErrorMessage($th);
         }
     }
+
+    /**
+     * updateProfile function
+     *
+     * @param [type] $request
+     * @return void/null/object
+     */
     public function updateProfile($request)
     {
         try {

@@ -86,8 +86,8 @@ Weekend Management
                                 <label class="required">Company Branch</label>
                                 <select class="form-control mb-5 mt-3" name="company_branch_id" id="company_branch_id"
                                     onchange="getDetailsByCompanyBranchId()">
-                                    @foreach ($allCompanyBranchesDetails as $compayBranches)
                                     <option value="">Select the Company Branch</option>
+                                    @foreach ($allCompanyBranchesDetails as $compayBranches)
                                     <option value="{{ $compayBranches->id }}">
                                         {{ $compayBranches->name }}
                                     </option>
@@ -104,6 +104,13 @@ Weekend Management
                                         {{ $department->name }}
                                     </option>
                                     @endforeach
+                                </select>
+                            </div>
+                            <div class="mt-3">
+                                <label class="required">Designation</label>
+                                <select class="form-control mb-5 mt-3" name="designation_id" id="designation_id">
+                                    <option value="">Select the Designation</option>
+                                    
                                 </select>
                             </div>
                             <div class="mt-3">
@@ -144,6 +151,53 @@ Weekend Management
     <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet"/>
     <script>
+        /** get all Designation Using Department Id*/
+    jQuery('#department_id').on('change', function() {
+        var department_id = $(this).val();
+        const all_department_id = [department_id];
+        get_all_designation_using_department_id(all_department_id);
+    });
+
+    function get_all_designation_using_department_id(all_department_id, designationId = '') {
+        if (all_department_id) {
+            console.log("designationId => ", designationId)
+            $.ajax({
+                url: "{{ route('get.all.designation') }}",
+                type: "GET",
+                dataType: "json",
+                data: {
+                    'department_id': all_department_id
+                },
+                success: function(response) {
+                    var select = $('#designation_id');
+                    select.empty();
+                    if (response.status == true) {
+                        $('#designation_id').append(
+                            '<option>Select The Designation</option>');
+                        $.each(response.data, function(key, value) {
+                            select.append('<option ' + ((designationId == value.id) ? "selected" :
+                                "") + ' value=' + value.id + '>' + value.name + '</option>');
+                        });
+                    } else {
+                        select.append('<option value="">' + response.error +
+                            '</option>');
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something Went Wrong!! Please try Again"
+                    });
+                    return false;
+                }
+            });
+        } else {
+            $('#designation_id').empty();
+        }
+
+    }
+    /** end get all Designation Using Department Id*/
         jQuery(document).ready(function() {
             var today = new Date();
             var firstDayOfNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1); // 1st day of next month
@@ -155,17 +209,21 @@ Weekend Management
             });
         });
 
-        function edit_weekend_details(id, companyBranchId,deparmentId, weekendId) {
+        function edit_weekend_details(id, companyBranchId,deparmentId, designationId, weekendId) {
             if (typeof weekendId === 'string') {
                 weekendId = JSON.parse(weekendId);
             }
             $('#weekend_id').val(id);
             $('#company_branch_id').val(companyBranchId);
             $('#department_id').val(deparmentId);
+            $('#designation_id').val(designationId);
             selectedDates = weekendId;
+            const all_department_id = [deparmentId];
+            get_all_designation_using_department_id(all_department_id, designationId);
 
             // Set input value
             $('#datepicker2').val(weekendId.join(", ")).datepicker("refresh"); // Update UI
+            // $('#datepicker2').val(weekendId).datepicker("refresh"); // Update UI
 
             // $('#weekday').val(weekendId).trigger('change');
             jQuery('#add_weekend').modal('show');

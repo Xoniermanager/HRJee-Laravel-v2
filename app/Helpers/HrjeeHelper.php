@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Storage;
 function getCompanyIDs()
 {
     if (Auth()->user()->type == 'user') {
-        $companyIDs = [Auth()->user()->id, Auth()->user()->company_id];
+        //$companyIDs = [Auth()->user()->id, Auth()->user()->company_id];
+        $companyIDs = [Auth()->user()->company_id];
     } else {
         $companyIDs = User::where('company_id', Auth()->user()->id)->pluck('id')->toArray();
     }

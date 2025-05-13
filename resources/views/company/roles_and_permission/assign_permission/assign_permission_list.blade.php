@@ -19,7 +19,12 @@
                     <td>{{ $role->name }} </td>
                     <td>
                         @forelse ($role->menus as $menu)
-                        {{ ucfirst($menu->title) }}
+                            @if(!count($menu['children']))
+                                {{ ucfirst($menu['title']) }}
+                                @if (!$loop->last)
+                                    ,
+                                @endif
+                            @endif
                         @empty
                         No Permission available
                         @endforelse

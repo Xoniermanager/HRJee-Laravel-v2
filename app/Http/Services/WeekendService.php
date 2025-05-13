@@ -14,7 +14,7 @@ class WeekendService
     }
     public function all($companyId)
     {
-        return $this->weekendRepository->with(['companyBranch', 'department'])->whereIn('created_by', $companyId)->orderBy('id', 'DESC')->paginate(10);
+        return $this->weekendRepository->with(['companyBranch', 'department'])->whereIn('company_id', $companyId)->orderBy('id', 'DESC')->paginate(10);
     }
 
     /**
@@ -28,8 +28,13 @@ class WeekendService
         try {
             $data['company_id'] = Auth()->user()->company_id;
             $data['created_by'] = Auth()->user()->id;
-            $data['weekend_dates'] = json_encode(explode(",", $data['weekend_dates']));
-            $payload = Arr::except($data, ['_token']);
+            // if(is_array($data['weekend_dates'])) {
+                $data['weekend_dates'] = json_encode(explode(",", $data['weekend_dates']));
+            // } else {
+            //     $data['weekend_dates'] = json_encode(explode(",", [$data['weekend_dates']]));
+            // }
+            
+            $payload = Arr::except($data, ['_token', 'weekend_id']);
             
             if (isset($data['weekend_id']) && !empty($data['weekend_id'])) {
                 $this->weekendRepository->find($data['weekend_id'])->update($payload);
