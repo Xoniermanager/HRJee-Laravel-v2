@@ -80,37 +80,10 @@ class CompanyBranchesController extends Controller
      * Update the specified resource in storage.
      */
 
-    public function update(Request $request)
+    public function update(ValidateBranch $request)
     {
         $companyIDs = getCompanyIDs();
-        $companyBranchId = $request->id;
         try {
-            $validator = Validator::make($request->all(), [
-                'company_id' => 'sometimes',
-                'name' => 'required|string',
-                'type' => 'required|in:primary,secondary',
-                'contact_no' => 'required|numeric|unique:company_branches,contact_no,' . $companyBranchId,
-                'email' => 'required|email|unique:company_branches,email,' . $companyBranchId,
-                'hr_email' => 'required|email|unique:company_branches,hr_email,' . $companyBranchId,
-                'address' => [
-                    'required',
-                    function ($attribute, $value, $fail) {
-                        if (!app('geocoder')->geocode($value)->get()->count()) {
-                            $fail('The provided address is incorrect.');
-                        }
-                    }
-                ],
-                'city' => 'required|string',
-                'pincode' => 'required|string',
-                'country_id' => 'required_if:address_type,==,0|exists:countries,id',
-                'state_id' => 'required_if:address_type,==,0|exists:states,id',
-
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->messages()], 400);
-            }
-
             $updateData = $request->except(['_token', 'id']);
             $companyBranches = $this->branch_services->updateDetails($updateData, $request->id);
             if ($companyBranches) {
