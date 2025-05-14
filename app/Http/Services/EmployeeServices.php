@@ -180,7 +180,7 @@ class EmployeeServices
         } else {
             $baseQuery->whereIn('company_branch_id', $allCompanyBranchIds);
         }
-        $usersDetails = $baseQuery->get()->toArray();
+        $usersDetails = $baseQuery->with('user')->get()->toArray();
         return $usersDetails;
     }
 

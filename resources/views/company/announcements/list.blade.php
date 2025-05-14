@@ -10,7 +10,7 @@
                     <th>Title</th>
                     <th>Start Date & time</th>
                     <th>Expiry Date & time</th>
-                    <th>Assignment</th>
+                    <th>Schedule</th>
                     <th>Status</th>
                     <th class="float-right">Action</th>
                 </tr>
