@@ -65,6 +65,16 @@
                                 <input class="form-control" type="text" name="probation_period"
                                     id="probation_period">
                             </div>
+                            <div class="col-md-4 form-group">
+                                <label for="">Allow Face Nex</label>
+                                <select class="form-control" name="allow_face_nex" id="allow_face_nex">
+                                    <option value="" disabled>Allow Face Nex</option>
+                                    <option {{ old('allow_face_nex')=='0' ? 'selected' : '' }} value="0">No
+                                    </option>
+                                    <option {{ old('allow_face_nex')=='1' ? 'selected' : '' }} value="1">Yes
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                         <button class="btn btn-primary">Update</button>
                     </form>

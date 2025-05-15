@@ -171,6 +171,16 @@
                                                                 name="face_recognition_user_limit" type="number"
                                                                 placeholder="Enter User Limit for Face Recgnition" value="">
                                                         </div>
+                                                        <!-- Face Nex Dropdown -->
+                                                        <div class="col-md-6 col-sm-6">
+                                                            <select class="form-control" id="allow_face_nex"
+                                                                name="allow_face_nex">
+                                                                <option value="" disabled selected>Allow Face Nex
+                                                                </option>
+                                                                <option value="0">No</option>
+                                                                <option value="1">Yes</option>
+                                                            </select>
+                                                        </div>
                                                         <div class="col-12">
                                                             <div class="row">
                                                                 <div class="col-12">

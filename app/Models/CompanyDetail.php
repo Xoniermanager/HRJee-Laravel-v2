@@ -31,7 +31,8 @@ class CompanyDetail extends Model
         'attendance_radius',
         'task_radius',
         'onboarding_date',
-        'subscription_expiry_date'
+        'subscription_expiry_date',
+        'allow_face_nex'
     ];
 
     protected function logo(): Attribute

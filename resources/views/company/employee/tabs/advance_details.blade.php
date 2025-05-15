@@ -42,7 +42,16 @@
                 <input class="form-control" type="text" name="probation_period"
                     value="{{ $userAdvanceDetails->probation_period ?? '' }}">
             </div>
-
+            <div class="col-md-4 form-group">
+                <label for="">Allow Face Nex</label>
+                <select class="form-control" name="allow_face_nex" id="allow_face_nex">
+                    <option value="" disabled>Allow Face Nex</option>
+                    <option {{ $userAdvanceDetails->allow_face_nex=='0' ? 'selected' : '' }} value="0">No
+                    </option>
+                    <option {{ $userAdvanceDetails->allow_face_nex=='1' ? 'selected' : '' }} value="1">Yes
+                    </option>
+                </select>
+            </div>
         </div>
         <div class="m-auto text-center">
             <button id="submit_advance_details" class="btn btn-primary">Save & Continue</button>

@@ -88,8 +88,7 @@ class AttendanceController extends Controller
     {
         try {
             $data = $request->all();
-            // $data['punch_in_using'] = 'Face';
-            $data['punch_in_using'] = 'Mobile';
+            $data['punch_in_using'] = 'Face';
 
             $attendanceDetails = $this->employeeAttendanceService->createUsingFace($data);
             
