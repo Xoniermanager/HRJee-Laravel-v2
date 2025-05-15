@@ -18,6 +18,11 @@ class PerformanceManagementService
         return $this->performanceManagementRepository->whereIn('company_id', $companyIds)->with(['user']);
     }
 
+    public function getPerformancesByUserId($userId)
+    {
+        return $this->performanceManagementRepository->where('user_id', $userId)->with(['user']);
+    }
+
     public function getDetailsById($requestId)
     {
         return $this->performanceManagementRepository->where('id', $requestId)->with(['categoryRecords'])->first();

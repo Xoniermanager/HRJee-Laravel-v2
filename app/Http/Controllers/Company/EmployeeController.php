@@ -165,7 +165,7 @@ class EmployeeController extends Controller
         $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'ctcDetails');
         $allManagers = $this->qualificationService->getAllActiveQualification();
         $userAllShifts = $this->userShiftService->getByUserId([$user->id])->get()->groupBy('shift_day');
-
+        
         $userShifts = [];
         foreach($userAllShifts as $key => $shifts) {
             if(str_contains($key, 'day')) {

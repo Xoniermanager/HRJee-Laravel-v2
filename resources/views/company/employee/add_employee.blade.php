@@ -32,14 +32,6 @@
             $userLanguages = $singleUserDetails['language'];
         }
     @endphp
-    {{-- <div class="loading_item" id="loading_item">
-    <div class="loading-wave">
-        <div class="loading-bar"></div>
-        <div class="loading-bar"></div>
-        <div class="loading-bar"></div>
-        <div class="loading-bar"></div>
-    </div>
-</div> --}}
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
@@ -126,14 +118,6 @@
                             </li>
                             <!--end::Nav item-->
                             <!--begin::Nav item-->
-                            {{-- <li class="nav-item p-0 ms-0">
-                            <!--begin::Date-->
-                            <a class="nav-link btn d-flex flex-column flex-center px-3 btn-active-danger {{ $buttonDisabled }}"
-                                data-bs-toggle="tab" href="#permission_tab">
-                                <span class="fs-7 fw-semibold">Permissions</span>
-                            </a>
-                            <!--end::Date-->
-                        </li> --}}
                             <!--end::Nav item-->
                             <!--begin::Nav item-->
                             <li class="nav-item p-0 ms-0">
@@ -189,11 +173,9 @@
                             <!--begin::Tap pane Advance Details-->
                             @include('company.employee.tabs.advance_details')
                             <!--end::Tap pane-->
-
                             <!--begin::Tap pane Address Tab-->
                             @include('company.employee.tabs.address_tab')
                             <!--end::Tap pane-->
-
                             <!--begin::Tap pane Bank Details-->
                             @include('company.employee.tabs.bank_details')
                             <!--end::Tap pane-->
@@ -204,10 +186,6 @@
 
                             <!--begin::Tap pane PAst Work-->
                             @include('company.employee.tabs.past_work_tab')
-                            <!--end::Tap pane-->
-
-                            <!--begin::Tap pane Permission-->
-                            {{-- @include('company.employee.tabs.permission_tab') --}}
                             <!--end::Tap pane-->
 
                             <!--begin::Tap pane Family Details-->
@@ -224,7 +202,6 @@
                         </div>
                         <!--end::Tab Content-->
                         <!--begin::Action-->
-
                         <!--end::Action-->
                     </div>
                     <!--end: Card Body-->

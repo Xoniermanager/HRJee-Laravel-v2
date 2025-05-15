@@ -46,9 +46,9 @@
                 <label for="">Allow Face Nex</label>
                 <select class="form-control" name="allow_face_nex" id="allow_face_nex">
                     <option value="" disabled>Allow Face Nex</option>
-                    <option {{ $userAdvanceDetails->allow_face_nex=='0' ? 'selected' : '' }} value="0">No
+                    <option {{ $singleUserDetails->details->allow_face_nex=='0' ? 'selected' : '' }} value="0">No
                     </option>
-                    <option {{ $userAdvanceDetails->allow_face_nex=='1' ? 'selected' : '' }} value="1">Yes
+                    <option {{ $singleUserDetails->details->allow_face_nex=='1' ? 'selected' : '' }} value="1">Yes
                     </option>
                 </select>
             </div>

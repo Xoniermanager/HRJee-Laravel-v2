@@ -16,6 +16,11 @@ class PerformanceManagement extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function cycle()
+    {
+        return $this->belongsTo(PerformanceReviewCycle::class, 'cycle_id');
+    }
+
     public function categoryRecords()
     {
         return $this->hasMany(CategoryPerformanceRecord::class, 'performance_management_id', 'id');
