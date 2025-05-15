@@ -204,7 +204,6 @@ class EmployeeServices
             ->with(['details', 'managers']);
     }
 
-
     public function addManagers($userId, $managerIDs)
     {
         EmployeeManager::where('user_id', $userId)->delete();
@@ -256,6 +255,7 @@ class EmployeeServices
         }
         return $allEmployeeDetails->paginate(10);
     }
+
     public function updateActiveLocationByUserId($branchId, $userId, $type = "created")
     {
         $branchDetails = CompanyBranch::find($branchId);
