@@ -51,10 +51,9 @@ class PerformanceManagementController extends Controller
 
     public function index()
     {
-        $companyIDs = getCompanyIDs();
-        $allPerformances = $this->performanceManagementService->getPerformancesByCompanyId($companyIDs)->get();
-
-        return view('company.performance_management.index', compact('allPerformances'));
+        $allPerformances = $this->performanceManagementService->getPerformancesByUserId(auth()->user()->id)->get();
+        
+        return view('employee.performance_management.index', compact('allPerformances'));
     }
 
     public function filterPerformance(Request $request)
@@ -104,60 +103,7 @@ class PerformanceManagementController extends Controller
         return response()->json(['success' => true, 'attendanceRank' => $attendanceRank, "leaveRank" => $leaveRank]);
     }
 
-    public function add(Request $request) {
-        $companyIDs = getCompanyIDs();
-        $allEmployeeDetails = $this->userService->getActiveEmployees($companyIDs)->get();
-        $allCategories = $this->performanceCategoryService->all($companyIDs);
-        $performanceCycles = $this->performanceCycleService->all($companyIDs);
-
-        return view('company.performance_management.add', compact('allEmployeeDetails', 'allCategories', 'performanceCycles'));
-    }
-
-    public function addPerformance(Request $request) {
-        $data = $request->all();
-        $dates = explode(' - ', $request->daterange);
-        $startDate = $dates[0];
-        $endDate = $dates[1];
-
-        $cycleId = explode(' - ', $data['cycle_id']);
-        $data['cycle_id'] = $cycleId[0];
-
-        $payload = [
-            'company_id' => auth()->user()->id,
-            'user_id' => $data['user_id'],
-            'cycle_id' => $data['cycle_id'],
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'leave_ranking' => $data['leave_ranking'],
-            'attendance_ranking' => $data['attendance_ranking']
-        ];
-        $performance = PerformanceManagement::create($payload);
-
-        $categoryPayload = [];
-        foreach($data['categories'] as $key => $value) {
-            $categoryPayload[] = [
-                'performance_management_id' => $performance->id,
-                'performance_category_id' => $key,
-                'performance' => $value,
-                'created_at' =>date("Y-m-d H:i:s"),
-                'updated_at' =>date("Y-m-d H:i:s"),
-            ];
-        }
-        CategoryPerformanceRecord::insert($categoryPayload);
-        
-        if($data['review'] != "") {
-            $reviewPayload = [
-                'performance_management_id' => $performance->id,
-                'manager_id' => auth()->user()->id,
-                'review' => $data['review'],
-            ];
-            PerformanceReview::insert($reviewPayload);
-        }
-
-        return redirect(route('performance-management.index'))->with('success', 'Review Submitted Succesfully');
-    }
-
-    public function edit(Request $request, $id) {
+    public function view(Request $request, $id) {
         
         $companyIDs = getCompanyIDs();
         $allEmployeeDetails = $this->userService->getActiveEmployees($companyIDs)->get();
@@ -170,26 +116,6 @@ class PerformanceManagementController extends Controller
             $categories[$categoryRecord->performance_category_id] = $categoryRecord->performance;
         }
 
-        return view('company.performance_management.edit', compact('allEmployeeDetails', 'allCategories', 'performance', 'categories', 'performanceCycles'));
-    }
-
-    public function update(Request $request, $id) {
-        
-        $data = $request->all();
-        $performance = $this->performanceManagementService->getDetailsById($id);
-
-        $performance->update($data);
-
-        if($data['review'] != "") {
-            $reviewPayload = [
-                'performance_management_id' => $performance->id,
-                'manager_id' => auth()->user()->id,
-                'review' => $data['review'],
-            ];
-            PerformanceReview::insert($reviewPayload);
-        }
-        
-        
-        return redirect(route('performance-management.index'))->with('success', 'Review Submitted Succesfully');
+        return view('employee.performance_management.view', compact('allEmployeeDetails', 'allCategories', 'performance', 'categories', 'performanceCycles'));
     }
 }
