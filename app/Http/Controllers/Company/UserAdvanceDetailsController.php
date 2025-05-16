@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\UserAdvanceDetailServices;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -28,7 +29,12 @@ class UserAdvanceDetailsController extends Controller
                 return response()->json(['error' => $validateDetails->messages()], 400);
             }
             $data = $request->all();
+            
             if ($this->userAdvanceDetailsService->create($data)) {
+                UserDetail::where('user_id', $data['user_id'])->update([
+                    'allow_face_nex' => $data['allow_face_nex']
+                ]);
+                
                 return response()->json([
                     'message' => 'Advance Details Added Successfully! Please Continue',
                 ]);

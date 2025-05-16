@@ -159,6 +159,18 @@
                                                                 placeholder="Enter User Limit for Face Recgnition"
                                                                 value="{{ $companyDetails->companyDetails->face_recognition_user_limit }}">
                                                         </div>
+                                                         <!-- Face Nex Dropdown -->
+                                                        <div class="col-md-6 col-sm-6">
+                                                            <select class="form-control" id="allow_face_nex"
+                                                                name="allow_face_nex">
+                                                                <option value="" disabled>Allow Face Nex
+                                                                </option>
+                                                                <option value="0"  {{ $companyDetails->companyDetails->allow_face_nex == 0 ? 'selected' : '' }}>No</option>
+                                                                <option value="1"
+                                                                    {{ $companyDetails->companyDetails->allow_face_nex == 1 ? 'selected' : '' }}>
+                                                                    Yes</option>
+                                                            </select>
+                                                        </div>
                                                         @if(checkMenuAccessByMenuAndCompany("location-tracking",$companyDetails->id))
                                                             <div class="col-md-6 col-sm-6"
                                                                 id="location_tracking_user_limit_container">

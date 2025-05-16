@@ -42,7 +42,8 @@ class UserDetail extends Model
         'location_tracking',
         'live_location_active',
         'punch_in_radius',
-        'shift_type'
+        'shift_type',
+        'allow_face_nex'
     ];
 
     protected function profileImage(): Attribute

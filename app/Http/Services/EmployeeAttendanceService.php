@@ -246,9 +246,17 @@ class EmployeeAttendanceService
                 }
             }
 
-            $data['punch_out'] = $attendanceTime;
-            $existingAttendance->update($data);
-            return ['status' => true, 'message' => 'Punch Out', 'data' => $userDetails];
+            if($existingAttendance->punch_out != null) {
+                return [
+                        'status' => false,
+                        'message' => 'You have already punched-out.'
+                    ];
+            } else {
+                $data['punch_out'] = $attendanceTime;
+                $existingAttendance->update($data);
+                return ['status' => true, 'message' => 'Punch Out', 'data' => $userDetails];
+            }
+            
         }
 
         // Handle holidays

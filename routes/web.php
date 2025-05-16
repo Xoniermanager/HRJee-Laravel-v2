@@ -209,7 +209,7 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.rou
     //Performance Mgmt Module
     Route::prefix('/performance-reviews')->controller(PerformanceManagementController::class)->group(function () {
         Route::get('/', 'index')->name('performance-management.index');
-        Route::get('/edit/{id}', 'edit')->name('performance-management.edit');
+        Route::get('/view/{id}', 'view')->name('performance-management.view');
     });
 });
 /**----------------- End Employee Pannel Route ----------------------*/
