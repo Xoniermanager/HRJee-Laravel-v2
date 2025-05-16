@@ -31,12 +31,12 @@ class OfficeShiftController extends Controller
     {
         try {
             $validateOfficeTimeConfig  = Validator::make($request->all(), [
-                'name'                      => ['required', 'string', 'unique:shifts,name'],
-                'start_time'                => ['required', 'string'],
-                'end_time'                  => ['required', 'string'],
-                'check_in_buffer'           => ['required', 'string'],
-                'check_out_buffer'          => ['required', 'string'],
-                'login_before_shift_time'   => ['required', 'string'],
+                'name' => ['required', 'string', 'max:50', 'unique:shifts,name'],
+                'start_time' => ['required', 'date_format:H:i'],  // Assuming the start time is in 24-hour format like "08:00"
+                'end_time' => ['required', 'date_format:H:i'],  // Same assumption as start_time
+                'check_in_buffer' => ['required', 'integer', 'min:0'],  // Assuming buffer time is a number (minutes)
+                'check_out_buffer' => ['required', 'integer', 'min:0'],  // Same as check_in_buffer
+                'login_before_shift_time' => ['required', 'integer', 'min:0'],  // Assuming it's also an integer (minutes)
             ]);
             if ($validateOfficeTimeConfig->fails()) {
                 return response()->json(['error' => $validateOfficeTimeConfig->messages()], 400);
@@ -74,7 +74,7 @@ class OfficeShiftController extends Controller
     public function update(Request $request)
     {
         $validateShift  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:shifts,name,' . $request->id],
+            'name' => ['required', 'string', 'max:50', 'unique:shifts,name,' . $request->id],
             'start_time' => ['required', 'string'],
             'end_time'  => ['required', 'string'],
             'check_in_buffer'  => ['required', 'string'],

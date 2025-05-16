@@ -36,13 +36,21 @@ Announcements
                             <div class="text-danger">{{ $errors->first('expires_at_time') }}</div>
                         @endif
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label class="col-form-label">Image</label>
-                        <input type="file" class="form-control" name="image">
+                        <input type="file" class="form-control" name="image" id="imageInput" accept="image/*">
+
                         @if ($errors->has('image'))
                             <div class="text-danger">{{ $errors->first('image') }}</div>
                         @endif
                     </div>
+
+                    <div class="col-md-2 form-group mt-2">
+                        <div id="imagePreview" class="mt-1">
+                            <img id="previewImg" src="#" alt="Image Preview" class="img-thumbnail" style="max-width: 100px; max-height: 100px; display: none;">
+                        </div>
+                    </div>
+
                     <div class="col-md-6 form-group">
                         <label class="col-form-label required">Description </label>
                         <textarea name="description" value="{{ old('description') }}"
@@ -190,4 +198,15 @@ Announcements
         </div>
     </div>
 </div>
+<script>
+    // Image preview on file input change
+    document.getElementById('imageInput').addEventListener('change', function(event) {
+        const [file] = event.target.files;
+        if (file) {
+            const previewImg = document.getElementById('previewImg');
+            previewImg.src = URL.createObjectURL(file);
+            previewImg.style.display = 'block'; // Show the image once it's loaded
+        }
+    });
+</script>
 @endsection

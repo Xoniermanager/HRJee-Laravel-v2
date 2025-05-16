@@ -34,7 +34,9 @@ class PolicyCategoryController extends Controller
     {
         try {
             $validateData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:policy_categories,name'],
+                'name' => ['required', 'string',
+                'max:50',
+                'regex:/^[A-Za-z\s]+$/', 'unique:policy_categories,name'],
             ]);
 
             if ($validateData->fails()) {
@@ -60,7 +62,9 @@ class PolicyCategoryController extends Controller
     public function update(Request $request)
     {
         $validateData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:policy_categories,name,' . $request->id]
+            'name' => ['required', 'string',
+            'max:50',
+            'regex:/^[A-Za-z\s]+$/', 'unique:policy_categories,name,' . $request->id]
         ]);
 
         if ($validateData->fails()) {
