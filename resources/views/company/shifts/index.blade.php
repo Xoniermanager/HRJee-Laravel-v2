@@ -198,11 +198,13 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>No of Late Count</label>
-                                        <input class="form-control mb-5 mt-3" type="number" name="total_late_count" id="total_late_count">
+                                        <input class="form-control mb-5 mt-3" type="number" name="total_late_count"
+                                            id="total_late_count">
                                     </div>
                                     <div class="col-md-6">
                                         <label>No of Leave Deduction</label>
-                                        <input class="form-control mb-5 mt-3" type="number" name="total_leave_deduction" id="total_leave_deduction">
+                                        <input class="form-control mb-5 mt-3" type="number" name="total_leave_deduction"
+                                            id="total_leave_deduction">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -220,7 +222,7 @@
                                     <div class="col-md-4">
                                         <label class="checkbox-inline">
                                             <input type="checkbox" value="" id="apply_early_checkout_count" class="apply_early_checkout_count
-                                        ">Apply
+                                                    ">Apply
                                             early checkout count
                                         </label>
                                     </div>
@@ -463,96 +465,90 @@
             }
 
             jQuery(document).ready(function ($) {
-                jQuery("#add_shift_form").validate({
-                    rules: {
-                        name: "required",
-                        start_time: "required",
-                        end_time: "required",
-                        check_in_buffer: "required",
-                        check_out_buffer: "required",
-                        office_timing_config_id: "required"
-                    },
-                    messages: {
-                        name: "Please enter name",
-                        start_time: "Please enter start time",
-                        end_time: "Please enter end time",
-                        check_in_buffer: "Please enter check-in buffer",
-                        check_out_buffer: "Please enter check-out buffer",
-                        office_timing_config_id: "Please select office timing config",
-                    },
-                    submitHandler: function (form) {
-                        var shift_data = $(form).serialize();
-                            $.ajax({
-                            url: "{{ route('shift.store') }}",
-                            type: 'POST',
-                            data: shift_data,
-                            success: function (response) {
-                                jQuery('#add_department').modal('hide');
-                                swal.fire("Done!", response.message, "success");
-                                $('#shift_time_list').replaceWith(response.data);
-                                jQuery("#add_shift_form")[0].reset();
+                // Define custom validation for pattern (only letters and spaces)
+                jQuery.validator.addMethod("pattern", function (value, element, param) {
+                    return this.optional(element) || param.test(value);
+                }, "Name must contain only letters and spaces");
 
-                            },
-                            error: function (error_messages) {
-                                let errors = error_messages.responseJSON.error;
-                                for (var error_key in errors) {
-                                    $(document).find('[name=' + error_key + ']').after(
-                                        '<span class="' + error_key +
-                                        '_error text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                    setTimeout(function () {
-                                        jQuery("." + error_key + "_error").remove();
-                                    }, 5000);
-                                }
-                            }
-                        });
-                    }
-                });
-            });
-
-            jQuery("#edit_shift_form").validate({
-                rules: {
-                    name: "required",
+                // Common validation rules and messages
+                const validationRules = {
+                    name: {
+                        required: true,
+                        maxlength: 50,
+                        pattern: /^[A-Za-z\s]+$/ // Only allows letters and spaces
+                    },
                     start_time: "required",
                     end_time: "required",
                     check_in_buffer: "required",
                     check_out_buffer: "required",
                     office_timing_config_id: "required"
-                },
-                messages: {
-                    name: "Please enter name",
+                };
+
+                const validationMessages = {
+                    name: {
+                        required: "Please enter name",
+                        maxlength: "Name must be no more than 50 characters",
+                        pattern: "Name must contain only letters and spaces"
+                    },
                     start_time: "Please enter start time",
                     end_time: "Please enter end time",
                     check_in_buffer: "Please enter check-in buffer",
                     check_out_buffer: "Please enter check-out buffer",
-                    office_timing_config_id: "Please select office timing config",
-                },
-                submitHandler: function (form) {
-                    var department_data = $(form).serialize();
+                    office_timing_config_id: "Please select office timing config"
+                };
+
+                // Function to handle form submission with AJAX
+                function handleFormSubmit(form, url, modalId) {
+                    var formData = $(form).serialize();
                     $.ajax({
-                        url: "<?= route('shift.update') ?>",
-                        type: 'post',
-                        data: department_data,
+                        url: url,
+                        type: 'POST',
+                        data: formData,
                         success: function (response) {
-                            jQuery('#edit_department').modal('hide');
+                            jQuery(modalId).modal('hide');
                             swal.fire("Done!", response.message, "success");
                             jQuery('#shift_time_list').replaceWith(response.data);
+                            jQuery(form)[0].reset();
                         },
                         error: function (error_messages) {
-                            let errors = error_messages.responseJSON.error;
+                            console.log(error_messages);
+                            let errors = error_messages.responseJSON.error; // assuming backend returns "errors"
+
+                            // Clear all previous error messages
+                            jQuery(".text-danger").remove();
+
                             for (var error_key in errors) {
                                 $(document).find('[name=' + error_key + ']').after(
-                                    '<span id="' + error_key +
-                                    '_error" class="text text-danger">' + errors[
-                                    error_key] + '</span>');
+                                    '<span class="' + error_key + '_error text text-danger">' + errors[error_key] + '</span>'
+                                );
                                 setTimeout(function () {
-                                    jQuery("#" + error_key + "_error").remove();
+                                    jQuery("." + error_key + "_error").remove();
                                 }, 5000);
+
                             }
                         }
                     });
                 }
+
+                // Initialize validation and submission for add form
+                jQuery("#add_shift_form").validate({
+                    rules: validationRules,
+                    messages: validationMessages,
+                    submitHandler: function (form) {
+                        handleFormSubmit(form, "{{ route('shift.store') }}", '#add_department');
+                    }
+                });
+
+                // Initialize validation and submission for edit form
+                jQuery("#edit_shift_form").validate({
+                    rules: validationRules,
+                    messages: validationMessages,
+                    submitHandler: function (form) {
+                        handleFormSubmit(form, "<?= route('shift.update') ?>", '#edit_department');
+                    }
+                });
             });
+
 
             function handleStatus(id) {
                 var checked_value = $('#checked_value_status_' + id).prop('checked');
@@ -602,12 +598,13 @@
                     },
                     success: function (res) {
                         if (res) {
-                            if(res.success) {
+                            if (res.success) {
                                 swal.fire("Done!", 'Default ' + default_name + ' Updated Successfully', "success");
                             } else {
+                                search_filter_results();
                                 swal.fire("Oops!", res.message, "error");
                             }
-                            
+
                         } else {
                             swal.fire("Oops!", 'Something Went Wrong', "error");
                         }
@@ -638,7 +635,7 @@
                                 $('#shift_time_list').replaceWith(res.data);
                             },
                             error: function (xhr, ajaxOptions, thrownError) {
-                                Swal.fire("Error deleting!", "Please try again", "error");
+                                Swal.fire("Error Deleting!", "This shift is assigned to a user. You cannot delete this shift.", "error");
                             }
                         });
                     }

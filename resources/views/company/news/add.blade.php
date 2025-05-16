@@ -61,8 +61,7 @@ Add News
                                     </div>
                                     <div class="col-md-6 form-group">
                                         <label class="">Attachment File </label>
-                                        <input class="form-control" name="file" type="file" accept="pdf"
-                                            value="{{old('file')}}">
+                                        <input class="form-control" name="file" type="file" accept=".pdf" value="{{ old('file') }}">
                                         @if ($errors->has('file'))
                                         <div class="text-danger">{{ $errors->first('file') }}</div>
                                         @endif
@@ -82,7 +81,7 @@ Add News
                                             <div class="row">
                                                 <div class="col-md-8">
                                                     <input type="file" class="form-control" name="image"
-                                                        accept=".png, .jpg, .jpeg">
+                                                        accept=".png, .jpg, .jpeg" required>
                                                     @if ($errors->has('image'))
                                                     <div class="text-danger">{{ $errors->first('image') }}
                                                     </div>

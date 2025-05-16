@@ -196,77 +196,74 @@
            jQuery('#edit_role').modal('show');
         }
         jQuery.noConflict();
-        jQuery(document).ready(function($) {
-            jQuery("#add_roles").validate({
-                rules: {
-                name: "required",
-            },
-            messages: {
-                name: "Please enter name",
-            },
-                submitHandler: function(form) {
-                    var role = $(form).serialize();
-                    $.ajax({
-                        url: "{{ route('role.store') }}",
-                        type: 'POST',
-                        data: role,
-                        success: function(response) {
-                            jQuery('#add_role').modal('hide');
-                            swal.fire("Done!", response.message, "success");
-                            $('#office_time_list').replaceWith(response.data);
-                            jQuery("#add_roles")[0].reset();
+        jQuery(document).ready(function ($) {
+    // Custom validation method for alphabet-only input
+    $.validator.addMethod("alpha", function (value, element) {
+        return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+    }, "Only alphabets and spaces are allowed.");
 
-                        },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span class="' + error_key +
-                                    '_error text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("." + error_key + "_error").remove();
-                                }, 5000);
-                            }
-                        }
-                    });
-                }
-            });
-        });
-
-        jQuery("#office_time_config_update_form").validate({
+    function handleFormSubmission(formSelector, modalSelector, url, resetForm = false) {
+        $(formSelector).validate({
             rules: {
-                name: "required",
+                name: {
+                    required: true,
+                    alpha: true,
+                    maxlength: 50
+                }
             },
             messages: {
-                name: "Please enter name",
+                name: {
+                    required: "Please enter name",
+                    alpha: "Only alphabets and spaces are allowed",
+                    maxlength: "Name cannot exceed 50 characters"
+                }
             },
-            submitHandler: function(form) {
-                var role = $(form).serialize();
+            submitHandler: function (form) {
+                const formData = $(form).serialize();
+
                 $.ajax({
-                    url: "<?= route('role.update') ?>",
-                    type: 'post',
-                    data: role,
-                    success: function(response) {
-                        jQuery('#edit_role').modal('hide');
-                        swal.fire("Done!", response.message, "success");
-                        jQuery('#office_time_list').replaceWith(response.data);
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        jQuery(modalSelector).modal('hide');
+                        Swal.fire("Done!", response.message, "success");
+                        $('#office_time_list').replaceWith(response.data);
+
+                        if (resetForm) {
+                            $(form)[0].reset();
+                        }
                     },
-                    error: function(error_messages) {
-                        let errors = error_messages.responseJSON.error;
-                        for (var error_key in errors) {
-                            $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
-                                    error_key] + '</span>');
-                            setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
+                    error: function (xhr) {
+                        const errors = xhr.responseJSON?.error || {};
+                        for (const field in errors) {
+                            // Remove any existing error span for the field
+                            $(`.${field}_error`).remove();
+
+                            // Append only one new error span
+                            const errorSpan = $('<span>', {
+                                class: `text text-danger ${field}_error`,
+                                text: errors[field]
+                            });
+                            $(`[name="${field}"]`).after(errorSpan);
+
+                            // Automatically remove the error after 5 seconds
+                            setTimeout(() => {
+                                $(`.${field}_error`).fadeOut(300, function () {
+                                    $(this).remove();
+                                });
                             }, 5000);
                         }
                     }
                 });
             }
         });
+    }
+
+    handleFormSubmission("#add_roles", "#add_role", "{{ route('role.store') }}", true);
+    handleFormSubmission("#office_time_config_update_form", "#edit_role", "<?= route('role.update') ?>");
+});
+
 
         function handleStatus(id) {
             var checked_value = $('#checked_value_'+id).prop('checked');

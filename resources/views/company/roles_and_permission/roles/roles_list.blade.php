@@ -17,9 +17,9 @@
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         <td><a href="#" data-bs-toggle="modal"
-                                onClick="edit_department_details('{{ $role->id }}', '{{ $role->name }}')">{{ $role->name }}</a>
+                                onClick="edit_role_details('{{ $role->id }}', '{{ $role->name }}')">{{ $role->name }}</a>
                         </td>
-    
+
                         </td>
                         <td data-order="Invalid date">
                             <label class="switch">

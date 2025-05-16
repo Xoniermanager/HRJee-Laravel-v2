@@ -23,7 +23,7 @@
                                     <div class="col-md-4 form-group">
                                         <label for="">Title *</label>
                                         <input class="form-control" name="title" type="text"
-                                            value="{{ old('title') }}">
+                                            value="{{ old('title') }}" max="50">
                                         @if ($errors->has('title'))
                                             <div class="text-danger">{{ $errors->first('title') }}</div>
                                         @endif
@@ -64,7 +64,7 @@
                                             <div class="row">
                                                 <div class="col-md-8">
                                                     <input type="file" class="form-control" name="image"
-                                                        accept=".png, .jpg, .jpeg">
+                                                        accept=".png, .jpg, .jpeg" required>
                                                     @if ($errors->has('image'))
                                                         <div class="text-danger">{{ $errors->first('image') }}</div>
                                                     @endif
@@ -80,7 +80,7 @@
                                     </div>
                                         <div class="col-md-6 form-group">
                                         <label for="">Attachment File </label>
-                                        <input class="form-control" name="file" type="file" accept="pdf" value="{{old('file')}}">
+                                        <input class="form-control" name="file" type="file" accept=".pdf" value="{{old('file')}}">
                                         @if ($errors->has('file'))
                                             <div class="text-danger">{{ $errors->first('file') }}</div>
                                         @endif
