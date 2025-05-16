@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\NewsCategoryService;
@@ -33,8 +34,16 @@ class NewsCategoryController extends Controller
     {
         try {
             $validateData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:news_categories,name,NULL,id,company_id,' . auth()->user()->company_id],
-            ]);
+                'name' => [
+                    'required',
+                    'string',
+                    'max:50',
+                    'regex:/^[A-Za-z\s]+$/',
+                    Rule::unique('news_categories')->where(function ($query) {
+                        return $query->where('company_id', auth()->user()->company_id);
+                    })
+                ],
+                            ]);
 
             if ($validateData->fails()) {
                 return response()->json(['error' => $validateData->messages()], 400);
@@ -60,7 +69,8 @@ class NewsCategoryController extends Controller
     public function update(Request $request)
     {
         $validateData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:news_categories,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id]
+            'name' => ['required', 'string', 'max:50',
+            'regex:/^[A-Za-z\s]+$/','unique:news_categories,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id]
         ]);
 
         if ($validateData->fails()) {

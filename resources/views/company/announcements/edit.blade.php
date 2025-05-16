@@ -3,8 +3,6 @@
 @section('title')
     Edit Announcement
 @endsection
-
-
 @php
     if ($editAnnouncementDetails->all_company_branch == 0) {
         $selectedCompanyBranchId = $editAnnouncementDetails->companyBranches->pluck('id');
@@ -51,12 +49,25 @@
                             <div class="text-danger">{{ $errors->first('expires_at_time') }}</div>
                         @endif
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label class="col-form-label">Image</label>
-                        <input type="file" class="form-control" name="image">
+                        <input type="file" class="form-control" name="image" id="imageInput" accept="image/*">
+
                         @if ($errors->has('image'))
                             <div class="text-danger">{{ $errors->first('image') }}</div>
                         @endif
+                    </div>
+
+                    <div class="col-md-2 form-group mt-2">
+                        <div id="imagePreview" class="mt-1">
+                            <img
+                                id="previewImg"
+                                src="{{ $editAnnouncementDetails->image}}"
+                                alt="Image Preview"
+                                class="img-thumbnail"
+                                style="max-width: 100px; max-height: 100px;"
+                            >
+                        </div>
                     </div>
                     <div class="col-md-6 form-group mb-4">
                         <label class="col-form-label required">Description </label>
@@ -262,4 +273,14 @@
         get_all_user();
     });
 </script>
+<script>
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+        const [file] = event.target.files;
+        if (file) {
+            const previewImg = document.getElementById('previewImg');
+            previewImg.src = URL.createObjectURL(file);
+            previewImg.style.display = 'block';
+        }
+    });
+    </script>
 @endsection

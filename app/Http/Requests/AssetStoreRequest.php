@@ -21,7 +21,7 @@ class AssetStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'                          => ['required', 'string'],
+            'name'                          => ['required','max:50','regex:/^[a-zA-Z\s]+$/'],
             'model'                         => ['required', 'string'],
             'purchase_value'                => ['required', 'string'],
             'depreciation_per_year'         => ['nullable'],

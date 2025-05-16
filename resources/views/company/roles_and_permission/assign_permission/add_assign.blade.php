@@ -1,17 +1,12 @@
 @extends('layouts.company.main')
 @section('content')
-@section('title')
-Roles And Permissions
-@endsection
+@section('title','Roles And Permissions')
     <div class="page-body">
         <!-- Container-fluid starts-->
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h4>Assign Permission</h4>
-                        </div>
                         <div class="card-body">
                             @if (session('error'))
                                 <div class="alert alert-danger alert-dismissible">
@@ -180,7 +175,7 @@ Roles And Permissions
                     if (selectedValue) {
                         getPermission(selectedValue);
                     } else {
-                        console.error('No value selected.');
+                        $("input:checkbox").prop('checked',false);
                     }
                 }
             });

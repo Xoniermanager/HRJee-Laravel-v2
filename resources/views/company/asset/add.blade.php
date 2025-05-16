@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="col-md-4 form-group">
                                         <label for="">Purchase Value *</label>
-                                        <input type="text" name="purchase_value" id="" class="form-control" value="{{old('purchase_value')}}">
+                                        <input type="number" name="purchase_value" id="" class="form-control" value="{{old('purchase_value')}}">
                                         @if ($errors->has('purchase_value'))
                                             <div class="text-danger">{{ $errors->first('purchase_value') }}</div>
                                         @endif
@@ -87,21 +87,21 @@
                                     </div>
                                     <div class="col-md-4 form-group">
                                         <label for="">Validation Upto *</label>
-                                        <input type="date" name="validation_upto" id="" class="form-control" value="{{old('validation_upto')}}">
+                                        <input type="date" name="validation_upto" id="" class="form-control" value="{{old('validation_upto')}}" max="50">
                                         @if ($errors->has('validation_upto'))
                                             <div class="text-danger">{{ $errors->first('validation_upto') }}</div>
                                         @endif
                                     </div>
                                     <div class="col-md-4 form-group">
                                         <label for="">Serial No *</label>
-                                        <input type="text" name="serial_no" id="" class="form-control" value="{{old('serial_no')}}">
+                                        <input type="text" name="serial_no" id="" class="form-control" value="{{old('serial_no')}}" max="50">
                                         @if ($errors->has('serial_no'))
                                             <div class="text-danger">{{ $errors->first('serial_no') }}</div>
                                         @endif
                                     </div>
                                     <div class="col-md-4 form-group">
                                         <label for="">Invoice file</label>
-                                        <input type="file" name="invoice_file" class="form-control" value="{{old('invoice_file')}}">
+                                        <input type="file" name="invoice_file" class="form-control" value="{{old('invoice_file')}}" accept=".jpg,.jpeg,.png,.pdf">
                                         @if ($errors->has('invoice_file'))
                                             <div class="text-danger">{{ $errors->first('invoice_file') }}</div>
                                         @endif
@@ -125,7 +125,7 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() 
+    $(document).ready(function()
     {
         jQuery("#asset_create_form").validate
         ({
@@ -152,6 +152,6 @@
                 serial_no : "Please Enter the Serial No"
             },
         });
-    }); 
+    });
 </script>
 @endsection

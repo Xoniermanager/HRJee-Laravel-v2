@@ -44,7 +44,7 @@
                                     <div class="col-md-4 form-group">
                                         <label for="">Start Date *</label>
                                         <input class="form-control" name="start_date" type="date"
-                                            value="{{ $editNewsDetails->start_date }}">
+                                            value="{{ $editNewsDetails->start_date }}"  min="{{ $editNewsDetails->start_date}}">
                                         @if ($errors->has('start_date'))
                                             <div class="text-danger">{{ $errors->first('start_date') }}</div>
                                         @endif
@@ -52,7 +52,7 @@
                                     <div class="col-md-4 form-group">
                                         <label for="">End Date *</label>
                                         <input class="form-control" name="end_date" type="date"
-                                            value="{{ $editNewsDetails->end_date }}">
+                                            value="{{ $editNewsDetails->end_date }}"  min="{{ date('Y-m-d') }}">
                                         @if ($errors->has('end_date'))
                                             <div class="text-danger">{{ $errors->first('end_date') }}</div>
                                         @endif
@@ -73,7 +73,7 @@
                                     </div>
                                      <div class="col-md-6 form-group">
                                         <label for="">Attachment File </label>
-                                        <input class="form-control" name="file" type="file" accept="pdf">
+                                        <input class="form-control" name="file" type="file" accept=".pdf">
                                         @if ($errors->has('file'))
                                             <div class="text-danger">{{ $errors->first('file') }}</div>
                                         @endif
@@ -92,7 +92,7 @@
                                             <div class="row">
                                                 <div class="col-md-8">
                                                     <input type="file" class="form-control" name="image"
-                                                        accept=".png, .jpg, .jpeg">
+                                                        accept=".png, .jpg, .jpeg" value="{{ $editNewsDetails->image }}">
                                                     @if ($errors->has('image'))
                                                         <div class="text-danger">{{ $errors->first('image') }}</div>
                                                     @endif
@@ -100,7 +100,10 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <!--begin::Preview existing avatar-->
-                                                    <div class="image-input-wrapper w-125px h-125px"></div>
+                                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url('{{ $editNewsDetails->image }}');
+                                                    background-size: cover;
+                                                    background-position: center;">
+                                                    </div>
                                                     <!--end::Preview existing avatar-->
                                                 </div>
                                             </div>

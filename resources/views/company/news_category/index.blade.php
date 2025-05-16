@@ -1,8 +1,6 @@
 @extends('layouts.company.main')
 @section('content')
-@section('title')
-    News Category
-@endsection
+@section('title','News Category')
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
@@ -92,7 +90,7 @@
 
                             <!--begin::Input group-->
                             <div class="mt-3">
-                                <label>Name</label>
+                                <label class="required">Name</label>
                                 <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
                             </div>
                             <!--end::Input group-->
@@ -153,7 +151,7 @@
                             <!--begin::Input group-->
 
                             <div class="mt-3">
-                                <label>Name</label>
+                                <label class="required">Name</label>
                                 <input class="form-control mb-5 mt-3" type="text" name="name">
                                 <!--end::Switch-->
                             </div>
@@ -187,77 +185,60 @@
             jQuery('#edit_news_category').modal('show');
         }
         jQuery.noConflict();
-        jQuery(document).ready(function($) {
-            jQuery("#news_category_form").validate({
-                rules: {
-                    name: "required",
-                },
-                messages: {
-                    name: "Please enter name",
-                },
-                submitHandler: function(form) {
-                    var news_category_data = $(form).serialize();
-                    $.ajax({
-                        url: "{{ route('news.category.store') }}",
-                        type: 'POST',
-                        data: news_category_data,
-                        success: function(response) {
-                            jQuery('#add_news_category').modal('hide');
-                            swal.fire("Done!", response.message, "success");
-                            $('#news_category_list').replaceWith(response.data);
-                            jQuery("#news_category_form")[0].reset();
+jQuery(document).ready(function($) {
 
-                        },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span class="' + error_key +
-                                    '_error text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("." + error_key + "_error").remove();
-                                }, 5000);
-                            }
-                        }
-                    });
-                }
-            });
-            jQuery("#news_category_update_form").validate({
-                rules: {
-                    name: "required"
-                },
-                messages: {
-                    name: "Please enter name",
+    // ✅ Custom method to validate alphabet and spaces only
+    $.validator.addMethod("alphaSpaceOnly", function(value, element) {
+        return this.optional(element) || /^[A-Za-z\s]+$/.test(value);
+    }, "Only alphabet characters and spaces are allowed");
 
-                },
-                submitHandler: function(form) {
-                    var news_category_data = $(form).serialize();
-                    $.ajax({
-                        url: "<?= route('news.category.update') ?>",
-                        type: 'post',
-                        data: news_category_data,
-                        success: function(response) {
-                            jQuery('#edit_news_category').modal('hide');
-                            swal.fire("Done!", response.message, "success");
-                            jQuery('#news_category_list').replaceWith(response.data);
-                        },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span id="' + error_key +
-                                    '_error" class="text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("#" + error_key + "_error").remove();
-                                }, 5000);
-                            }
-                        }
-                    });
-                }
-            });
+    // ✅ Reusable validation rules and messages
+    const nameRules = {
+        required: true,
+        maxlength: 50,
+        alphaSpaceOnly: true // <-- use custom method
+    };
+
+    const nameMessages = {
+        required: "Please enter name",
+        maxlength: "Maximum 50 characters allowed",
+        alphaSpaceOnly: "Only alphabet characters and spaces are allowed"
+    };
+
+    function handleAjaxError(error_messages) {
+        const errors = error_messages.responseJSON?.error || {};
+        for (let key in errors) {
+            const field = $('[name="' + key + '"]');
+            field.next('.' + key + '_error').remove(); // remove previous error
+            field.after('<span class="' + key + '_error text text-danger">' + errors[key] + '</span>');
+            setTimeout(() => $('.' + key + '_error').remove(), 5000);
+        }
+    }
+
+    function applyValidation(formSelector, url, modalId) {
+        $(formSelector).validate({
+            rules: { name: nameRules },
+            messages: { name: nameMessages },
+            submitHandler: function(form) {
+                const formData = $(form).serialize();
+                $.post(url, formData)
+                    .done(function(response) {
+                        jQuery(modalId).modal('hide');
+                        Swal.fire("Done!", response.message, "success");
+                        $('#news_category_list').replaceWith(response.data);
+                        form.reset();
+                    })
+                    .fail(handleAjaxError);
+            }
         });
+    }
+
+    // ✅ Apply validation to both forms
+    applyValidation("#news_category_form", "{{ route('news.category.store') }}", '#add_news_category');
+    applyValidation("#news_category_update_form", "<?= route('news.category.update') ?>", '#edit_news_category');
+
+});
+
 
         function handleStatus(id) {
             var checked_value = $('#checked_value_' + id).prop('checked');
@@ -310,7 +291,7 @@
                             $('#news_category_list').replaceWith(res.data);
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
-                            Swal.fire("Error deleting!", "Please try again", "error");
+                            Swal.fire("Cannot Delete", "This category is already assigned to news and cannot be deleted.", "error");
                         }
                     });
                 }

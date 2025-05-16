@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Company;
 use Exception;
 use App\Models\MenuRole;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CustomRoleService;
 use Illuminate\Support\Facades\Validator;
@@ -36,7 +37,18 @@ class RolesController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:roles,name,NULL,id,company_id,' . auth()->user()->company_id],
+                'name' => [
+                    'required',
+                    'string',
+                    'max:50',
+                    'regex:/^[a-zA-Z\s]+$/',
+                    Rule::unique('roles', 'name')
+                        ->where(function ($query) {
+                            return $query
+                                ->whereNull('deleted_at')
+                                ->where('company_id', auth()->user()->company_id);
+                        }),
+                ],
             ]);
 
             if ($validator->fails()) {
@@ -48,7 +60,7 @@ class RolesController extends Controller
             $data['company_id'] = Auth()->user()->company_id;
             $data['created_by'] = Auth()->user()->id;
             $data['category'] = 'custom';
-            
+
             if ($this->customRoleService->create($data)) {
 
                 return response()->json([
@@ -70,8 +82,20 @@ class RolesController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:roles,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
-        ]);
+            'name' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[a-zA-Z\s]+$/',
+                Rule::unique('roles', 'name')
+                    ->ignore($request->id) // Allow the current record
+                    ->where(function ($query) {
+                        return $query
+                            ->whereNull('deleted_at')
+                            ->where('company_id', auth()->user()->company_id);
+                    }),
+            ],
+                    ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->messages()], 400);
@@ -116,7 +140,7 @@ class RolesController extends Controller
         $id = $request->id;
 
         $role = $this->customRoleService->getDetails($id);
-        
+
         if(count($role->users)) {
             return response()->json([
                 'status' => false,
