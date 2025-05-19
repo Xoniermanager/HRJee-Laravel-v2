@@ -33,7 +33,8 @@ class AssetManufacturerController extends Controller
     {
         try {
             $validateData  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:asset_manufacturers,name'],
+                'name' => ['required', 'string',  'max:50',
+                'regex:/^[a-zA-Z\s]+$/','unique:asset_manufacturers,name'],
             ]);
 
             if ($validateData->fails()) {
@@ -59,7 +60,8 @@ class AssetManufacturerController extends Controller
     public function update(Request $request)
     {
         $validateData  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:asset_manufacturers,name,' . $request->id]
+            'name' => ['required', 'string',  'max:50',
+            'regex:/^[a-zA-Z\s]+$/','unique:asset_manufacturers,name,' . $request->id]
         ]);
 
         if ($validateData->fails()) {
