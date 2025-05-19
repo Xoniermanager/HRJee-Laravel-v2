@@ -84,28 +84,22 @@
                 <select class="form-control" name="blood_group">
                     <option value="">Select the Blood Group</option>
                     <option
-                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'A-' ? 'selected' : '' }}
-                        value="A-">A-
+                        {{ ($singleUserDetails->details->blood_group ?? old('blood_group')) == 'A-' ? 'selected' : '' }} value="A-">A-
                     </option>
                     <option
-                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'A+' ? 'selected' : '' }}
-                        value="A+">A+
+                        {{ ($singleUserDetails->details->blood_group ?? old('blood_group')) == 'A+' ? 'selected' : '' }} value="A+">A+
                     </option>
                     <option
-                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'B+' ? 'selected' : '' }}
-                        value="B+">B+
+                        {{ ($singleUserDetails->details->blood_group ?? old('blood_group')) == 'B+' ? 'selected' : '' }}  value="B+">B+
                     </option>
                     <option
-                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'B-' ? 'selected' : '' }}
-                        value="B-">B-
+                        {{ ($singleUserDetails->details->blood_group ?? old('blood_group')) == 'B-' ? 'selected' : '' }}  value="B-">B-
                     </option>
                     <option
-                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'O+' ? 'selected' : '' }}
-                        value="O+">O+
+                        {{ ($singleUserDetails->details->blood_group ?? old('blood_group')) == 'O+' ? 'selected' : '' }} value="O+">O+
                     </option>
                     <option
-                        {{ $singleUserDetails->details->blood_group ?? old('blood_group') == 'O-' ? 'selected' : '' }}
-                        value="O-">O
+                        {{ ($singleUserDetails->details->blood_group ?? old('blood_group')) == 'O-' ? 'selected' : '' }} value="O-">O-
                     </option>
                 </select>
             </div>
@@ -113,14 +107,12 @@
                 <label for="">Gender *</label>
                 <select class="form-control" name="gender">
                     <option value="">Select the Gender</option>
-                    <option {{ $singleUserDetails->details->gender ?? old('gender') == 'M' ? 'selected' : '' }}
-                        value="M">
+                    <option {{ ($singleUserDetails->details->gender ?? old('gender')) == 'M' ? 'selected' : '' }} value="M">
                         Male</option>
-                    <option {{ $singleUserDetails->details->gender ?? old('gender') == 'F' ? 'selected' : '' }}
-                        value="F">
+                    <option {{ ($singleUserDetails->details->gender ?? old('gender')) == 'F' ? 'selected' : '' }} value="F">
                         Female</option>
                     <option
-                        {{ $singleUserDetails->details->gender ?? old('gender') == 'O' ? 'selected' : '' }}value="O">
+                        {{ ($singleUserDetails->details->gender ?? old('gender')) == 'O' ? 'selected' : '' }}value="O">
                         Other
                     </option>
                 </select>
@@ -130,10 +122,10 @@
                 <select class="form-control" name="marital_status">
                     <option value="">Select the Marital Status</option>
                     <option
-                        {{ $singleUserDetails->details->marital_status ?? old('marital_status') == 'M' ? 'selected' : '' }}
+                        {{ ($singleUserDetails->details->marital_status ?? old('marital_status')) == 'M' ? 'selected' : '' }}
                         value="M">Married</option>
                     <option
-                        {{ $singleUserDetails->details->marital_status ?? old('marital_status') == 'S' ? 'selected' : '' }}
+                        {{ ($singleUserDetails->details->marital_status ?? old('marital_status')) == 'S' ? 'selected' : '' }}
                         value="S">Single</option>
                 </select>
             </div>
@@ -143,7 +135,7 @@
                     <option value="">Select The Employee Status</option>
                     @forelse ($allEmployeeStatus as $employeeStatus)
                         <option
-                            {{ $singleUserDetails->details->employee_status_id ?? old('employee_status_id') == $employeeStatus->id ? 'selected' : '' }}
+                            {{ ($singleUserDetails->details->employee_status_id ?? old('employee_status_id')) == $employeeStatus->id ? 'selected' : '' }}
                             value="{{ $employeeStatus->id }}">
                             {{ $employeeStatus->name }}</option>
                     @empty
@@ -220,7 +212,7 @@
                     <option value="">Select The Employee Type</option>
                     @forelse ($allEmployeeType as $employeeType)
                         <option
-                            {{ $singleUserDetails->details->employee_type_id ?? old('employee_type_id') ? 'selected' : '' }}
+                            {{ ($singleUserDetails->details->employee_type_id ?? old('employee_type_id')) ? 'selected' : '' }}
                             value="{{ $employeeType->id }}">
                             {{ $employeeType->name }}</option>
                     @empty
@@ -234,7 +226,7 @@
                     <option value="">Select The Department</option>
                     @forelse ($alldepartmentDetails as $departmentDetails)
                         <option value="{{ $departmentDetails->id }}"
-                            {{ $singleUserDetails->details->department_id ?? '' == $departmentDetails->id ? 'selected' : '' }}>
+                            {{ ($singleUserDetails->details->department_id ?? '') == $departmentDetails->id ? 'selected' : '' }}>
                             {{ $departmentDetails->name }}</option>
                     @empty
                         <option value="">No Department Found</option>
@@ -315,8 +307,8 @@
                 <label for="">Office Timing:</label>
                 <select name="office_shift_id[]" id="office_shift_id" class="form-control select2-multi" multiple>
                     <option value="">Select Shift</option>
-                    @if (isset($allShifts)) 
-                        @foreach ($allShifts as $shift) 
+                    @if (isset($allShifts))
+                        @foreach ($allShifts as $shift)
                             <option value="{{ $shift->id }}" {{ in_array($shift->id, $userShifts) ? 'selected' : '' }}>
                                 {{ ucfirst($shift->name) }} ({{ date('h:i A', strtotime($shift->start_time)) }} -
                                 {{ date('h:i A', strtotime($shift->end_time)) }})
