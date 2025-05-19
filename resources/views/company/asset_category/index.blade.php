@@ -93,7 +93,7 @@
 
                             <!--begin::Input group-->
                             <div class="mt-3">
-                                <label>Name</label>
+                                <label class="required">Name</label>
                                 <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
                             </div>
                             <!--end::Input group-->
@@ -154,7 +154,7 @@
                             <!--begin::Input group-->
 
                             <div class="mt-3">
-                                <label>Name</label>
+                                <label  class="required">Name</label>
                                 <input class="form-control mb-5 mt-3" type="text" name="name">
                                 <!--end::Switch-->
                             </div>
@@ -187,80 +187,6 @@
             $('#name').val(name);
             jQuery('#edit_asset_category').modal('show');
         }
-        jQuery.noConflict();
-        jQuery(document).ready(function($) {
-            jQuery("#asset_category_form").validate({
-                rules: {
-                    name: "required",
-                },
-                messages: {
-                    name: "Please enter name",
-                },
-                submitHandler: function(form) {
-                    var asset_category_data = $(form).serialize();
-                    $.ajax({
-                        url: "{{ route('asset.category.store') }}",
-                        type: 'POST',
-                        data: asset_category_data,
-                        success: function(response) {
-                            jQuery('#add_asset_category').modal('hide');
-                            swal.fire("Done!", response.message, "success");
-                            $('#asset_category_list').replaceWith(response.data);
-                            jQuery("#asset_category_form")[0].reset();
-
-                        },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span class="' + error_key +
-                                    '_error text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("." + error_key + "_error").remove();
-                                }, 5000);
-                            }
-                        }
-                    });
-                }
-            });
-            jQuery("#asset_category_update_form").validate({
-                rules: {
-                    name: "required"
-                },
-                messages: {
-                    name: "Please enter name",
-
-                },
-                submitHandler: function(form) {
-                    var asset_category_data = $(form).serialize();
-                    $.ajax({
-                        url: "<?= route('asset.category.update') ?>",
-                        type: 'post',
-                        data: asset_category_data,
-                        success: function(response) {
-                            jQuery('#edit_asset_category').modal('hide');
-                            swal.fire("Done!", response.message, "success");
-                            jQuery('#asset_category_list').replaceWith(response.data);
-                        },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span id="' + error_key +
-                                    '_error" class="text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("#" + error_key + "_error").remove();
-                                }, 5000);
-                            }
-                        }
-                    });
-                }
-            });
-        });
-
-
 
         function handleStatus(id) {
             var checked_value = $('#checked_value_' + id).prop('checked');
@@ -340,4 +266,65 @@
             });
         }
     </script>
+    <script>
+        jQuery(document).ready(function($) {
+            // Custom rule: letters + spaces only, max 50 chars
+            $.validator.addMethod("alphaSpaceMax", function(value, element) {
+                return this.optional(element) || /^[A-Za-z\s]{1,50}$/.test(value);
+            }, "Only letters and spaces allowed, max 50 characters.");
+
+            function handleAssetCategoryForm(formSelector, modalSelector, ajaxUrl) {
+                $(formSelector).validate({
+                    rules: {
+                        name: {
+                            required: true,
+                            alphaSpaceMax: true
+                        }
+                    },
+                    messages: {
+                        name: {
+                            required: "Please enter a name",
+                            alphaSpaceMax: "Only letters and spaces allowed, max 50 characters"
+                        }
+                    },
+                    submitHandler: function(form) {
+                        const formData = $(form).serialize();
+                        $.ajax({
+                            url: ajaxUrl,
+                            type: 'POST',
+                            data: formData,
+                            success: function(response) {
+                                jQuery(modalSelector).modal('hide');
+                                Swal.fire("Success", response.message, "success");
+                                $('#asset_category_list').replaceWith(response.data);
+                                if (formSelector === "#asset_category_form") {
+                                    $(formSelector)[0].reset();
+                                }
+                            },
+                            error: function(xhr) {
+                                const errors = xhr.responseJSON.error || {};
+                                for (const key in errors) {
+                                    const $field = $('[name=' + key + ']');
+                                    // Check if error message already exists to avoid duplicates
+                                    if ($field.next('.' + key + '_error').length === 0) {
+                                        $field.after(`<span class="${key}_error text text-danger">${errors[key]}</span>`);
+                                        // Remove error message after 5 seconds
+                                        setTimeout(() => {
+                                            $field.next('.' + key + '_error').fadeOut(300, function() {
+                                                $(this).remove();
+                                            });
+                                        }, 5000);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            handleAssetCategoryForm("#asset_category_form", "#add_asset_category", "{{ route('asset.category.store') }}");
+            handleAssetCategoryForm("#asset_category_update_form", "#edit_asset_category", "{{ route('asset.category.update') }}");
+        });
+        </script>
+
 @endsection
