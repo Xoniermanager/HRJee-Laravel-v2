@@ -33,7 +33,8 @@ class AssetStatusController extends Controller
     {
         try {
             $validateCompanyStatus  = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'unique:asset_statuses,name'],
+                'name' => ['required', 'string', 'max:50',
+                'regex:/^[a-zA-Z\s]+$/', 'unique:asset_statuses,name'],
             ]);
 
             if ($validateCompanyStatus->fails()) {
@@ -59,7 +60,8 @@ class AssetStatusController extends Controller
     public function update(Request $request)
     {
         $validateCompanyStatus  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:asset_statuses,name,' . $request->id]
+            'name' => ['required', 'string', 'max:50',
+            'regex:/^[a-zA-Z\s]+$/', 'unique:asset_statuses,name,' . $request->id]
         ]);
 
         if ($validateCompanyStatus->fails()) {

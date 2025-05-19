@@ -552,3 +552,10 @@ function get_coordinates_from_address($address)
 		];
     }
 }
+function unlinkFileOrImage($file)
+{
+    if (file_exists(storage_path('app/public/') . $file)) {
+        unlink(storage_path('app/public/') . $file);
+    }
+    return true;
+}

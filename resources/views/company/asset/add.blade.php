@@ -1,16 +1,12 @@
 @extends('layouts.company.main')
+
+@section('title', 'Add Asset')
+
 @section('content')
-@section('title')
-    Add Asset
-@endsection
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
-    <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
-        <!--begin::Row-->
         <div class="col-lg-12 col-xl-12 col-xxl-12 mb-5">
-            <!--begin::Timeline widget 3-->
             <div class="card h-md-100">
-                <!--begin::Header-->
                 <div class="card-header p-0 align-items-center">
                     <div class="card-body">
                         <form action="{{ route('asset.store') }}" method="post" id="asset_create_form" enctype="multipart/form-data">
@@ -18,105 +14,118 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-4 form-group">
-                                        <label for="">Name *</label>
-                                        <input type="text" name="name" class="form-control" value="{{old('name')}}">
-                                        @if ($errors->has('reason'))
-                                            <div class="text-danger">{{ $errors->first('reason') }}</div>
-                                        @endif
+                                        <label>Name *</label>
+                                        <input type="text" name="name" class="form-control" value="{{ old('name') }}">
+                                        @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Asset Category *</label>
+                                        <label>Asset Category *</label>
                                         <select name="asset_category_id" class="form-control">
                                             <option value="">Please Select the Category</option>
                                             @foreach ($allAssetCategory as $assetCategory)
-                                                <option {{old('asset_category_id') == $assetCategory->id ? 'selected' : ''}} value="{{ $assetCategory->id }}">
-                                                    {{ $assetCategory->name }}</option>
+                                                <option value="{{ $assetCategory->id }}" {{ old('asset_category_id') == $assetCategory->id ? 'selected' : '' }}>
+                                                    {{ $assetCategory->name }}
+                                                </option>
                                             @endforeach
                                         </select>
-                                        @if ($errors->has('asset_category_id'))
-                                            <div class="text-danger">{{ $errors->first('asset_category_id') }}</div>
-                                        @endif
+                                        @error('asset_category_id')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Asset Manufacturer *</label>
-                                        <select class="form-control" name="asset_manufacturer_id">
+                                        <label>Asset Manufacturer *</label>
+                                        <select name="asset_manufacturer_id" class="form-control">
                                             <option value="">Please Select the Manufacturer</option>
                                             @foreach ($allAssetManufacturer as $assetManufacturer)
-                                                <option {{old('asset_manufacturer_id') == $assetManufacturer->id ? 'selected' : ''}} value="{{ $assetManufacturer->id }}">
-                                                    {{ $assetManufacturer->name }}</option>
+                                                <option value="{{ $assetManufacturer->id }}" {{ old('asset_manufacturer_id') == $assetManufacturer->id ? 'selected' : '' }}>
+                                                    {{ $assetManufacturer->name }}
+                                                </option>
                                             @endforeach
                                         </select>
-                                        @if ($errors->has('asset_manufacturer_id'))
-                                            <div class="text-danger">{{ $errors->first('asset_manufacturer_id') }}</div>
-                                        @endif
+                                        @error('asset_manufacturer_id')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Model *</label>
-                                        <input type="text" name="model" id="" class="form-control" value="{{old('model')}}">
-                                        @if ($errors->has('model'))
-                                            <div class="text-danger">{{ $errors->first('model') }}</div>
-                                        @endif
+                                        <label>Model *</label>
+                                        <input type="text" name="model" class="form-control" value="{{ old('model') }}">
+                                        @error('model')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Purchase Value *</label>
-                                        <input type="number" name="purchase_value" id="" class="form-control" value="{{old('purchase_value')}}">
-                                        @if ($errors->has('purchase_value'))
-                                            <div class="text-danger">{{ $errors->first('purchase_value') }}</div>
-                                        @endif
+                                        <label>Purchase Value *</label>
+                                        <input type="number" name="purchase_value" class="form-control" value="{{ old('purchase_value') }}">
+                                        @error('purchase_value')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Depreciation Interest/Year</label>
-                                        <input type="text" name="depreciation_per_year" id="" class="form-control" value="{{old('name')}}">
-                                        @if ($errors->has('depreciation_per_year'))
-                                            <div class="text-danger">{{ $errors->first('depreciation_per_year') }}</div>
-                                        @endif
+                                        <label>Depreciation Interest/Year</label>
+                                        <input type="text" name="depreciation_per_year" class="form-control" value="{{ old('depreciation_per_year') }}">
+                                        @error('depreciation_per_year')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Invoice No</label>
-                                        <input type="text" name="invoice_no" id="" class="form-control" value="{{old('invoice_no')}}">
-                                        @if ($errors->has('invoice_no'))
-                                            <div class="text-danger">{{ $errors->first('invoice_no') }}</div>
-                                        @endif
+                                        <label>Invoice No</label>
+                                        <input type="text" name="invoice_no" class="form-control" value="{{ old('invoice_no') }}">
+                                        @error('invoice_no')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Invoice Date *</label>
-                                        <input type="date" name="invoice_date" id="" class="form-control" value="{{old('invoice_date')}}">
-                                        @if ($errors->has('invoice_date'))
-                                            <div class="text-danger">{{ $errors->first('invoice_date') }}</div>
-                                        @endif
+                                        <label>Invoice Date *</label>
+                                        <input type="date" name="invoice_date" class="form-control" value="{{ old('invoice_date') }}">
+                                        @error('invoice_date')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Validation Upto *</label>
-                                        <input type="date" name="validation_upto" id="" class="form-control" value="{{old('validation_upto')}}" max="50">
-                                        @if ($errors->has('validation_upto'))
-                                            <div class="text-danger">{{ $errors->first('validation_upto') }}</div>
-                                        @endif
+                                        <label>Validation Upto *</label>
+                                        <input type="date" name="validation_upto" class="form-control" value="{{ old('validation_upto') }}">
+                                        @error('validation_upto')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Serial No *</label>
-                                        <input type="text" name="serial_no" id="" class="form-control" value="{{old('serial_no')}}" max="50">
-                                        @if ($errors->has('serial_no'))
-                                            <div class="text-danger">{{ $errors->first('serial_no') }}</div>
-                                        @endif
+                                        <label>Serial No *</label>
+                                        <input type="text" name="serial_no" class="form-control" value="{{ old('serial_no') }}">
+                                        @error('serial_no')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group">
-                                        <label for="">Invoice file</label>
-                                        <input type="file" name="invoice_file" class="form-control" value="{{old('invoice_file')}}" accept=".jpg,.jpeg,.png,.pdf">
-                                        @if ($errors->has('invoice_file'))
-                                            <div class="text-danger">{{ $errors->first('invoice_file') }}</div>
-                                        @endif
+                                        <label>Invoice file</label>
+                                        <input type="file" name="invoice_file" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
+                                        @error('invoice_file')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+
                                     <div class="col-md-4 form-group mt-5 pt-1">
                                         <div class="toggle">
-                                            <input type="radio" name="ownership" value="owned" id="sizeWeight"
-                                                checked="checked" {{old('ownership') == 'owned' ? 'checked' : ''}} />
+                                            <input type="radio" name="ownership" value="owned" id="sizeWeight" {{ old('ownership', 'owned') == 'owned' ? 'checked' : '' }} />
                                             <label for="sizeWeight">Owned</label>
-                                            <input type="radio" name="ownership" value="rented" id="sizeDimensions" {{old('ownership') == 'rented' ? 'checked' : ''}}/>
+                                            <input type="radio" name="ownership" value="rented" id="sizeDimensions" {{ old('ownership') == 'rented' ? 'checked' : '' }} />
                                             <label for="sizeDimensions">Rented</label>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary mt-4">Submit</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -124,33 +133,41 @@
         </div>
     </div>
 </div>
+
 <script>
-    $(document).ready(function()
-    {
-        jQuery("#asset_create_form").validate
-        ({
+    $(document).ready(function () {
+        // Add custom method for name validation (alpha and space only)
+        $.validator.addMethod("alphaSpace", function (value, element) {
+            return this.optional(element) || /^[A-Za-z\s]+$/.test(value);
+        }, "Name can only contain letters and spaces");
+
+        $("#asset_create_form").validate({
             rules: {
-                name: "required",
-                asset_category_id : "required",
-                asset_manufacturer_id : "required",
-                model : "required",
-                purchase_value : "required",
-                invoice_date : "required",
+                name: {
+                    required: true,
+                    alphaSpace: true
+                },
+                asset_category_id: "required",
+                asset_manufacturer_id: "required",
+                model: "required",
+                purchase_value: "required",
+                invoice_date: "required",
                 serial_no: "required",
                 validation_upto: "required",
-                serial_no : "required"
             },
             messages: {
-                name: "Please Enter the Name",
-                asset_category_id : "Please Select the Asset Category",
-                asset_manufacturer_id : "Please Select the Asset Manufacturer",
-                model : "Please Enter the Model",
-                purchase_value : "Please Enter the Purchase Value",
-                invoice_date : "Please Select the date",
+                name: {
+                    required: "Please Enter the Name",
+                    alphaSpace: "Name can only contain letters and spaces"
+                },
+                asset_category_id: "Please Select the Asset Category",
+                asset_manufacturer_id: "Please Select the Asset Manufacturer",
+                model: "Please Enter the Model",
+                purchase_value: "Please Enter the Purchase Value",
+                invoice_date: "Please Select the date",
                 serial_no: "Please Enter the Serial Value",
                 validation_upto: "Please Select the Validation Date",
-                serial_no : "Please Enter the Serial No"
-            },
+            }
         });
     });
 </script>
