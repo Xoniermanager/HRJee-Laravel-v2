@@ -11,7 +11,7 @@ use Throwable;
 
 class AuthService
 {
-    private  $sendOtpService;
+    private $sendOtpService;
 
     public function __construct(SendOtpService $sendOtpService)
     {
@@ -24,31 +24,64 @@ class AuthService
      * @param [type] $request
      * @return void/null/object
      */
+
     public function login($request)
     {
         try {
-            $user = User::where('email', $request->email)->first();
-            if (!$user) {
-                return errorMessage('null', 'please enter valid email!');
-            }
-            if (!Hash::check($request->password, $user->password)) {
-                return errorMessage('null', 'please enter valid password!');
-            }
-            if ($user && ($user->id == '2' || $user->id == '1')) {
-                $user['access_token'] = $user->createToken('token')->plainTextToken;
-                return apiResponse('success', $user);
+            $loginField = $request->filled('email') ? 'email' : 'emp_id';
+            $loginValue = $request->input($loginField);
+
+            if ($loginField === 'email') {
+                $user = User::where('email', $loginValue)->first();
             } else {
-                $otpResponse = $this->sendOtpService->generateOTP($request->email, 'employee');
-                if ($otpResponse['status'] == false) {
-                    return errorMessage('null', $otpResponse['message'],);
-                } else {
-                    return apiResponse($otpResponse['message']);
-                }
+                // Join with details relation to find user by emp_id
+                $user = User::whereHas('details', function ($query) use ($loginValue) {
+                    $query->where('emp_id', $loginValue);
+                })->with('details')->first();
             }
+
+            if (!$user) {
+                return errorMessage('null', 'Please enter a valid ' . ($loginField === 'email' ? 'email' : 'Employee ID') . '!');
+            }
+
+            if (!Hash::check($request->password, $user->password)) {
+                return errorMessage('null', 'Please enter a valid password!');
+            }
+
+            $user['access_token'] = $user->createToken('token')->plainTextToken;
+            return apiResponse('success', $user);
+
         } catch (Throwable $th) {
+            dd($th);
             return exceptionErrorMessage($th);
         }
     }
+
+    // public function login($request)
+    // {
+    //     try {
+    //         $user = User::where('email', $request->email)->first();
+    //         if (!$user) {
+    //             return errorMessage('null', 'please enter valid email!');
+    //         }
+    //         if (!Hash::check($request->password, $user->password)) {
+    //             return errorMessage('null', 'please enter valid password!');
+    //         }
+    //         if ($user && ($user->id == '2' || $user->id == '1')) {
+    //             $user['access_token'] = $user->createToken('token')->plainTextToken;
+    //             return apiResponse('success', $user);
+    //         } else {
+    //             $otpResponse = $this->sendOtpService->generateOTP($request->email, 'employee');
+    //             if ($otpResponse['status'] == false) {
+    //                 return errorMessage('null', $otpResponse['message'],);
+    //             } else {
+    //                 return apiResponse($otpResponse['message']);
+    //             }
+    //         }
+    //     } catch (Throwable $th) {
+    //         return exceptionErrorMessage($th);
+    //     }
+    // }
 
     /**
      * loginByEmpId function
@@ -72,11 +105,10 @@ class AuthService
             if (!Hash::check($request->password, $user->password)) {
                 return errorMessage('null', 'please enter valid password!');
             }
-            
+
             $user['access_token'] = $user->createToken('token')->plainTextToken;
 
             return apiResponse('success', $user);
-            
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
@@ -119,7 +151,19 @@ class AuthService
     public function sendOtp($request, $type)
     {
         try {
-            $otpResponse = $this->sendOtpService->generateOTP($request->email, $type);
+            $loginField = $request->filled('email') ? 'email' : 'emp_id';
+            $loginValue = $request->input($loginField);
+            // Get the email
+            if ($loginField === 'email') {
+                $email = $request->email;
+            } else {
+                $email = User::whereHas('details', function ($query) use ($loginValue) {
+                    $query->where('emp_id', $loginValue);
+                })
+                ->pluck('email')
+                ->first();
+            }
+            $otpResponse = $this->sendOtpService->generateOTP($email, $type);
             if ($otpResponse['status'] == false)
                 return errorMessage('null', $otpResponse['message']);
             else

@@ -37,7 +37,7 @@ Add Bulk Attendance
                                             <option value="{{ $employeeDetails->id }}" {{ is_array(old('employee_id'))
                                                 && in_array($employeeDetails->id, old('employee_id')) ? 'selected' : ''
                                                 }}>
-                                                {{ $employeeDetails->name }}
+                                                {{ $employeeDetails->name .' - ('.$employeeDetails->details->emp_id.')'}}
                                             </option>
                                             @endforeach
                                         </select>
