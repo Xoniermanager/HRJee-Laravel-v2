@@ -55,7 +55,7 @@ class EmployeeAttendanceExport implements FromCollection, WithHeadings, WithMapp
         $workingHours = getTotalWorkingHour($attendance->punch_in, $attendance->punch_out);
         $date = getFormattedDate($attendance->punch_in);
         $punchInTime = date('h:i A', strtotime($attendance->punch_in));
-        $punchOutTime = date('h:i A', strtotime($attendance->punch_in));
+        $punchOutTime = date('h:i A', strtotime($attendance->punch_out));
         return [
             $serialNumber++,
             $date,

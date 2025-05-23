@@ -91,7 +91,7 @@ class AttendanceController extends Controller
             $data['punch_in_using'] = 'Face';
 
             $attendanceDetails = $this->employeeAttendanceService->createUsingFace($data);
-            
+
             if ($attendanceDetails['status'] === true && $attendanceDetails['message'] === 'Punch Out') {
                 return response()->json([
                     'status' => true,
@@ -136,7 +136,7 @@ class AttendanceController extends Controller
     {
         try {
             $shifts = $this->employeeAttendanceService->getTodaysShifts();
-            
+
             return response()->json([
                 'status' => true,
                 'data' => $shifts,
@@ -235,7 +235,9 @@ class AttendanceController extends Controller
                         [
                             'date' => date('j F,Y', strtotime($attendanceDetails->punch_in)),
                             'day' => date('l', strtotime($attendanceDetails->punch_in)),
-                            'total_hours' => getTotalWorkingHour($attendanceDetails->punch_in, $attendanceDetails->punch_out)
+                            'total_hours' => getTotalWorkingHour($attendanceDetails->punch_in, $attendanceDetails->punch_out),
+                            'punch_in' => $attendanceDetails->punch_in,
+                            'punch_out' => $attendanceDetails->punch_out
                         ];
                 }
             } else {
@@ -466,10 +468,13 @@ class AttendanceController extends Controller
             $year = date('Y');
             $employeeDetails = Auth()->user();
             $data = [
+                'attendanceDetails' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->get('punch_in'),
                 'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
                 'totalLeave' => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
                 'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->count(),
+                'holidayDetails' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->get('date'),
                 'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month,$employeeDetails->id,$year)->count(),
+                'shortAttendanceDetails' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month,$employeeDetails->id,$year)->get('punch_in'),
                 'totalAbsent' => '0',
             ];
             return response()->json([

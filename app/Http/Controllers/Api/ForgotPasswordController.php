@@ -27,23 +27,43 @@ class ForgotPasswordController extends Controller
     {
 
         try {
+            // Validation rules
             $validator = Validator::make($request->all(), [
-                'email' => ['required', 'email', 'exists:users'],
+                'emp_id' => 'required_without:email|string|exists:user_details,emp_id',
+                'email' => 'required_without:emp_id|nullable|email|exists:users,email',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
-                    "error" => 'validation_error',
-                    "message" => $validator->errors(),
+                    'error' => 'validation_error',
+                    'message' => $validator->errors(),
                 ], 400);
             }
 
             $code = generateOtp();
-            $code = "1234";
-            $email = $request->email;
-            $mailData = $this->sendOtpService->update($email, 'user', $code);
-            if ($mailData) {
 
+            // Generate OTP
+            $code = "1234"; // or use generateOtp();
+
+            // Determine login field
+            $loginField = $request->filled('email') ? 'email' : 'emp_id';
+            $loginValue = $request->input($loginField);
+
+            // Get the email
+            if ($loginField === 'email') {
+                $email = $request->email;
+            } else {
+                $email = User::whereHas('details', function ($query) use ($loginValue) {
+                    $query->where('emp_id', $loginValue);
+                })
+                ->pluck('email')
+                ->first();
+            }
+
+            // Send OTP
+            $mailData = $this->sendOtpService->update($email, 'user', $code);
+
+            if ($mailData) {
                 Mail::send('email.send_otp', ['code' => $code], function ($message) use ($email) {
                     $message->to($email);
                     $message->subject('Reset Password');
@@ -54,12 +74,18 @@ class ForgotPasswordController extends Controller
                     'message' => 'OTP has been sent on your mail',
                     'data' => [],
                 ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Mail could not be sent because the email address is invalid.',
+                    'data' => [],
+                ], 200);
             }
-            else
-                return apiResponse('invalid_mail',  ['status' => false, 'email' => $request->email, 'otp' => $code]);
+
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
+
     }
 
     public function resetPassword(Request $request)
@@ -67,7 +93,8 @@ class ForgotPasswordController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-                'email' => ['required', 'email', 'exists:users'],
+                'emp_id' => 'required_without:email|string|exists:user_details,emp_id',
+                'email' => 'required_without:emp_id|nullable|email|exists:users,email',
                 'otp' => ['required'],
                 'password' => ['required','string','min:8'],
                 'confirm_password' => ['required','same:password']
@@ -81,7 +108,20 @@ class ForgotPasswordController extends Controller
                 ], 400);
             }
 
-            $email = $request->email;
+            $loginField = $request->filled('email') ? 'email' : 'emp_id';
+            $loginValue = $request->input($loginField);
+
+            // Get the email
+            if ($loginField === 'email') {
+                $email = $request->email;
+            } else {
+                $email = User::whereHas('details', function ($query) use ($loginValue) {
+                    $query->where('emp_id', $loginValue);
+                })
+                ->pluck('email')
+                ->first();
+            }
+
 
             $code = UserCode::where(['email' => $email, 'code' => $request->otp, 'type' => 'user'])->where('updated_at', '>=', now()->subMinutes(20))->first();
 

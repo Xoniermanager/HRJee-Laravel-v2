@@ -65,7 +65,7 @@ class AttendanceController extends Controller
                 return response()->json([
                     'data' => view('company.attendance.list', compact('allEmployeeDetails'))->render()
                 ]);
-            } 
+            }
         }
     }
 
@@ -113,16 +113,15 @@ class AttendanceController extends Controller
         $encryptId = getDecryptId($userId);
         $userDetail = $this->employeeService->getUserDetailById($encryptId);
         $employeeDetail = $this->viewsearchFilterDetails(Carbon::now()->month, date('Y'), $userDetail);
-
         return view('company.attendance.view', compact('employeeDetail'));
     }
 
     public function viewsearchFilterDetails($month, $year, $employeeDetails, $start_date = null, $end_date = null)
     {
-        
+
         if($start_date != "") {
             $startDate = $start_date;
-            
+
             if($end_date == "") {
                 $endDate = Carbon::createFromDate(date("Y"), date("m"), 1)->endOfMonth();
             } else {
@@ -132,10 +131,9 @@ class AttendanceController extends Controller
             $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
             $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         }
-        
+
         if ($endDate->format('Y-m') == date('Y-m'))
             $endDate = date('Y-m-d');
-
 
         $allAttendanceDetails = [];
         while (strtotime($startDate) <= strtotime($endDate)) {
@@ -148,13 +146,11 @@ class AttendanceController extends Controller
                 $weekendStatus = true;
             }
             $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeDetails->id, date('Y-m-d', strtotime($startDate)), $endDate);
-
-            $allAttendanceDetails[date('d F Y', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByDateByUserId($employeeDetails->id, $startDate)->first();
+            $allAttendanceDetails[date('d F Y', strtotime($startDate))] = $this->employeeAttendanceService->getAttendanceByuserId($employeeDetails->id, $startDate)->first();
             $allAttendanceDetails[date('d F Y', strtotime($startDate))]['weekend'] = $weekendStatus;
             $allAttendanceDetails[date('d F Y', strtotime($startDate))]['leave'] = $checkLeave;
             $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
         }
-
         return
             [
                 'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
@@ -243,12 +239,12 @@ class AttendanceController extends Controller
             'from' => 'required_if:range,custom',
             'to' => 'required_if:range,custom',
         ]);
-    
+
         $user = auth()->user();
-    
+
         // Dispatch background job
         dispatch(new SendAttendanceReportJob($user, $request->range, $request->from, $request->to));
-    
+
         return response()->json(['status' => 'success', 'message' => 'Attendance report will be sent to your email shortly.']);
     }
 }
