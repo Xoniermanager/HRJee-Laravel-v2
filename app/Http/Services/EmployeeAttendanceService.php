@@ -256,7 +256,7 @@ class EmployeeAttendanceService
                 $existingAttendance->update($data);
                 return ['status' => true, 'message' => 'Punch Out', 'data' => $userDetails];
             }
-            
+
         }
 
         // Handle holidays
@@ -323,11 +323,11 @@ class EmployeeAttendanceService
 
 
     public function getExtistingDetailsByUserId($userId, $shiftType = 'single')
-    {   
+    {
         $shiftIDs = $this->userShiftService->getTodaysShifts($userId, $shiftType)->pluck('shift_id')->toArray();
 
         if (count($shiftIDs)) {
-            
+
             return $this->employeeAttendanceRepository
                 ->where('user_id', $userId)
                 ->whereDate('punch_in', date('Y-m-d'))
@@ -340,8 +340,8 @@ class EmployeeAttendanceService
     }
 
     public function getCurrentAttendanceByUserId($userId)
-    {   
-        
+    {
+
         return $this->employeeAttendanceRepository
         ->where('user_id', $userId)
         ->where('punch_out', NULL)
@@ -449,6 +449,7 @@ class EmployeeAttendanceService
                     ->orWhereDate('punch_in', $yesterday);
             })
             ->orderBy('punch_in', 'desc');
+
         // return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', '=', $date);
     }
 
@@ -572,7 +573,7 @@ class EmployeeAttendanceService
     {
         $attendances = $this->employeeAttendanceRepository->where('user_id', $userID)->whereDate('punch_in', $date)->get();
         $leave = $this->leaveService->getConfirmedLeaveByUserIDAndDate('user_id', $userID);
-        
+
         $response = [
             'attendance' => [],
             'status' => Null
@@ -611,7 +612,7 @@ class EmployeeAttendanceService
                 }
                 $status = 'Present';
                 $response['attendance'][] = $resp;
-            }  
+            }
         } else {
             $status = 'Absent';
         }
@@ -649,5 +650,8 @@ class EmployeeAttendanceService
         return $this->employeeAttendanceRepository->where('user_id', $userId);
     }
 
-
+    public function getAttendanceByuserId($userId, $date)
+    {
+       return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', '=', $date);
+    }
 }
