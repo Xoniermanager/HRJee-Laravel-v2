@@ -21,7 +21,7 @@ class AssignMenuCompanyController extends Controller
     public function index()
     {
         $allCompanyDetails = $this->userService->getCompanies()->paginate(10);
-        
+
         return view('admin.assign_menu.index', compact('allCompanyDetails'));
     }
 
@@ -41,12 +41,12 @@ class AssignMenuCompanyController extends Controller
             'menu_id.*' => 'required|exists:menus,id',
         ]);
 
-        $company = Role::where('company_id',$validated['company_id'])->first();
+        $company = Role::where('company_id', $validated['company_id'])->first();
         // dd($company);
         // $adminRole = $company->role;
 
         // MenuRole::where('role_id', $company->role_id)->delete();
-        if(isset($validated['menu_id'])) {
+        if (isset($validated['menu_id'])) {
             $menus = Menu::whereIn('id', $validated['menu_id'])->get();
             $syncData = [];
             foreach ($menus as $menu) {
@@ -71,9 +71,10 @@ class AssignMenuCompanyController extends Controller
             // dd($adminRole);
             // MenuRole::insert($syncData);
             $company->menus()->sync($syncData);
-        }else{
+        } else {
+            $company->menus()->sync([]);
             // $adminRole->menus()->delete();
-            MenuRole::where('role_id', $company->role_id)->delete();
+            // MenuRole::where('role_id', $company->role_id)->delete();
         }
 
         return redirect(route('admin.assign_menu.index'))->with('success', 'Feature Updated Successfully');
@@ -83,7 +84,7 @@ class AssignMenuCompanyController extends Controller
     {
         $company = $this->userService->getUserById($request->company_id);
         $menuIDs = [];
-        foreach($company->menus() as $menu) {
+        foreach ($company->menus() as $menu) {
             $menuIDs[] = $menu['id'];
         }
 
