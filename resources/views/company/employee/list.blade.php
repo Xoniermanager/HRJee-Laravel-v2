@@ -4,8 +4,9 @@
 		<!--begin::Table head-->
 		<thead>
 			<tr class="fw-bold">
-                <th><input type="checkbox" id="check_all"></th>
+				<th><input type="checkbox" id="check_all"></th>
 				<th> Sr. No.</th>
+				<th> Employee ID</th>
 				<th class="min-w-150px">Name</th>
 				{{-- <th>Department</th>
                 <th>Designation</th> --}}
@@ -19,8 +20,8 @@
 				<th class="min-w-150px">Employee Type</th>
 				{{-- <th class="min-w-150px">Shift</th> --}}
 				<th class="min-w-150px">Status</th>
-				@if(auth()->user()->companyDetails->allow_face_recognition == 1)
-				<th class="min-w-150px">Allow Face Recognition</th>
+				@if (auth()->user()->companyDetails->allow_face_recognition == 1)
+					<th class="min-w-150px">Allow Face Recognition</th>
 				@endif
 				<th class="">Action</th>
 			</tr>
@@ -31,8 +32,9 @@
 		@forelse ($allUserDetails as $key => $singleUserDetails)
 			<tbody class="">
 				<tr>
-                    <td><input type="checkbox" name="user_id[]" value="{{ $singleUserDetails->id }}" class="item-checkbox"></td>
+					<td><input type="checkbox" name="user_id[]" value="{{ $singleUserDetails->id }}" class="item-checkbox"></td>
 					<td>{{ $key + 1 }}</td>
+					<td>{{ $singleUserDetails->details->emp_id }}</td>
 					<td>{{ $singleUserDetails->name }}</td>
 					{{-- <td>{{ $singleUserDetails->department->name }}</td>
                 <td>{{ $singleUserDetails->designation->name }}</td> --}}
@@ -65,14 +67,15 @@
 							<span class="slider round"></span>
 						</label>
 					</td>
-					@if(auth()->user()->companyDetails->allow_face_recognition == 1)
-					<td data-order="Invalid date">
-						<label class="switch">
-							<input type="checkbox" <?= $singleUserDetails->details->allow_face_recognition == '1' ? 'checked' : '' ?>
-								onchange="handleFaceRecognition({{ $singleUserDetails->id }})" id="checked_face_value_{{ $singleUserDetails->id }}">
-							<span class="slider round"></span>
-						</label>
-					</td>
+					@if (auth()->user()->companyDetails->allow_face_recognition == 1)
+						<td data-order="Invalid date">
+							<label class="switch">
+								<input type="checkbox" <?= $singleUserDetails->details->allow_face_recognition == '1' ? 'checked' : '' ?>
+									onchange="handleFaceRecognition({{ $singleUserDetails->id }})"
+									id="checked_face_value_{{ $singleUserDetails->id }}">
+								<span class="slider round"></span>
+							</label>
+						</td>
 					@endif
 					<td>
 						<div class="d-flex justify-content-end flex-shrink-0">
@@ -147,7 +150,6 @@
 		@endforelse
 		<!--end::Table body-->
 	</table>
-	{{$allUserDetails->links()}}
+	{{ $allUserDetails->links() }}
 
 </div>
-
