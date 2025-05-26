@@ -80,8 +80,8 @@ class AuthController extends Controller
     public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'password' => ['required', 'string', 'min:8'],
-            'old_password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string'],
+            'old_password' => ['required', 'string'],
             'confirm_password' => ['required', 'same:password']
         ]);
 
