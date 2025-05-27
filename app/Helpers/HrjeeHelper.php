@@ -210,85 +210,157 @@ function getDecryptId($id)
 
 function getCompanyMenuHtml()
 {
+    // $html = '';
+    // $user = Auth::user();
+
+    // if ($user->type == 'company' || session()->has('impersonation')) {
+    //     $urlPrefix = 'company';
+    // } else {
+    //     $urlPrefix = 'employee';
+    // }
+
+    // foreach ($user->menu as $menu) {
+    //     // Check if the menu has children
+    //     if ($menu->children && $menu->children->isNotEmpty()) {
+    //         if ($menu->status == 1) {
+    //             $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+    //                     <span class="menu-link">
+    //                         <span class="menu-icon">
+    //                             <span class="svg-icon svg-icon-5">
+    //                                 ' . $menu->icon . '
+    //                             </span>
+    //                         </span>
+    //                         <span class="menu-title">' . $menu->title . '</span>
+    //                         <span class="menu-arrow"></span>
+    //                     </span>';
+    //         }
+
+
+    //         // Iterate over the children
+    //         foreach ($menu->children as $children) {
+    //             if ($children->role == "company" && $children->status == 1) {
+    //                 $url = "/$urlPrefix$children->slug";
+
+    //                 $html .= '<div class="menu-sub menu-sub-accordion">
+    //                         <div class="menu-item" data-url="' . $url . '">
+    //                             <a class="menu-link" href="' . $url . '">
+    //                                 <span class="menu-bullet">
+    //                                     <span class="bullet bullet-dot"></span>
+    //                                 </span>
+    //                                 <span class="menu-title">' . $children->title . '</span>
+    //                             </a>
+    //                         </div>
+    //                         </div>';
+    //             }
+    //         }
+
+    //         $html .= '</div>';  // Close the menu-item (accordion)
+    //     }
+    //     if ($menu->parent_id == null && $menu->children->isEmpty()) {
+    //         if ($menu->status == 1) {
+    //             $url = "/$urlPrefix$menu->slug";
+
+    //             // If no children, just a simple menu item
+    //             $html .= '<div class="menu-item" data-url="' . $url . '">
+    //                     <a class="menu-link" href="' . $url . '">
+    //                         <span class="menu-icon">
+    //                             <span class="svg-icon svg-icon-5">
+    //                                 ' . $menu->icon . '
+    //                             </span>
+    //                         </span>
+    //                         <span class="menu-title">' . $menu->title . '</span>
+    //                     </a>
+    //                     </div>';
+    //         }
+    //     }
+    // }
+
+    // if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
+    //     $html .= '<div class="menu-item" data-url="/company/face-recognition">
+    //                     <a class="menu-link" href="/company/face-recognition">
+    //                         <span class="menu-icon">
+    //                             <span class="svg-icon svg-icon-5">
+    //                                 <i class="fas fa-smile"></i>
+    //                             </span>
+    //                         </span>
+    //                         <span class="menu-title">Face Recognition</span>
+    //                     </a>
+    //                     </div>';
+    // }
+
+    // return $html;
     $html = '';
-    $user = Auth::user();
+$user = Auth::user();
 
-    if ($user->type == 'company' || session()->has('impersonation')) {
-        $urlPrefix = 'company';
-    } else {
-        $urlPrefix = 'employee';
-    }
+$urlPrefix = ($user->type == 'company' || session()->has('impersonation')) ? 'company' : 'employee';
 
-    foreach ($user->menu as $menu) {
-        // Check if the menu has children
-        if ($menu->children && $menu->children->isNotEmpty()) {
-            if ($menu->status == 1) {
-                $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+foreach ($user->menu as $menu) {
+    // Menu with children
+    if ($menu->children && $menu->children->isNotEmpty()) {
+        if ($menu->status == 1) {
+            $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                         <span class="menu-link">
                             <span class="menu-icon">
-                                <span class="svg-icon svg-icon-5">
-                                    ' . $menu->icon . '
-                                </span>
+                                <span class="svg-icon svg-icon-5">'
+                                    . $menu->icon .
+                                '</span>
                             </span>
-                            <span class="menu-title">' . $menu->title . '</span>
+                            <span class="menu-title">' . e($menu->title) . '</span>
                             <span class="menu-arrow"></span>
-                        </span>';
-            }
+                        </span>
+                        <div class="menu-sub menu-sub-accordion">';
 
-
-            // Iterate over the children
             foreach ($menu->children as $children) {
                 if ($children->role == "company" && $children->status == 1) {
-                    $url = "/$urlPrefix$children->slug";
+                    $url = "/$urlPrefix/" . ltrim($children->slug, '/');
 
-                    $html .= '<div class="menu-sub menu-sub-accordion">
-                            <div class="menu-item" data-url="' . $url . '">
+                    $html .= '<div class="menu-item" data-url="' . $url . '">
                                 <a class="menu-link" href="' . $url . '">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
-                                    <span class="menu-title">' . $children->title . '</span>
+                                    <span class="menu-title">' . e($children->title) . '</span>
                                 </a>
-                            </div>
-                            </div>';
+                              </div>';
                 }
             }
 
-            $html .= '</div>';  // Close the menu-item (accordion)
-        }
-        if ($menu->parent_id == null && $menu->children->isEmpty()) {
-            if ($menu->status == 1) {
-                $url = "/$urlPrefix$menu->slug";
-
-                // If no children, just a simple menu item
-                $html .= '<div class="menu-item" data-url="' . $url . '">
-                        <a class="menu-link" href="' . $url . '">
-                            <span class="menu-icon">
-                                <span class="svg-icon svg-icon-5">
-                                    ' . $menu->icon . '
-                                </span>
-                            </span>
-                            <span class="menu-title">' . $menu->title . '</span>
-                        </a>
-                        </div>';
-            }
+            $html .= '</div></div>'; // Close menu-sub and menu-item
         }
     }
 
-    if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
-        $html .= '<div class="menu-item" data-url="/company/face-recognition">
-                        <a class="menu-link" href="/company/face-recognition">
-                            <span class="menu-icon">
-                                <span class="svg-icon svg-icon-5">
-                                    <i class="fas fa-smile"></i>
-                                </span>
-                            </span>
-                            <span class="menu-title">Face Recognition</span>
-                        </a>
-                        </div>';
-    }
+    // Menu without children
+    if ($menu->parent_id === null && $menu->children->isEmpty() && $menu->status == 1) {
+        $url = "/$urlPrefix/" . ltrim($menu->slug, '/');
 
-    return $html;
+        $html .= '<div class="menu-item" data-url="' . $url . '">
+                    <a class="menu-link" href="' . $url . '">
+                        <span class="menu-icon">
+                            <span class="svg-icon svg-icon-5">'
+                                . $menu->icon .
+                            '</span>
+                        </span>
+                        <span class="menu-title">' . e($menu->title) . '</span>
+                    </a>
+                  </div>';
+    }
+}
+
+// Face recognition menu
+if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
+    $html .= '<div class="menu-item" data-url="/company/face-recognition">
+                <a class="menu-link" href="/company/face-recognition">
+                    <span class="menu-icon">
+                        <span class="svg-icon svg-icon-5">
+                            <i class="fas fa-smile"></i>
+                        </span>
+                    </span>
+                    <span class="menu-title">Face Recognition</span>
+                </a>
+              </div>';
+}
+
+return $html;
 }
 
 function getEmployeeMenuHtml()

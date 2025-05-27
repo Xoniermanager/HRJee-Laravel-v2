@@ -207,8 +207,6 @@ class EmployeeAttendanceService
 
         // Handle Punch In
         $data['user_id'] = $userDetails->id;
-        $data['punch_in'] = $attendanceTime;
-
         // Check if shift is over
         if (Carbon::now()->gt($officeEndTime)) {
             return ['status' => false, 'message' => 'Your office hours are over.'];
@@ -303,7 +301,7 @@ class EmployeeAttendanceService
         $data['shift_id'] = $officeShiftDetails->id;
         $data['shift_start_time'] = $officeStartTime;
         $data['shift_end_time'] = $officeEndTime;
-
+        $data['punch_in'] = $attendanceTime;
         // Create attendance
         $this->employeeAttendanceRepository->create($data);
         return ['status' => true, 'message' => 'Punch In', 'data' => $userDetails];
