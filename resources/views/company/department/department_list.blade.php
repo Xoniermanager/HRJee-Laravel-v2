@@ -58,4 +58,3 @@
     <!--end::Table container-->
 
 </div>
-{{ $allDepartmentDetails->links() }}

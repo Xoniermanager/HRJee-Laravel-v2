@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Menu;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Services\MenuService;
@@ -16,8 +16,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ValidateCompany;
 use App\Http\Services\CompanyTypeService;
-use App\Http\Services\SubscriptionPlanService;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Services\CompanyDetailService;
+use App\Http\Services\SubscriptionPlanService;
 
 class AdminCompanyController extends Controller
 {
@@ -247,4 +248,36 @@ class AdminCompanyController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again', 'status' => 400]);
         }
     }
+
+    public function resetPassword(Request $request)
+    {
+        $user = User::find($request->company_id);
+
+        $validator = Validator::make($request->all(), [
+            'company_id' => 'required|exists:users,id',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:6',
+                function ($attribute, $value, $fail) use ($user) {
+                    if ($user && Hash::check($value, $user->password)) {
+                        $fail('The new password cannot be the same as the old password.');
+                    }
+                },
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
+
 }
