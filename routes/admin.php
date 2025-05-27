@@ -154,6 +154,7 @@ Route::prefix('/admin')->middleware(['Check2FA', 'auth.admin'])->group(function 
         Route::get('/status/update', 'statusUpdate')->name('admin.company.statusUpdate');
         Route::get('/face-recognition/update', 'updateFaceRecognitionStatus')->name('admin.company.facerecognitionUpdate');
         Route::get('/search', 'search')->name('admin.company.search');
+        Route::post('/reset-password', 'resetPassword')->name('admin.company.reset_password');
     });
     Route::prefix('/company-branch')->controller(AdminCompanyBranchesController::class)->group(function () {
         Route::get('/', 'index')->name('admin.branch');

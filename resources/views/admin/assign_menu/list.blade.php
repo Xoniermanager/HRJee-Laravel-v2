@@ -16,6 +16,9 @@
 						<th>
 							<p class="f-light">Menu Name</p>
 						</th>
+						<th>
+							<p class="f-light">Action</p>
+						</th>
 					</tr>
 				</thead>
 				@forelse ($allCompanyDetails as $key => $companyDetails)
@@ -32,7 +35,7 @@
 						</td>
 						<td>
 							@forelse ($companyDetails->menus() as $menu)
-								@if(!count($menu['children']))
+								@if (!count($menu['children']))
 									{{ ucfirst($menu['title']) }}
 									@if (!$loop->last)
 										,
@@ -42,7 +45,14 @@
 								No menu available
 							@endforelse
 						</td>
-
+						<td>
+							<a class="d-inline-flex" href="{{ route('admin.assign_menu.add') }}?id={{ $companyDetails->id }}">
+								<div class="btn rounded-circle bg-blue text-white"
+									style="width: 40px; height: 40px; padding: 8px; text-align: center;">
+									<i class="fa fa-pencil"></i>
+								</div>
+							</a>
+						</td>
 					</tr>
 				@empty
 					<tr>

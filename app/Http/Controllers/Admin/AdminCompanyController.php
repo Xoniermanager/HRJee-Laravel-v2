@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Menu;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Services\MenuService;
@@ -16,8 +16,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ValidateCompany;
 use App\Http\Services\CompanyTypeService;
-use App\Http\Services\SubscriptionPlanService;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Services\CompanyDetailService;
+use App\Http\Services\SubscriptionPlanService;
 
 class AdminCompanyController extends Controller
 {
@@ -52,8 +53,13 @@ class AdminCompanyController extends Controller
     {
         $companyDetails = $this->userService->getUserById($request->query('id'));
         $subscriptionPlans = $this->subscriptionPlanService->getAllActivePlans();
+        $allCompanyTypeDetails = $this->companyTypeService->getAllActiveCompanyType();
 
-        return view('admin.company.edit_company', ['companyDetails' => $companyDetails, 'subscriptionPlans' => $subscriptionPlans]);
+        return view('admin.company.edit_company', [
+            'companyDetails' => $companyDetails,
+            'subscriptionPlans' => $subscriptionPlans,
+            'allCompanyTypeDetails' => $allCompanyTypeDetails
+        ]);
     }
 
     protected function createRoleForCompany($companyId, $menuIds, $companyName)
@@ -145,6 +151,7 @@ class AdminCompanyController extends Controller
             'company_url' => 'sometimes|required|string|url|max:100',
             'company_address' => 'sometimes|required|string|max:255', // Removed duplicate 'sometimes'
             'logo' => 'sometimes|max:2048',
+            'company_type_id' => 'sometimes|required|exists:company_types,id',
         ]);
 
         try {
@@ -159,7 +166,7 @@ class AdminCompanyController extends Controller
 
             $subscriptionPlan = $this->subscriptionPlanService->getDetails($request->subscription_id);
             $subscriptionDays = $subscriptionPlan ? $subscriptionPlan->days : 7;
-            $expiryDate = date('Y-m-d', strtotime($request->onboarding_date . ' + '. $subscriptionDays . 'days'));
+            $expiryDate = date('Y-m-d', strtotime($request->onboarding_date . ' + ' . $subscriptionDays . 'days'));
             $request->merge(['subscription_expiry_date' => $expiryDate]);
 
             $this->companyDetailService->updateDetails($request->except('name', '_token', 'email'), $request->id);
@@ -218,11 +225,13 @@ class AdminCompanyController extends Controller
     {
         $allowedUserLimit = auth()->user()->companyDetails->face_recognition_user_limit;
 
-        $allotedUserLimit = User::where('company_id', auth()->user()->id)->where('type', 'user')->with(['details' => function ($query) {
-            $query->where('allow_face_recognition', 1);
-        }])->count();
+        $allotedUserLimit = User::where('company_id', auth()->user()->id)->where('type', 'user')->with([
+            'details' => function ($query) {
+                $query->where('allow_face_recognition', 1);
+            }
+        ])->count();
 
-        if($allowedUserLimit < $allotedUserLimit && $request->status == "1") {
+        if ($allowedUserLimit < $allotedUserLimit && $request->status == "1") {
             return response()->json(['error' => 'You have reached the limit of allowing face recognition to users.', 'status' => 400]);
         }
 
@@ -239,4 +248,36 @@ class AdminCompanyController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again', 'status' => 400]);
         }
     }
+
+    public function resetPassword(Request $request)
+    {
+        $user = User::find($request->company_id);
+
+        $validator = Validator::make($request->all(), [
+            'company_id' => 'required|exists:users,id',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:6',
+                function ($attribute, $value, $fail) use ($user) {
+                    if ($user && Hash::check($value, $user->password)) {
+                        $fail('The new password cannot be the same as the old password.');
+                    }
+                },
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
+
 }
