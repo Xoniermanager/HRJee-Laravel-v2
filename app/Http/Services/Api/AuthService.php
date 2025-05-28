@@ -2,12 +2,15 @@
 
 namespace App\Http\Services\Api;
 
-use App\Http\Services\SendOtpService;
+use Throwable;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserDetail;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Throwable;
+use App\Http\Services\SendOtpService;
+use Illuminate\Support\Facades\Password;
 
 class AuthService
 {
@@ -34,26 +37,41 @@ class AuthService
             if ($loginField === 'email') {
                 $user = User::where('email', $loginValue)->first();
             } else {
-                // Join with details relation to find user by emp_id
                 $user = User::whereHas('details', function ($query) use ($loginValue) {
                     $query->where('emp_id', $loginValue);
                 })->with('details')->first();
             }
 
             if (!$user) {
-                return errorMessage('null', 'Please enter a valid ' . ($loginField === 'email' ? 'email' : 'Employee ID') . '!');
+                return response()->json(['message' => 'Invalid credentials'], 401);
             }
 
             if (!Hash::check($request->password, $user->password)) {
-                return errorMessage('null', 'Please enter a valid password!');
+                return response()->json(['message' => 'Invalid password'], 401);
             }
 
-            $user['access_token'] = $user->createToken('token')->plainTextToken;
-            return apiResponse('success', $user);
+            // Create access token
+            $tokenResult = $user->createToken('token');
+            $accessToken = $tokenResult->plainTextToken;
 
+            // Create refresh token
+            $refreshToken = Str::random(64);
+            $expiresAt = Carbon::now()->addDays(30); // 30-day expiry
+
+            $token = $tokenResult->accessToken;
+            $token->refresh_token = hash('sha256', $refreshToken);
+            $token->expires_at = $expiresAt;
+            $token->save();
+
+            return response()->json([
+                'message' => 'Successfully Login',
+                'access_token' => $accessToken,
+                'refresh_token' => $refreshToken,
+                'expires_at' => $expiresAt->toDateTimeString(),
+                'user' => $user,
+            ]);
         } catch (Throwable $th) {
-            // dd($th);
-            return exceptionErrorMessage($th);
+            return response()->json(['message' => 'Server error', 'error' => $th->getMessage()], 500);
         }
     }
 
