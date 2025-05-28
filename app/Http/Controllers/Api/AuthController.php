@@ -295,7 +295,7 @@ class AuthController extends Controller
             'access_token' => $newAccessToken->plainTextToken,
             'refresh_token' => $newRefreshToken,
             'expires_at' => $newExpiresAt->toDateTimeString(),
-            'user' => $user,
+            'data' => $user,
         ]);
     }
 }
