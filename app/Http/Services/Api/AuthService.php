@@ -259,7 +259,9 @@ class AuthService
         try {
             $data = $request->except('name');
 
-            $user = User::whereId(auth()->user()->id)->update([
+            $user = User::whereId(auth()->user()->id)->first();
+
+            $user->update([
                 'name' => $request->name
             ]);
 
@@ -271,7 +273,6 @@ class AuthService
                 $filePath = uploadingImageorFile($data['profile_image'], $upload_path);
                 $data['profile_image'] = $filePath;
             }
-
             $user->details->update($data);
 
             return apiResponse('profile_updated');
