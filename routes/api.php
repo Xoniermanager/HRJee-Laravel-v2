@@ -33,6 +33,8 @@ use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 |
 */
 
+Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
+
 Route::middleware('log.route')->controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/login-by-id', 'loginByEmpId');
