@@ -7,17 +7,19 @@ use App\Models\Menu;
 use App\Models\User;
 use App\Models\MenuRole;
 use App\Models\UserDetail;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\DB;
+use App\Http\Services\LeaveService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Services\Api\AuthService;
 use App\Http\Requests\UserLoginRequest;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UserLoginByEmpIdRequest;
 use App\Http\Services\EmployeeAttendanceService;
-use App\Http\Services\LeaveService;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -257,5 +259,43 @@ class AuthController extends Controller
                 'message' => 'Unable to get information regarding this',
             ], 200);
         }
+    }
+
+    public function refreshToken(Request $request)
+    {
+        $request->validate([
+            'refresh_token' => 'required|string',
+        ]);
+
+        $hashedRefreshToken = hash('sha256', $request->refresh_token);
+
+        $token = DB::table('personal_access_tokens')
+            ->where('refresh_token', $hashedRefreshToken)
+            ->where('expires_at', '>', now())
+            ->first();
+        if (!$token) {
+            return response()->json(['message' => 'Invalid or expired refresh token'], 401);
+        }
+
+        $user = User::find($token->tokenable_id);
+
+        // Revoke the old token
+        DB::table('personal_access_tokens')->where('id', $token->id)->delete();
+
+        // Create new tokens
+        $newAccessToken = $user->createToken('token');
+        $newRefreshToken = Str::random(64);
+        $newExpiresAt = now()->addDays(30);
+
+        $newAccessToken->accessToken->refresh_token = hash('sha256', $newRefreshToken);
+        $newAccessToken->accessToken->expires_at = $newExpiresAt;
+        $newAccessToken->accessToken->save();
+
+        return response()->json([
+            'access_token' => $newAccessToken->plainTextToken,
+            'refresh_token' => $newRefreshToken,
+            'expires_at' => $newExpiresAt->toDateTimeString(),
+            'user' => $user,
+        ]);
     }
 }
