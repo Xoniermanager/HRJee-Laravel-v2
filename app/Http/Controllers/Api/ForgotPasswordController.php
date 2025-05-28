@@ -36,10 +36,9 @@ class ForgotPasswordController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'error' => 'validation_error',
-                    'message' => $validator->errors(),
+                    'message' => implode(', ', $validator->errors()->all()), // single string
                 ], 400);
             }
-
             $code = generateOtp();
 
             // Generate OTP
