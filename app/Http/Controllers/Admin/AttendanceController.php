@@ -48,7 +48,7 @@ class AttendanceController extends Controller
 
         $companyIDs = [$companyID];
         $branches = $this->branch_services->all($companyIDs);
-        $departments = $this->departmentService->getByCompanyId($companyIDs);
+        $departments = $this->departmentService->getByCompanyId($companyIDs)->get();
         $managers = $this->userService->getAllManagerByCompanyId($companyIDs)->get();
 
         return view('admin.attendance.index', compact('allEmployeeDetails', 'branches', 'departments', 'managers'));
@@ -65,7 +65,7 @@ class AttendanceController extends Controller
                 return response()->json([
                     'data' => view('admin.attendance.list', compact('allEmployeeDetails'))->render()
                 ]);
-            } 
+            }
         }
     }
 
@@ -119,10 +119,10 @@ class AttendanceController extends Controller
 
     public function viewsearchFilterDetails($month, $year, $employeeDetails, $start_date = null, $end_date = null)
     {
-        
+
         if($start_date != "") {
             $startDate = $start_date;
-            
+
             if($end_date == "") {
                 $endDate = Carbon::createFromDate(date("Y"), date("m"), 1)->endOfMonth();
             } else {
@@ -132,7 +132,7 @@ class AttendanceController extends Controller
             $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
             $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         }
-        
+
         if ($endDate->format('Y-m') == date('Y-m'))
             $endDate = date('Y-m-d');
 

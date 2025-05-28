@@ -59,7 +59,7 @@ class AdminAuthController extends Controller
             if ($generateOtpResponse['status'] === true) {
                 // Save user id or email in session temporarily
                 session(['otp_pending_admin' => $admin->id]);
-                
+
                 return redirect('/admin/verify/otp');
             } else {
                 return redirect('/admin/login')->with('error', $generateOtpResponse['message']);
@@ -73,27 +73,27 @@ class AdminAuthController extends Controller
     }
     public function login()
     {
-        
+
         return view('admin.account.login');
     }
 
     public function verifyOtp()
     {
-    
+
         return view('admin-verify-otp');
     }
     public function verifyOtpCheck(VerifyOtpRequest $request)
     {
         try {
-            
+
             $data = $request->all();
             $adminId = session('otp_pending_admin');
             if (!$adminId) {
                 return redirect('/admin/login')->with('error', 'Session expired. Please login again.');
             }
-            
+
             $admin = Admin::find($adminId);
-            
+
             if (!$admin) {
                 return redirect('/admin/login')->with('error', 'Admin not found.');
             }
@@ -111,7 +111,7 @@ class AdminAuthController extends Controller
                 // Clear the session key
                 session()->forget('otp_pending_admin');
                 return redirect(route('admin.dashboard'));
-            }  
+            }
             else
                 return redirect('/admin/verify/otp')->with('error', 'invalid or expired otp! ');
         } catch (Throwable $th) {
