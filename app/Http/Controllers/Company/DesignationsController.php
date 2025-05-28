@@ -28,8 +28,8 @@ class DesignationsController extends Controller
         $companyIDs = getCompanyIDs();
 
         return view('company.designation.index', [
-            'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs),
-            'allDepartments' => $this->departmentService->getByCompanyId($companyIDs)->where('status', '1')
+            'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)->paginate(10),
+            'allDepartments' => $this->departmentService->getByCompanyId($companyIDs)->where('status', '1')->get()
         ]);
     }
 
@@ -41,7 +41,7 @@ class DesignationsController extends Controller
         $companyIDs = getCompanyIDs();
         try {
             $validateDesignation = Validator::make($request->all(), [
-                'name' => ['required','max:255' ,'string', 'regex:/^[A-Za-z\s]+$/', 'unique:designations,name,NULL,id,company_id,' . auth()->user()->company_id],
+                'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s&]+$/', 'unique:designations,name,NULL,id,company_id,' . auth()->user()->company_id],
             ]);
             if ($validateDesignation->fails()) {
                 return response()->json(['error' => $validateDesignation->messages()], 400);
@@ -54,7 +54,7 @@ class DesignationsController extends Controller
                     [
                         'message' => 'Designation Created Successfully!',
                         'data' => view('company.designation.designation_list', [
-                            'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)
+                            'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)->paginate(10)
                         ])->render()
                     ]
                 );
@@ -71,7 +71,7 @@ class DesignationsController extends Controller
     {
         $companyIDs = getCompanyIDs();
         $validateDesignation = Validator::make($request->all(), [
-            'name' => ['required','max:255' , 'string', 'regex:/^[A-Za-z\s]+$/', 'unique:designations,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
+            'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s&]+$/', 'unique:designations,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
         ]);
 
         if ($validateDesignation->fails()) {
@@ -83,7 +83,7 @@ class DesignationsController extends Controller
             return response()->json([
                 'message' => 'Designation Updated Successfully!',
                 'data' => view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)
+                    'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)->paginate(10)
                 ])->render()
             ]);
         }
@@ -101,7 +101,7 @@ class DesignationsController extends Controller
                 'success',
                 'Deleted Successfully!',
                 'data' => view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)
+                    'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)->paginate(10)
                 ])->render()
             ]);
         } else {
@@ -109,7 +109,7 @@ class DesignationsController extends Controller
                 'error',
                 'Something Went Wrong! Please try Again',
                 'data' => view('company.designation.designation_list', [
-                    'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)
+                    'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)->paginate(10)
                 ])->render()
             ]);
         }
@@ -124,7 +124,7 @@ class DesignationsController extends Controller
             return response()->json([
                 'success' => 'Designation Status Updated Successfully',
                 'data' => view("company.designation.designation_list", [
-                    'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)
+                    'allDesignationDetails' => $this->designationService->getByCompanyId($companyIDs)->paginate(10)
                 ])->render()
             ]);
         } else {

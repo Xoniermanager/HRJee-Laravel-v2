@@ -46,6 +46,11 @@ class AuthService
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
 
+            // Check if user status is active
+            if (!$user->status) {
+                return response()->json(['message' => 'User status is inactive. Please contact your administrator.'], 403);
+            }
+
             if (!Hash::check($request->password, $user->password)) {
                 return response()->json(['message' => 'Invalid password'], 401);
             }
@@ -70,6 +75,7 @@ class AuthService
                 'expires_at' => $expiresAt->toDateTimeString(),
                 'data' => $user,
             ]);
+
         } catch (Throwable $th) {
             return response()->json(['message' => 'Server error', 'error' => $th->getMessage()], 500);
         }
@@ -178,8 +184,8 @@ class AuthService
                 $email = User::whereHas('details', function ($query) use ($loginValue) {
                     $query->where('emp_id', $loginValue);
                 })
-                ->pluck('email')
-                ->first();
+                    ->pluck('email')
+                    ->first();
             }
             $otpResponse = $this->sendOtpService->generateOTP($email, $type);
             if ($otpResponse['status'] == false)

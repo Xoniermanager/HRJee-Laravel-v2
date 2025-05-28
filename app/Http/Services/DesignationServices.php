@@ -15,12 +15,12 @@ class DesignationServices
   }
   public function all()
   {
-    return $this->designationRepository->with('departments')->orderBy('id', 'DESC')->paginate(10);
+    return $this->designationRepository->with('departments')->orderBy('id', 'DESC');
   }
 
   public function getByCompanyId($companyID)
   {
-    return $this->designationRepository->whereIn('company_id', $companyID)->orderBy('id', 'DESC')->paginate(10);
+    return $this->designationRepository->whereIn('company_id', $companyID)->orderBy('id', 'DESC');
   }
 
   public function create(array $data)

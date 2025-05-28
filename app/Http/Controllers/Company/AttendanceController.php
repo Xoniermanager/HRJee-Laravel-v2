@@ -48,7 +48,7 @@ class AttendanceController extends Controller
 
         $companyIDs = getCompanyIDs();
         $branches = $this->branch_services->all($companyIDs);
-        $departments = $this->departmentService->getByCompanyId($companyIDs);
+        $departments = $this->departmentService->getByCompanyId($companyIDs)->get();
         $managers = $this->userService->getAllManagerByCompanyId($companyIDs)->get();
 
         return view('company.attendance.index', compact('allEmployeeDetails', 'branches', 'departments', 'managers'));
