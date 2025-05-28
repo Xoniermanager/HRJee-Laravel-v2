@@ -271,7 +271,7 @@ class AuthController extends Controller
 
         $token = DB::table('personal_access_tokens')
             ->where('refresh_token', $hashedRefreshToken)
-            ->where('expires_at', '>', now())
+            // ->where('expires_at', '>', now())
             ->first();
         if (!$token) {
             return response()->json(['message' => 'Invalid or expired refresh token'], 401);

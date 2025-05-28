@@ -39,7 +39,7 @@ class DepartmentController extends Controller
         $companyIDs = getCompanyIDs();
         try {
             $validateDepartments = Validator::make($request->all(), [
-                'name' => ['required', 'max:255', 'regex:/^[A-Za-z\s]+$/', 'alpha', 'unique:departments,name,NULL,id,company_id,' . auth()->user()->company_id],
+                'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s&]+$/', 'unique:departments,name,NULL,id,company_id,' . auth()->user()->company_id],
             ]);
             if ($validateDepartments->fails()) {
                 return response()->json(['error' => $validateDepartments->messages()], 400);
@@ -67,7 +67,7 @@ class DepartmentController extends Controller
     {
         $companyIDs = getCompanyIDs();
         $validateDepartments = Validator::make($request->all(), [
-            'name' => ['required', 'max:255', 'string', 'regex:/^[A-Za-z\s]+$/', 'unique:departments,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
+            'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s&]+$/', 'unique:departments,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
         ]);
 
         if ($validateDepartments->fails()) {
