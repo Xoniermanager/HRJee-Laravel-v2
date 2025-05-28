@@ -68,7 +68,7 @@ class AuthService
                 'access_token' => $accessToken,
                 'refresh_token' => $refreshToken,
                 'expires_at' => $expiresAt->toDateTimeString(),
-                'user' => $user,
+                'data' => $user,
             ]);
         } catch (Throwable $th) {
             return response()->json(['message' => 'Server error', 'error' => $th->getMessage()], 500);
