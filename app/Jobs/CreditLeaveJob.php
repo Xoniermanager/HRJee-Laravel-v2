@@ -52,6 +52,7 @@ class CreditLeaveJob implements ShouldQueue
             $leaveTypeId = $leaveCredit->leave_type_id;
             $creditValue = $leaveCredit->number_of_leaves;
             $allUserDetails = $this->employeeService->getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId);
+
             foreach ($allUserDetails as $userDetail) {
                 $userId = $userDetail->user_id;
                 $baseLeaveCreditDate = '';
@@ -82,8 +83,10 @@ class CreditLeaveJob implements ShouldQueue
             }
         }
         if (isset($historyDetails) && $historyDetails == true) {
+            \Log::info("Leave Created Succussfully");
             echo "Leave Created Succussfully";
         } else {
+            \Log::info("No Created Leave Available For Current Month");
             echo "No Created Leave Available For Current Month";
         }
     }
