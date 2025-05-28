@@ -37,6 +37,7 @@ class OfficeShiftController extends Controller
                 'check_in_buffer' => ['required', 'integer', 'min:0'],  // Assuming buffer time is a number (minutes)
                 'check_out_buffer' => ['required', 'integer', 'min:0'],  // Same as check_in_buffer
                 'login_before_shift_time' => ['required', 'integer', 'min:0'],  // Assuming it's also an integer (minutes)
+                'auto_punch_out' => ['required', 'integer'],  // Assuming it's also an integer (minutes)
             ]);
             if ($validateOfficeTimeConfig->fails()) {
                 return response()->json(['error' => $validateOfficeTimeConfig->messages()], 400);
@@ -80,6 +81,7 @@ class OfficeShiftController extends Controller
             'check_in_buffer'  => ['required', 'string'],
             'check_out_buffer' => ['required', 'string'],
             'login_before_shift_time' => ['required', 'string'],
+            'auto_punch_out' => ['required', 'integer'],  // Assuming it's also an integer (minutes)
         ]);
 
         if ($validateShift->fails()) {

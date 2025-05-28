@@ -32,6 +32,7 @@ class OfficeShift extends Model
         'login_before_shift_time',
         'total_late_count',
         'total_leave_deduction',
+        'auto_punch_out'
     ];
 
     protected function name(): Attribute

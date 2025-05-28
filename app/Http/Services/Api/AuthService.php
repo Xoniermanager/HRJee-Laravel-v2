@@ -52,7 +52,7 @@ class AuthService
             return apiResponse('success', $user);
 
         } catch (Throwable $th) {
-            dd($th);
+            // dd($th);
             return exceptionErrorMessage($th);
         }
     }
