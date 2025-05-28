@@ -157,7 +157,36 @@
                                         @enderror
                                     </div>
                                 </div>
-
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="required">Auto Punch Out</label>
+                                        <select name="auto_punch_out" id="auto_punch_out" class="form-control">
+                                            <option value="">Please Select the Time</option>
+                                            @php
+                                                for ($mins = 5; $mins <= 40; $mins += 5) {
+                                                    echo '<option value= "' .  $mins . '">' . $mins .' Minutes' .  '</option>';
+                                                }
+                                            @endphp
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Login Before Shift Time</label>
+                                        <select name="login_before_shift_time" id="login_before_shift_time"
+                                            class="form-control">
+                                            <option value="">Please Select the Time</option>
+                                            @php
+                                                for ($mins = 0; $mins <= 60; $mins += 5) {
+                                                    echo '<option value= "' .
+                                                        $mins .
+                                                        '">' .
+                                                        $mins .
+                                                        ' Minutes' .
+                                                        '</option>';
+                                                }
+                                            @endphp
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Min Late Count</label>
@@ -176,23 +205,6 @@
                                         <label>Half Day Login</label>
                                         <input class="form-control mb-5 mt-3" type="time" name="half_day_login"
                                             id="half_day_login">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Login Before Shift Time</label>
-                                        <select name="login_before_shift_time" id="login_before_shift_time"
-                                            class="form-control">
-                                            <option value="">Please Select the Time</option>
-                                            @php
-                                                for ($mins = 0; $mins <= 60; $mins += 5) {
-                                                    echo '<option value= "' .
-                                                        $mins .
-                                                        '">' .
-                                                        $mins .
-                                                        ' Minutes' .
-                                                        '</option>';
-                                                }
-                                            @endphp
-                                        </select>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -338,7 +350,35 @@
                                     </div>
                                 </div>
 
-
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <label class="required">Auto Punch Out</label>
+                                        <select name="auto_punch_out" id="" class="form-control">
+                                            <option value="">Please Select the Time</option>
+                                            @php
+                                                for ($mins = 5; $mins <= 40; $mins += 5) {
+                                                    echo '<option value= "' .  $mins . '">' . $mins .' Minutes' .  '</option>';
+                                                }
+                                            @endphp
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="required">Login Before Shift Time</label>
+                                        <select name="login_before_shift_time" id="" class="form-control">
+                                            <option value="">Please Select the Time</option>
+                                            @php
+                                                for ($mins = 0; $mins <= 60; $mins += 5) {
+                                                    echo '<option value= "' .
+                                                        $mins .
+                                                        '">' .
+                                                        $mins .
+                                                        ' Minutes' .
+                                                        '</option>';
+                                                }
+                                            @endphp
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Min Late Count</label>
@@ -358,22 +398,7 @@
                                         <input class="form-control mb-5 mt-3" type="time" name="half_day_login"
                                             id="half_day_login">
                                     </div>
-                                    <div class="col-md-6">
-                                        <label>Login Before Shift Time</label>
-                                        <select name="login_before_shift_time" id="" class="form-control">
-                                            <option value="">Please Select the Time</option>
-                                            @php
-                                                for ($mins = 0; $mins <= 60; $mins += 5) {
-                                                    echo '<option value= "' .
-                                                        $mins .
-                                                        '">' .
-                                                        $mins .
-                                                        ' Minutes' .
-                                                        '</option>';
-                                                }
-                                            @endphp
-                                        </select>
-                                    </div>
+
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
@@ -450,6 +475,7 @@
                 $('#login_before_shift_time').val(shift.login_before_shift_time);
                 $('#total_late_count').val(shift.total_late_count);
                 $('#total_leave_deduction').val(shift.total_leave_deduction);
+                $('#auto_punch_out').val(shift.auto_punch_out);
                 if (shift.lock_attendance == 1) {
                     $('.lock_attendance').prop('checked', true).val(shift.lock_attendance);
                 }
