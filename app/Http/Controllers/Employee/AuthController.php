@@ -40,9 +40,9 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            // Validate request
+            // Validate input (login + password required)
             $validateUser = Validator::make($request->all(), [
-                'email' => 'required|email|exists:users,email',
+                'login' => 'required',
                 'password' => 'required',
             ]);
 
@@ -50,27 +50,38 @@ class AuthController extends Controller
                 return back()->withErrors($validateUser)->withInput();
             }
 
-            // Fetch user
-            $user = User::where('email', $request->email)->first();
+            $loginInput = $request->login;
 
-            // Check password manually
+            // Determine if login is an email or emp_id
+            if (filter_var($loginInput, FILTER_VALIDATE_EMAIL)) {
+                // Login by email
+                $user = User::where('email', $loginInput)->first();
+            } else {
+                // Login by emp_id (from related user_details table)
+                $user = User::whereHas('details', function ($q) use ($loginInput) {
+                    $q->where('emp_id', $loginInput);
+                })->first();
+            }
+
+            // Validate user existence and password
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return redirect()->back()
                     ->withInput()
                     ->with('error', 'These credentials do not match our records.');
             }
-            else {
-                // $user = Auth::user();
-                if ($user->status == '0') {
-                    return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);
-                }
-                $genrateOtpresponse = $this->sendOtpService->generateOTP($request->email, $user->type);
-                if ($genrateOtpresponse['status'] == true){
-                    session(['otp_pending_user' => $user->id]);
-                    return redirect('/verify/otp')->with('message',$genrateOtpresponse['message']);
-                }
-                else
-                    return redirect('/login')->with('error', $genrateOtpresponse['message']);
+
+            // Check user status
+            if ($user->status == '0') {
+                return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);
+            }
+
+            // Generate OTP
+            $genrateOtpresponse = $this->sendOtpService->generateOTP($user->email, $user->type);
+            if ($genrateOtpresponse['status'] == true) {
+                session(['otp_pending_user' => $user->id]);
+                return redirect('/verify/otp')->with('message', $genrateOtpresponse['message']);
+            } else {
+                return redirect('/login')->with('error', $genrateOtpresponse['message']);
             }
 
         } catch (\Throwable $th) {
@@ -79,6 +90,7 @@ class AuthController extends Controller
                 'message' => $th->getMessage(),
             ], 500);
         }
+
     }
     /**
      * Process user logout.
@@ -142,15 +154,15 @@ class AuthController extends Controller
     public function resendOtp(Request $request)
     {
         try {
-            if (!auth()->guard('employee')->check()) {
-                return redirect('/employee/signin');
-            }
-            $email = Auth::user()->email;
-            $otpResponse = $this->sendOtpService->generateOTP($email, 'employee');
+            $userId = session('otp_pending_user');
+            $userDetails = User::find($userId);
+            $email = $userDetails->email;
+            $type = $userDetails->type;
+            $otpResponse = $this->sendOtpService->generateOTP($email, $type);
             if ($otpResponse['status'] == true)
-                return redirect('employee/verify/otp')->with('success', transLang($otpResponse['message']));
+                return back()->with('success', transLang($otpResponse['message']));
             else
-                return redirect('employee/verify/otp')->with('error', transLang($otpResponse['message']));
+                return back()->with('error', transLang($otpResponse['message']));
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }

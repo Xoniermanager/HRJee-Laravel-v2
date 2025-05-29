@@ -26,7 +26,7 @@ class DepartmentController extends Controller
         $companyIDs = getCompanyIDs();
 
         return view("company.department.index", [
-            'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
+            'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)->paginate(10)
         ]);
     }
 
@@ -51,7 +51,7 @@ class DepartmentController extends Controller
                 return response()->json([
                     'message' => 'Departments Created Successfully!',
                     'data' => view("company.department.department_list", [
-                        'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
+                        'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)->paginate(10)
                     ])->render()
                 ]);
             }
@@ -80,7 +80,7 @@ class DepartmentController extends Controller
                 [
                     'message' => 'Departments Updated Successfully!',
                     'data' => view('company.department.department_list', [
-                        'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
+                        'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)->paginate(10)
                     ])->render()
                 ]
             );
@@ -99,7 +99,7 @@ class DepartmentController extends Controller
             return response()->json([
                 'success' => 'Departments Deleted Successfully',
                 'data' => view("company.department.department_list", [
-                    'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
+                    'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)->paginate(10)
                 ])->render()
             ]);
         } else {
@@ -117,7 +117,7 @@ class DepartmentController extends Controller
             return response()->json([
                 'success' => 'Departments Status Updated Successfully',
                 'data' => view("company.department.department_list", [
-                    'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)
+                    'allDepartmentDetails' => $this->departmentService->getByCompanyId($companyIDs)->paginate(10)
                 ])->render()
             ]);
         } else {

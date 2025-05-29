@@ -43,11 +43,11 @@ class ValidateBranch extends FormRequest
                     }
                 },
             ],
-            'contact_no' => 'required|numeric|digits_between:10,12|unique:company_branches,contact_no,'.request()->id,
+            'contact_no' => 'required|numeric|digits_between:10,12',
 
-            'email' => 'required|email|unique:company_branches,email,'.request()->id,
+            'email' => 'required|email',
 
-            'hr_email' => 'required|email|unique:company_branches,hr_email,'.request()->id,
+            'hr_email' => 'required|email',
 
             'address' => [
                 'required',

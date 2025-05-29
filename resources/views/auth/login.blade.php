@@ -67,10 +67,10 @@
 
                                 <!--begin::Email input-->
                                 <div class="fv-row fv-plugins-icon-container mb-8">
-                                    <label>Email</label>
-                                    <input type="text" name="email" value="{{ old('email') }}" autocomplete="off" class="form-control-signin animate-left">
-                                    @if ($errors->has('email'))
-                                    <div class="text-danger">{{ $errors->first('email') }}</div>
+                                    <label>Email/Emp ID</label>
+                                    <input type="text" name="login" value="{{ old('login') }}" autocomplete="off" class="form-control-signin animate-left" placeholder="Enter Your Email or Emp ID">
+                                    @if ($errors->has('login'))
+                                    <div class="text-danger">{{ $errors->first('login') }}</div>
                                     @endif
                                     <div class="fv-plugins-message-container invalid-feedback"></div>
                                 </div>
@@ -82,7 +82,7 @@
                                         <a href="{{ route('forget.password') }}" class="text-primary float-right">Forgot Password ?</a>
                                     </label>
                                     <div style="position: relative;">
-                                        <input type="password" name="password" autocomplete="off" class="form-control-signin animate-left" id="passwordInput" value="{{ old('password') }}">
+                                        <input type="password" name="password" autocomplete="off" class="form-control-signin animate-left" id="passwordInput" value="{{ old('password') }}" placeholder="Enter Your Password">
                                         <span toggle="#passwordInput" class="toggle-password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">
                                             <i class="fa fa-eye-slash" id="toggleIcon"></i>
                                         </span>

@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('type', ['primary', 'secondary']);
-            $table->string('contact_no')->unique();
-            $table->string('email')->unique();
-            $table->string('hr_email')->unique();
-            $table->string('address')->unique();
+            $table->string('contact_no');
+            $table->string('email');
+            $table->string('hr_email');
+            $table->string('address');
             $table->string('city');
             $table->string('pincode');
             $table->text('description')->nullable();

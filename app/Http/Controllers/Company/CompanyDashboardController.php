@@ -91,6 +91,7 @@ class CompanyDashboardController extends Controller
     public function filterEmployees(Request $request)
     {
         $companyId = auth()->user()->id;
+
         $query = User::with(['details', 'details.designation'])
             ->where('company_id', $companyId)
             ->where('type', 'user');
@@ -121,9 +122,35 @@ class CompanyDashboardController extends Controller
             });
         }
 
+        // Fetch initial paginated results first
         $employees = $query->paginate(10);
 
+        // If attendance_check filter exists, filter the collection after fetching
+        if ($request->filled('attendance_check')) {
+            $status = $request->attendance_check;
+
+            // Laravel pagination returns LengthAwarePaginator,
+            // get the collection items to filter
+            $filtered = $employees->getCollection()->filter(function ($user) use ($status) {
+                $isPresent = $user->todaysAttendance() !== null;
+                $isOnLeave = $user->todaysLeave() !== null;
+
+                if ($status === 'present') {
+                    return $isPresent && !$isOnLeave;
+                } elseif ($status === 'leave') {
+                    return !$isPresent && $isOnLeave;
+                } elseif ($status === 'absent') {
+                    return !$isPresent && !$isOnLeave;
+                }
+                return true;
+            });
+
+            // Replace the paginator's collection with filtered results
+            $employees->setCollection($filtered->values());
+        }
+
         return view('company.dashboard.list', compact('employees'))->render();
+
     }
 
     public function sendMailForSubscription(Request $request) {
@@ -136,14 +163,14 @@ class CompanyDashboardController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        
+
         $payload = [
             "name" => auth()->user()->name,
             "email" => auth()->user()->email,
             "subject" => $request->get('subject'),
             "message" => $request->get('message'),
         ];
-        
+
         // Email
         Mail::to("hr@xonierconnect.com")->send(new ContactUsMail($payload['name'], $payload['email'], $payload['subject'], $payload['message']));
 
