@@ -155,8 +155,10 @@ class AuthController extends Controller
     {
         try {
             $userId = session('otp_pending_user');
-            $email = User::find($userId)->email;
-            $otpResponse = $this->sendOtpService->generateOTP($email, 'user');
+            $userDetails = User::find($userId);
+            $email = $userDetails->email;
+            $type = $userDetails->type;
+            $otpResponse = $this->sendOtpService->generateOTP($email, $type);
             if ($otpResponse['status'] == true)
                 return back()->with('success', transLang($otpResponse['message']));
             else
