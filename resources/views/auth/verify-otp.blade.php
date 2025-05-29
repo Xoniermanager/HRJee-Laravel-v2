@@ -380,7 +380,6 @@
             </div><!-- endof col -->
         </div>
     </div> --}}
-
 		<div class="d-flex flex-column flex-root">
 			<!--begin::Authentication - Sign-in -->
 			<div class="d-flex flex-column flex-lg-row flex-column-fluid overflow-hidden">
@@ -397,7 +396,6 @@
 								<!--begin::Logo-->
 								<a href="#" class="mb-lg-12 mb-0 text-center">
 									<img alt="Logo" src="{{ asset('assets/images/logo/logo.png') }}" class="h-75px" />
-
 								</a>
 
 								<!--begin::Form-->
@@ -440,7 +438,6 @@
 										@endif
 										<!--begin::Input group-->
 									</div>
-
 									<!--begin::Submit button-->
 									<div class="mt-10 text-center">
 										<button id="kt_sign_in_submit" class="btn btn-primary signin-btn" type="button">
@@ -454,8 +451,7 @@
 										</button>
 									</div>
 									<!--end::Submit button-->
-									<a href="{{ route('resendOtp') }}" class="text-primary">
-										Resend Code</a>
+									<a href="{{ route('resendOtp') }}" class="text-primary">Resend Code</a>
 								</form>
 								<!--end::Form-->
 							</div>

@@ -154,15 +154,13 @@ class AuthController extends Controller
     public function resendOtp(Request $request)
     {
         try {
-            if (!auth()->guard('employee')->check()) {
-                return redirect('/employee/signin');
-            }
-            $email = Auth::user()->email;
-            $otpResponse = $this->sendOtpService->generateOTP($email, 'employee');
+            $userId = session('otp_pending_user');
+            $email = User::find($userId)->email;
+            $otpResponse = $this->sendOtpService->generateOTP($email, 'user');
             if ($otpResponse['status'] == true)
-                return redirect('employee/verify/otp')->with('success', transLang($otpResponse['message']));
+                return back()->with('success', transLang($otpResponse['message']));
             else
-                return redirect('employee/verify/otp')->with('error', transLang($otpResponse['message']));
+                return back()->with('error', transLang($otpResponse['message']));
         } catch (Throwable $th) {
             return exceptionErrorMessage($th);
         }
