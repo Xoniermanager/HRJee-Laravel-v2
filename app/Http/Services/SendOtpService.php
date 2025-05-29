@@ -61,7 +61,7 @@ class SendOtpService
   public function verifyOTP($data, $guardType = '', $requestType = "")
   {
     $find = UserCode::where(['email' => $data['email'], 'code' => $data['otp'], 'type' => $data['type']])
-      ->where('updated_at', '>=', now()->subMinutes(20))
+      ->where('updated_at', '>=', now()->subMinutes(5))
       ->first();
 
     if ($find) {

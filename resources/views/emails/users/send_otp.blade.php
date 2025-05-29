@@ -243,7 +243,7 @@
                                             <tr>
                                                 <td align="center" valign="top" width="100%">
                                                     <a href="" class="logo-box"><img
-                                                            src="images/logo.png"
+                                                            src="{{ asset('assets/images/logo/logo.png') }}"
                                                             height="100px" /></a>
                                                 </td>
                                             </tr>

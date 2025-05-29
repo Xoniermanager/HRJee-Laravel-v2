@@ -29,7 +29,7 @@
                                                         style="padding-bottom: 20px;padding-top: 20px;">
                                                         <!-- Hero Image // -->
                                                         <a style="text-decoration:none;">
-                                                            <img src="{{ url('assets/media/logos/logo.png') }}"
+                                                            <img src="{{ asset('assets/images/logo/logo.png') }}"
                                                                 alt="" border="0"
                                                                 style="width:250px; height:auto; display:block;">
                                                         </a>
@@ -40,7 +40,7 @@
                                                     <td align="center" valign="top"
                                                         style="padding-bottom: 5px; padding-left: 20px; padding-right: 20px;">
                                                         <!-- Main Title Text // -->
-                                                        
+
                                                         <h4 class="text"
                                                             style="color:#555; font-family:'Poppins', Helvetica, Arial, sans-serif; font-size:18px; text-align:center; margin:0">
                                                             As per your request, your OTP is {{$code}}.
@@ -52,7 +52,7 @@
                                                     <td align="center" valign="top" style="padding-bottom: 20px;">
                                                         <!-- Hero Image // -->
 
-                                                        <img src="{{ url('/assets/media/welcome1.png') }}"
+                                                        <img src="{{ asset('assets/media/welcome1.png') }}"
                                                             alt="" border="0"
                                                             style="width:130px; height:auto; display:block;">
 
