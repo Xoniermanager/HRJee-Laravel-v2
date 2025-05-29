@@ -47,9 +47,9 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allPRMRequestDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
 
-{{ $allPRMRequestDetails->links() }}

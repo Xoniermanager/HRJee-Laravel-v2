@@ -57,8 +57,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allBreakTypeDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allBreakTypeDetails->links() }}

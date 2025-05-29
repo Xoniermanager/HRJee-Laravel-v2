@@ -53,7 +53,6 @@
 
                     <div class="mb-xl-10 mb-5">
                         @include('company.department.department_list')
-                        {{ $allDepartmentDetails->links() }}
                     </div>
                     <!--end::Col-->
                 </div>

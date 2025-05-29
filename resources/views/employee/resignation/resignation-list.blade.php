@@ -73,9 +73,9 @@
 								@endif
 
 								@if (
-                                    ($resignation->status != 'withdrawn' && $resignation->status != 'approved') &&
-                                    Auth::user()->id == $resignation->user_id
-                                )
+									$resignation->status != 'withdrawn' &&
+										$resignation->status != 'approved' &&
+										Auth::user()->id == $resignation->user_id)
 									<a href="#" data-bs-toggle="modal" onClick="action_resignation('{{ $resignation }}', true)"
 										class="btn btn-icon btn-bg-light text-danger btn-active-color-primary btn-sm me-1">
 										<i class="fa fa-times" aria-hidden="true"></i>
@@ -98,6 +98,7 @@
 	</div>
 	<!--end::Table container-->
 
+	{{ $resignations->links() }}
 </div>
 
 {{-- <script>
@@ -171,5 +172,3 @@
 		opacity: 0.8;
 	}
 </style>
-
-{{ $resignations->links() }}

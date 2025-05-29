@@ -54,9 +54,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allPRMCategoryDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-
-{{ $allPRMCategoryDetails->links() }}
