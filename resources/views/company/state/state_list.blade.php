@@ -57,7 +57,7 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allStateDetails->links() }}
     </div>
     <!--end::Table container-->
 </div>
-{{ $allStateDetails->links() }}

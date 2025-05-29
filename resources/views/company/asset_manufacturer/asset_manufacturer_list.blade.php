@@ -54,8 +54,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allAssetManufacturerDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allAssetManufacturerDetails->links() }}

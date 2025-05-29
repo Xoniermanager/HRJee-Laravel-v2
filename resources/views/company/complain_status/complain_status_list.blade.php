@@ -55,8 +55,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allComplainStatusDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allComplainStatusDetails->links() }}

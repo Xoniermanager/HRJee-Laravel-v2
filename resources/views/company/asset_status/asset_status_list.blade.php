@@ -54,8 +54,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allAssetStatusDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allAssetStatusDetails->links() }}

@@ -54,8 +54,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allPreviousCompanyDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allPreviousCompanyDetails->links() }}

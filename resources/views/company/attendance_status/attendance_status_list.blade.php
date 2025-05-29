@@ -56,8 +56,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allAttendanceStatusDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allAttendanceStatusDetails->links() }}

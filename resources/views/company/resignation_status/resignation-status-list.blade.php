@@ -53,8 +53,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $AllResignationStatus->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $AllResignationStatus->links() }}

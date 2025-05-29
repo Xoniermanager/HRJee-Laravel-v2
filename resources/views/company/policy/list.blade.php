@@ -61,5 +61,5 @@
         <!--end::Table body-->
     </table>
     <!--end::Table-->
+    {{ $allPolicyDetails->links() }}
 </div>
-{{ $allPolicyDetails->links() }}

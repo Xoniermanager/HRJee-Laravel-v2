@@ -54,8 +54,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allNewsCategoryDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allNewsCategoryDetails->links() }}

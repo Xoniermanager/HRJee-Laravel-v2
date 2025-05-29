@@ -55,8 +55,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allPolicyCategoryDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allPolicyCategoryDetails->links() }}

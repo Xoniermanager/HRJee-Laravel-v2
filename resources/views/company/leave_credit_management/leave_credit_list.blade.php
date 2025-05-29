@@ -100,8 +100,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allLeaveCreditDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allLeaveCreditDetails->links() }}

@@ -65,8 +65,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allWeekendDetails->links() }}
     </div>
     <!--end::Table container-->
 
 </div>
-{{ $allWeekendDetails->links() }}

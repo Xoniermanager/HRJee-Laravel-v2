@@ -84,7 +84,7 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+        {{ $allAnnouncementDetails->links() }}
     </div>
     <!--end::Table container-->
 </div>
-{{ $allAnnouncementDetails->links() }}
