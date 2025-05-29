@@ -122,9 +122,6 @@ class AdminAuthController extends Controller
     public function resendOtp(Request $request)
     {
         try {
-            if (!auth()->guard('admin')->check()) {
-                return redirect('/admin/login');
-            }
             $email = auth()->guard('admin')->user()->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'admin');
             if ($otpResponse['status'] == true)

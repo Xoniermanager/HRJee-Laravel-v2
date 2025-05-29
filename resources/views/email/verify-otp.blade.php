@@ -20,7 +20,7 @@
 
         <div style="width:100%;text-align: center;">
 
-            <img src="assets/media/logos/logo.png" style="height: 80px">
+            <img src="{{asset('assets/media/logos/logo.png')}}" style="height: 80px">
 
 
 
@@ -28,7 +28,7 @@
         </div>
         <div style="width:100%;text-align: center;">
 
-            <img src="temp.png">
+            <img src="{{ asset('assets/media/welcome1.png') }}">
         </div>
 <?php $otp=str_split($sentOtpDetails['otp_code']); ?>
         <div style="width:100%;text-align: center;">
@@ -41,7 +41,7 @@
       padding: 3px 8px ;">{{$otp[2]}}</span>
                 <span style="font-weight: 600; border: 1px solid #b7acac;
       padding: 3px 8px ;">{{$otp[3]}}</span>
-      
+
 
 
 
@@ -49,7 +49,7 @@
             <div style="margin-top: 20px;">
                 <p style=" color: #0c75ac;
     font-size: 15px;
-    margin-top: 4px;">Valid for 2 minutes only
+    margin-top: 4px;">Valid for 5 minutes only
                 </p>
             </div>
         </div>
