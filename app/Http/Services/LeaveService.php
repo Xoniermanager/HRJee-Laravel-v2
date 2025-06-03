@@ -249,9 +249,9 @@ class LeaveService
      * @param [type] $year
      * @return void
      */
-    public function getTotalLeaveByUserIdByMonth($userId, $month, $year)
+    public function getTotalLeaveByUserIdByMonth($userId, $month, $year, $returnLeaveDetails = 0)
     {
-        return $this->leaveRepository->getTotalLeaveByUserIDByMonth($userId, $month, $year);
+        return $this->leaveRepository->getTotalLeaveByUserIDByMonth($userId, $month, $year, $returnLeaveDetails);
     }
 
     /**

@@ -115,10 +115,10 @@ class EmployeeAttendanceService
         }
 
         $alreadyPunchedIn = $this->employeeAttendanceRepository->query()
-        ->where('user_id', $userDetails->id)
-        ->whereDate('punch_in', Carbon::today())
-        ->where('shift_id', $officeShiftDetails->id)
-        ->exists();
+            ->where('user_id', $userDetails->id)
+            ->whereDate('punch_in', Carbon::today())
+            ->where('shift_id', $officeShiftDetails->id)
+            ->exists();
 
         if ($alreadyPunchedIn) {
             return ['status' => false, 'message' => 'You have already punched in for today’s shift.'];
@@ -178,7 +178,7 @@ class EmployeeAttendanceService
     {
         $authDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
         $userDetails = $this->userService->getUserById($data['user_id']);
-        if($authDetails->id != $userDetails->company_id) {
+        if ($authDetails->id != $userDetails->company_id) {
             return ['status' => false, 'message' => 'Invalid User.'];
         }
         $attendanceTime = Carbon::now()->format('Y/m/d H:i:s');
@@ -213,18 +213,18 @@ class EmployeeAttendanceService
         }
 
         $alreadyPunchedIn = $this->employeeAttendanceRepository->query()
-        ->where('user_id', $userDetails->id)
-        ->whereDate('punch_in', Carbon::today())
-        ->where('shift_id', $officeShiftDetails->id)
-        ->exists();
+            ->where('user_id', $userDetails->id)
+            ->whereDate('punch_in', Carbon::today())
+            ->where('shift_id', $officeShiftDetails->id)
+            ->exists();
 
         // Handle Punch Out
         if ($alreadyPunchedIn) {
             $existingAttendance = $this->employeeAttendanceRepository->query()
-            ->where('user_id', $userDetails->id)
-            ->whereDate('punch_in', Carbon::today())
-            ->where('shift_id', $officeShiftDetails->id)
-            ->first();
+                ->where('user_id', $userDetails->id)
+                ->whereDate('punch_in', Carbon::today())
+                ->where('shift_id', $officeShiftDetails->id)
+                ->first();
             if ($officeShiftDetails->check_out_buffer > 0) {
                 $bufferTime = $officeEndTime->copy()->subMinutes($officeShiftDetails->check_out_buffer);
                 if (Carbon::now()->lt($bufferTime)) {
@@ -244,11 +244,11 @@ class EmployeeAttendanceService
                 }
             }
 
-            if($existingAttendance->punch_out != null) {
+            if ($existingAttendance->punch_out != null) {
                 return [
-                        'status' => false,
-                        'message' => 'You have already punched-out.'
-                    ];
+                    'status' => false,
+                    'message' => 'You have already punched-out.'
+                ];
             } else {
                 $data['punch_out'] = $attendanceTime;
                 $existingAttendance->update($data);
@@ -341,10 +341,10 @@ class EmployeeAttendanceService
     {
 
         return $this->employeeAttendanceRepository
-        ->where('user_id', $userId)
-        ->where('punch_out', NULL)
-        ->latest('id')
-        ->first();
+            ->where('user_id', $userId)
+            ->where('punch_out', NULL)
+            ->latest('id')
+            ->first();
     }
 
     /**
@@ -398,6 +398,11 @@ class EmployeeAttendanceService
      * @return void/null/object
      */
     public function getAllAttendanceByMonthByUserId($month, $userId, $year)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year);
+    }
+
+    public function getAllAbsenceByMonthByUserId($month, $userId, $year)
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year);
     }
@@ -650,6 +655,45 @@ class EmployeeAttendanceService
 
     public function getAttendanceByuserId($userId, $date)
     {
-       return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', '=', $date);
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereDate('punch_in', '=', $date);
+    }
+
+    public function getEmployeeAttendanceBetweenTwoDates($userId, $companyId, $branchID, $departmentId, $startDate, $endDate)
+    {
+        $attendances = [];
+        while (strtotime($startDate) <= strtotime($endDate)) {
+            $weekendStatus = false;
+            $weekDayNumber = date('Y-m-d', strtotime($startDate));
+
+            $weekendStatus = $this->weekendService->getWeekendDetailByWeekdayId($companyId, $branchID, $departmentId, date('m/d/Y', strtotime($startDate)));
+            if ($weekendStatus) {
+                $attendances['weekends'][] = ['date' => $weekDayNumber];
+            }
+
+            $checkHoliday = $this->holidayService->getBranchHolidayByDate($companyId, $branchID, $weekDayNumber);
+            if ($checkHoliday) {
+                $attendances['holidays'][] = [
+                    'date' => $weekDayNumber,
+                    'title' => $checkHoliday->name
+                ];
+            }
+
+            $attendance = $this->getAttendanceByuserId($userId, $startDate)->first();
+            if ($attendance) {
+                $attendances['holidays'][] = [
+                    'date' => $weekDayNumber,
+                    'details' => $attendance->toArray()
+                ];
+            }
+
+            $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($userId, $weekDayNumber, $endDate);
+            if(!$weekendStatus && !$checkHoliday && !$checkLeave && !$attendance){
+                $attendances['absences'][] = ['date' => $weekDayNumber];
+            }
+            
+            $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
+        }
+
+        return $attendances;
     }
 }
