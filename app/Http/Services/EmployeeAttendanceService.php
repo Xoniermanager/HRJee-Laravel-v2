@@ -590,7 +590,9 @@ class EmployeeAttendanceService
             foreach ($attendances as $key => $attendance) {
                 $resp = [];
                 $resp['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
-                $resp['punch_out'] = date('H:i A', strtotime($attendance->punch_out));
+                $resp['punch_out'] = $attendance->punch_out
+                    ? date('H:i A', strtotime($attendance->punch_out))
+                    : null;
                 if ($attendance->punch_out) {
                     $punchIn = Carbon::parse($attendance->punch_in);
                     $punchOut = Carbon::parse($attendance->punch_out);
@@ -687,10 +689,10 @@ class EmployeeAttendanceService
             }
 
             $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($userId, $weekDayNumber, $endDate);
-            if(!$weekendStatus && !$checkHoliday && !$checkLeave && !$attendance){
+            if (!$weekendStatus && !$checkHoliday && !$checkLeave && !$attendance) {
                 $attendances['absences'][] = ['date' => $weekDayNumber];
             }
-            
+
             $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
         }
 
