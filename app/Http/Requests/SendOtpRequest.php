@@ -22,7 +22,8 @@ class SendOtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required_without:emp_id|email',
+            'emp_id' => 'required_without:email|string',
         ];
     }
 }
