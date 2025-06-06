@@ -139,4 +139,15 @@ class HolidayServices
     {
         return $this->holidayRepository->find($holidayId)->update(['status' => $statusValue]);
     }
+
+    public function getBranchHolidayByDate($companyID, $branchId, $date)
+    {
+        return $this->holidayRepository
+            ->where('company_id', $companyID)
+            ->where('date', $date)
+            ->whereHas('companyBranch', function ($query) use ($branchId) {
+                $query->where('company_branch_id', $branchId);
+            })
+            ->where('status', '1')->first();
+    }
 }

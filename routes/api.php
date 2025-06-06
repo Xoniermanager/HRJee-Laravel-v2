@@ -141,6 +141,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
 
     /** For Holiday Management API */
     Route::get('/holidays', [HolidayController::class, 'getHolidays']);
+    Route::get('/holiday/list', [HolidayController::class, 'getHolidays']);
 
 
     /** for Location Visit And Assigned Task */

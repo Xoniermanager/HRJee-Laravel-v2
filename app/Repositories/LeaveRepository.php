@@ -23,7 +23,7 @@ class LeaveRepository extends BaseRepository
         return Leave::class;
     }
 
-    public function getTotalLeaveByUserIDByMonth($userId, $month, $year)
+    public function getTotalLeaveByUserIDByMonth($userId, $month, $year, $returnLeaveDetails = 0)
     {
         $totalLeaves = $this->model::where('user_id', '=', $userId)
             ->where('leave_status_id', '=', 2)
@@ -34,8 +34,11 @@ class LeaveRepository extends BaseRepository
                         $query->whereMonth('to', $month)
                             ->whereYear('to', $year);
                     });
-            })
-            ->get();
+            })->get($returnLeaveDetails ? ['from', 'to', 'is_half_day'] : ['*']);
+
+        if ($returnLeaveDetails)
+            return $totalLeaves;
+
         $leaveSummaries = $totalLeaves->groupBy('user_id')->mapWithKeys(function ($userLeaves) {
             $totalLeaveDays = $userLeaves->sum(function ($leave) {
                 // Ensure 'from' and 'to' are Carbon instances
@@ -64,7 +67,7 @@ class LeaveRepository extends BaseRepository
             });
 
             // Return user_id as the key and the total leave days as the value
-            return ["total_leave" =>  $totalLeaveDays];
+            return ["total_leave" => $totalLeaveDays];
         });
         return $leaveSummaries['total_leave'] ?? '0';
     }

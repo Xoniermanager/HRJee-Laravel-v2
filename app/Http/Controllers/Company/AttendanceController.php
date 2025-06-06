@@ -139,7 +139,7 @@ class AttendanceController extends Controller
         while (strtotime($startDate) <= strtotime($endDate)) {
             $weekendStatus = false;
             //$weekDayNumber = date('N', strtotime($startDate));
-            $weekDayNumber = date('Y-m-d', strtotime($startDate));
+            $weekDayNumber = date('m/d/Y', strtotime($startDate));
             $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->details->company_branch_id, $employeeDetails->details->department_id, $weekDayNumber);
 
             if (isset($checkWeekend) && !empty($checkWeekend)) {
