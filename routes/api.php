@@ -58,6 +58,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::get('get/team/details/{userId}', 'getTeamDetailsByUserId');
 
         Route::post('update/profile', 'updateProfile');
+        Route::post('update/documents', 'updateDocuments');
         Route::post('change/password', 'changePassword');
         Route::post('user/kyc/registration', 'userKycRegistration');
         Route::post('user/punchIn/image', 'userPunchInImage');

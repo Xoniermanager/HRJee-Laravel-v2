@@ -7,18 +7,21 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserDetail;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\SendOtpService;
 use Illuminate\Support\Facades\Password;
+use App\Http\Services\UserDocumentDetailServices;
 
 class AuthService
 {
-    private $sendOtpService;
+    private $sendOtpService, $userDocumentDetailsService;
 
-    public function __construct(SendOtpService $sendOtpService)
+    public function __construct(SendOtpService $sendOtpService, UserDocumentDetailServices $userDocumentDetailsService)
     {
         $this->sendOtpService = $sendOtpService;
+        $this->userDocumentDetailsService = $userDocumentDetailsService;
     }
 
     /**
@@ -283,6 +286,27 @@ class AuthService
 
             return apiResponse('profile_updated');
         } catch (Throwable $th) {
+            return exceptionErrorMessage($th);
+        }
+    }
+
+    public function updateDocuments($payload, $allDocuments){
+        try {
+            $request = new Request();
+
+            foreach ($payload['documents'] as $key => $document) {
+                $document_name = removingSpaceMakingName($allDocuments->firstWhere('id', $key)->name);
+
+                $request->files->add([
+                    "{$document_name}" => $document,
+                ]);
+            }
+            
+            $request->merge(['user_id' => auth()->id()]);
+            
+            $this->userDocumentDetailsService->create($request);
+            return apiResponse('profile_updated');
+        }catch(Throwable $th){
             return exceptionErrorMessage($th);
         }
     }
