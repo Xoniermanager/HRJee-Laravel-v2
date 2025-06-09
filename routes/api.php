@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\CompOffController;
 use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\AttendanceController;
+use App\Http\Controllers\Api\ConfigDataController;
 use App\Http\Controllers\Api\ResignationController;
 use App\Http\Controllers\Api\AnnouncementController;
 use Illuminate\Foundation\Console\RouteCacheCommand;
@@ -180,6 +181,11 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::post('/break-in', 'breakIn');
         Route::get('/break-out/{employee_break_histories:breakId}', 'breakOutbyApi');
         Route::get('/break-details/{employee_attendances:attendanceId}', 'getBreakDetailsByAttendanceId');
+    });
+
+    /** Config Data APIs */
+    Route::controller(ConfigDataController::class)->group(function(){
+        Route::get('/config/required-documents', 'requiredDocuments');
     });
 });
 /** Log Activity */
