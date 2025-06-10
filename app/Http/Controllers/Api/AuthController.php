@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Services\DocumentTypeService;
 use Exception;
 use App\Models\Menu;
 use App\Models\User;
@@ -26,11 +27,13 @@ class AuthController extends Controller
     private $userAuthService;
     private $leaveService;
     private $attendanceService;
-    public function __construct(AuthService $userAuthService, LeaveService $leaveService, EmployeeAttendanceService $attendanceService)
+    private $documentTypeService;
+    public function __construct(AuthService $userAuthService, LeaveService $leaveService, EmployeeAttendanceService $attendanceService, DocumentTypeService $documentTypeService)
     {
         $this->userAuthService = $userAuthService;
         $this->leaveService = $leaveService;
         $this->attendanceService = $attendanceService;
+        $this->documentTypeService = $documentTypeService;
     }
     public function login(UserLoginRequest $request)
     {
@@ -296,5 +299,45 @@ class AuthController extends Controller
             'expires_at' => $newExpiresAt->toDateTimeString(),
             'data' => $user,
         ]);
+    }
+
+    public function updateDocuments(Request $request)
+    {
+        $allDocuments = $this->documentTypeService->getAllActiveDocuments();
+
+        $rules = [];
+        $messages = [];
+        foreach ($allDocuments as $doc) {
+            $field = "documents.{$doc->id}";
+
+            $rules[$field] = [
+                $doc->is_mandatory ? 'required' : 'nullable',
+                'file',
+                'max:1024',
+                'mimes:jpg,jpeg,png,webp,pdf',
+            ];
+            
+            $messages["{$field}.required"] = "{$doc->name} is required.";
+            $messages["{$field}.file"] = "{$doc->name} must be a valid file.";
+            $messages["{$field}.max"] = "{$doc->name} size must be less than 1MB.";
+            $messages["{$field}.mimes"] = "{$doc->name} must be an image or PDF file.";
+        }
+        
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "error" => 'validation_error',
+                "message" => $validator->errors(),
+            ], 400);
+        }
+
+        $this->userAuthService->updateDocuments($request->all(), $allDocuments);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile updated successfully',
+            'data' => [],
+        ], 200);
     }
 }

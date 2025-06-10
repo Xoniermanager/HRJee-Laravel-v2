@@ -682,7 +682,7 @@ class EmployeeAttendanceService
 
             $attendance = $this->getAttendanceByuserId($userId, $startDate)->first();
             if ($attendance) {
-                $attendances['holidays'][] = [
+                $attendances['attendance'][] = [
                     'date' => $weekDayNumber,
                     'details' => $attendance->toArray()
                 ];
