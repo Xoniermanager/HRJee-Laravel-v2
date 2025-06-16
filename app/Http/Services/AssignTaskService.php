@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\User;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\AssignTaskRepository;
 
 class AssignTaskService
@@ -171,5 +172,14 @@ class AssignTaskService
     public function getTaskByUserIdAndDateAndStatus($userId, $date, $status)
     {
         return $this->getAssignedTaskByEmployeeId($userId)->whereDate('created_at', $date)->whereIn('user_end_status', $status);
+    }
+
+    public function getTaskStatusCountsByEmployeeId($userId)
+    {
+        return $this->assignTaskRepository->where('user_id', $userId)
+            ->select('final_status', DB::raw('count(*) as count'))
+            ->groupBy('final_status')
+            ->pluck('count', 'final_status')
+            ->toArray();
     }
 }

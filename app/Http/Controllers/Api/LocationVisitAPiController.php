@@ -149,4 +149,31 @@ class LocationVisitAPiController extends Controller
             ], 500);
         }
     }
+
+    public function taskReport(Request $request)
+    {
+        $userId = auth()->guard('employee_api')->id();
+
+        try {
+            $counts = $this->assignedTaskService->getTaskStatusCountsByEmployeeId($userId);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Report generated',
+                'data' => [
+                    'total_assigned_tasks' => array_sum($counts),
+                    'total_completed_tasks' => $counts['completed'] ?? 0,
+                    'total_pending_tasks' => $counts['pending'] ?? 0,
+                    'total_in_progress_tasks' => $counts['processing'] ?? 0,
+                    'total_rejected_tasks' => $counts['rejected'] ?? 0,
+                ],
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }
