@@ -444,4 +444,21 @@ class UserService
         })
         ->get();
     }
+
+    public function toggleUserLocationTracking($userId)
+    {
+        $user = $this->userDetailRepository->where('user_id', $userId)->first();
+
+        if (!$user)
+            throw new \Exception("Invalid user Id", 400);
+
+        if (!$user->location_tracking)
+            throw new \Exception("No permission to toggle location tracking", 400);
+
+        $status = $user->live_location_active == 1 ? 0 : 1;
+        $user->live_location_active = $status;
+        $user->save();
+
+        return $status;
+    }
 }
