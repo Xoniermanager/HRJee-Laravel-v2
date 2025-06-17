@@ -153,9 +153,10 @@ class LocationVisitAPiController extends Controller
     public function taskReport(Request $request)
     {
         $userId = auth()->guard('employee_api')->id();
+        $month = $request->month ?? null;
 
         try {
-            $counts = $this->assignedTaskService->getTaskStatusCountsByEmployeeId($userId);
+            $counts = $this->assignedTaskService->getTaskStatusCountsByEmployeeId($userId, $month);
 
             return response()->json([
                 'status' => true,
