@@ -147,6 +147,14 @@ class AssignTaskService
             });
         }
 
+        if (!empty($payload['month'])) {
+            $month = $payload['month'] ?? now()->month;
+            $year = now()->year;
+
+            $query->whereMonth('created_at', $month);
+            $query->whereYear('created_at', $year);
+        }
+
         return $query;
     }
 
@@ -174,9 +182,15 @@ class AssignTaskService
         return $this->getAssignedTaskByEmployeeId($userId)->whereDate('created_at', $date)->whereIn('user_end_status', $status);
     }
 
-    public function getTaskStatusCountsByEmployeeId($userId)
+    public function getTaskStatusCountsByEmployeeId($userId, $month = null)
     {
-        return $this->assignTaskRepository->where('user_id', $userId)
+        $month = $month ?? now()->month;
+        $year = now()->year;
+
+        return $this->assignTaskRepository
+            ->where('user_id', $userId)
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
             ->select('final_status', DB::raw('count(*) as count'))
             ->groupBy('final_status')
             ->pluck('count', 'final_status')
