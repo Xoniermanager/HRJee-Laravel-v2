@@ -198,7 +198,7 @@ class UserService
 
     public function getManagersByBranchId($branchIDs)
     {
-        $allManagers = $this->userRepository->where('role_id', '!=', null)->where('type', 'user')->with([
+        $allManagers = $this->userRepository->where('company_id', auth()->user()->company_id)->where('role_id', '!=', null)->where('type', 'user')->with([
             'details' => function ($query) use ($branchIDs) {
                 $query->whereIn('company_branch_id', $branchIDs);
             }
