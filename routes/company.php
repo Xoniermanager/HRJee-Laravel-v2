@@ -85,8 +85,7 @@ use App\Http\Controllers\Company\PerformanceReviewCycleController;
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
-Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess','log.route', 'auth.company'])->group(function ()
-{
+Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess', 'log.route', 'auth.company'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
         Route::get('configuration', 'companyConfiguartion')->name('company.configuration');
@@ -223,9 +222,9 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
         Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
         Route::get('/export', 'exportEmployee')->name('employee.export');
-        Route::post('/export-file', 'uploadImport')->name('upload.file');
+        Route::post('/export-file', 'uploadImport')->name('upload.file.employee');
         Route::post('/download-attendance', 'downloadA')->name('upload.file');
-        Route::post('/punchIn/radius','updatePunchInRadius')->name('update.punhin.radius');
+        Route::post('/punchIn/radius', 'updatePunchInRadius')->name('update.punhin.radius');
         Route::get('/get-manager-by-departments', 'getAllManager')->name('get.all.manager');
         Route::post('/get-employees-by-departments', 'getAllEmployeesByDepartment')->name('get.all-emp-by-dept');
 
@@ -800,8 +799,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachFilterList');
     });
 
-      //Address Request Module
-      Route::prefix('/reward')->controller(UserRewardController::class)->group(function () {
+    //Address Request Module
+    Route::prefix('/reward')->controller(UserRewardController::class)->group(function () {
         Route::get('/', 'index')->name('reward.index');
         Route::get('/add', 'add')->name('reward.add');
         Route::post('/store', 'store')->name('reward.store');
