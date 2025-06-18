@@ -12,13 +12,29 @@
                 <div class="col-md-12">
                     <div class="mb-5 mb-xl-10">
                         @if ($daysLeft && $daysLeft <= 7)
-                            <div class="alert alert-warning d-flex align-items-center" role="alert">
-                                <p class="font-bold">⚠️ Subscription Expiring Soon! Your subscription will expire in
-                                    <strong>{{ $daysLeft }} day(s) <button class="btn btn-primary mx-auto mt-3" type="button"
-                                            data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact
-                                            Us</button></strong>.
-                                </p>
-                            </div>
+                            @if ($daysLeft < 0)
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <p class="font-bold text-danger">❌ Subscription Expired {{ abs($daysLeft) }} day(s) ago.
+                                        <button class="btn btn-primary mx-auto mt-3" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</button>
+                                    </p>
+                                </div>
+                            @elseif ($daysLeft == 0)
+                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                    <p class="font-bold">⚠️ Subscription Expiring <strong>Today</strong>!
+                                        <button class="btn btn-primary mx-auto mt-3" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</button>
+                                    </p>
+                                </div>
+                            @else
+                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                    <p class="font-bold">⚠️ Subscription Expiring Soon! Your subscription will expire in
+                                        <strong>{{ $daysLeft }} day(s)</strong>.
+                                        <button class="btn btn-primary mx-auto mt-3" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</button>
+                                    </p>
+                                </div>
+                            @endif
                         @endif
                         <div class="row g-5 g-xl-10 mb-3">
                             <div class="col-xl-3 col-sm-6">
