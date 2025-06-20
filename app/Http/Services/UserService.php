@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Repositories\EmployeeAttendanceRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\UserDetailRepository;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -14,10 +15,12 @@ class UserService
 {
     private $userRepository;
     private $userDetailRepository;
-    public function __construct(UserRepository $userRepository, UserDetailRepository $userDetailRepository)
+    private $employeeAttendanceRepository;
+    public function __construct(UserRepository $userRepository, UserDetailRepository $userDetailRepository, EmployeeAttendanceRepository $employeeAttendanceRepository)
     {
         $this->userRepository = $userRepository;
         $this->userDetailRepository = $userDetailRepository;
+        $this->employeeAttendanceRepository = $employeeAttendanceRepository;
     }
 
     public function create($data)
@@ -109,9 +112,11 @@ class UserService
         }
 
         // Eager load 'companyDetails' including soft-deleted records
-        $allCompanyDetails = $allCompanyDetails->with(['companyDetails' => function ($query) {
-            $query->withTrashed();
-        }]);
+        $allCompanyDetails = $allCompanyDetails->with([
+            'companyDetails' => function ($query) {
+                $query->withTrashed();
+            }
+        ]);
         return $allCompanyDetails->paginate(10);
     }
 
@@ -342,7 +347,7 @@ class UserService
 
         $liveLocationUserID = $this->userRepository->currentLocations($userIds)->pluck('user_id')->toArray();
         $currentLocations = $this->userRepository->currentLocations($userIds)->get();
-        foreach($currentLocations as $location) {
+        foreach ($currentLocations as $location) {
             $response[] = [
                 "name" => $location->user->name,
                 "userid" => $location->user_id,
@@ -355,7 +360,7 @@ class UserService
 
         $punchInUserIDs = array_diff($userIds, $liveLocationUserID);
         $punchInLocations = $this->userRepository->currentPunchInLocations($punchInUserIDs)->get();
-        foreach($punchInLocations as $location) {
+        foreach ($punchInLocations as $location) {
             $response[] = [
                 "name" => $location->user->name,
                 "userid" => $location->user_id,
@@ -383,6 +388,22 @@ class UserService
             );
         }
 
+        // Throw error if user doesn't have marked as present
+        $attendance = $this->employeeAttendanceRepository
+            ->where('user_id', auth()->id())
+            ->where('punch_out', NULL)
+            ->latest('id')
+            ->first();
+
+        if (!$attendance) {
+            throw new HttpResponseException(
+                response()->json([
+                    'success' => false,
+                    'message' => 'User has not marked as present',
+                ], Response::HTTP_FORBIDDEN)
+            );
+        }
+
         // Save locations
         $this->userRepository->saveCurrentLocationsOfEmployee($locations);
     }
@@ -391,7 +412,8 @@ class UserService
         string $userId,
         ?string $date,
         ?int $onlyStayPoints = 0,
-        ?int $onlyNewPoints = 0, $punchOutTime = null
+        ?int $onlyNewPoints = 0,
+        $punchOutTime = null
     ) {
         return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints, $punchOutTime);
     }
@@ -401,7 +423,7 @@ class UserService
         return $this->userRepository->whereIn('company_id', $companyIds)->where('type', 'user')->where('status', 1);
     }
 
-    
+
     public function getUserSkillsByUserId($id)
     {
         return $this->userRepository->where('id', $id);
@@ -409,22 +431,22 @@ class UserService
 
     public function getAllManagerByCompanyId($companyId)
     {
-        return $this->userRepository->whereIn('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
+        return $this->userRepository->whereIn('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details', 'role:name,id']);
     }
 
     public function getAllManagerByDepartmentId($companyId, $deptId)
     {
         return $this->userRepository->whereIn('company_id', $companyId)
-        ->where('type', 'user')
-        ->whereNotNull('role_id')
-        ->whereHas('details', function ($query) use ($deptId) {
-            $query->where('department_id', $deptId);
-        })
-        ->with([
-            'managerEmployees.user.details',
-            'role:id,name'
-        ])
-        ->get();
+            ->where('type', 'user')
+            ->whereNotNull('role_id')
+            ->whereHas('details', function ($query) use ($deptId) {
+                $query->where('department_id', $deptId);
+            })
+            ->with([
+                'managerEmployees.user.details',
+                'role:id,name'
+            ])
+            ->get();
 
     }
 
@@ -438,11 +460,11 @@ class UserService
     public function getAllEmployeesByDepartmentId($companyId, $deptId)
     {
         return $this->userRepository->whereIn('company_id', $companyId)
-        ->where('type', 'user')
-        ->whereHas('details', function ($query) use ($deptId) {
-            $query->whereIn('department_id', $deptId);
-        })
-        ->get();
+            ->where('type', 'user')
+            ->whereHas('details', function ($query) use ($deptId) {
+                $query->whereIn('department_id', $deptId);
+            })
+            ->get();
     }
 
     public function toggleUserLocationTracking($userId)
