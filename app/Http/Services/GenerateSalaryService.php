@@ -29,7 +29,7 @@ class GenerateSalaryService
     {
         $date = Carbon::create($request['year'], $request['month'], 1);
         $employeeDetails = User::find($request['user_id']);
-        $checkExistingMonthDetails = $this->checkExistingMonthDetails($request);
+        // $checkExistingMonthDetails = $this->checkExistingMonthDetails($request);
         if (isset($checkExistingMonthDetails) && !empty($checkExistingMonthDetails)) {
             $data['getEmployeeMonthlySalary']['others'] = $checkExistingMonthDetails->toArray();
             $data['getEmployeeMonthlySalary']['monthlyCtc'] = $checkExistingMonthDetails->monthly_ctc;
@@ -53,7 +53,8 @@ class GenerateSalaryService
                 if ($totalDayPresent->total_present > 0) {
                     $totalWorking = $date->daysInMonth;
                     $working = round($totalWorking - $totalDayPresent->total_present, 2);
-                    $lossOfPay = round((($totalDayPresent->late_count / $employeeDetails->details->officeShift->total_late_count) * $employeeDetails->details->officeShift->total_leave_deduction) + $working, 2);
+                    $lossOfPay = 0;
+                    // $lossOfPay = round((($totalDayPresent->late_count / $employeeDetails->details->officeShift->total_late_count) * $employeeDetails->details->officeShift->total_leave_deduction) + $working, 2);
                     $getEmployeeMonthlySalary = $this->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
                     $getEmployeeCtcComponents = $this->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);
                     $userMonthlySalary = $this->createUserMonthlySalary($getEmployeeMonthlySalary, $request);
@@ -87,7 +88,7 @@ class GenerateSalaryService
             $totalLossOfPayAmount = bcmul($oneDayCalculation, $lossOfPay, 2);
             $monthlyCtc = bcsub($monthlyCtc, $totalLossOfPayAmount, 2);
         }
-
+        // dd($oneDayCalculation,$totalLossOfPayAmount);
         $allComponentsWithValues = [];
         $otherValues = [];
 
@@ -157,7 +158,7 @@ class GenerateSalaryService
         // Adding special allowance value earning part
         $monthlyEarnings = bcadd($monthlyEarnings, $monthlyAllowanceValue, 2);
 
-        if ($specialAllowanceId > 0) {
+        if ($monthlyAllowanceValue > 0) {
             $allComponentsWithValues[$specialAllowanceId]['monthly'] = $monthlyAllowanceValue;
         }
 
@@ -168,7 +169,6 @@ class GenerateSalaryService
         $otherValues['total_working_days'] = $totalWorking;
         $otherValues['loss_of_pay_days'] = $lossOfPay;
         $otherValues['salary_calculated_for_days'] = $totalWorking - $lossOfPay;
-
         return [
             'components' => $allComponentsWithValues,
             'others' => $otherValues,

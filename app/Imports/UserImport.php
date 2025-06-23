@@ -119,9 +119,9 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
             'mother_name' => 'nullable|string|max:255',
             'gender' => 'required|in:Male,Female,Other',
             'phone' => 'nullable|unique:user_details,phone',
-            'date_of_birth' => 'required|date_format:Y-m-d|before:today',
-            'joining_date' => 'required|date_format:Y-m-d|before:today',
-            'password' => 'required|string|min:8',
+            'date_of_birth' => 'required',
+            'joining_date' => 'required',
+            'password' => 'required|min:8',
             'company_branch' => 'required|exists:company_branches,name,company_id,' . Auth()->user()->company_id,
         ];
     }
