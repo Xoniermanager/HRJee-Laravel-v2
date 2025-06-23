@@ -649,7 +649,7 @@
                     $('#validationErrors').hide();
 
                     $.ajax({
-                        url: '{{ route('upload.file') }}',
+                        url: '{{ route('upload.file.employee') }}',
                         method: 'POST',
                         data: formData,
                         contentType: false,

@@ -32,9 +32,14 @@ class ValidateBranch extends FormRequest
                 'required',
                 Rule::in(['primary', 'secondary']),
                 function ($attribute, $value, $fail) {
+                    $branchId = request('id');
+        
                     if ($value === 'primary') {
                         $exists = \App\Models\CompanyBranch::where('company_id', auth()->user()->company_id)
                             ->where('type', 'primary')
+                            ->when($branchId, function ($query) use ($branchId) {
+                                $query->where('id', '!=', $branchId);
+                            })
                             ->exists();
 
                         if ($exists) {
@@ -43,6 +48,7 @@ class ValidateBranch extends FormRequest
                     }
                 },
             ],
+
             'contact_no' => 'required|numeric|digits_between:10,12',
 
             'email' => 'required|email',

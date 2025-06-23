@@ -20,11 +20,25 @@ class LocationVisitAPiController extends Controller
         $this->assignedTaskService = $assignedTaskService;
         $this->dispositionCodeService = $dispositionCodeService;
     }
-    public function assignedTask()
+    public function assignedTask(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'search_term' => 'sometimes|string',
+            'final_status' => 'sometimes|string|in:pending,processing,completed,rejected',
+            'user_end_status' => 'sometimes|string|in:pending,processing,completed,rejected',
+            'visit_address' => 'sometimes|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors(),
+            ], 422);
+        }
+
         $userId = Auth()->guard('employee_api')->user()->id;
         try {
-            $allAssignedTask = $this->assignedTaskService->getAssignedTaskByEmployeeId($userId)->paginate(10);
+            $allAssignedTask = $this->assignedTaskService->getAssignedTaskByEmployeeId($userId, $request->all())->paginate(10);
             return response()->json([
                 'status' => true,
                 'message' => 'All Assigned Task List',
@@ -135,4 +149,32 @@ class LocationVisitAPiController extends Controller
             ], 500);
         }
     }
+
+    public function taskReport(Request $request)
+    {
+        $userId = auth()->guard('employee_api')->id();
+        $month = $request->month ?? null;
+
+        try {
+            $counts = $this->assignedTaskService->getTaskStatusCountsByEmployeeId($userId, $month);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Report generated',
+                'data' => [
+                    'total_assigned_tasks' => array_sum($counts),
+                    'total_completed_tasks' => $counts['completed'] ?? 0,
+                    'total_pending_tasks' => $counts['pending'] ?? 0,
+                    'total_in_progress_tasks' => $counts['processing'] ?? 0,
+                    'total_rejected_tasks' => $counts['rejected'] ?? 0,
+                ],
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

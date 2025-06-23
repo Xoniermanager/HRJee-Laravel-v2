@@ -59,6 +59,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::get('get/team/details/{userId}', 'getTeamDetailsByUserId');
 
         Route::post('update/profile', 'updateProfile');
+        Route::patch('toggle-location-tracking', 'toggleUserLocationTracking');
         Route::post('update/documents', 'updateDocuments');
         Route::post('change/password', 'changePassword');
         Route::post('user/kyc/registration', 'userKycRegistration');
@@ -149,6 +150,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
     /** for Location Visit And Assigned Task */
     Route::controller(LocationVisitAPiController::class)->group(function () {
         Route::get('/assign/task', 'assignedTask');
+        Route::get('/assign/report', 'taskReport');
         Route::get('/get/disposition/code', 'getDispositionCode');
         Route::post('/update/task/status/{id}', 'updateTaskStatusDetails');
         Route::post('/change/task/status/{id}', 'changeStatus');

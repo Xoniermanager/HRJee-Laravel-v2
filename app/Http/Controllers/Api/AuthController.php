@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Services\DocumentTypeService;
+use App\Http\Services\UserService;
 use Exception;
 use App\Models\Menu;
 use App\Models\User;
@@ -28,12 +29,14 @@ class AuthController extends Controller
     private $leaveService;
     private $attendanceService;
     private $documentTypeService;
-    public function __construct(AuthService $userAuthService, LeaveService $leaveService, EmployeeAttendanceService $attendanceService, DocumentTypeService $documentTypeService)
+    private $userService;
+    public function __construct(AuthService $userAuthService, LeaveService $leaveService, EmployeeAttendanceService $attendanceService, DocumentTypeService $documentTypeService, UserService $userService)
     {
         $this->userAuthService = $userAuthService;
         $this->leaveService = $leaveService;
         $this->attendanceService = $attendanceService;
         $this->documentTypeService = $documentTypeService;
+        $this->userService = $userService;
     }
     public function login(UserLoginRequest $request)
     {
@@ -339,5 +342,29 @@ class AuthController extends Controller
             'message' => 'Profile updated successfully',
             'data' => [],
         ], 200);
+    }
+
+    public function toggleUserLocationTracking()
+    {
+        try {
+            $status = $this->userService->toggleUserLocationTracking(Auth()->guard('employee_api')->user()->id);
+
+            return response()->json([
+                'status' => true,
+                'message' => "Location tracking switched to ". ($status ? 'active' : 'inactive'),
+                'data' => [],
+            ], 200);
+        } catch (\Throwable $th) {
+            $msg = null;
+
+            if($th->getCode() == 400)
+                $msg = $th->getMessage();
+            
+            return response()->json([
+                'status' => false,
+                'message' => $msg ?? 'Failed to toggle location tracking',
+                'data' => [],
+            ], 200);
+        }
     }
 }

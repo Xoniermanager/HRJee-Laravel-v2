@@ -165,18 +165,18 @@ class EmployeeController extends Controller
         $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'ctcDetails');
         $allManagers = $this->qualificationService->getAllActiveQualification();
         $userAllShifts = $this->userShiftService->getByUserId([$user->id])->get()->groupBy('shift_day');
-        
+
         $userShifts = [];
-        foreach($userAllShifts as $key => $shifts) {
-            if(str_contains($key, 'day')) {
-                foreach($shifts as $shift){
+        foreach ($userAllShifts as $key => $shifts) {
+            if (str_contains($key, 'day')) {
+                foreach ($shifts as $shift) {
                     $userShifts[$key][] = $shift->shift_id;
                 }
             } else {
-                foreach($shifts as $shift){
+                foreach ($shifts as $shift) {
                     $userShifts[] = $shift->shift_id;
-                } 
-            }   
+                }
+            }
         }
 
         return view(
@@ -226,7 +226,11 @@ class EmployeeController extends Controller
             if ($userCreated) {
                 $userDetails = $this->employeeService->create($request->except('password', 'email', '_token', 'company_id'));
                 $this->employeeService->addManagers($request['user_id'], $request->get('manager_id'));
-                $this->userShiftService->add($request->get('office_shift_id'), $request['user_id']);
+
+                if ($request->get('office_shift_id')) {
+                    $this->userShiftService->add($request->get('office_shift_id'), $request['user_id']);
+                }
+
                 DB::commit();
                 return response()->json([
                     'message' => 'Basic Details Added Successfully! Please Continue',
@@ -436,9 +440,9 @@ class EmployeeController extends Controller
     {
         $companyIDs = getCompanyIDs();
         $departmentIds = $request->department_id;
-        
+
         $allManagers = $this->userService->getAllManagerByDepartmentId($companyIDs, $departmentIds);
-        
+
         if (isset($allManagers) && count($allManagers) > 0) {
             $response = [
                 'status' => true,
@@ -457,9 +461,9 @@ class EmployeeController extends Controller
     {
         $companyIDs = getCompanyIDs();
         $departmentIds = $request->department_ids;
-        
+
         $allEmployees = $this->userService->getAllEmployeesByDepartmentId($companyIDs, $departmentIds);
-        
+
         if (isset($allEmployees) && count($allEmployees) > 0) {
             $response = [
                 'status' => true,

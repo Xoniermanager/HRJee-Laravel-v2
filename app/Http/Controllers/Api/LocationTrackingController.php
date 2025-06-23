@@ -43,7 +43,6 @@ class LocationTrackingController extends Controller
                 'data' => [],
             ], 200);
         } catch (\Throwable $th) {
-            // dd($th);
             if ($th instanceof HttpResponseException) {
                 return $th->getResponse();
             }

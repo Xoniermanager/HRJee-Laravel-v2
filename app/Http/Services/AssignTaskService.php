@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\User;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\AssignTaskRepository;
 
 class AssignTaskService
@@ -96,12 +97,68 @@ class AssignTaskService
         return $taskDetails->paginate(10);
     }
 
-    public function getAssignedTaskByEmployeeId($userId)
+    public function getAssignedTaskByEmployeeId($userId, $payload = [])
     {
-        return $this->assignTaskRepository->where('user_id', $userId);
+        $query = $this->assignTaskRepository->where('user_id', $userId);
+
+        if (!empty($payload['final_status'])) {
+            $query->where('final_status', $payload['final_status']);
+        }
+
+        if (!empty($payload['user_end_status'])) {
+            $query->where('user_end_status', $payload['user_end_status']);
+        }
+
+        // if (!empty($payload['visit_address'])) {
+        //     $keywords = explode(' ', strtolower($payload['visit_address']));
+        //     $query->where(function ($q) use ($keywords) {
+        //         foreach ($keywords as $word) {
+        //             $q->whereRaw('LOWER(visit_address) LIKE ?', ["%$word%"]);
+        //         }
+        //     });
+        // }
+        if (!empty($payload['visit_address'])) {
+            $address = strtolower($payload['visit_address']);
+            $query->where(function ($q) use ($address) {
+                $q->whereRaw('LOWER(visit_address) LIKE ?', ["%$address%"]);
+            });
+        }
+
+        // if (!empty($payload['search_term'])) {
+        //     $search = strtolower($payload['search_term']);
+        //     $keywords = explode(' ', strtolower($payload['search_term']));
+
+        //     $query->where(function ($q) use ($search) {
+        //         $q->whereRaw("JSON_SEARCH(LOWER(response_data), 'all', ?) IS NOT NULL", ["%$search%"]);
+        //     })->orWhere(function ($q) use ($keywords) {
+        //         foreach ($keywords as $word) {
+        //             $q->whereRaw('LOWER(visit_address) LIKE ?', ["%$word%"]);
+        //         }
+        //     });
+        // }
+
+        if (!empty($payload['search_term'])) {
+            $search = strtolower($payload['search_term']);
+
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw("JSON_SEARCH(LOWER(response_data), 'all', ?) IS NOT NULL", ["%$search%"]);
+            })->orWhere(function ($q) use ($search) {
+                $q->whereRaw('LOWER(visit_address) LIKE ?', ["%$search%"]);
+            });
+        }
+
+        if (!empty($payload['month'])) {
+            $month = $payload['month'] ?? now()->month;
+            $year = now()->year;
+
+            $query->whereMonth('created_at', $month);
+            $query->whereYear('created_at', $year);
+        }
+
+        return $query;
     }
 
-    public function taskStatusUpdateByApi($data,$taskId)
+    public function taskStatusUpdateByApi($data, $taskId)
     {
         $taskDetails = $this->assignTaskRepository->find($taskId);
         $userDetails = User::find($taskDetails->user_id);
@@ -123,5 +180,20 @@ class AssignTaskService
     public function getTaskByUserIdAndDateAndStatus($userId, $date, $status)
     {
         return $this->getAssignedTaskByEmployeeId($userId)->whereDate('created_at', $date)->whereIn('user_end_status', $status);
+    }
+
+    public function getTaskStatusCountsByEmployeeId($userId, $month = null)
+    {
+        $month = $month ?? now()->month;
+        $year = now()->year;
+
+        return $this->assignTaskRepository
+            ->where('user_id', $userId)
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->select('final_status', DB::raw('count(*) as count'))
+            ->groupBy('final_status')
+            ->pluck('count', 'final_status')
+            ->toArray();
     }
 }
