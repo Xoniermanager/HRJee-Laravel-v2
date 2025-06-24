@@ -71,13 +71,17 @@ class AttendanceController extends Controller
 
     public function searchFilterDetails($month, $year, $searchKey = null, $deptId = null, $managerId = null, $branchID = null)
     {
-        $query = $this->employeeService->getEmployeeQueryByCompanyId(Auth()->user()->company_id); // assume this returns a builder
+        $query = $this->employeeService->getEmployeeQueryByCompanyId(Auth()->user()->company_id,$month, $year); // assume this returns a builder
 
-        // Apply filters
         if (!empty($searchKey)) {
             $query->where(function ($q) use ($searchKey) {
+                // Search in attendance table
                 $q->where('name', 'like', "%$searchKey%")
-                ->orWhere('emp_id', 'like', "%$searchKey%");
+
+                // Or search in the related `details` table using emp_id
+                  ->orWhereHas('details', function ($subQuery) use ($searchKey) {
+                      $subQuery->where('emp_id', 'like', "%$searchKey%");
+                  });
             });
         }
 

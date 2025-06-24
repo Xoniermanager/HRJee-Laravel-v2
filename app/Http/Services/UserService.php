@@ -185,7 +185,7 @@ class UserService
 
             $searchKeyword = $request->search;
             // Main search filter for the users table
-            $allEmployeeDetails->where(function ($query) use ($searchKeyword) {
+            $allEmployeeDetails->orWhere(function ($query) use ($searchKeyword) {
                 $query->where('name', 'LIKE', '%' . $searchKeyword . '%')
                     ->orWhere('email', 'LIKE', '%' . $searchKeyword . '%');
             });
@@ -193,12 +193,13 @@ class UserService
         // Filtering by skill_id
         if (isset($request->skill_id) && !empty($request->skill_id)) {
             $skillId = $request->skill_id;
-            $allEmployeeDetails->whereHas('skill', function ($query) use ($skillId) {
+            $allEmployeeDetails->orWhereHas('skill', function ($query) use ($skillId) {
                 $query->where('skill_id', $skillId);
             });
         }
 
         return $allEmployeeDetails->orderBy('id', 'DESC');
+
     }
 
     public function getManagersByBranchId($branchIDs)

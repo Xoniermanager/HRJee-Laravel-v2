@@ -119,8 +119,8 @@
                                         <div class="card-footer"
                                             style="border-top: 1px solid rgba(255, 255, 255, 0.3); background: rgba(0, 0, 0, 0.15); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;">
                                             <div class="fw-bold text-white py-2">
-                                                <span class="fs-1 d-block">{{ $dashboardData['total_present'] }}</span>
-                                                <span class="opacity-50">Total Present</span>
+                                                <span class="fs-1 d-block">{{ $dashboardData['total_attendance_reques'] }}</span>
+                                                <span class="opacity-50">Total Attendance Request</span>
                                             </div>
                                         </div>
                                         <!--end::Card footer-->
@@ -242,10 +242,7 @@
                                 <div id="employee-table">
                                     @include('company.dashboard.list', ['employees' => $dashboardData['all_users_details']])
                                 </div>
-                                <div class="d-flex justify-content-center mt-4">
-                                    {{ $dashboardData['all_users_details']->links() }}
-                                    <!-- Laravel's built-in pagination links -->
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -340,10 +337,10 @@
         }
     </script>
     <script>
-        $(document).ready(function () {
-            function fetchEmployees() {
+       $(document).ready(function () {
+            function fetchEmployees(url = "{{ route('company.dashboard') }}") {
                 $.ajax({
-                    url: "{{ route('company.employee_search.filter') }}",
+                    url: url,
                     type: "GET",
                     data: {
                         branch: $('#branch').val(),
@@ -353,17 +350,27 @@
                         name: $('#SearchByPatientName').val(),
                         attendance_check: $('#check_attendance').val(),
                     },
+                    beforeSend: function () {
+                        $('#employee-table').html('<div class="text-center">Loading...</div>');
+                    },
                     success: function (data) {
                         $('#employee-table').html(data);
                     }
-
                 });
             }
 
-            $('#branch, #department_id, #designation_id, #status, #SearchByPatientName,#check_attendance').on('change keyup', fetchEmployees);
+            $('#branch, #department_id, #designation_id, #status, #SearchByPatientName, #check_attendance')
+                .on('change keyup', function () {
+                    fetchEmployees();
+                });
+
+            $(document).on('click', '#employee-table .pagination a', function (e) {
+                e.preventDefault();
+                fetchEmployees($(this).attr('href'));
+            });
+        });
 
 
-        })
 
         jQuery(document).ready(function ($) {
             jQuery("#contact_us_form").validate({
