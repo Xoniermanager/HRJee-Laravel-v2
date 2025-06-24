@@ -154,7 +154,7 @@
                 searchFilter();
             });
 
-            jQuery(document).on('click', '#attendance_list a', function(e) {
+            jQuery(document).on('click', '#attendance_list paginate a', function(e) {
             e.preventDefault();
             var page_no = $(this).attr('href').split('page=')[1];
             searchFilter(page_no);

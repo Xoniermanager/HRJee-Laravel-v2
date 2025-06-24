@@ -32,6 +32,7 @@
                                     <tr class="fw-bold">
                                         <th>Sr. No.</th>
                                         <th>Employee Name</th>
+                                        <th>Employee Id</th>
                                         <th class="">Leave Type & Available</th>
                                     </tr>
                                 </thead>
@@ -39,20 +40,30 @@
                                     @php
                                         $index = 0;
                                     @endphp
-                                    @foreach ($getAllEmployeeLeaveAvailableDetails as $userDetailsLeaveDetails)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $userDetailsLeaveDetails[0]->user->name }}</td>
-                                            <td>
-                                                @foreach ($userDetailsLeaveDetails as $leaveDetails)
-                                                    <span class="btn btn-sm btn-success m-1">
-                                                        {{ $leaveDetails->leaveType->name }} :
-                                                        {{ $leaveDetails->available }}
-                                                    </span>
-                                                @endforeach
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                   @foreach ($getAllEmployeeLeaveAvailableDetails as $key => $userDetailsLeaveDetails)
+                                   @php
+                                       $firstLeave = $userDetailsLeaveDetails[0] ?? null;
+                                       $user = $firstLeave?->user;
+                                   @endphp
+                                   <tr>
+                                       <td>{{ $index + 1 }}</td>
+                                       <td>{{ $user?->name ?? 'N/A' }}</td>
+                                       <td>{{ $user?->details->emp_id ?? 'N/A' }}</td>
+                                       <td>
+                                           @foreach ($userDetailsLeaveDetails as $leaveDetails)
+                                               @if ($leaveDetails->leaveType)
+                                                   <span class="btn btn-sm btn-success m-1">
+                                                       {{ $leaveDetails->leaveType->name }} : {{ $leaveDetails->available }}
+                                                   </span>
+                                               @endif
+                                           @endforeach
+                                       </td>
+                                   </tr>
+                                   @php
+                                   $index++;
+                               @endphp
+                               @endforeach
+
                                 </tbody>
                                 <!--end::Table body-->
                             </table>

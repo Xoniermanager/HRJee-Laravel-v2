@@ -178,7 +178,7 @@
 
             // Fetch data using AJAX
             $.ajax({
-                url: '/employee/leave-tracking/'+leaveId, // Update to the correct route
+                url: '/leave-tracking/'+leaveId, // Update to the correct route
                 method: 'GET',
                 success: function (response) {
                     $('#modalContent').html(response);

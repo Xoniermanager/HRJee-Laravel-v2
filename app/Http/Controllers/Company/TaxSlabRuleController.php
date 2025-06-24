@@ -106,6 +106,7 @@ class TaxSlabRuleController extends Controller
     }
     public function serachTaxSlabFilterList(Request $request)
     {
+        $request['company_id'] = Auth()->user()->company_id;
         $searchedItems = $this->taxSlabRuleService->serachTaxSlabFilterList($request);
         if ($searchedItems) {
             return response()->json([

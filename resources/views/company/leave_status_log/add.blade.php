@@ -18,7 +18,7 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-5 form-group">
-                                        <label for="">Employee Leave *</label>
+                                        <label for="" class="required">Employee Leave</label>
                                         <select name="leave_id" class="form-control"
                                             onchange="get_details_using_leave_id()" id="leave_details">
                                             <option value="">Please Select Employee</option>
@@ -34,7 +34,7 @@
                                                     <option value="{{ $leaveDetails->id }}">
                                                         {{ $leaveDetails->user->name }} ( {{ $leaveDetails->from }} To
                                                         {{ $leaveDetails->to }})</option>
-                                                    @endif  
+                                                    @endif
                                                 @endforeach
                                             @endif
                                         </select>
@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-5 form-group">
-                                    <label for="">Leave Status *</label>
+                                    <label for="" class="required">Leave Status </label>
                                     <select name="leave_status_id" class="form-control">
                                         <option value="">Please Select the Status</option>
                                         @foreach ($allLeaveStatusDetails as $leaveStatusDetails)
@@ -59,7 +59,7 @@
                                     @endif
                                 </div>
                                 <div class="col-md-5 form-group">
-                                    <label for="">Remark *</label>
+                                    <label for="" class="required" >Remark </label>
                                     <textarea cols="55" name="remarks" class="form-control"></textarea>
                                     @if ($errors->has('reason'))
                                         <div class="text-danger">{{ $errors->first('reason') }}</div>
@@ -67,6 +67,7 @@
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-primary">Cancel</a>
                         </form>
                     </div>
                 </div>
