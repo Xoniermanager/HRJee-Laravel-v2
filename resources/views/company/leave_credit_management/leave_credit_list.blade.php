@@ -27,7 +27,7 @@
                                 onClick="edit_leave_credit_management('{{ $leaveCreditDetails }}')">{{ $leaveCreditDetails->companyBranches->name }}</a>
                         </td>
                         <td>{{ $leaveCreditDetails->employeeTypes->name }}</td>
-                        <td>{{ $leaveCreditDetails->leaveTypes->name }}</td>
+                        <td>{{ $leaveCreditDetails->leaveTypes->name ?? 'N/A'}}</td>
                         @php
                         $repeatInMonth = '';
                         $credit_leave_on_day = '';
@@ -55,12 +55,12 @@
                         $repeatInMonth = "Every Eleven Month";
                         if($leaveCreditDetails->repeat_in_months == 12)
                         $repeatInMonth = "Every Year";
-                        
+
                         if($leaveCreditDetails->credit_leave_on_day == 0)
                         $credit_leave_on_day = "End of Months";
                         if($leaveCreditDetails->credit_leave_on_day != 0)
                          $credit_leave_on_day = $leaveCreditDetails->credit_leave_on_day .' Day'
-                        
+
                         @endphp
                         <td>{{$repeatInMonth}}</td>
                         <td>{{ $credit_leave_on_day }}</td>

@@ -138,9 +138,6 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.rou
     //Employee Leave Available
     Route::get('get/leave/available', [LeaveAvailableController::class, 'getAllLeaveAvailableByUserId'])->name('employee.leave.available');
 
-    //Leave Tracking
-    Route::get('/leave-tracking/{id}', [LeaveTrackingController::class, 'index'])->name('employee.leave.tracking');
-
     //Employee Break History
     Route::controller(EmployeeBreakHistoryController::class)->group(function () {
         Route::post('/break-in', 'breakIn')->name('employee_break_in');

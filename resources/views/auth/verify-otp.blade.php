@@ -1,504 +1,201 @@
 <!DOCTYPE html>
-
 <html lang="en">
-	<!--begin::Head-->
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-
-	<head>
-		<title> HRJEE </title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta property="og:locale" content="en_US" />
-		<meta property="og:type" content="article" />
-		<meta property="og:url" content="" />
-		<meta property="og:site_name" content="" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="keywords" content="">
-		<meta name="robots" content="noindex,nofollow">
-		<meta name="title" property='og:title' content='Xonier HRJEE' />
-		<meta name="type" property='og:type' content='website' />
-		<meta name="image" property='og:image' content="" />
-		<meta name="url" property='og:url' content='' />
-		<meta name="description" property='og:description' content='' />
-		<meta name="author" content="Jyoti Mishra Web Designer at Xonier">
-		<!--begin::Fonts(mandatory for all pages)-->
-		<link rel="stylesheet" href="{{ asset('assets/css/mark-pro.css') }}" />
-		<!--end::Fonts-->
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-		<!--end::Fonts-->
-		<!--begin::Vendor Stylesheets(used for this page only)-->
-		<link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet"
-			type="text/css" />
-		<link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
-		<!--end::Vendor Stylesheets-->
-		<!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
-		<link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
-		<link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-		<!--end::Global Stylesheets Bundle-->
-		<link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
-		<style>
-			.input_wrapper {
-				position: relative
-			}
-
-			.plastic_select,
-			input[type=url],
-			input[type=text],
-			input[type=tel],
-			input[type=number],
-			input[type=email],
-			input[type=password],
-			select,
-			textarea {
-				font-size: 1.25rem;
-				line-height: normal;
-				padding: .75rem;
-				border: 1px solid #C5C5C5;
-				border-radius: .25rem;
-				-webkit-appearance: none;
-				-moz-appearance: none;
-				appearance: none;
-				outline: 0;
-				color: #555459;
-				width: 100%;
-				max-width: 100%;
-				font-family: Slack-Lato, appleLogo, sans-serif;
-				margin: 0 0 .5rem;
-				-webkit-transition: box-shadow 70ms ease-out, border-color 70ms ease-out;
-				-moz-transition: box-shadow 70ms ease-out, border-color 70ms ease-out;
-				transition: box-shadow 70ms ease-out, border-color 70ms ease-out;
-				-webkit-font-smoothing: antialiased;
-				-moz-osx-font-smoothing: grayscale;
-				box-shadow: none;
-				height: auto;
-			}
-
-			.no_touch .plastic_select:hover,
-			.no_touch input:hover,
-			.no_touch select:hover,
-			.no_touch textarea:hover {
-				border-color: #2780f8
-			}
-
-			.focus,
-			.plastic_select:active,
-			.plastic_select:focus,
-			input[type=url]:active,
-			input[type=url]:focus,
-			input[type=text]:active,
-			input[type=text]:focus,
-			input[type=number]:active,
-			input[type=number]:focus,
-			input[type=email]:active,
-			input[type=email]:focus,
-			input[type=password]:active,
-			input[type=password]:focus,
-			select:active,
-			select:focus,
-			textarea:active,
-			textarea:focus {
-				border-color: #2780f8;
-				box-shadow: 0 0 7px rgba(39, 128, 248, .15);
-				outline-offset: 0;
-				outline: 0
-			}
-
-			.large_bottom_margin {
-				margin-bottom: 2rem !important;
-			}
-
-			.split_input {
-				display: table;
-				border-spacing: 0
-			}
-
-			.split_input_item {
-				display: table-cell;
-				border: 1px solid #9e9ea6
-			}
-
-			.split_input_item:not(:first-child) {
-				border-left: none
-			}
-
-			.split_input_item:first-child {
-				border-top-left-radius: 5px;
-				border-bottom-left-radius: 5px
-			}
-
-			.split_input_item:last-child {
-				border-top-right-radius: 5px;
-				border-bottom-right-radius: 5px
-			}
-
-			.split_input_item.focused {
-				border: 1px double #2780f8;
-				box-shadow: 0 0 7px rgba(39, 128, 248, .3)
-			}
-
-			.split_input_item input {
-				height: 5rem;
-				text-align: center;
-				font-size: 2.5rem;
-				border: none;
-				background: 0 0;
-				box-shadow: none
-			}
-
-			.split_input_item input:active,
-			.split_input_item input:focus,
-			.split_input_item input:hover {
-				box-shadow: none
-			}
-
-			.fs_split {
-				position: absolute;
-				overflow: hidden;
-				width: 100%;
-				top: 0;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				background-color: #e8e8e8;
-				-webkit-transition: background-color .2s ease-out 0s;
-				-moz-transition: background-color .2s ease-out 0s;
-				transition: background-color .2s ease-out 0s
-			}
-
-			.fs_split h1 {
-				font-size: 2.625rem;
-				line-height: 3rem;
-				font-weight: 300;
-				margin-bottom: 2rem
-			}
-
-			.fs_split label {
-				margin-bottom: .5rem
-			}
-
-			.fs_split .desc {
-				font-size: 1.25rem;
-				color: #9e9ea6;
-				margin-bottom: 2rem
-			}
-
-			.fs_split .email {
-				color: #555459;
-				font-weight: 700
-			}
-
-			.fs_split .header_error_message {
-				margin: 0 11%;
-				padding: 1rem 2rem;
-				background: #fff1e1;
-				border: none;
-				border-left: .5rem solid #ffa940;
-				border-radius: .25rem
-			}
-
-			.fs_split .header_error_message h3 {
-				margin: 0
-			}
-
-			.fs_split .error_message {
-				display: none;
-				font-weight: 700;
-				color: #ffa940
-			}
-
-			.fs_split .error input,
-			.fs_split .error textarea {
-				border: 1px solid #ffa940;
-				background: #fff1e1
-			}
-
-			.fs_split .error input:focus,
-			.fs_split .error textarea:focus {
-				border-color: #fff1e1;
-				box-shadow: 0 0 7px rgba(255, 185, 100, .15)
-			}
-
-			.fs_split .error .error_message {
-				display: inline
-			}
-
-			.confirmation_code_span_cell {
-				display: table-cell;
-				font-weight: 700;
-				font-size: 2rem;
-				text-align: center;
-				padding: 0 .5rem;
-				width: 2rem
-			}
-
-			.confirmation_code_state_message {
-				position: absolute;
-				width: 100%;
-				opacity: 0;
-				-webkit-transition: opacity .2s;
-				-moz-transition: opacity .2s;
-				transition: opacity .2s
-			}
-
-			.confirmation_code_state_message.error,
-			.confirmation_code_state_message.processing,
-			.confirmation_code_state_message.ratelimited {
-				font-size: 1.25rem;
-				font-weight: 700;
-				line-height: 2rem
-			}
-
-			.confirmation_code_state_message.processing {
-				color: #3aa3e3
-			}
-
-			.confirmation_code_state_message.error,
-			.confirmation_code_state_message.ratelimited {
-				color: #ffa940
-			}
-
-			.confirmation_code_state_message ts-icon:before {
-				font-size: 2.5rem
-			}
-
-			.confirmation_code_state_message svg.ts_icon_spinner {
-				height: 2rem;
-				width: 2rem
-			}
-
-			.confirmation_code_checker {
-				position: relative;
-				height: 12rem;
-				text-align: center
-			}
-
-			.confirmation_code_checker[data-state=unchecked] .confirmation_code_state_message.unchecked,
-			.confirmation_code_checker[data-state=error] .confirmation_code_state_message.error,
-			.confirmation_code_checker[data-state=processing] .confirmation_code_state_message.processing,
-			.confirmation_code_checker[data-state=ratelimited] .confirmation_code_state_message.ratelimited {
-				opacity: 1
-			}
-
-			.large_bottom_margin {
-				margin-bottom: 2rem !important;
-			}
-		</style>
-	</head>
-	<!--end::Head-->
-	<!--begin::Body-->
-
-	<body id="kt_body" class="auth-bg">
-		<!--begin::Theme mode setup on page load-->
-		<!--begin::Main-->
-		<!--begin::Root-->
-
-		{{-- <div class="container">
-        <div class="row">
-            <div class="col-sm-6 col-sm-offset-2"><!-- col -->
-                <h2>
-                    <h1>Check your email!
-                    </h1>
-                </h2>
-                <p class="desc">We’ve sent a four-digit confirmation code to <strong></strong>.
-                    Enter it below to
-                    confirm your email address.</p>
-                <br><br><br>
-                @if (session('error'))
-                    <div class="alert alert-danger alert-dismissible">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible">
-                        {{ session('success') }}
-                    </div>
-                @endif
-                @if ($errors->has('otp'))
-                    <div class="error">{{ $errors->first('otp') }}</div>
-                @endif
-
-                <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden" id="kt_sign_in_form"
-                    action="{{ route('verifyOtpCheck') }}" method="POST">
-
-                    @csrf
-                    <input type="hidden" name='otp' id='otp'>
-
-                    <!--begin::Input group=-->
-                    <label><span class="normal">Your </span>confirmation code</label>
-                    <div class="confirmation_code split_input large_bottom_margin" data-multi-input-code="true">
-                        <div class="confirmation_code_group">
-                            <div class="split_input_item input_wrapper">
-                                <input type="text" class="inline_input" id='first' maxlength="1">
-
-                            </div>
-                            <div class="split_input_item input_wrapper">
-                                <input type="text" class="inline_input" id='second' maxlength="1">
-
-                            </div>
-
+<head>
+    <meta charset="UTF-8">
+    <title>HRJEE - OTP Verification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.bundle.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/global/plugins.bundle.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .disabled {
+            pointer-events: none;
+            color: gray !important;
+            text-decoration: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        #codeExpiredMessage {
+            display: none;
+            background-color: #ffe8e6;
+            border: 1px solid #f5c2c7;
+            color: #842029;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        .otp-input {
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+            text-align: center;
+            margin: 5px;
+        }
+        .form-container {
+            background: #ffffffcc;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="auth-bg">
+    <div class="d-flex flex-column flex-root">
+        <div class="d-flex flex-column flex-lg-row flex-column-fluid overflow-hidden">
+            <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-lg-2 order-1"
+                 style="background-image: url('{{ asset('assets/media/misc/bg7.jpg') }}'); background-size: cover; height: 100vh;">
+                <div class="d-flex flex-column flex-center w-100">
+                    <div class="form-container w-100 bg-white" style="max-width: 450px">
+                        <div class="text-center mb-4">
+                            <img src="{{ asset('assets/images/logo/logo.png') }}" alt="Logo" style="height: 60px;">
                         </div>
 
-                        <div class="confirmation_code_span_cell">—</div>
+                        <form id="kt_sign_in_form" method="POST" action="{{ route('verifyOtpCheck') }}">
+                            @csrf
+                            <h2 class="text-center mb-3">Check Your Email</h2>
+                            <p class="text-muted text-center mb-4">Please enter the 4-digit code sent to your email</p>
 
-                        <div class="confirmation_code_group">
-                            <div class="split_input_item input_wrapper">
-                                <input type="text" class="inline_input" maxlength="1" id='third'>
+                            <input type="hidden" name="otp" id="otp">
 
+                            <div class="d-flex justify-content-center rounded p-3">
+                                <input type="text" maxlength="1" id="n0" data-next="1" class="form-control otp-input authInput border border-primary bg-white">
+                                <input type="text" maxlength="1" id="n1" data-next="2" class="form-control otp-input authInput border border-primary bg-white">
+                                <input type="text" maxlength="1" id="n2" data-next="3" class="form-control otp-input authInput border border-primary bg-white">
+                                <input type="text" maxlength="1" id="n3" data-next="4" class="form-control otp-input authInput border border-primary bg-white">
                             </div>
-                            <div class="split_input_item input_wrapper">
-                                <input type="text" class="inline_input" maxlength="1" id='fourth'>
+
+                            @if ($errors->has('otp'))
+                                <div class="alert alert-danger text-center mt-2" role="alert">
+                                    {{ $errors->first('otp') }}
+                                </div>
+                            @endif
+                            @if (session('error'))
+                                <div class="alert alert-danger text-center mt-2" role="alert">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+                            @if (session('success'))
+                                <div class="alert alert-success text-center mt-2" role="alert">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                            <div class="text-center mt-5">
+                                <button id="kt_sign_in_submit" type="button" class="btn btn-primary w-100">
+                                    Verify
+                                </button>
                             </div>
 
-                        </div>
+                            <div id="codeExpiredMessage" class="text-center mt-4">
+                                <strong>Code Expired!</strong> Please click "Resend Code" to receive a new one.
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <a href="javascript:void(0)" id="resendLink" class="text-primary">Resend Code <span id="timer"></span></a>
+                            </div>
+                        </form>
                     </div>
-                    <!--end::Input group=-->
-
-                    <!--begin::Submit button-->
-                    <div class="text-center mt-10">
-                        <button id="kt_sign_in_submit" class="btn btn-primary signin-btn" type="button">
-                            <!--begin::Indicator label-->
-                            <span class="indicator-label">Verify</span>
-                            <!--end::Indicator label-->
-                            <!--begin::Indicator progress-->
-                            <span class="indicator-progress">Please wait...
-                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                            <!--end::Indicator progress-->
-                        </button>
-
-
-                    </div>
-                    <!--end::Submit button-->
-
-                </form>
-                <a href="{{ route('resendOtp') }}">resendOtp</a>
-
-
-                <!--end::Indicator progress-->
-
-
-
-            </div><!-- endof col -->
+                </div>
+            </div>
         </div>
-    </div> --}}
-		<div class="d-flex flex-column flex-root">
-			<!--begin::Authentication - Sign-in -->
-			<div class="d-flex flex-column flex-lg-row flex-column-fluid overflow-hidden">
-				<!--begin::Aside-->
-				<div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-lg-2 order-1"
-					style="background-image: url(assets/media/misc/bg7.jpg);background-size: cover;height: 100%;">
-					<!--begin::Content-->
-					<div class="d-flex flex-column flex-center w-100">
+    </div>
 
-						<!--end::Logo-->
-						<div class="w-450px">
-							<!--begin::Wrapper-->
-							<div class="card card-body zoom-out p-10">
-								<!--begin::Logo-->
-								<a href="#" class="mb-lg-12 mb-0 text-center">
-									<img alt="Logo" src="{{ asset('assets/images/logo/logo.png') }}" class="h-75px" />
-								</a>
+    <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
 
-								<!--begin::Form-->
-								<form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework overflow-hidden" id="kt_sign_in_form"
-									action="{{ route('verifyOtpCheck') }}" method="POST">
-									@csrf
-									<div class="fv-row fv-plugins-icon-container mb-8">
-										<h2>Check your email!</h2>
-										<p>Please enter the four-digit confirmation code we've sent to your email address
-											below to verify it.
-										</p>
-									</div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const resendLink = document.getElementById("resendLink");
+            const timerSpan = document.getElementById("timer");
+            const codeExpiredMessage = document.getElementById("codeExpiredMessage");
 
-									<input type="hidden" name='otp' id='otp'>
-									<!--begin::Input group=-->
-									<div class="mb-10">
-										<!--begin::Label-->
-										<div class="fw-bold text-dark fs-6 mb-1 ms-1 text-start">
-											Type your 4 digit security code</div>
-										<!--end::Label-->
-										<!--begin::Input group-->
-										<div class="d-flex flex-stack flex-wrap">
-											<input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxLength="1" id="n0"
-												data-next="1" class="form-control authInput h-60px w-60px fs-2qx mx-1 my-2 bg-transparent text-center">
-											<input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" id="n1"
-												data-next="2" class="form-control authInput h-60px w-60px fs-2qx mx-1 my-2 bg-transparent text-center">
-											<input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" id="n2"
-												data-next="3" class="form-control authInput h-60px w-60px fs-2qx mx-1 my-2 bg-transparent text-center">
-											<input type="text" data-inputmask="'mask': '9', 'placeholder': ''" maxlength="1" id="n3"
-												data-next="4" class="form-control authInput h-60px w-60px fs-2qx mx-1 my-2 bg-transparent text-center">
-										</div>
-										@if ($errors->has('otp'))
-											<div class="error">{{ $errors->first('otp') }}</div>
-										@endif
-										@if (session('error'))
-											<div class="error"> {{ session('error') }}</div>
-										@endif
-										@if (session('success'))
-											<div class="text-success"> {{ session('success') }}</div>
-										@endif
-										<!--begin::Input group-->
-									</div>
-									<!--begin::Submit button-->
-									<div class="mt-10 text-center">
-										<button id="kt_sign_in_submit" class="btn btn-primary signin-btn" type="button">
-											<!--begin::Indicator label-->
-											<span class="indicator-label">Verify</span>
-											<!--end::Indicator label-->
-											<!--begin::Indicator progress-->
-											<span class="indicator-progress">Please wait...
-												<span class="spinner-border spinner-border-sm ms-2 align-middle"></span></span>
-											<!--end::Indicator progress-->
-										</button>
-									</div>
-									<!--end::Submit button-->
-									<a href="{{ route('resendOtp') }}" class="text-primary">Resend Code</a>
-								</form>
-								<!--end::Form-->
-							</div>
-							<!--end::Wrapper-->
-						</div>
+            const COUNTDOWN_KEY = "otp_countdown_expiry";
+            const RESEND_WAIT_TIME = 5 * 60; // 5 minutes
 
-					</div>
-					<!--end::Content-->
-				</div>
-				<!--end::Aside-->
-			</div>
-			<!--end::Authentication - Sign-in-->
-		</div>
+            function startTimer(duration) {
+                let timer = duration;
+                const interval = setInterval(() => {
+                    const minutes = Math.floor(timer / 60);
+                    const seconds = timer % 60;
+                    timerSpan.textContent = ` (in ${minutes}:${seconds < 10 ? "0" + seconds : seconds})`;
 
-		<script>
-			var hostUrl = "assets/index.html";
-		</script>
-		<script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
-		<script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
-		<!--end::Global Javascript Bundle-->
-		<!--begin::Vendors Javascript(used for this page only)-->
-		<script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
-		<script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
-		<!--end::Vendors Javascript-->
-		<!--begin::Custom Javascript(used for this page only)-->
-		<script src="{{ asset('assets/js/widgets.bundle.js') }}"></script>
-		<!--end::Custom Javascript-->
-		<!--end::Custom Javascript-->
-		<script>
-			$("#kt_sign_in_submit").on('click', function() {
-				let first = $('#n0').val();
-				let second = $('#n1').val();
-				let third = $('#n2').val();
-				let fourth = $('#n3').val();
-				let otp = first + second + third + fourth;
-				$('#otp').val(otp);
-				$("#kt_sign_in_form").submit();
-			})
+                    if (--timer < 0) {
+                        clearInterval(interval);
+                        timerSpan.textContent = " - Code Expired";
+                        resendLink.classList.remove("disabled");
+                        resendLink.style.pointerEvents = "auto";
+                        resendLink.style.opacity = "1";
+                        codeExpiredMessage.style.display = "block";
+                        localStorage.removeItem(COUNTDOWN_KEY);
+                    }
+                }, 1000);
+            }
 
-			$('.authInput').keyup(function(e) {
-				if (this.value.length === this.maxLength) {
-					let next = $(this).data('next');
-					$('#n' + next).focus();
-				}
-			});
-		</script>
-	</body>
-	<!--end::Body-->
+            const now = Math.floor(Date.now() / 1000);
+            const savedExpiry = localStorage.getItem(COUNTDOWN_KEY);
 
+            if (!savedExpiry) {
+                const newExpiry = now + RESEND_WAIT_TIME;
+                localStorage.setItem(COUNTDOWN_KEY, newExpiry);
+                startTimer(RESEND_WAIT_TIME);
+                resendLink.classList.add("disabled");
+                resendLink.style.pointerEvents = "none";
+                resendLink.style.opacity = "0.5";
+            } else if (now < savedExpiry) {
+                const remaining = savedExpiry - now;
+                startTimer(remaining);
+                resendLink.classList.add("disabled");
+                resendLink.style.pointerEvents = "none";
+                resendLink.style.opacity = "0.5";
+            } else {
+                timerSpan.textContent = " - Code Expired";
+                resendLink.classList.remove("disabled");
+                resendLink.style.pointerEvents = "auto";
+                resendLink.style.opacity = "1";
+                codeExpiredMessage.style.display = "block";
+                localStorage.removeItem(COUNTDOWN_KEY);
+            }
+
+            resendLink.addEventListener("click", function (e) {
+                e.preventDefault();
+                const newExpiry = Math.floor(Date.now() / 1000) + RESEND_WAIT_TIME;
+                localStorage.setItem(COUNTDOWN_KEY, newExpiry);
+                startTimer(RESEND_WAIT_TIME);
+                resendLink.classList.add("disabled");
+                resendLink.style.pointerEvents = "none";
+                resendLink.style.opacity = "0.5";
+                codeExpiredMessage.style.display = "none";
+
+                // Redirect to resend route
+                window.location.href = "{{ route('resendOtp') }}";
+            });
+
+            document.querySelectorAll('.authInput').forEach((el, idx) => {
+                el.addEventListener("keyup", () => {
+                    if (el.value.length === 1) {
+                        let next = document.getElementById("n" + (idx + 1));
+                        if (next) next.focus();
+                    }
+                });
+            });
+
+            document.getElementById("kt_sign_in_submit").addEventListener("click", function () {
+                let otp = '';
+                for (let i = 0; i < 4; i++) {
+                    otp += document.getElementById("n" + i).value;
+                }
+                document.getElementById("otp").value = otp;
+
+                // Clear the countdown from localStorage after successful submission
+                localStorage.removeItem(COUNTDOWN_KEY);
+
+                document.getElementById("kt_sign_in_form").submit();
+            });
+        });
+    </script>
+</body>
 </html>

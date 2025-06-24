@@ -27,7 +27,7 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-4 form-group">
-                                        <label for="">Leave Type</label>
+                                        <label for=""  class="required">Leave Type</label>
                                         <select name="leave_type_id" class="form-control">
                                             <option value="">Please Select the Types</option>
                                             @foreach ($leaveTypes as $leaveType)
@@ -60,7 +60,7 @@
                                         @endif
                                     </div>
                                     <div class="col-md-4 form-group">
-                                        <label for="">From</label>
+                                        <label for=""  class="required">From</label>
                                         <input class="form-control" type="date" id="from"
                                             min="{{ date('Y-m-d') }}" name="from">
                                         @if ($errors->has('from'))
@@ -68,7 +68,7 @@
                                         @endif
                                     </div>
                                     <div class="col-md-4 form-group">
-                                        <label for="">To</label>
+                                        <label for=""  class="required">To</label>
                                         <input class="form-control" type="date" onchange="getDateValdation()"
                                             id="to" min="{{ date('Y-m-d') }}" name="to">
                                         @if ($errors->has('to'))
@@ -139,7 +139,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4 form-group">
-                                        <label for="">Reason</label>
+                                        <label for=""  class="required">Reason</label>
                                         <textarea cols="55" name="reason" class="form-control"></textarea>
                                         @if ($errors->has('reason'))
                                             <div class="text-danger">{{ $errors->first('reason') }}</div>

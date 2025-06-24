@@ -380,8 +380,6 @@
     @if (isset($singleUserDetails) && !empty($singleUserDetails))
         <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary float-right">Next <i
                 class="fa fa-arrow-right"></i> </button>
-    @else
-        <button class="btn btn-primary float-right" id="submit">Save & Continue</button>
     @endif
 </div>
 <!-- Add to <head> -->
@@ -400,18 +398,19 @@
             contentType: false,
             data: basic_details_Data,
             success: function(response) {
-                if (response.data.status == "createdEmployee") {
-                    location.href = '/company/employee/edit/' + response.data.id;
+                if (response.data.status == "createdEmployee")
+                {
                     setTimeout(function() {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
-                    }, 4000);
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
+                }, 4000);
+                location.href = '/company/employee/edit/' + response.data.id;
                 } else {
                     Swal.fire({
                         position: "top-end",

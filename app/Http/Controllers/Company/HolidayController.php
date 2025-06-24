@@ -26,7 +26,7 @@ class HolidayController extends Controller
     public function index()
     {
         $companyIDs = getCompanyIDs();
-        
+
         return view('company.holiday.index', [
             'allHolidaysDetails' => $this->holidayService->all($companyIDs),
             'allCompanyBranchesDetails' => $this->branchService->getAllCompanyBranchByCompanyId($companyIDs)
@@ -40,7 +40,7 @@ class HolidayController extends Controller
     {
         try {
             $validateHolidayData = Validator::make($request->all(), [
-                'name' => 'required|string|unique:holidays,name,',
+                'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s&]+$/', 'unique:holidays,name,NULL,id,company_id,' . auth()->user()->company_id],
                 'date' => 'required|date',
                 'year' => 'required',
                 'company_branch_id' => 'required|array',
@@ -71,7 +71,7 @@ class HolidayController extends Controller
     public function update(Request $request)
     {
         $validateHolidayData = Validator::make($request->all(), [
-            'name' => 'required|string|unique:holidays,name,' . $request->id,
+            'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s&]+$/', 'unique:holidays,name,' . $request->id . ',id,company_id,' . auth()->user()->company_id],
             'date' => 'required|date',
             'year' => 'required',
             'company_branch_id' => 'required|array',

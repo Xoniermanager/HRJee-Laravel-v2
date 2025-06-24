@@ -299,7 +299,7 @@
         <div class="d-flex flex-column flex-lg-row flex-column-fluid overflow-hidden">
             <!--begin::Aside-->
             <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2"
-                style="background-image: url(assets/media/misc/bg7.jpg);background-size: cover;height: 100%;">
+                style="{{ asset('assets/media/misc/bg7.jpg') }};background-size: cover;height: 100%;">
                 <!--begin::Content-->
                 <div class="d-flex flex-column flex-center w-100">
 

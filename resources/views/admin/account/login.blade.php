@@ -59,7 +59,8 @@
             <div class="col-12 p-0">
                 <div class="login-card login-dark">
                     <div>
-                        <div><a class="logo" href="index.html"><img class="img-fluid for-light"
+                        <div>
+                            <a class="logo" href="index.html"><img class="img-fluid for-light"
                                     src="{{asset('admin/assets/images/logo.png')}}" alt="looginpage" width="120px">
                                 <img class="img-fluid for-dark" src="{{asset('admin/assets/images/logo-light.png')}}"
                                     alt="looginpage" width="120px"></a></div>
