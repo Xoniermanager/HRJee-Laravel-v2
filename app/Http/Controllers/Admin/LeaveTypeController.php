@@ -32,7 +32,7 @@ class LeaveTypeController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateDetails  = Validator::make($request->all(), [
+            $validateDetails = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'unique:leave_types,name'],
             ]);
 
@@ -43,7 +43,7 @@ class LeaveTypeController extends Controller
             if ($this->leaveTypeService->create($data)) {
                 return response()->json([
                     'message' => 'Leave Type Created Successfully!',
-                    'data'   =>  view('admin.leave_type.leave_type_list', [
+                    'data' => view('admin.leave_type.leave_type_list', [
                         'allLeaveTypeDetails' => $this->leaveTypeService->all()
                     ])->render()
                 ]);
@@ -58,8 +58,8 @@ class LeaveTypeController extends Controller
      */
     public function update(Request $request)
     {
-        $validateDetails  = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:leave_types,name,'.$request->id],
+        $validateDetails = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'unique:leave_types,name,' . $request->id],
         ]);
 
         if ($validateDetails->fails()) {
@@ -70,7 +70,7 @@ class LeaveTypeController extends Controller
         if ($updatedDetails) {
             return response()->json([
                 'message' => 'Leave Type Updated Successfully!',
-                'data'   =>  view('admin.leave_type.leave_type_list', [
+                'data' => view('admin.leave_type.leave_type_list', [
                     'allLeaveTypeDetails' => $this->leaveTypeService->all()
                 ])->render()
             ]);
@@ -83,16 +83,23 @@ class LeaveTypeController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
-        $data = $this->leaveTypeService->deleteDetails($id);
-        if ($data) {
+        $result = $this->leaveTypeService->deleteDetails($id);
+
+        if ($result === true) {
             return response()->json([
-                'success' => 'Leave Type Deleted Successfully!',
-                'data'   =>  view('admin.leave_type.leave_type_list', [
+                'success' => 'Leave Type deleted successfully!',
+                'data' => view('admin.leave_type.leave_type_list', [
                     'allLeaveTypeDetails' => $this->leaveTypeService->all()
                 ])->render()
             ]);
+        } elseif ($result === 'assigned') {
+            return response()->json([
+                'error' => 'This leave type is assigned to one or more users and cannot be deleted.'
+            ], 400);
         } else {
-            return response()->json(['error', 'Something Went Wrong! Pleaase try Again']);
+            return response()->json([
+                'error' => 'Something went wrong. Please try again.'
+            ], 500);
         }
     }
 
