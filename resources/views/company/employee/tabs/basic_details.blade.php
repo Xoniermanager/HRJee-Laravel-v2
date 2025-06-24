@@ -192,7 +192,7 @@
                 <label for="">Employee Id *</label>
                 <input class="form-control" type="text" name="emp_id"
                     value="{{ $singleUserDetails->details->emp_id ?? '' }}"
-                    @if (isset($singleUserDetails->details->offer_letter_id)) disabled @endif>
+                    @if (isset($singleUserDetails->details->offer_letter_id)) @endif>
             </div>
             <div class="col-md-4 form-group">
                 <label for="">Role*</label>

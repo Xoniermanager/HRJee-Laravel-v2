@@ -41,7 +41,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
         ])->count();
 
         if (($this->count + $activeUsers) < auth()->user()->companyDetails->company_size) {
-            $data = $collection->skip(1);
+            $data = $collection->skip(0);
 
             foreach ($data as $row) {
                 // Process the password for the users table
@@ -53,6 +53,7 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
                     'password' => $password,
                     'email' => $row['email'],
                     'company_id' => Auth()->user()->company_id,
+                    'created_by' =>  Auth()->user()->id
                 ];
 
                 // Insert the user data into the users table
@@ -68,8 +69,8 @@ class UserImport implements ToCollection, WithHeadingRow, WithValidation, SkipsO
                 $userDetailData = [
                     'phone' => $row['phone'],
                     'emp_id' => $row['emp_id'],
-                    'date_of_birth' => $row['date_of_birth'],
-                    'joining_date' => $row['joining_date'],
+                    'date_of_birth' => date('Y-m-d', strtotime($row['date_of_birth'])),
+                    'joining_date' => date('Y-m-d', strtotime($row['joining_date'])),
                     'user_id' => $user->id,  // Link user details to the newly created user
                     'official_email_id' => $row['official_email_id'],
                     'father_name' => $row['father_name'],

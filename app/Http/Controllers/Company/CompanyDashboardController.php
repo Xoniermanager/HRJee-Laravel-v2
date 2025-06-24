@@ -5,16 +5,18 @@ namespace App\Http\Controllers\Company;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Leave;
+use App\Mail\ContactUsMail;
 use Illuminate\Http\Request;
 use App\Models\EmployeeAttendance;
 use App\Http\Controllers\Controller;
-use App\Http\Services\BranchServices;
-use App\Http\Services\DepartmentServices;
-use App\Http\Services\DesignationServices;
-use App\Http\Services\EmployeeServices;
-use App\Mail\ContactUsMail;
+use App\Http\Services\AttendanceRequestService;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Services\BranchServices;
+use App\Http\Services\EmployeeServices;
+use App\Http\Services\DepartmentServices;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\DesignationServices;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 
 class CompanyDashboardController extends Controller
@@ -23,79 +25,39 @@ class CompanyDashboardController extends Controller
     public $designationService;
     public $companyBranchService;
     public $employeeService;
+    public $attendanceRequestService;
 
-    public function __construct(DepartmentServices $departmentService, DesignationServices $designationService, BranchServices $companyBranchService, EmployeeServices $employeeService)
+    public function __construct(DepartmentServices $departmentService, DesignationServices $designationService, BranchServices $companyBranchService, EmployeeServices $employeeService,AttendanceRequestService $attendanceRequestService)
     {
         $this->departmentService = $departmentService;
         $this->designationService = $designationService;
         $this->companyBranchService = $companyBranchService;
         $this->employeeService = $employeeService;
+        $this->attendanceRequestService = $attendanceRequestService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $companyId = Auth()->user()->id;
+        $companyId = auth()->user()->id;
         $companyIDs = getCompanyIDs();
         $daysLeft = 10;
 
-        if(Auth()->user()->type == "company" && Auth()->user()->companyDetails->subscription_expiry_date) {
-            $subscriptionExpiry = date('Y-m-d', strtotime(Auth()->user()->companyDetails->subscription_expiry_date));
-
-            // Check if expiry date is within 7 days
-            $daysLeft = $subscriptionExpiry ? Carbon::now()->diffInDays(Carbon::parse($subscriptionExpiry), false) : null;
-
+        if (auth()->user()->type === "company" && auth()->user()->companyDetails->subscription_expiry_date) {
+            $subscriptionExpiry = auth()->user()->companyDetails->subscription_expiry_date;
+            $daysLeft = Carbon::now()->diffInDays(Carbon::parse($subscriptionExpiry), false);
         }
 
         $today = today();
-        $dashboardData = [
-            // Total office branches
-            'allCompanyBranch' => $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs),
 
-            'allDepartment' => $this->departmentService->getAllDepartmentsByCompanyId($companyIDs),
-            // Total attendance for today (optimizing query)
-            'total_present' => EmployeeAttendance::whereDate('punch_in', $today)
-                ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
-                ->count(),
-
-            // Total active employees
-            'total_active_employee' => User::where('company_id', $companyId)
-                ->where('status', 1) // Assuming STATUS_ACTIVE is defined in the User model
-                ->where('type', 'user')
-                ->count(),
-
-            // Total inactive employees
-            'total_inactive_employee' => User::where('company_id', $companyId)
-                ->where('status', 0) // Assuming STATUS_INACTIVE is defined in the User model
-                ->where('type', 'user')
-                ->count(),
-
-            // Total leave taken today (approved)
-            'total_leave' => Leave::whereDate('from', '<=', $today)
-                ->whereDate('to', '>=', $today)
-                ->where('leave_status_id', '2') // Assuming STATUS_APPROVED is defined in Leave model
-                ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
-                ->count(),
-
-            // Total leave requests for today (pending)
-            'total_request_leave' => Leave::whereDate('from', '<=', $today)
-                ->whereDate('to', '>=', $today)
-                ->where('leave_status_id', '1') // Assuming STATUS_PENDING is defined in Leave model
-                ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
-                ->count(),
-
-            'all_users_details' => User::where(['company_id' => $companyId, 'status' => 1, 'type' => 'user'])->with(['details','details.designation'])->paginate(10),
-        ];
-        return view('company.dashboard.dashboard', compact('dashboardData', 'daysLeft'));
-    }
-
-    public function filterEmployees(Request $request)
-    {
-        $companyId = auth()->user()->id;
-
+        // Shared query builder
         $query = User::with(['details', 'details.designation'])
             ->where('company_id', $companyId)
-            ->where('type', 'user');
-
+            ->where('type', 'user')
+            ->where('status', 1)
+            ->whereHas('details', function ($q) {
+                $q->whereNull('exit_date');
+            });
+        // Filters (if any from request)
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -105,55 +67,84 @@ class CompanyDashboardController extends Controller
         }
 
         if ($request->filled('branch')) {
-            $query->whereHas('details', function ($q) use ($request) {
-                $q->where('company_branch_id', $request->branch);
-            });
+            $query->whereHas('details', fn($q) => $q->where('company_branch_id', $request->branch));
         }
 
         if ($request->filled('department')) {
-            $query->whereHas('details', function ($q) use ($request) {
-                $q->where('department_id', $request->department);
-            });
+            $query->whereHas('details', fn($q) => $q->where('department_id', $request->department));
         }
 
         if ($request->filled('designation')) {
-            $query->whereHas('details', function ($q) use ($request) {
-                $q->where('designation_id', $request->designation);
-            });
+            $query->whereHas('details', fn($q) => $q->where('designation_id', $request->designation));
         }
 
-        // Fetch initial paginated results first
-        $employees = $query->paginate(10);
-
-        // If attendance_check filter exists, filter the collection after fetching
+        // Attendance filtering (manual after fetching)
         if ($request->filled('attendance_check')) {
-            $status = $request->attendance_check;
+            $allUsers = $query->get();
 
-            // Laravel pagination returns LengthAwarePaginator,
-            // get the collection items to filter
-            $filtered = $employees->getCollection()->filter(function ($user) use ($status) {
+            $filtered = $allUsers->filter(function ($user) use ($request) {
+                $status = $request->attendance_check;
                 $isPresent = $user->todaysAttendance() !== null;
                 $isOnLeave = $user->todaysLeave() !== null;
 
-                if ($status === 'present') {
-                    return $isPresent && !$isOnLeave;
-                } elseif ($status === 'leave') {
-                    return !$isPresent && $isOnLeave;
-                } elseif ($status === 'absent') {
-                    return !$isPresent && !$isOnLeave;
-                }
-                return true;
+                return match ($status) {
+                    'present' => $isPresent && !$isOnLeave,
+                    'leave' => !$isPresent && $isOnLeave,
+                    'absent' => !$isPresent && !$isOnLeave,
+                    default => true,
+                };
             });
 
-            // Replace the paginator's collection with filtered results
-            $employees->setCollection($filtered->values());
+            $page = $request->get('page', 1);
+            $perPage = 10;
+            $employees = new \Illuminate\Pagination\LengthAwarePaginator(
+                $filtered->forPage($page, $perPage)->values(),
+                $filtered->count(),
+                $perPage,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        } else {
+            $employees = $query->paginate(10);
         }
 
-        return view('company.dashboard.list', compact('employees'))->render();
+        // Return partial table if AJAX
+        if ($request->ajax()) {
+            return view('company.dashboard.list', compact('employees'))->render();
+        }
 
+        // Full dashboard view
+        $dashboardData = [
+            'allCompanyBranch' => $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs),
+            'allDepartment' => $this->departmentService->getAllDepartmentsByCompanyId($companyIDs),
+            'total_present' => EmployeeAttendance::whereDate('punch_in', $today)
+                ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
+                ->count(),
+            'total_active_employee' => User::with(['details', 'details.designation'])
+            ->where('company_id', $companyId)
+            ->where('type', 'user')
+            ->where('status', 1)
+            ->whereHas('details', function ($q) {
+                $q->whereNull('exit_date');
+            })->count(),
+            'total_leave' => Leave::whereDate('from', '<=', $today)->whereDate('to', '>=', $today)
+                ->where('leave_status_id', 2)
+                ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
+                ->count(),
+            'total_request_leave' => Leave::whereDate('from', '<=', $today)->whereDate('to', '>=', $today)
+                ->where('leave_status_id', 1)
+                ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
+                ->count(),
+            'all_users_details' => $employees,
+            'total_attendance_request' => $this->attendanceRequestService->getAttendanceRequestByCompanyId($companyIDs)->count(),
+        ];
+
+        return view('company.dashboard.dashboard', compact('dashboardData', 'daysLeft'));
     }
 
-    public function sendMailForSubscription(Request $request) {
+
+    public function sendMailForSubscription(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'subject' => 'required|string|max:255',

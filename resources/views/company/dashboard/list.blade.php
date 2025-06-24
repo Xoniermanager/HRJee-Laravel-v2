@@ -39,7 +39,7 @@
                 </td>
                 <td>
                     <span class="badge py-3 px-4 fs-7 badge-light-danger">
-                        {{ $item->todaysLeave() ? 'Leave' : ($item->todaysAttendance() ? date('H:i A', strtotime($item->todaysAttendance()->punch_in)) : 'N/A') }}
+                        {{ $item->todaysLeave() ? 'Leave' : ($item->todaysAttendance() ? date('H:i A', strtotime($item->todaysAttendance()->punch_in)) : 'Absent') }}
                     </span>
                 </td>
             </tr>
@@ -50,3 +50,7 @@
         @endforelse
     </tbody>
 </table>
+<div class="d-flex justify-content-center mt-4">
+    {!! $employees->appends(request()->except('page'))->links() !!}
+</div>
+
