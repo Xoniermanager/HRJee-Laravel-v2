@@ -119,7 +119,7 @@
                                         <div class="card-footer"
                                             style="border-top: 1px solid rgba(255, 255, 255, 0.3); background: rgba(0, 0, 0, 0.15); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;">
                                             <div class="fw-bold text-white py-2">
-                                                <span class="fs-1 d-block">{{ $dashboardData['total_attendance_reques'] }}</span>
+                                                <span class="fs-1 d-block">{{ $dashboardData['total_attendance_request'] }}</span>
                                                 <span class="opacity-50">Total Attendance Request</span>
                                             </div>
                                         </div>
