@@ -326,46 +326,74 @@ function assignAnnouncement(value) {
 }
 function exportAttendanceByUserId(empId, year, month, startDate, endDate) {
     $("#export_button").prop("disabled", true);
+
+    Swal.fire({
+        title: 'Preparing download...',
+        text: 'Please wait while we generate the attendance report.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
     $.ajax({
-        type: 'get',
+        type: 'GET',
         url: '/export/employee/attendance',
         data: {
-            'year': year,
-            'month': month,
-            'empId': empId,
-            startDate,
-            endDate
+            year: year,
+            month: month,
+            empId: empId,
+            startDate: startDate,
+            endDate: endDate
         },
         xhrFields: {
             responseType: 'blob'
         },
         success: function (response, status, xhr) {
-            var blob = response;
-            var link = document.createElement('a');
-            var filename = xhr.getResponseHeader('Content-Disposition').split(
-                'filename=')[1].replace(/"/g, '');
+            const blob = response;
+            const filename = xhr.getResponseHeader('Content-Disposition')
+                ?.split('filename=')[1]
+                ?.replace(/"/g, '') || 'attendance_report.xlsx';
+
+            const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = filename;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            // SweetAlert notification after download is triggered
+
             Swal.fire({
                 title: 'Download Complete',
                 text: 'Your file has been successfully downloaded!',
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
+
             $("#export_button").prop("disabled", false);
         },
         error: function () {
-            console.log("Export failed");
+            Swal.fire({
+                icon: 'error',
+                title: 'Download Failed',
+                text: 'Something went wrong while exporting attendance.'
+            });
             $("#export_button").prop("disabled", false);
         }
     });
 }
-function exportAttendanceByUserIdByToDateFromDate(empId,toDate,fromDate) {
+
+function exportAttendanceByUserIdByToDateFromDate(empId, toDate, fromDate) {
     $("#export_button").prop("disabled", true);
+
+    Swal.fire({
+        title: 'Preparing download...',
+        text: 'Please wait while we generate the attendance report.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
     $.ajax({
         type: 'get',
         url: '/export/employee/attendance',
@@ -373,36 +401,44 @@ function exportAttendanceByUserIdByToDateFromDate(empId,toDate,fromDate) {
             'to_date': toDate,
             'from_date': fromDate,
             'empId': empId,
-            'type' : "ByTwoDates"
+            'type': "ByTwoDates"
         },
         xhrFields: {
             responseType: 'blob'
         },
         success: function (response, status, xhr) {
-            var blob = response;
-            var link = document.createElement('a');
-            var filename = xhr.getResponseHeader('Content-Disposition').split(
-                'filename=')[1].replace(/"/g, '');
+            const blob = response;
+            const link = document.createElement('a');
+            const filename = xhr.getResponseHeader('Content-Disposition')
+                ?.split('filename=')[1]
+                ?.replace(/"/g, '') || 'attendance_report.xlsx';
+
             link.href = URL.createObjectURL(blob);
             link.download = filename;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            // SweetAlert notification after download is triggered
+
             Swal.fire({
                 title: 'Download Complete',
                 text: 'Your file has been successfully downloaded!',
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
+
             $("#export_button").prop("disabled", false);
         },
         error: function () {
-            console.log("Export failed");
+            Swal.fire({
+                icon: 'error',
+                title: 'Download Failed',
+                text: 'Something went wrong while exporting attendance.'
+            });
             $("#export_button").prop("disabled", false);
         }
     });
 }
+
 function downloadPaySlip(userId) {
     $.ajax({
         type: 'get',

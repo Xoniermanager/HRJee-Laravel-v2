@@ -95,9 +95,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     });
     Route::controller(CompanyDashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('company.dashboard');
-        Route::get('/employee-search-filter', 'filterEmployees')->name('company.employee_search.filter');
         Route::post('/send-enquiry', 'sendMailForSubscription')->name('company.send-enquiry');
-
     });
 
     Route::controller(CompanyBranchesController::class)->group(function () {
@@ -594,7 +592,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::get('/search/filter', 'searchFilter');
             Route::get('/view/{empId}', 'viewAttendanceDetails')->name('attendance.view.details');
             Route::get('/view/search/filter/{empId}', 'searchFilterByEmployeeId');
-            Route::post('/edit', 'editAttendanceByEmployeeId');
+            Route::post('/edit_manual', 'editAttendanceByEmployeeId');
             Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
             Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
             Route::post('/download/attendance', 'downloadAttendance')->name('download.attendance');
