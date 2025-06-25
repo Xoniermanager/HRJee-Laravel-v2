@@ -3,18 +3,14 @@
 @section('title')
     Apply Leave
 @endsection
-{{-- @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif --}}
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
+        @if (session('error'))
+        <div class="alert alert-danger alert-dismissible">
+            {{ session('error') }}
+        </div>
+        @endif
         <!--begin::Row-->
         <div class="col-lg-12 col-xl-12 col-xxl-12 mb-5">
             <!--begin::Timeline widget 3-->
@@ -31,7 +27,7 @@
                                         <select name="leave_type_id" class="form-control">
                                             <option value="">Please Select the Types</option>
                                             @foreach ($leaveTypes as $leaveType)
-                                                <option value="{{ $leaveType->id }}">{{ $leaveType->name }}</option>
+                                                <option value="{{ $leaveType->id }}" {{ old('leave_type_id') ==  $leaveType->id ? 'selected' : '' }}>{{ $leaveType->name }}</option>
                                             @endforeach
                                         </select>
                                         @if ($errors->has('leave_type_id'))
@@ -40,7 +36,7 @@
                                     </div>
                                     <div class="col-md-4 form-group pt-5">
                                         <input type="checkbox" name="leave_applied_by" id="behalf_checkbox"
-                                            onclick="getEmployeeDetailsHtml()" value="1">
+                                            onclick="getEmployeeDetailsHtml()" value="1" {{ old('leave_applied_by') == '1' ? 'checked' : '' }}>
                                         <label for="">On Behalf Of Others</label>
                                         @if ($errors->has('leave_applied_by'))
                                             <div class="text-danger">{{ $errors->first('leave_applied_by') }}</div>
@@ -51,7 +47,7 @@
                                         <select name="user_id" class="form-control" id="employee_list">
                                             <option value="">Please Select the Employee</option>
                                             @foreach ($allEmployeeDetails as $employeeDetail)
-                                                <option value="{{ $employeeDetail->id }}">{{ $employeeDetail->name }}
+                                                <option value="{{ $employeeDetail->id }}" {{ old('user_id') == $employeeDetail->id ? 'selected' : '' }}>{{ $employeeDetail->name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -62,7 +58,7 @@
                                     <div class="col-md-4 form-group">
                                         <label for=""  class="required">From</label>
                                         <input class="form-control" type="date" id="from"
-                                            min="{{ date('Y-m-d') }}" name="from">
+                                            min="{{ date('Y-m-d') }}" name="from" value="{{ old('from')}}">
                                         @if ($errors->has('from'))
                                             <div class="text-danger">{{ $errors->first('from') }}</div>
                                         @endif
@@ -70,14 +66,14 @@
                                     <div class="col-md-4 form-group">
                                         <label for=""  class="required">To</label>
                                         <input class="form-control" type="date" onchange="getDateValdation()"
-                                            id="to" min="{{ date('Y-m-d') }}" name="to">
+                                            id="to" min="{{ date('Y-m-d') }}" name="to" value="{{ old('to')}}">
                                         @if ($errors->has('to'))
                                             <div class="text-danger">{{ $errors->first('to') }}</div>
                                         @endif
                                     </div>
                                     <div class="col-md-4 form-group pt-5">
                                         <input type="checkbox" id="half_day_checkbox" onclick="getHalfDayHtmlDetails()"
-                                            name="is_half_day" value="1">
+                                            name="is_half_day" value="1" {{ old('is_half_day') == '1' ? 'checked' : '' }}>
                                         <label for="">Is Half Day</label>
                                         @if ($errors->has('is_half_day'))
                                             <div class="text-danger">{{ $errors->first('is_half_day') }}</div>
@@ -91,10 +87,9 @@
                                                 </div>
                                                 <div class="col-md-12">
                                                     <input type="radio" name="from_half_day" value="first_half"
-                                                        class="form-check-input me-2">First
-                                                    half
+                                                        class="form-check-input me-2" {{ old('from_half_day') == 'first_half' ? 'checked' : '' }}>First half
                                                     <input type="radio" name="from_half_day" value="second_half"
-                                                        class="form-check-input me-2">Second half
+                                                        class="form-check-input me-2" {{ old('from_half_day') == 'second_half' ? 'checked' : '' }}>Second half
                                                 </div>
                                             </div>
                                             @if ($errors->has('from_half_day'))
@@ -107,10 +102,10 @@
                                                 </div>
                                                 <div class="col-md-12">
                                                     <input type="radio" name="to_half_day" value="first_half"
-                                                        class="form-check-input me-2">First
+                                                        class="form-check-input me-2" {{ old('to_half_day') == 'first_half' ? 'checked' : '' }}>First
                                                     half
                                                     <input type="radio" name="to_half_day" value="second_half"
-                                                        class="form-check-input me-2">Second
+                                                        class="form-check-input me-2" {{ old('to_half_day') == 'second_half' ? 'checked' : '' }}>Second
                                                     half
                                                 </div>
                                             </div>
@@ -127,9 +122,9 @@
                                                 </div>
                                                 <div class="col-md-12">
                                                     <input class="form-check-input me-2" type="radio"
-                                                        name="from_half_day" value="first_half">First half
+                                                        name="from_half_day" value="first_half" {{ old('from_half_day') == 'first_half' ? 'checked' : '' }}>First half
                                                     <input class="form-check-input me-2" type="radio"
-                                                        name="from_half_day" value="second_half">Second half
+                                                        name="from_half_day" value="second_half" {{ old('from_half_day') == 'second_half' ? 'checked' : '' }}>Second half
                                                 </div>
                                             </div>
                                             @if ($errors->has('from_half_day'))
@@ -140,7 +135,7 @@
                                     </div>
                                     <div class="col-md-4 form-group">
                                         <label for=""  class="required">Reason</label>
-                                        <textarea cols="55" name="reason" class="form-control"></textarea>
+                                        <textarea cols="55" name="reason" class="form-control">{{ old('reason') }}</textarea>
                                         @if ($errors->has('reason'))
                                             <div class="text-danger">{{ $errors->first('reason') }}</div>
                                         @endif

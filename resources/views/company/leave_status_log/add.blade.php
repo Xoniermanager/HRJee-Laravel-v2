@@ -81,12 +81,12 @@
             rules: {
                 leave_id: "required",
                 leave_status_id: "required",
-                remark: "required",
+                remarks: "required",
             },
             messages: {
                 leave_id: "Please Select the Employee Leave",
                 leave_status_id: "Please Select the Leave Status",
-                remark: "Please enter the remarks",
+                remarks: "Please enter the remark",
             },
         });
 
