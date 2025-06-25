@@ -596,6 +596,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
             Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
             Route::post('/download/attendance', 'downloadAttendance')->name('download.attendance');
+            Route::get('/today-stats', 'todayStats')->name('today.status');
 
         });
         //Attendance Status Module

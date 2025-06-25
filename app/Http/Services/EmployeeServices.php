@@ -131,12 +131,13 @@ class EmployeeServices
 
     public function getAllEmployeeByCompanyId($companyId)
     {
-        return $this->userRepository->where('type', 'user')
+        return $this->userRepository
+            ->where('type', 'user')
             ->where('company_id', $companyId)
+            ->where('status', 1) // Check for active users (adjust this field if named differently)
             ->whereHas('details', function ($query) {
                 $query->whereNull('exit_date');
             });
-        ;
     }
 
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
@@ -195,7 +196,7 @@ class EmployeeServices
             });
     }
 
-    public function getEmployeeQueryByCompanyId($companyId,$month, $year)
+    public function getEmployeeQueryByCompanyId($companyId, $month, $year)
     {
 
         $selectedDate = Carbon::createFromDate($year, $month, 1);
@@ -204,6 +205,7 @@ class EmployeeServices
         return $this->userRepository->query()
             ->where('company_id', $companyId)
             ->where('type', 'user')
+            ->where('status', '1')
             ->with(['details', 'managers'])
             ->where(function ($query) use ($month, $year, $selectedDate, $previousMonthDate) {
                 $query->whereHas('details', function ($q) {
