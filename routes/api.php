@@ -154,6 +154,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::get('/get/disposition/code', 'getDispositionCode');
         Route::post('/update/task/status/{id}', 'updateTaskStatusDetails');
         Route::post('/change/task/status/{id}', 'changeStatus');
+        Route::get('/visit-locations', 'fetchVisitLocations');
     });
 
     /** for PRM Request and PRM Category */

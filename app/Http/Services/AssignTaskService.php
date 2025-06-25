@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\AssignTaskResource;
 use App\Repositories\AssignTaskRepository;
 
 class AssignTaskService
@@ -215,5 +216,28 @@ class AssignTaskService
             ->groupBy('final_status')
             ->pluck('count', 'final_status')
             ->toArray();
+    }
+
+    public function fetchVisitLocations($userId, $date = null)
+    {
+        $query = $this->assignTaskRepository->where('user_id', $userId);
+
+        $providedDate = $date ? \Carbon\Carbon::parse($date)->toDateString() : now()->toDateString();
+        $today = now()->toDateString();
+
+        if ($providedDate === $today) {
+            // Today: return completed today and all pending
+            $query->where(function ($q) use ($today) {
+                $q->whereDate('completed_at', $today)
+                    ->orWhereNull('completed_at');
+            });
+        } else {
+            // Not today: return only completed on provided date
+            $query->whereDate('completed_at', $providedDate);
+        }
+
+        $locations = $query->get();
+
+        return AssignTaskResource::collection($locations);
     }
 }
