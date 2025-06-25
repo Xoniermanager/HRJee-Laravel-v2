@@ -210,181 +210,121 @@ function getDecryptId($id)
 
 function getCompanyMenuHtml()
 {
-    // $html = '';
-    // $user = Auth::user();
-
-    // if ($user->type == 'company' || session()->has('impersonation')) {
-    //     $urlPrefix = 'company';
-    // } else {
-    //     $urlPrefix = 'employee';
-    // }
-
-    // foreach ($user->menu as $menu) {
-    //     // Check if the menu has children
-    //     if ($menu->children && $menu->children->isNotEmpty()) {
-    //         if ($menu->status == 1) {
-    //             $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
-    //                     <span class="menu-link">
-    //                         <span class="menu-icon">
-    //                             <span class="svg-icon svg-icon-5">
-    //                                 ' . $menu->icon . '
-    //                             </span>
-    //                         </span>
-    //                         <span class="menu-title">' . $menu->title . '</span>
-    //                         <span class="menu-arrow"></span>
-    //                     </span>';
-    //         }
-
-
-    //         // Iterate over the children
-    //         foreach ($menu->children as $children) {
-    //             if ($children->role == "company" && $children->status == 1) {
-    //                 $url = "/$urlPrefix$children->slug";
-
-    //                 $html .= '<div class="menu-sub menu-sub-accordion">
-    //                         <div class="menu-item" data-url="' . $url . '">
-    //                             <a class="menu-link" href="' . $url . '">
-    //                                 <span class="menu-bullet">
-    //                                     <span class="bullet bullet-dot"></span>
-    //                                 </span>
-    //                                 <span class="menu-title">' . $children->title . '</span>
-    //                             </a>
-    //                         </div>
-    //                         </div>';
-    //             }
-    //         }
-
-    //         $html .= '</div>';  // Close the menu-item (accordion)
-    //     }
-    //     if ($menu->parent_id == null && $menu->children->isEmpty()) {
-    //         if ($menu->status == 1) {
-    //             $url = "/$urlPrefix$menu->slug";
-
-    //             // If no children, just a simple menu item
-    //             $html .= '<div class="menu-item" data-url="' . $url . '">
-    //                     <a class="menu-link" href="' . $url . '">
-    //                         <span class="menu-icon">
-    //                             <span class="svg-icon svg-icon-5">
-    //                                 ' . $menu->icon . '
-    //                             </span>
-    //                         </span>
-    //                         <span class="menu-title">' . $menu->title . '</span>
-    //                     </a>
-    //                     </div>';
-    //         }
-    //     }
-    // }
-
-    // if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
-    //     $html .= '<div class="menu-item" data-url="/company/face-recognition">
-    //                     <a class="menu-link" href="/company/face-recognition">
-    //                         <span class="menu-icon">
-    //                             <span class="svg-icon svg-icon-5">
-    //                                 <i class="fas fa-smile"></i>
-    //                             </span>
-    //                         </span>
-    //                         <span class="menu-title">Face Recognition</span>
-    //                     </a>
-    //                     </div>';
-    // }
-
-    // return $html;
     $html = '';
-$user = Auth::user();
+    $user = Auth::user();
+    $currentUrl = url()->current();
+    $urlPrefix = ($user->type == 'company' || session()->has('impersonation')) ? 'company' : 'employee';
 
-$urlPrefix = ($user->type == 'company' || session()->has('impersonation')) ? 'company' : 'employee';
+    foreach ($user->menu as $menu) {
+        if ($menu->children && $menu->children->isNotEmpty() && $menu->status == 1) {
+            $hasActiveChild = false;
+            $subMenuHtml = '';
 
-foreach ($user->menu as $menu) {
-    // Menu with children
-    if ($menu->children && $menu->children->isNotEmpty()) {
-        if ($menu->status == 1) {
-            $html .= '<div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
-                        <span class="menu-link">
-                            <span class="menu-icon">
-                                <span class="svg-icon svg-icon-5">'
-                                    . $menu->icon .
-                                '</span>
+            foreach ($menu->children as $child) {
+                if ($child->role === "company" && $child->status == 1) {
+                    $url = "/$urlPrefix/" . ltrim($child->slug, '/');
+                    $isActiveChild = $currentUrl === url($url);
+
+                    if ($isActiveChild) {
+                        $hasActiveChild = true;
+                    }
+
+                    $subMenuHtml .= '<div class="menu-item ' . ($isActiveChild ? 'active' : '') . '" data-url="' . $url . '">
+                        <a class="menu-link " href="' . $url . '">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">' . e($menu->title) . '</span>
-                            <span class="menu-arrow"></span>
-                        </span>
-                        <div class="menu-sub menu-sub-accordion">';
-
-            foreach ($menu->children as $children) {
-                if ($children->role == "company" && $children->status == 1) {
-                    $url = "/$urlPrefix/" . ltrim($children->slug, '/');
-
-                    $html .= '<div class="menu-item" data-url="' . $url . '">
-                                <a class="menu-link" href="' . $url . '">
-                                    <span class="menu-bullet">
-                                        <span class="bullet bullet-dot"></span>
-                                    </span>
-                                    <span class="menu-title">' . e($children->title) . '</span>
-                                </a>
-                              </div>';
+                            <span class="menu-title">' . e($child->title) . '</span>
+                        </a>
+                    </div>';
                 }
             }
 
-            $html .= '</div></div>'; // Close menu-sub and menu-item
+            $html .= '<div data-kt-menu-trigger="click" class="menu-item menu-accordion ' . ($hasActiveChild ? 'here show' : '') . '">
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <span class="svg-icon svg-icon-5">' . $menu->icon . '</span>
+                    </span>
+                    <span class="menu-title">' . e($menu->title) . '</span>
+                    <span class="menu-arrow"></span>
+                </span>
+                <div class="menu-sub menu-sub-accordion ' . ($hasActiveChild ? 'show' : '') . '">
+                    ' . $subMenuHtml . '
+                </div>
+            </div>';
+        }
+
+        // Menu without children
+        if ($menu->parent_id === null && $menu->children->isEmpty() && $menu->status == 1) {
+            $url = "/$urlPrefix/" . ltrim($menu->slug, '/');
+            $isActive = $currentUrl === url($url);
+
+            $html .= '<div class="menu-item ' . ($isActive ? 'active' : '') . '" data-url="' . $url . '">
+                <a class="menu-link" href="' . $url . '">
+                    <span class="menu-icon">
+                        <span class="svg-icon svg-icon-5">' . $menu->icon . '</span>
+                    </span>
+                    <span class="menu-title">' . e($menu->title) . '</span>
+                </a>
+            </div>';
         }
     }
 
-    // Menu without children
-    if ($menu->parent_id === null && $menu->children->isEmpty() && $menu->status == 1) {
-        $url = "/$urlPrefix/" . ltrim($menu->slug, '/');
+    // Face Recognition Menu
+    if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
+        $faceUrl = '/company/face-recognition';
+        $isActive = $currentUrl === url($faceUrl);
 
-        $html .= '<div class="menu-item" data-url="' . $url . '">
-                    <a class="menu-link" href="' . $url . '">
-                        <span class="menu-icon">
-                            <span class="svg-icon svg-icon-5">'
-                                . $menu->icon .
-                            '</span>
-                        </span>
-                        <span class="menu-title">' . e($menu->title) . '</span>
-                    </a>
-                  </div>';
+        $html .= '<div class="menu-item ' . ($isActive ? 'active' : '') . '" data-url="' . $faceUrl . '">
+            <a class="menu-link" href="' . $faceUrl . '">
+                <span class="menu-icon">
+                    <span class="svg-icon svg-icon-5"><i class="fas fa-smile"></i></span>
+                </span>
+                <span class="menu-title">Face Recognition</span>
+            </a>
+        </div>';
     }
-}
 
-// Face recognition menu
-if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
-    $html .= '<div class="menu-item" data-url="/company/face-recognition">
-                <a class="menu-link" href="/company/face-recognition">
-                    <span class="menu-icon">
-                        <span class="svg-icon svg-icon-5">
-                            <i class="fas fa-smile"></i>
-                        </span>
-                    </span>
-                    <span class="menu-title">Face Recognition</span>
-                </a>
-              </div>';
+    return $html;
 }
-
-return $html;
-}
+use Illuminate\Support\Facades\URL;
 
 function getEmployeeMenuHtml()
 {
-    $html = '';
+    $html        = '';
+    $currentUrl  = URL::current();          // full current URL
+    $companyRole = auth()->user()->parent->role_id;
 
-    $companyAssignedMenuIds = MenuRole::where('role_id', auth()->user()->parent->role_id)->pluck('menu_id')->toArray();
-    $childMenus = Menu::where(['status' => 1, 'role' => 'employee'])->where(function ($query) use ($companyAssignedMenuIds) {
-        $query->whereIn('parent_id', $companyAssignedMenuIds)
-            ->orWhere('parent_id', NULL);
-    })->get();
+    // Menus the company admin assigned to this employee role
+    $companyAssignedMenuIds = MenuRole::where('role_id', $companyRole)
+        ->pluck('menu_id')
+        ->toArray();
+
+    // Actual menus to render
+    $childMenus = Menu::where([
+            'status' => 1,
+            'role'   => 'employee',
+        ])
+        ->where(function ($q) use ($companyAssignedMenuIds) {
+            $q->whereIn('parent_id', $companyAssignedMenuIds)
+              ->orWhereNull('parent_id');
+        })
+        ->get();
 
     foreach ($childMenus as $menu) {
-        // If no children, just a simple menu item
-        $html .= '<div class="menu-item" data-url="' . $menu->slug . '">
-        <a class="menu-link" href="' . $menu->slug . '">
-            <span class="menu-icon">
-                <span class="svg-icon svg-icon-5">
-                    ' . $menu->icon . '
-                </span>
-            </span>
-            <span class="menu-title">' . $menu->title . '</span>
-        </a>
-        </div>';
+        // Normalise the slug and compare with current URL
+        $url       = '/' . ltrim($menu->slug, '/');   // ensures leading slash
+        $isActive  = $currentUrl === url($url);       // strict match
+
+        $html .= '
+            <div class="menu-item ' . ($isActive ? 'active' : '') . '" data-url="' . $url . '">
+                <a class="menu-link " href="' . $url . '">
+                    <span class="menu-icon">
+                        <span class="svg-icon svg-icon-5">' . $menu->icon . '</span>
+                    </span>
+                    <span class="menu-title">' . e($menu->title) . '</span>
+                </a>
+            </div>';
     }
 
     return $html;

@@ -204,6 +204,7 @@ class EmployeeServices
         return $this->userRepository->query()
             ->where('company_id', $companyId)
             ->where('type', 'user')
+            ->where('status','1')
             ->with(['details', 'managers'])
             ->where(function ($query) use ($month, $year, $selectedDate, $previousMonthDate) {
                 $query->whereHas('details', function ($q) {

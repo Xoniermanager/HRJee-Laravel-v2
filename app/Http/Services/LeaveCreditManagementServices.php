@@ -67,7 +67,7 @@ class LeaveCreditManagementServices
     {
         $leaveCreditManagementDetails = $this->leaveCreditManagementRepository;
         /**List By Status or Filter */
-        if (isset($request->status)) {
+        if ($request->status != null) {
             $leaveCreditManagementDetails = $leaveCreditManagementDetails->where('status', $request->status);
         }
         /**List By Company Branches or Filter */
