@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,13 @@ class AssignTaskService
         if (isset($data['document']) && !empty($data['document'])) {
             $data['document'] = uploadingImageorFile($data['document'], '/task_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
+
+        // retrieve latitude longitude from visit address
+        $result = app('geocoder')->geocode($data['visit_address'])->get();
+        $coordinates = $result[0]->getCoordinates();
+        $data['visit_address_latitude'] = $coordinates->getLatitude();
+        $data['visit_address_longitude'] = $coordinates->getLongitude();
+
         return $this->assignTaskRepository->create(Arr::except($data, ['_token']));
     }
     public function getTaskDetailsByCompanyId($companyId)
@@ -58,6 +66,13 @@ class AssignTaskService
         $payload['user_id'] = $data['user_id'];
         $payload['disposition_code_id'] = $data['disposition_code_id'];
         $payload['visit_address'] = $data['visit_address'];
+
+        // retrieve latitude longitude from visit address
+        $result = app('geocoder')->geocode($data['visit_address'])->get();
+        $coordinates = $result[0]->getCoordinates();
+        $payload['visit_address_latitude'] = $coordinates->getLatitude();
+        $payload['visit_address_longitude'] = $coordinates->getLongitude();
+
         return $taskDetails->update($payload);
     }
 
@@ -174,6 +189,11 @@ class AssignTaskService
             }
             $data['document'] = uploadingImageorFile($data['document'], '/task_document', removingSpaceMakingName($userDetails->name) . '-' . $userDetails->id);
         }
+
+        if ($data['user_end_status'] === 'completed') {
+            $data['completed_at'] = Carbon::now();
+        }
+
         return $taskDetails->update($data);
     }
 
