@@ -196,7 +196,7 @@ class AttendanceController extends Controller
 
     public function addBulkAttendance()
     {
-        $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->paginate(10);
+        $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();
         return view('company.attendance.add_bulk', compact('allEmployeeDetails'));
     }
 
