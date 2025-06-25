@@ -1,5 +1,5 @@
 @extends('layouts.company.main')
-@section('title',' Leaves Type')
+@section('title', ' Leaves Type')
 @section('content')
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
@@ -159,76 +159,62 @@
         jQuery('#kt_modal_leave_type_update').modal('show');
     }
     jQuery.noConflict();
-    jQuery(document).ready(function($) {
-        jQuery("#leave_type_form").validate({
+jQuery(document).ready(function($) {
+
+    // Utility: Clear all errors inside a form
+    function clearErrors(form) {
+        $(form).find('.text-danger').remove();
+    }
+
+    // Utility: Show single error per input field
+    function showErrors(errors, form) {
+        for (let field in errors) {
+            const input = $(form).find(`[name="${field}"]`);
+            input.next('.text-danger').remove(); // remove existing error
+            input.after(`<span class="text-danger">${errors[field]}</span>`);
+        }
+
+        // Optional: remove error messages after 4s
+        setTimeout(() => {
+            $(form).find('.text-danger').fadeOut(300, function() { $(this).remove(); });
+        }, 4000);
+    }
+
+    // Shared form submit handler
+    function handleFormSubmit(formId, url, modalId, successMessage) {
+        $(formId).validate({
             rules: {
-                name: "required",
+                name: "required"
             },
             messages: {
-                name: "Please enter name",
+                name: "Please enter name"
             },
             submitHandler: function(form) {
-                var leave_type_data = $(form).serialize();
+                clearErrors(form);
                 $.ajax({
-                    url: "{{ route('leave.type.store') }}",
+                    url: url,
                     type: 'POST',
-                    data: leave_type_data,
+                    data: $(form).serialize(),
                     success: function(response) {
-                        jQuery('#kt_modal_leave_type').modal('hide');
-                        swal.fire("Done!", response.message, "success");
-                        $('#leave_type_list').replaceWith(response.data);
-                        $('#leave_type_form')[0].reset();
+                        jQuery(modalId).modal('hide');
+                        Swal.fire("Done!", successMessage || response.message, "success");
+                        $('#leave_type_list').html(response.data);
+                        form.reset();
                     },
-                    error: function(error_messages) {
-                        let errors = error_messages.responseJSON.error;
-                        for (var error_key in errors) {
-                            $(document).find('[name=' + error_key + ']').after(
-                                '<span class="' + error_key +
-                                '_error text text-danger" >' + errors[
-                                    error_key] + '</span>');
-                            setTimeout(function() {
-                                jQuery("." + error_key + "_error").remove();
-                            }, 4000);
+                    error: function(xhr) {
+                        if (xhr.responseJSON?.error) {
+                            showErrors(xhr.responseJSON.error, form);
                         }
                     }
                 });
             }
         });
-        $("#update-form").validate({
-            rules: {
-                name: "required",
-            },
-            messages: {
-                name: "Please enter name",
-            },
-            submitHandler: function(form) {
-                var company_status = $(form).serialize();
-                var id = $('#id').val();
-                $.ajax({
-                    url: "<?= route('leave.type.update') ?>",
-                    type: 'post',
-                    data: company_status,
-                    success: function(response) {
-                        jQuery('#kt_modal_leave_type_update').modal('hide');
-                        swal.fire("Done!", response.message, "success");
-                        $('#leave_type_list').replaceWith(response.data);
-                    },
-                    error: function(error_messages) {
-                        let errors = error_messages.responseJSON.error;
-                        for (var error_key in errors) {
-                            $(document).find('[name=' + error_key + ']').after(
-                                '<span id="' + error_key +
-                                '_error" class="text text-danger">' + errors[
-                                    error_key] + '</span>');
-                            setTimeout(function() {
-                                jQuery("#" + error_key + "_error").remove();
-                            }, 4000);
-                        }
-                    }
-                });
-            }
-        });
-    });
+    }
+    // Initialize both forms
+    handleFormSubmit('#leave_type_form', "{{ route('leave.type.store') }}", '#kt_modal_leave_type', 'Leave Type Added');
+    handleFormSubmit('#update-form', "{{ route('leave.type.update') }}", '#kt_modal_leave_type_update', 'Leave Type Updated');
+});
+
 
     function handleStatus(id) {
         var checked_value = $('#checked_value').prop('checked');
@@ -259,34 +245,38 @@
     }
 
     function deleteFunction(id) {
-        event.preventDefault();
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?= route('leave.type.delete') ?>",
-                    type: "get",
-                    data: {
-                        id: id
-                    },
-                    success: function(res) {
-                        Swal.fire("Done!", "It was succesfully deleted!", "success");
-                        $('#leave_type_list').replaceWith(res.data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        Swal.fire("Error deleting!", "Please try again", "error");
-                    }
-                });
-            }
-        });
-    }
+            event.preventDefault();
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('leave.type.delete') }}",
+                        type: "GET",
+                        data: { id: id },
+                        success: function (res) {
+                            Swal.fire("Deleted!", res.success || "Leave type deleted successfully.", "success");
+                            $('#leave_type_list').replaceWith(res.data);
+                        },
+                        error: function (xhr) {
+                            let message = "Something went wrong. Please try again.";
+                            if (xhr.status === 400 && xhr.responseJSON?.error) {
+                                message = xhr.responseJSON.error;
+                            }
+                            Swal.fire("Delete Failed!", message, "error");
+                        }
+                    });
+                }
+            });
+        }
+
 </script>
 <style>
 .error {

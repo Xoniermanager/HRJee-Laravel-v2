@@ -36,7 +36,7 @@ class LeaveStatusLogController extends Controller
     public function index()
     {
         $leaveStatusLogDetails = $this->leaveStatusLogService->all();
-        
+
         return view('company.leave_status_log.index', compact('leaveStatusLogDetails'));
     }
 

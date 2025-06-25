@@ -18,7 +18,7 @@
                             <option value="">Status</option>
                             <option {{ request()->get('status') == '1' ? 'selected' : '' }} value="1">Active
                             </option>
-                            <option {{ request()->get('status') == '2' ? 'selected' : '' }} value="2">Inactive
+                            <option {{ request()->get('status') == '0' ? 'selected' : '' }} value="0">Inactive
                             </option>
                         </select>
 
@@ -523,7 +523,7 @@
         function search_filter_results() {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/company/leave-credit-management/search/filter',
+                url: company_ajax_base_url + '/leave-credit-management/search/filter',
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val(),

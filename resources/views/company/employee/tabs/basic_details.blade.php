@@ -50,16 +50,16 @@
         </div>
         <div class="row">
             <div class="col-md-4 form-group">
-                <label for="">Full Name *</label>
+                <label for="" class="required">Full Name</label>
                 <input class="form-control" type="text" name="name" value="{{ $singleUserDetails->name ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Email *</label>
+                <label for="" class="required">Email </label>
                 <input class="form-control" type="email" name="email" value="{{ $singleUserDetails->email ?? '' }}"
                     {{ isset($singleUserDetails->email) ? 'readonly' : '' }}>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Official Email *</label>
+                <label for="" class="required">Official Email</label>
                 <input class="form-control" type="email" name="official_email_id"
                     value="{{ $singleUserDetails->details->official_email_id ?? '' }}">
             </div>
@@ -80,7 +80,7 @@
                     value="{{ $singleUserDetails->details->mother_name ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Blood Group *</label>
+                <label for="" class="required">Blood Group</label>
                 <select class="form-control" name="blood_group">
                     <option value="">Select the Blood Group</option>
                     <option
@@ -104,7 +104,7 @@
                 </select>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Gender *</label>
+                <label for="" class="required">Gender</label>
                 <select class="form-control" name="gender">
                     <option value="">Select the Gender</option>
                     <option {{ ($singleUserDetails->details->gender ?? old('gender')) == 'M' ? 'selected' : '' }} value="M">
@@ -118,7 +118,7 @@
                 </select>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Marital Status *</label>
+                <label for="" class="required">Marital Status</label>
                 <select class="form-control" name="marital_status">
                     <option value="">Select the Marital Status</option>
                     <option
@@ -130,7 +130,7 @@
                 </select>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Emp Status *</label>
+                <label for="" class="required">Emp Status</label>
                 <select class="form-control" name="employee_status_id">
                     <option value="">Select The Employee Status</option>
                     @forelse ($allEmployeeStatus as $employeeStatus)
@@ -144,23 +144,23 @@
                 </select>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Date of Birth *</label>
+                <label for="" class="required">Date of Birth</label>
                 <input class="form-control" type="date" name="date_of_birth"
                     value="{{ $singleUserDetails->details->date_of_birth ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Date of Joining *</label>
+                <label for="" class="required">Date of Joining</label>
                 <input class="form-control" type="date" name="joining_date"
                     value="{{ $singleUserDetails->details->joining_date ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Phone Number *</label>
+                <label for="" class="required">Phone Number</label>
                 <input class="form-control" type="number" name="phone"
                     value="{{ $singleUserDetails->details->phone ?? '' }}">
             </div>
             <div class="col-md-4 form-group">
                 <div class="k-w-300">
-                    <label for="qualification">Highest Qualification*</label>
+                    <label for="qualification" class="required">Highest Qualification</label>
                     <select id="Qualification" class="form-control" name="qualification_id"> </select>
                 </div>
                 <script id="noQualificationTemplate" type="text/x-kendo-tmpl">
@@ -173,7 +173,7 @@
             </div>
             <div class="col-md-4 form-group">
                 <div>
-                    <label>Skills (Multiselect)</label>
+                    <label class="required">Skills (Multiselect)</label>
                     <select id="Skill" class="form-control" name="skill_id[]"></select>
                 </div>
                 <script id="noSkillTemplate" type="text/x-kendo-tmpl">
@@ -189,13 +189,13 @@
                 </script>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Employee Id *</label>
+                <label for="" class="required">Employee Id</label>
                 <input class="form-control" type="text" name="emp_id"
                     value="{{ $singleUserDetails->details->emp_id ?? '' }}"
-                    @if (isset($singleUserDetails->details->offer_letter_id)) disabled @endif>
+                    @if (isset($singleUserDetails->details->offer_letter_id)) @endif>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Role*</label>
+                <label for="" class="required">Role</label>
                 <select class="form-control" name="role_id">
                     <option value="">Select Role</option>
                     @forelse ($allRoles as $role)
@@ -207,7 +207,7 @@
                 </select>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Employment Type *</label>
+                <label for="" class="required">Employment Type</label>
                 <select class="form-control" name="employee_type_id">
                     <option value="">Select The Employee Type</option>
                     @forelse ($allEmployeeType as $employeeType)
@@ -221,7 +221,7 @@
                 </select>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Department*</label>
+                <label for="" class="required">Department</label>
                 <select class="form-control" name="department_id" id="department_id">
                     <option value="">Select The Department</option>
                     @forelse ($alldepartmentDetails as $departmentDetails)
@@ -234,12 +234,12 @@
                 </select>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Designation *</label>
+                <label for="" class="required">Designation</label>
                 <select class="form-control" id="designation_id" name="designation_id">
                 </select>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Branch *</label>
+                <label for="" class="required">Branch</label>
                 <select class="form-control" name="company_branch_id" id="company_branch_id">
                     <option value="">Please Select the Branch</option>
                     @forelse ($allBranches as $branch)
@@ -338,13 +338,13 @@
                 @endforeach
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Offer ID *</label>
+                <label for="" class="required">Offer ID</label>
                 <input class="form-control" type="text" name="offer_letter_id"
                     value="{{ $singleUserDetails->details->offer_letter_id ?? '' }}"
                     @if (isset($singleUserDetails->offer_letter_id)) disabled @endif>
             </div>
             <div class="col-md-4 form-group">
-                <label for="">Official Phone Number *</label>
+                <label for="" class="required">Official Phone Number</label>
                 <input class="form-control" type="text" name="official_mobile_no"
                     value="{{ $singleUserDetails->details->official_mobile_no ?? '' }}">
             </div>
@@ -380,8 +380,6 @@
     @if (isset($singleUserDetails) && !empty($singleUserDetails))
         <button onclick="show_next_tab('advance_details_tab')" class="btn btn-primary float-right">Next <i
                 class="fa fa-arrow-right"></i> </button>
-    @else
-        <button class="btn btn-primary float-right" id="submit">Save & Continue</button>
     @endif
 </div>
 <!-- Add to <head> -->
@@ -400,18 +398,19 @@
             contentType: false,
             data: basic_details_Data,
             success: function(response) {
-                if (response.data.status == "createdEmployee") {
-                    location.href = '/company/employee/edit/' + response.data.id;
+                if (response.data.status == "createdEmployee")
+                {
                     setTimeout(function() {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
-                    }, 4000);
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    jQuery('.nav-pills a[href="#advance_details_tab"]').tab('show');
+                }, 4000);
+                location.href = '/company/employee/edit/' + response.data.id;
                 } else {
                     Swal.fire({
                         position: "top-end",

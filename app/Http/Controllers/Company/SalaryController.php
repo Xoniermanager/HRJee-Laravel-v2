@@ -108,9 +108,7 @@ class SalaryController extends Controller
 
     public function statusUpdate(Request $request)
     {
-        $id = $request->id;
-        $data['status'] = $request->status;
-        $statusDetails = $this->salaryService->updateDetails($data, $id);
+        $statusDetails = $this->salaryService->statusUpdatebyStructuredId($request->id, $request->status);
         if ($statusDetails) {
             $allSalaryDetails = $this->salaryService->getAllSalariesByCompanyId(Auth()->user()->company_id)->paginate(10);
             return response()->json([

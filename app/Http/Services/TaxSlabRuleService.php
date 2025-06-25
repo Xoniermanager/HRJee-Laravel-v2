@@ -76,7 +76,7 @@ class TaxSlabRuleService
      */
     public function serachTaxSlabFilterList($request)
     {
-        $taxSlabDetails = $this->taxSlabRuleRepository->orderBy('id', 'DESC');
+        $taxSlabDetails = $this->taxSlabRuleRepository->where('company_id', $request['company_id'])->orderBy('id', 'DESC');
         // List By Search or Filter
         if (!empty($request['search'])) {
             $taxSlabDetails->where('income_range_start', 'LIKE', '%' . $request['search'] . '%')
@@ -84,7 +84,7 @@ class TaxSlabRuleService
                 ->orWhere('tax_rate', 'LIKE', '%' . $request['search'] . '%');
         }
         // List By Status or Filter
-        if (isset($request['status']) && $request['status'] !== null) {
+        if ($request['status'] != null) {
             $taxSlabDetails->where('status', $request['status']);
         }
         // Return paginated results

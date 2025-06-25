@@ -17,7 +17,7 @@ class SalaryService
      * Undocumented function
      *
      * @param [type] $companyId
-     * @return void
+     * @return null
      */
     public function getAllSalariesByCompanyId($companyId)
     {
@@ -105,5 +105,9 @@ class SalaryService
     public function getSalaryIdById($salaryId)
     {
         return $this->salaryRepository->find($salaryId);
+    }
+    public function statusUpdatebyStructuredId($salaryId,$status)
+    {
+        return $this->salaryRepository->find($salaryId)->update(['status' => $status]);
     }
 }

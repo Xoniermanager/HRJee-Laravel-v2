@@ -61,13 +61,13 @@ class EmployeeServices
                 if ($data['company_branch_id'] != $existingDetails->company_branch_id) {
                     $this->updateActiveLocationByUserId($data['company_branch_id'], $existingDetails->user_id, 'updated');
                 }
-                
+
                 $existingDetails->update($data);
                 $status = 'updatedData';
                 $id = $existingDetails->user_id;
             } else {
                 $createdEmployee = $this->userDetailRepository->create($data);
-                
+
                 $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
                 $this->updateActiveLocationByUserId($data['company_branch_id'], $createdEmployee->user_id);
@@ -131,12 +131,13 @@ class EmployeeServices
 
     public function getAllEmployeeByCompanyId($companyId)
     {
-        return $this->userRepository->where('type', 'user')
+        return $this->userRepository
+            ->where('type', 'user')
             ->where('company_id', $companyId)
+            ->where('status', 1) // Check for active users (adjust this field if named differently)
             ->whereHas('details', function ($query) {
                 $query->whereNull('exit_date');
             });
-        ;
     }
 
     public function getDetailsByCompanyBranchEmployeeType($companyBranchId, $employeeTypeId)
@@ -195,13 +196,36 @@ class EmployeeServices
             });
     }
 
-    public function getEmployeeQueryByCompanyId($companyId)
+    public function getEmployeeQueryByCompanyId($companyId, $month, $year)
     {
+
+        $selectedDate = Carbon::createFromDate($year, $month, 1);
+        $previousMonthDate = $selectedDate->copy()->subMonth();
+
         return $this->userRepository->query()
             ->where('company_id', $companyId)
-            ->where('type', 'user') // or whatever your employee type is
-            // ->whereNotNull('role_id') // assuming role_id is mandatory for employees
-            ->with(['details', 'managers']);
+            ->where('type', 'user')
+            ->where('status', '1')
+            ->with(['details', 'managers'])
+            ->where(function ($query) use ($month, $year, $selectedDate, $previousMonthDate) {
+                $query->whereHas('details', function ($q) {
+                    $q->whereNull('exit_date')
+                        ->whereNotNull('joining_date');
+                })
+                    ->orWhereHas('details', function ($q) use ($selectedDate, $previousMonthDate) {
+                        $q->whereNotNull('exit_date')
+                            ->whereNotNull('joining_date')
+                            ->where(function ($sub) use ($selectedDate, $previousMonthDate) {
+                                $sub->where(function ($dateQuery) use ($selectedDate) {
+                                    $dateQuery->whereMonth('exit_date', $selectedDate->month)
+                                        ->whereYear('exit_date', $selectedDate->year);
+                                })->orWhere(function ($dateQuery) use ($previousMonthDate) {
+                                    $dateQuery->whereMonth('exit_date', $previousMonthDate->month)
+                                        ->whereYear('exit_date', $previousMonthDate->year);
+                                });
+                            });
+                    });
+            });
     }
 
     public function addManagers($userId, $managerIDs)

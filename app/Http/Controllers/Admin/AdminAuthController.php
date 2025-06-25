@@ -122,14 +122,15 @@ class AdminAuthController extends Controller
     public function resendOtp(Request $request)
     {
         try {
-            $email = auth()->guard('admin')->user()->email;
+            $userId = session('otp_pending_admin');
+            $email = Admin::find($userId)->email;
             $otpResponse = $this->sendOtpService->generateOTP($email, 'admin');
             if ($otpResponse['status'] == true)
                 return redirect('admin/verify/otp')->with('success', transLang($otpResponse['message']));
             else
                 return redirect('admin/verify/otp')->with('error', transLang($otpResponse['message']));
         } catch (Throwable $th) {
-            return exceptionErrorMessage($th);
+            return back()->with('error', $th->getMessage());
         }
     }
     public function adminLogout()

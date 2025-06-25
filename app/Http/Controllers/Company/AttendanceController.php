@@ -4,20 +4,22 @@ namespace App\Http\Controllers\Company;
 
 use Exception;
 use Carbon\Carbon;
+use App\Models\Leave;
 use Illuminate\Http\Request;
+use App\Http\Services\UserService;
+use App\Models\EmployeeAttendance;
 use Illuminate\Support\Facades\DB;
 use App\Http\Services\LeaveService;
-use App\Http\Services\UserService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Services\HolidayServices;
-use App\Http\Services\EmployeeServices;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Services\EmployeeAttendanceService;
+use App\Http\Services\BranchServices;
 use App\Http\Services\WeekendService;
 use App\Jobs\SendAttendanceReportJob;
-use App\Http\Services\BranchServices;
+use App\Http\Services\HolidayServices;
+use App\Http\Services\EmployeeServices;
 use App\Http\Services\DepartmentServices;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\EmployeeAttendanceService;
 
 class AttendanceController extends Controller
 {
@@ -59,7 +61,7 @@ class AttendanceController extends Controller
         $allEmployeeDetails = $this->searchFilterDetails($request->month, $request->year, $request->search, $request->department, $request->manager, $request->branch);
 
         if ($allEmployeeDetails) {
-            if($request->has('export')) {
+            if ($request->has('export')) {
                 dispatch(new SendAttendanceReportJob(auth()->user(), $allEmployeeDetails, $request->month, $request->year));
             } else {
                 return response()->json([
@@ -71,13 +73,17 @@ class AttendanceController extends Controller
 
     public function searchFilterDetails($month, $year, $searchKey = null, $deptId = null, $managerId = null, $branchID = null)
     {
-        $query = $this->employeeService->getEmployeeQueryByCompanyId(Auth()->user()->company_id); // assume this returns a builder
+        $query = $this->employeeService->getEmployeeQueryByCompanyId(Auth()->user()->company_id, $month, $year); // assume this returns a builder
 
-        // Apply filters
         if (!empty($searchKey)) {
             $query->where(function ($q) use ($searchKey) {
+                // Search in attendance table
                 $q->where('name', 'like', "%$searchKey%")
-                ->orWhere('emp_id', 'like', "%$searchKey%");
+
+                    // Or search in the related `details` table using emp_id
+                    ->orWhereHas('details', function ($subQuery) use ($searchKey) {
+                        $subQuery->where('emp_id', 'like', "%$searchKey%");
+                    });
             });
         }
 
@@ -119,10 +125,10 @@ class AttendanceController extends Controller
     public function viewsearchFilterDetails($month, $year, $employeeDetails, $start_date = null, $end_date = null)
     {
 
-        if($start_date != "") {
+        if ($start_date != "") {
             $startDate = $start_date;
 
-            if($end_date == "") {
+            if ($end_date == "") {
                 $endDate = Carbon::createFromDate(date("Y"), date("m"), 1)->endOfMonth();
             } else {
                 $endDate = Carbon::createFromFormat('Y-m-d', $end_date);
@@ -154,11 +160,11 @@ class AttendanceController extends Controller
         return
             [
                 'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
-                'totalLeave'   => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
+                'totalLeave' => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
                 'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->count(),
-                'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month,$employeeDetails->id,$year)->count(),
+                'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
                 'totalAbsent' => '0',
-                'emp_id'    => $employeeDetails->id,
+                'emp_id' => $employeeDetails->id,
                 'allAttendanceDetails' => $allAttendanceDetails
             ];
     }
@@ -190,7 +196,7 @@ class AttendanceController extends Controller
 
     public function addBulkAttendance()
     {
-        $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->paginate(10);
+        $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();
         return view('company.attendance.add_bulk', compact('allEmployeeDetails'));
     }
 
@@ -219,11 +225,10 @@ class AttendanceController extends Controller
 
             $response = $this->employeeAttendanceService->addBulkAttendance($request->all());
 
-            if ($response == true){
+            if ($response == true) {
                 DB::commit();
                 return redirect()->route('attendance.index')->with('success', 'Attendance created successfully!');
-            }
-            else{
+            } else {
                 return back()->with(['error' => 'Attendance already exists for the respective dates or might be a company holiday.']);
             }
         } catch (Exception $e) {
@@ -246,5 +251,36 @@ class AttendanceController extends Controller
         dispatch(new SendAttendanceReportJob($user, $request->range, $request->from, $request->to));
 
         return response()->json(['status' => 'success', 'message' => 'Attendance report will be sent to your email shortly.']);
+    }
+
+    public function todayStats()
+    {
+        $today = Carbon::today()->toDateString();
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
+        $totalEmployeeIds = $this->employeeService
+            ->getEmployeeQueryByCompanyId(Auth::user()->company_id, $month, $year)
+            ->pluck('id');
+
+        $total = $totalEmployeeIds->count();
+
+        $present = EmployeeAttendance::whereIn('user_id', $totalEmployeeIds)
+            ->whereDate('punch_in', $today)
+            ->count();
+
+        $leave = Leave::whereIn('user_id', $totalEmployeeIds)
+            ->whereDate('from', '<=', $today)
+            ->whereDate('to', '>=', $today)
+            ->where('leave_status_id', 2) // Approved leave
+            ->count();
+
+        $absent = $total - $present - $leave;
+
+        return response()->json([
+            'total' => $total,
+            'present' => $present,
+            'leave' => $leave,
+            'absent' => max($absent, 0), // make sure it's not negative
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\EmployeeComplainController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
+use App\Http\Controllers\Employee\LeaveTrackingController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
 use App\Http\Controllers\Admin\ForgetPasswordController as AdminForgetPasswordController;
 use App\Http\Controllers\Company\ForgetPasswordController as CompanyForgetPasswordController;
@@ -96,5 +97,7 @@ Route::controller(AuthController::class)->middleware('log.route')->group(functio
 });
 
 // Route::get('/', [AuthController::class, 'index'])->name('employee');
+ //Leave Tracking
+ Route::get('/leave-tracking/{id}', [LeaveTrackingController::class, 'index'])->name('employee.leave.tracking');
 
 Route::middleware('log.route')->get('/employee/payslip/generate-pdf', [EmployeeSalaryController::class,'generatePDF']);

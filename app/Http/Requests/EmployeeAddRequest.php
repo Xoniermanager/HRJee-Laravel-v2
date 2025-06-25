@@ -35,7 +35,8 @@ class EmployeeAddRequest extends FormRequest
             'phone' => ['required', 'min:10', 'numeric'],
             'profile_image' => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'official_mobile_no' => ['sometimes', 'unique:user_details,official_mobile_no,' . request()->get('user_details_id')],
-            'offer_letter_id' => ['sometimes', 'unique:user_details,offer_letter_id,' . request()->get('user_details_id')]
+            'offer_letter_id' => ['sometimes', 'unique:user_details,offer_letter_id,' . request()->get('user_details_id')],
+            'emp_id' => ['required', 'unique:user_details,emp_id,' . request()->get('user_details_id')]
         ];
     }
 }

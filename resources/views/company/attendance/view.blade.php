@@ -186,17 +186,17 @@
             });
             $('#export_button').on('click', function() {
                 var today = new Date();
-                var formattedDate = today.getFullYear() + '-' + 
-                    String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                var formattedDate = today.getFullYear() + '-' +
+                    String(today.getMonth() + 1).padStart(2, '0') + '-' +
                     String(today.getDate()).padStart(2, '0');
 
                 if($('#end_date').val() != "") {
                     formattedDate = $('#end_date').val()
-                }   
+                }
 
                 exportAttendanceByUserId({{ $employeeDetail['emp_id'] }},$('#year').val(),$('#month').val(),$('#start_date').val(),formattedDate)
             });
-            
+
             function searchFilter() {
                 $.ajax({
                     method: 'GET',
@@ -228,7 +228,7 @@
                 submitHandler: function(form) {
                     var attendance_data = $(form).serialize();
                     $.ajax({
-                        url: company_ajax_base_url + '/attendance/edit/',
+                        url: company_ajax_base_url + '/attendance/edit_manual/',
                         type: 'POST',
                         data: attendance_data,
                         success: function(response) {

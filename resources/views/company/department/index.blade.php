@@ -95,7 +95,7 @@
 
                                 <!--begin::Input group-->
                                 <div class="mt-3">
-                                    <label>Department Name</label>
+                                    <label class="required">Department Name</label>
                                     <input class="form-control mb-5 mt-3" type="text" name="name" id="name">
                                 </div>
                                 <!--end::Input group-->
@@ -156,7 +156,7 @@
                                 <!--begin::Input group-->
 
                                 <div class="mt-3">
-                                    <label>Department Name</label>
+                                    <label class="required">Department Name</label>
                                     <input class="form-control mb-5 mt-3" type="text" name="name">
                                     <!--end::Switch-->
                                 </div>

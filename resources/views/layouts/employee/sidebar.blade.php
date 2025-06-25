@@ -135,3 +135,20 @@
 	</div>
 	<!--end::Aside-->
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const activeMenuItem = document.querySelector('.menu-item.active');
+
+        if (activeMenuItem) {
+            // Scroll it into view, align to top
+            activeMenuItem.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+            // Optional: add focus animation or highlight effect
+            activeMenuItem.classList.add("highlight-scroll");
+        }
+    });
+</script>
+
