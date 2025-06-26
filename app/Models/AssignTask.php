@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class AssignTask extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'user_end_status', 'final_status', 'response_data', 'company_id', 'created_by', 'document', 'image', 'disposition_code_id','remark','visit_address','longitude','latitude'];
+    protected $fillable = ['user_id', 'user_end_status', 'final_status', 'response_data', 'company_id', 'created_by', 'document', 'image', 'disposition_code_id', 'remark', 'visit_address', 'longitude', 'latitude', 'visit_address_latitude', 'visit_address_longitude', 'completed_at'];
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -21,13 +21,13 @@ class AssignTask extends Model
     protected function document(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => url("storage" . $value)
+            get: fn($value) => $value ? url("storage" . $value) : ''
         );
     }
     protected function image(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => url("storage" . $value)
+            get: fn($value) => $value ? url("storage" . $value) : ''
         );
     }
     protected static function booted()
