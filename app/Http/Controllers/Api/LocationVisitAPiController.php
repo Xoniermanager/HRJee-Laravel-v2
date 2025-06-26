@@ -177,4 +177,25 @@ class LocationVisitAPiController extends Controller
         }
     }
 
+    public function fetchVisitLocations(Request $request)
+    {
+        $userId = auth()->guard('employee_api')->id();
+        $month = $request->date ?? null;
+
+        try {
+            $data = $this->assignedTaskService->fetchVisitLocations($userId, $month);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Location fetched.',
+                'data' => $data,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }
