@@ -67,7 +67,15 @@
                                 <input type="text" maxlength="1" id="n2" data-next="3" class="form-control otp-input authInput border border-primary bg-white">
                                 <input type="text" maxlength="1" id="n3" data-next="4" class="form-control otp-input authInput border border-primary bg-white">
                             </div>
+                            <div class="text-center mt-5">
+                                <button id="kt_sign_in_submit" type="button" class="btn btn-primary w-100">
+                                    Verify
+                                </button>
+                            </div>
 
+                            <div id="codeExpiredMessage" class="text-center mt-4">
+                                <strong>Code Expired!</strong> Please click "Resend Code" to receive a new one.
+                            </div>
                             @if ($errors->has('otp'))
                                 <div class="alert alert-danger text-center mt-2" role="alert">
                                     {{ $errors->first('otp') }}
@@ -83,17 +91,6 @@
                                     {{ session('success') }}
                                 </div>
                             @endif
-
-                            <div class="text-center mt-5">
-                                <button id="kt_sign_in_submit" type="button" class="btn btn-primary w-100">
-                                    Verify
-                                </button>
-                            </div>
-
-                            <div id="codeExpiredMessage" class="text-center mt-4">
-                                <strong>Code Expired!</strong> Please click "Resend Code" to receive a new one.
-                            </div>
-
                             <div class="text-center mt-3">
                                 <a href="javascript:void(0)" id="resendLink" class="text-primary">Resend Code <span id="timer"></span></a>
                             </div>
@@ -196,6 +193,16 @@
                 document.getElementById("kt_sign_in_form").submit();
             });
         });
+
+    </script>
+    <script>
+        // Automatically fade out all alerts after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.classList.add('fade-out');
+                setTimeout(() => alert.remove(), 1000); // Remove after fade
+            });
+        }, 5000);
     </script>
 </body>
 </html>

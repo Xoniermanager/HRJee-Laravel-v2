@@ -110,21 +110,11 @@ Weekend Management
                                 <label class="required">Designation</label>
                                 <select class="form-control mb-5 mt-3" name="designation_id" id="designation_id">
                                     <option value="">Select the Designation</option>
-                                    
                                 </select>
                             </div>
-                            <div class="mt-3">
-                                <label class="required">Weekends</label>
-                                {{-- <select class="form-control mb-5 mt-3" data-control="select2"
-                                    data-close-on-select="false" data-placeholder="Select the Weekday"
-                                    data-allow-clear="true" multiple="multiple" name="weekday_id[]" id="weekday">
-                                    @foreach ($allWeekDay as $weekDay)
-                                    <option value="{{ $weekDay->id }}">
-                                        {{ $weekDay->name }}
-                                    </option>
-                                    @endforeach
-                                </select> --}}
-                                <input type="text" class="form-control" id="datepicker2" name="weekend_dates" readonly>
+                            <div class="form-group">
+                                <label for="datepicker2" class="required">Select Weekends</label>
+                                <input type="text" class="form-control" id="datepicker2" name="weekend_dates" placeholder="Choose multiple dates" readonly>
                             </div>
                         </div>
                         <!--end::Wrapper-->
@@ -198,17 +188,6 @@ Weekend Management
 
     }
     /** end get all Designation Using Department Id*/
-        jQuery(document).ready(function() {
-            var today = new Date();
-            var firstDayOfNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1); // 1st day of next month
-            $('#datepicker2').datepicker({
-                // minDate: firstDayOfNextMonth, // Disable all dates before next month
-                multidate: true,
-                format: 'yyyy-mm-dd',
-                closeOnDateSelect: true,
-            });
-        });
-
         function edit_weekend_details(id, companyBranchId,deparmentId, designationId, weekendId) {
             if (typeof weekendId === 'string') {
                 weekendId = JSON.parse(weekendId);
@@ -359,5 +338,28 @@ Weekend Management
                 }
             });
         }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Optional Flatpickr Theme: Material Blue -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        flatpickr("#datepicker2", {
+            mode: "multiple",               // Multiple date selection
+            dateFormat: "Y-m-d",            // Date format: 2025-06-26
+            locale: {
+                firstDayOfWeek: 1           // Week starts on Monday
+            },
+            // minDate: "today",               // Optional: disable past dates
+            // Uncomment below if you want only weekends to be selectable
+
+            // enable: [
+            //     function(date) {
+            //         return (date.getDay() === 0 || date.getDay() === 6);
+            //     }
+            // ]
+
+        });
     </script>
     @endsection
