@@ -484,12 +484,12 @@ class AttendanceController extends Controller
                 'leaveDetails' => $leaveDetail,
                 'totalHalfDayLeave' => $leaveDetail->where('is_half_day', 1)->count(),
                 'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->count(),
-                'holidayDetails' => $attendanceDetails['holidays'],
+                'holidayDetails' => $attendanceDetails['holidays'] ?? [],
                 // 'holidayDetails' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->get('date'),
                 'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
                 'shortAttendanceDetails' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->get('punch_in'),
-                'totalAbsent' => count($attendanceDetails['absences']),
-                'absentDetails' => $attendanceDetails['absences'],
+                'totalAbsent' => count($attendanceDetails['absences'] ?? []),
+                'absentDetails' => $attendanceDetails['absences'] ?? [],
             ];
             return response()->json([
                 'status' => true,
