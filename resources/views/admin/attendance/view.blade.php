@@ -228,7 +228,7 @@
                 submitHandler: function(form) {
                     var attendance_data = $(form).serialize();
                     $.ajax({
-                        url: company_ajax_base_url + '/attendance/edit_manual/',
+                        url: company_ajax_base_url + '/attendance/edit_manual',
                         type: 'POST',
                         data: attendance_data,
                         success: function(response) {
