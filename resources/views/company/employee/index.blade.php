@@ -143,8 +143,8 @@
                                         @foreach ($allEmployeeStatus as $employeeStatus)
                                             <option
                                                 {{ request()->get('emp_status_id') == $employeeStatus->id || old('emp_status_id') == $employeeStatus->id
-                                                    ? 'selected'
-                                                    : '' }}
+        ? 'selected'
+        : '' }}
                                                 value="{{ $employeeStatus->id }}">{{ $employeeStatus->name }}</option>
                                         @endforeach
                                     </select>
@@ -167,8 +167,8 @@
                                         @foreach ($allEmployeeType as $employeeType)
                                             <option
                                                 {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id') == $employeeType->id
-                                                    ? 'selected'
-                                                    : '' }}
+        ? 'selected'
+        : '' }}
                                                 value="{{ $employeeType->id }}">{{ $employeeType->name }}</option>
                                         @endforeach
                                     </select>
@@ -179,8 +179,8 @@
                                         @foreach ($alldepartmentDetails as $departmentDetails)
                                             <option
                                                 {{ request()->get('department_id') == $departmentDetails->id || old('department_id') == $departmentDetails->id
-                                                    ? 'selected'
-                                                    : '' }}
+        ? 'selected'
+        : '' }}
                                                 value="{{ $departmentDetails->id }}">{{ $departmentDetails->name }}
                                             </option>
                                         @endforeach
@@ -202,8 +202,8 @@
                                         @foreach ($allBranches as $branchDetails)
                                             <option
                                                 {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') == $branchDetails->id
-                                                    ? 'selected'
-                                                    : '' }}
+        ? 'selected'
+        : '' }}
                                                 value="{{ $branchDetails->id }}">{{ $branchDetails->name }}</option>
                                         @endforeach
                                     </select>
@@ -214,9 +214,9 @@
                                         @foreach ($allQualification as $qualificationDetails)
                                             <option
                                                 {{ request()->get('qualification_id') == $qualificationDetails->id ||
-                                                old('qualification_id') == $qualificationDetails->id
-                                                    ? 'selected'
-                                                    : '' }}
+        old('qualification_id') == $qualificationDetails->id
+        ? 'selected'
+        : '' }}
                                                 value="{{ $qualificationDetails->id }}">{{ $qualificationDetails->name }}
                                             </option>
                                         @endforeach
@@ -644,9 +644,20 @@
                 // Handle the form submission via AJAX
                 $('#importForm').on('submit', function(e) {
                     e.preventDefault();
+
                     var formData = new FormData(this);
                     $('#errorMessage').hide();
                     $('#validationErrors').hide();
+
+                    // Show SweetAlert loader
+                    Swal.fire({
+                        title: 'Uploading...',
+                        text: 'Please wait while we process the file.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
 
                     $.ajax({
                         url: '{{ route('upload.file.employee') }}',
@@ -654,7 +665,9 @@
                         data: formData,
                         contentType: false,
                         processData: false,
-                        success: function(response) {
+                        success: function (response) {
+                            Swal.close(); // Close loader
+
                             if (response.status === 'success') {
                                 Swal.fire({
                                     title: 'Success',
@@ -668,15 +681,15 @@
                                     let errors = response.errors;
 
                                     let errorsHtml = `
-                                        <button id="downloadErrorsBtn" style="margin-bottom: 10px; padding: 6px 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                                            Download Full Error Details
-                                        </button>
-                                        <ul style="color: red; list-style-type: none; padding-left: 20px; margin: 0;">`;
+                        <button id="downloadErrorsBtn" style="margin-bottom: 10px; padding: 6px 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            Download Full Error Details
+                        </button>
+                        <ul style="color: red; list-style-type: none; padding-left: 20px; margin: 0;">`;
 
-                                    errors.forEach(function(error) {
+                                    errors.forEach(function (error) {
                                         errorsHtml += `<li style="margin-bottom: 5px;">
-                                            Row ${error.row_number}: ${error.name} (${error.email}) - ${error.reason}
-                                        </li>`;
+                            Row ${error.row_number}: ${error.name} (${error.email}) - ${error.reason}
+                        </li>`;
                                     });
 
                                     errorsHtml += '</ul>';
@@ -686,12 +699,11 @@
                                         html: errorsHtml,
                                         icon: "error",
                                         didRender: () => {
-                                            // Button click handler for downloading CSV
-                                            document.getElementById('downloadErrorsBtn').addEventListener('click', function() {
+                                            document.getElementById('downloadErrorsBtn').addEventListener('click', function () {
                                                 let csvContent = "data:text/csv;charset=utf-8,";
                                                 csvContent += "Row Number,Employee ID,Name,Email,Branch,Reason\n";
 
-                                                errors.forEach(function(e) {
+                                                errors.forEach(function (e) {
                                                     let line = `"${e.row_number}","${e.emp_id}","${e.name}","${e.email}","${e.company_branch}","${e.reason}"`;
                                                     csvContent += line + "\n";
                                                 });
@@ -716,13 +728,14 @@
                                 }
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
+                            Swal.close(); // Close loader on error
                             var response = xhr.responseJSON;
-                            $('#errorMessage').text(response.message ||
-                                'An unexpected error occurred.').show();
+                            $('#errorMessage').text(response?.message || 'An unexpected error occurred.').show();
                         }
                     });
                 });
+
 
                 $('#downloadAttendance').on('submit', function(e) {
                     e.preventDefault();
@@ -907,4 +920,4 @@
                 });
             });
         </script>
-    @endsection
+@endsection
