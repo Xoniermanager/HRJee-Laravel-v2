@@ -68,7 +68,7 @@ class LocationVisitController extends Controller
             $this->assignTaskService->create($data);
             return redirect(route('location_visit.assign_task'))->with(['success' => 'Assined Task Successfully']);
         } catch (Exception $e) {
-            return back()->with(['error' => 'Something Went Wrong!Please try Again']);
+            return back()->with(['error' => $e->getMessage()]);
         }
     }
 

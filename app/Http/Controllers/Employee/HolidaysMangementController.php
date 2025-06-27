@@ -90,7 +90,7 @@ class HolidaysMangementController extends Controller
             if ($date == $today_date) {
                 $tittle = "Today";
             }
-            $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, $date)->first();
+            $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, $date,Auth()->user()->details->company_branch_id)->first();
             if (isset($allHolidayDetails)) {
                 $todayClasses[] = "holiday addMore";
                 $todayId = $date;
@@ -116,7 +116,7 @@ class HolidaysMangementController extends Controller
     public function holidayByDate(Request $request)
     {
         $date = $request->date;
-        $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, $date)->get();
+        $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, $date,Auth()->user()->details->company_branch_id)->get();
         if ($allHolidayDetails) {
             return response()->json([
                 'status' => true,
@@ -142,7 +142,7 @@ class HolidaysMangementController extends Controller
     public function holidayByMonth(Request $request)
     {
         $date = $request->date;
-        $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, date('Y-m'))->get();
+        $allHolidayDetails = $this->holidayService->getHolidayByDate(Auth()->user()->company_id, date('Y-m'),Auth()->user()->details->company_branch_id)->get();
         if ($allHolidayDetails) {
             return response()->json([
                 'status' => true,

@@ -42,14 +42,14 @@ class HolidayServices
     }
     public function updateDetails(array $data, $id)
     {
-        
+
         DB::beginTransaction();
         try {
             $holidayDetails = $this->holidayRepository->find($id);
             $data['company_branch_id'] = array_filter($data['company_branch_id'], function ($value) {
                 return $value !== 'all';
             });
-                    
+
             $data['company_branch_id'] = array_values($data['company_branch_id']);
             $data['company_id'] = Auth()->user()->id;
             $holidayDetails->update(Arr::except($data, 'company_branch_id'));
@@ -74,11 +74,11 @@ class HolidayServices
     public function getListByCompanyId($companyID, $year = NULL, $month = NULL, $date = NULL)
     {
         $holidayQuery = $this->holidayRepository->whereIn('company_id', $companyID)->where('year', $year)->where('status', '1');
-        if($month) {
+        if ($month) {
             $holidayQuery = $holidayQuery->whereMonth('date', $month);
-        } 
-        
-        if($date) {
+        }
+
+        if ($date) {
             $holidayQuery = $holidayQuery->where('date', $date);
         }
 
@@ -87,9 +87,16 @@ class HolidayServices
         })->get();
     }
 
-    public function getHolidayByDate($companyID, $date)
+    public function getHolidayByDate($companyID, $date,$companyBranchId)
     {
-        return $this->holidayRepository->where('company_id', $companyID)->where('date', $date)->where('status', '1');
+        return $this->holidayRepository
+            ->where('company_id', $companyID)
+            ->where('date', $date)
+            ->where('status', '1')
+            ->whereHas('companyBranch', function ($query) use ($companyBranchId) {
+                $query->where('id', $companyBranchId); // use correct column, often 'id'
+            });
+        ;
     }
     public function getHolidayByMonth($companyID, $month)
     {
@@ -135,7 +142,7 @@ class HolidayServices
         return $holidayDetails->paginate(10);
     }
 
-    public function updateStatus($holidayId,$statusValue)
+    public function updateStatus($holidayId, $statusValue)
     {
         return $this->holidayRepository->find($holidayId)->update(['status' => $statusValue]);
     }

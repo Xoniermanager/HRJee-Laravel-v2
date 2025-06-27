@@ -2,10 +2,14 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use DOMDocument;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-class HtmlTableExport implements FromArray
+class HtmlTableExport implements FromView, WithEvents
 {
     protected $html;
 
@@ -14,30 +18,62 @@ class HtmlTableExport implements FromArray
         $this->html = $html;
     }
 
-    public function array(): array
+    public function view(): View
     {
-        $doc = new \DOMDocument();
-        libxml_use_internal_errors(true); // to suppress HTML5 warnings
-        $doc->loadHTML($this->html);
-        libxml_clear_errors();
+        return view('excel-view', [
+            'html' => $this->html,
+        ]);
+    }
 
-        $rows = [];
-        foreach ($doc->getElementsByTagName('tr') as $tr) {
-            $row = [];
-            foreach ($tr->getElementsByTagName('th') as $th) {
-                $row[] = trim($th->nodeValue);
-            }
-            foreach ($tr->getElementsByTagName('td') as $td) {
-                $row[] = trim($td->nodeValue);
-            }
-            if (!empty($row)) {
-                $rows[] = $row;
-            }
-        }
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
 
-        return $rows;
+                // Merge heading row (e.g., A1 to F1)
+                $sheet->mergeCells('A1:F1');
+
+                // Center and bold the heading row
+                $sheet->getStyle('A1')->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                        'size' => 14,
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                    ],
+                ]);
+
+                $highestCol = $sheet->getHighestColumn();
+                $highestRow = $sheet->getHighestRow();
+                $range = "A1:{$highestCol}{$highestRow}";
+
+                $sheet->getStyle($range)->applyFromArray([
+                    'font' => [
+                        'name' => 'Arial',
+                        'size' => 10,
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                        'wrapText' => true,
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['argb' => 'FF000000'],
+                        ],
+                    ],
+                ]);
+
+                // Bold 2nd row as header (data table headers)
+                $sheet->getStyle("2:2")->getFont()->setBold(true);
+
+                // Freeze at 3rd row to lock header while scrolling
+                $sheet->freezePane('A3');
+            }
+        ];
     }
 }
-
-
-?>

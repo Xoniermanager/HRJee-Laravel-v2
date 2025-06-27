@@ -33,7 +33,7 @@ class EmployeeAttendanceExportController extends Controller
             } else {
                 $filename = str_replace(' ', '', $employeeDetail->name) . $employeeDetail->details->emp_id . '-Attendance-' . $request->month . $request->year . '.xlsx';
                 $attendanceDetails = $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($request->month, $employeeDetail->id, $request->year)->get();
-            } 
+            }
         }
         return Excel::download(new EmployeeAttendanceExport($attendanceDetails), $filename);
     }
