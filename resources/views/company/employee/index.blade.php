@@ -583,7 +583,7 @@
                     status = 0;
                     status_name = 'Inactive';
                 }
-                
+
                 $.ajax({
                     url: "{{ route('admin.company.facerecognitionUpdate') }}",
                     type: 'get',
@@ -657,7 +657,7 @@
                         success: function(response) {
                             if (response.status === 'success') {
                                 Swal.fire({
-                                    title: 'Sucess',
+                                    title: 'Success',
                                     text: response.message,
                                     icon: 'success',
                                     confirmButtonText: 'OK'
@@ -665,26 +665,50 @@
                                 $('#employee_list').replaceWith(response.data);
                             } else if (response.status === 'error') {
                                 if (response.errors) {
-                                    let errorsHtml =
-                                        '<ul style="color: red; list-style-type: none; padding-left: 20px; margin: 0;">';
-                                    response.errors.forEach(function(error) {
-                                        // Ensure you join multiple errors with commas if needed
-                                        let errorMessages = Array.isArray(error.errors) ?
-                                            error.errors.join(', ') : error.errors;
-                                        errorsHtml +=
-                                            '<li style="color: red; margin-bottom: 5px;">Row ' +
-                                            error.row + ': ' + errorMessages + '</li>';
+                                    let errors = response.errors;
+
+                                    let errorsHtml = `
+                                        <button id="downloadErrorsBtn" style="margin-bottom: 10px; padding: 6px 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                            Download Full Error Details
+                                        </button>
+                                        <ul style="color: red; list-style-type: none; padding-left: 20px; margin: 0;">`;
+
+                                    errors.forEach(function(error) {
+                                        errorsHtml += `<li style="margin-bottom: 5px;">
+                                            Row ${error.row_number}: ${error.name} (${error.email}) - ${error.reason}
+                                        </li>`;
                                     });
+
                                     errorsHtml += '</ul>';
 
                                     Swal.fire({
-                                        title: "The Error?",
-                                        html: errorsHtml, // Use "html" for custom HTML content
-                                        icon: "error", // "error" icon for SweetAlert
+                                        title: "Import Errors",
+                                        html: errorsHtml,
+                                        icon: "error",
+                                        didRender: () => {
+                                            // Button click handler for downloading CSV
+                                            document.getElementById('downloadErrorsBtn').addEventListener('click', function() {
+                                                let csvContent = "data:text/csv;charset=utf-8,";
+                                                csvContent += "Row Number,Employee ID,Name,Email,Branch,Reason\n";
+
+                                                errors.forEach(function(e) {
+                                                    let line = `"${e.row_number}","${e.emp_id}","${e.name}","${e.email}","${e.company_branch}","${e.reason}"`;
+                                                    csvContent += line + "\n";
+                                                });
+
+                                                const encodedUri = encodeURI(csvContent);
+                                                const link = document.createElement("a");
+                                                link.setAttribute("href", encodedUri);
+                                                link.setAttribute("download", "import_errors.csv");
+                                                document.body.appendChild(link);
+                                                link.click();
+                                                document.body.removeChild(link);
+                                            });
+                                        },
                                         customClass: {
-                                            popup: 'swal-popup-error', // Custom class for the popup
-                                            title: 'swal-title-error', // Optional: custom class for title
-                                            content: 'swal-content-error' // Optional: custom class for content
+                                            popup: 'swal-popup-error',
+                                            title: 'swal-title-error',
+                                            content: 'swal-content-error'
                                         }
                                     });
                                 } else {

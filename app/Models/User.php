@@ -181,6 +181,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function todaysLeave()
     {
         $leave = Leave::where('user_id', $this->id)->whereDate('from', '<=', date('Y-m-d'))
+            ->where('leave_status_id', 2)
             ->whereDate('to', '>=', date('Y-m-d'))->first();
 
         return $leave;

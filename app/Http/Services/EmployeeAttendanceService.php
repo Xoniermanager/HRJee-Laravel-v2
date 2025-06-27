@@ -2,22 +2,23 @@
 
 namespace App\Http\Services;
 
-use App\Http\Services\EmployeeServices;
-use App\Http\Services\HolidayServices;
+use DateTime;
+use DateInterval;
+use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Arr;
+use App\Http\Services\UserService;
 use App\Http\Services\LeaveService;
+use App\Http\Services\ShiftServices;
 use App\Http\Services\CompOffService;
 use App\Http\Services\WeekendService;
+use App\Http\Services\HolidayServices;
+use App\Http\Services\EmployeeServices;
 use App\Http\Services\UserShiftService;
-use App\Http\Services\ShiftServices;
-use App\Http\Services\UserService;
-use App\Repositories\EmployeeAttendanceRepository;
-use Carbon\Carbon;
-use DateInterval;
-use DateTime;
-use Illuminate\Support\Arr;
-use Symfony\Component\Console\Output\NullOutput;
-
 use function PHPUnit\Framework\returnValue;
+
+use Symfony\Component\Console\Output\NullOutput;
+use App\Repositories\EmployeeAttendanceRepository;
 
 class EmployeeAttendanceService
 {
@@ -181,6 +182,12 @@ class EmployeeAttendanceService
         if ($authDetails->id != $userDetails->company_id) {
             return ['status' => false, 'message' => 'Invalid User.'];
         }
+
+        $userOnLeave = User::firstWhere('id', $data['user_id'])->todaysLeave() ?? false;
+        if ($userOnLeave) {
+            return ['status' => false, 'message' => 'You are on leave today and cannot punch in.'];
+        }
+
         $attendanceTime = Carbon::now()->format('Y/m/d H:i:s');
 
         $shiftType = $userDetails->details->shift_type;

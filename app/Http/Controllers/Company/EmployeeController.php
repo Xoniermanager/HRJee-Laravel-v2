@@ -376,7 +376,6 @@ class EmployeeController extends Controller
         try {
             $companyIDs = getCompanyIDs();
             $importedData = Excel::import($import, $request->file('file'));
-
             $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
             if (($activeUserCount + $import->count) > auth()->user()->companyDetails->company_size) {
@@ -385,6 +384,15 @@ class EmployeeController extends Controller
                     'status' => 'error',
                     'message' => 'Company size limit has been exceeded!',
                 ], 500);
+            }
+
+            $summary = $import->getImportSummary();
+            // dd($summary);
+            if ($summary['skipped_rows'] > 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => $summary['skipped_details'],
+                ]);
             }
 
             $failures = $import->getFailures();
@@ -403,7 +411,7 @@ class EmployeeController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'An error occurred while importing the file.',
+                'message' => 'An error occurred while importing the file.'.$e->getMessage(),
             ], 500);
         }
     }
