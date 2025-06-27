@@ -152,15 +152,15 @@ class AnnouncementServices
   public function getAllAssignedAnnouncementForEmployee()
   {
     $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
-    $allAnnouncementDetails = $this->announcementRepository->where('company_id', $userDetails->company_id)->where('status', 1)->where('start_date_time', '<=', date('Y-m-d'))
-      ->where('expires_at_time', '>=', date('Y-m-d'))->get();
+    $allAnnouncementDetails = $this->announcementRepository->where('company_id', $userDetails->company_id)->where('status', 1)->whereDate('start_date_time', '<=', date('Y-m-d'))
+      ->whereDate('expires_at_time', '>=', date('Y-m-d'))->get();
     $allAssignedAnnouncement = [];
     foreach ($allAnnouncementDetails as $announcementsDetails) {
       $assignedCompanyBranchesIds = $this->companyBranchServices->getAllAssignedCompanyBranches($announcementsDetails);
       $assignedDepartmentIds = $this->departmentServices->getAllAssignedDepartment($announcementsDetails);
       $assignedDesignationIds = $this->designationServices->getAllAssignedDesignation($announcementsDetails);
 
-      if (in_array($userDetails->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
+      if (in_array($userDetails->details->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
         $allAssignedAnnouncement[] = $announcementsDetails;
       }
     }
