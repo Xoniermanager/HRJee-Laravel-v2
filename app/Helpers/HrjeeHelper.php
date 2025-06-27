@@ -571,3 +571,30 @@ function unlinkFileOrImage($file)
     }
     return true;
 }
+
+function checkForHalfDayAttendance($shiftDetails, $config, $date, $punchIn, $punchOut)
+{
+    $shiftStart = Carbon::parse($date . ' ' . ($shiftDetails['start_time']));
+    $shiftEnd = Carbon::parse($date . ' ' . ($shiftDetails['end_time']));
+    $checkInBuffer = $shiftDetails['check_in_buffer'];
+    $checkOutBuffer = $shiftDetails['check_out_buffer'];
+    $minShiftMinutes = $config['min_shift_Hours'];
+    $minHalfDayMinutes = $config['min_half_day_hours'];
+
+    $bufferTime = $shiftEnd->copy()->subMinutes($checkOutBuffer);
+    $totalMinutes = $punchOut->diffInMinutes($punchIn);
+
+    $isLate = $punchIn->gt($shiftStart->copy()->addSeconds($checkInBuffer));
+    $isShortAttendance = $punchOut->between($bufferTime, $shiftEnd) ? 1 : 0;
+    $attendanceStatus = null;
+
+    if ($totalMinutes >= $minShiftMinutes && !$isLate) {
+        $attendanceStatus = '1'; // Full Day
+    }
+    if ($totalMinutes >= $minHalfDayMinutes) {
+        $attendanceStatus = '2'; // Half Day
+        $isLate = false;
+    }
+
+    return [$isLate, $isShortAttendance, $attendanceStatus];
+}
