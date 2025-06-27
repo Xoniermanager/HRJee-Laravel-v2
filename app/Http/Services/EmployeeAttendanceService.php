@@ -51,6 +51,11 @@ class EmployeeAttendanceService
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
         $attendanceTime = Carbon::now()->format('Y/m/d H:i:s');
 
+        $userOnLeave = $userDetails->todaysLeave() ?? false;
+        if ($userOnLeave) {
+            return ['status' => false, 'message' => 'You are on leave today and cannot punch in.'];
+        }
+
         $shiftType = $userDetails->details->shift_type;
         $shiftIDs = $this->userShiftService->getTodaysShifts($userDetails->id, $shiftType)->pluck('shift_id')->toArray();
 
