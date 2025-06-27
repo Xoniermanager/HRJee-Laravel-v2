@@ -466,7 +466,11 @@ class AttendanceController extends Controller
     {
         try {
             $year = date('Y');
+            $month = $month ?? date('m');
             $employeeDetails = Auth()->user();
+
+            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth()->toDateString();
+            $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth()->toDateString();
 
             $leaveDetail = $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year, 1);
             $attendanceDetails = $this->employeeAttendanceService->getEmployeeAttendanceBetweenTwoDates(
@@ -474,8 +478,8 @@ class AttendanceController extends Controller
                 $employeeDetails->company_id,
                 $employeeDetails->details->company_branch_id,
                 $employeeDetails->details->department_id,
-                Carbon::now()->startOfMonth()->toDateString(),
-                Carbon::now()->toDateString()
+                $startDate,
+                $endDate
             );
             $data = [
                 'attendanceDetails' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->get('punch_in'),
@@ -484,12 +488,12 @@ class AttendanceController extends Controller
                 'leaveDetails' => $leaveDetail,
                 'totalHalfDayLeave' => $leaveDetail->where('is_half_day', 1)->count(),
                 'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->count(),
-                'holidayDetails' => $attendanceDetails['holidays'],
+                'holidayDetails' => $attendanceDetails['holidays'] ?? [],
                 // 'holidayDetails' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id, $month, $year, $employeeDetails->details->company_branch_id)->get('date'),
                 'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
                 'shortAttendanceDetails' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->get('punch_in'),
-                'totalAbsent' => count($attendanceDetails['absences']),
-                'absentDetails' => $attendanceDetails['absences'],
+                'totalAbsent' => count($attendanceDetails['absences'] ?? []),
+                'absentDetails' => $attendanceDetails['absences'] ?? [],
             ];
             return response()->json([
                 'status' => true,
