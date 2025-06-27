@@ -2,18 +2,16 @@
 
 namespace App\Jobs;
 
-use Maatwebsite\Excel\Facades\Excel;
-use App\Mail\SendAttendanceReportMail;
-use App\Exports\AttendanceExport;
 use App\Exports\HtmlTableExport;
-use App\Models\User;
+use App\Mail\SendAttendanceReportMail;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SendAttendanceReportJob implements ShouldQueue
 {
@@ -34,104 +32,149 @@ class SendAttendanceReportJob implements ShouldQueue
 
     public function handle()
     {
-        if($this->month != null && $this->year != null) {
-            // Start date (first day of the month)
+        if ($this->month && $this->year) {
             $startDate = Carbon::create($this->year, $this->month, 1)->startOfMonth()->toDateString();
-            // End date (last day of the month)
             $endDate = Carbon::create($this->year, $this->month, 1)->endOfMonth()->toDateString();
         } else {
-            // Get dynamic date range
             [$startDate, $endDate] = $this->calculateDateRange($this->range, $this->from, $this->to);
         }
-        
 
-        $html = "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>&gt;<table border='1'><thead><tr><th colspan='6'></th>";
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+        $days = $end->diffInDays($start) + 1;
 
-        $date = Carbon::create(2025, 03, 1);
-        $days = $date->daysInMonth;
-        for ($i = 1; $i <= $days; $i++) {
-            $html .= "<th class='date-header' colspan='4'>2025-3-".$i."</th>";
+        $tableColumns = 6 + ($days * 4);
+
+        $html = "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
         }
-
-        // $html .= "<th>Total Leaves</th>
-        //        <th>Total Half Day</th>
-        //        <th>Total Late</th>
-        //        <th>On Time</th>
-        //        <th>Total Punch-IN</th>
-        //        <th>Absent (Not Punch-IN)</th>
-        //        <th>Total Weekend/Holiday</th>
-        //        <th>Total Absent</th>
-        //        <th>Total Active Days</th>
-        //        <th>Salary</th>";
-
-        $html .= '</tr><tr><th>Name</th><th>Emp ID</th><th>Designation</th><th>Gender</th><th>Mobile</th><th>Branch</th>';
-
-        for ($i = 1; $i <= $days; $i++) {
-            $html .= '<th>In Time</th><th>Out Time</th><th>Working Hours</th><th>Address</th>
-           ';
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
         }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+<table>
+    <thead>
+        <tr>
+            <th colspan='" . ($tableColumns + 1) . "' style='font-size:16px; font-weight:bold; text-align:center; vertical-align:middle; padding:10px;'>
+                Employee Attendance Report - " . Carbon::parse($startDate)->format('F Y') . "
+            </th>
+        </tr>
+        <tr>
+            <th colspan='7'></th>"; // updated for S.No. column
 
-        $html .= '</tr></thead><tbody>';
+for ($i = 0; $i < $days; $i++) {
+    $dayLabel = $start->copy()->addDays($i)->format('d M');
+    $html .= "<th colspan='4'>{$dayLabel}</th>";
+}
 
-        foreach($this->users as $user) {
-            $html .= '<tr><td>' . $user->name . '</td><td>' . $user->id . '</td><td>' . $user->details->designation->name . '</td><td>' . $user->details->gender . '</td><td>' . $user->details->phone . '</td><td>' . $user->details->companyBranch->name . '</td>';
+$html .= "</tr>
+        <tr>
+            <th>S. No.</th>
+            <th>Name</th>
+            <th>Emp ID</th>
+            <th>Designation</th>
+            <th>Gender</th>
+            <th>Mobile</th>
+            <th>Branch</th>";
 
-            $attendances = $user->getPreviousMonthAttendanceWithLeave(3, 2025);
+for ($i = 0; $i < $days; $i++) {
+    $html .= "<th>In</th><th>Out</th><th>Hrs</th><th>WF</th>";
+}
 
-            foreach ($attendances as $entry) {
-                $status = $entry['status'];
-                $details = ($status != "Absent" ? (is_array($entry['details']) ? $entry['details'] : $entry['details']->first()) : NULL);
-    
-                if ($status === 'Present' && $details) {
-                    $in = $details->punch_in ? Carbon::parse($details->punch_in)->format('H:i') : '-';
-                    $out = $details->punch_out ? Carbon::parse($details->punch_out)->format('H:i') : '-';
-                    $hours = ($details->punch_in && $details->punch_out)
-                        ? Carbon::parse($details->punch_out)->diff(Carbon::parse($details->punch_in))->format('%H:%I')
-                        : '-';
-                    $address = $details->work_from ?? '-';
-                } elseif ($status === 'Leave') {
-                    $in = $out = $hours = 'NA';
-                    $address = 'Leave';
-                } else {
-                    $in = $out = $hours = $address = '-';
+$html .= "</tr>
+    </thead>
+    <tbody>";
+
+$serial = 1;
+
+foreach ($this->users as $user) {
+    $html .= "<tr>";
+    $html .= "<td>{$serial}</td>"; // Serial number
+    $html .= "<td>{$user->name}</td>";
+    $html .= "<td>{$user->details->emp_id}</td>";
+    $html .= "<td>" . ($user->details->designation->name ?? '-') . "</td>";
+    $html .= "<td>" . ($user->details->gender ?? '-') . "</td>";
+    $html .= "<td>" . ($user->details->phone ?? '-') . "</td>";
+    $html .= "<td>" . ($user->details->companyBranch->name ?? '-') . "</td>";
+
+    $attendances = $user->getPreviousMonthAttendanceWithLeave($this->month, $this->year);
+
+    for ($i = 0; $i < $days; $i++) {
+        $currentDate = $start->copy()->addDays($i)->toDateString();
+        $entry = collect($attendances)->firstWhere('date', $currentDate);
+
+        $in = $out = $hours = $workFrom = '-';
+
+        if ($entry) {
+            $status = $entry['status'];
+            $details = $entry['details'];
+
+            if ($status === 'Present' && $details) {
+                if ($details instanceof \Illuminate\Support\Collection) {
+                    $details = $details->first();
                 }
 
-                $html .= '<td>' . $in . '</td>';
-                $html .= '<td>' . $out . '</td>';
-                $html .= '<td>' . $hours . '</td>';
-                $html .= '<td>' . $address . '</td>';
+                $in = $details && $details->punch_in ? Carbon::parse($details->punch_in)->format('H:i') : '-';
+                $out = $details && $details->punch_out ? Carbon::parse($details->punch_out)->format('H:i') : '-';
+                $hours = ($details && $details->punch_in && $details->punch_out)
+                    ? Carbon::parse($details->punch_out)->diff(Carbon::parse($details->punch_in))->format('%H:%I')
+                    : '-';
+                $workFrom = $details->work_from ?? '-';
+            } elseif ($status === 'On Leave') {
+                $in = $out = $hours = 'NA';
+                $workFrom = 'Leave';
             }
-
-            $html .= '</tr>';
-
-            // $html .= '<td>435</td><td>435</td><td>4</td><td>3</td><td>3</td><td>34</td><td>4</td><td>2</td><td>3</td><td>1</td>';		
         }
 
-        $html .= '</tr>';
-        $html .= '</tr>';
-        
-        $html .= '<tbody></table></body></html>';
-        // dd($html);
+        $html .= "<td>{$in}</td><td>{$out}</td><td>{$hours}</td><td>{$workFrom}</td>";
+    }
 
-        // Export file
+    $html .= "</tr>";
+    $serial++;
+}
+
+$html .= "</tbody>
+</table>
+</body>
+</html>";
+
+
         $fileName = "Attendance_{$this->user->id}_{$startDate}_to_{$endDate}.xlsx";
-        // Excel::store(new AttendanceExport($users, $startDate, $endDate, $this->month, $this->year), $fileName);
         Excel::store(new HtmlTableExport($html), $fileName);
-
-        // Email
-        Mail::to($this->user->email)->send(new SendAttendanceReportMail($fileName, $startDate, $endDate));
+        Mail::to(Auth()->user()->email)->send(new SendAttendanceReportMail($fileName, $startDate, $endDate));
     }
 
     protected function calculateDateRange($range, $from, $to)
     {
         $now = now();
+
         switch ($range) {
             case 'previous_month':
-                return [$now->copy()->subMonth()->startOfMonth()->toDateString(), $now->copy()->subMonth()->endOfMonth()->toDateString()];
+                return [
+                    $now->copy()->subMonth()->startOfMonth()->toDateString(),
+                    $now->copy()->subMonth()->endOfMonth()->toDateString()
+                ];
             case 'previous_year':
-                return [$now->copy()->subYear()->startOfYear()->toDateString(), $now->copy()->subYear()->endOfYear()->toDateString()];
+                return [
+                    $now->copy()->subYear()->startOfYear()->toDateString(),
+                    $now->copy()->subYear()->endOfYear()->toDateString()
+                ];
             case 'previous_quarter':
-                $currentQuarter = ceil($now->month / 3);
                 $previousQuarterEnd = $now->copy()->startOfQuarter()->subDay();
                 $previousQuarterStart = $previousQuarterEnd->copy()->subMonths(2)->startOfMonth();
                 return [$previousQuarterStart->toDateString(), $previousQuarterEnd->toDateString()];
@@ -143,8 +186,8 @@ class SendAttendanceReportJob implements ShouldQueue
                 return [$now->startOfQuarter()->toDateString(), $now->endOfQuarter()->toDateString()];
             case 'custom':
                 return [Carbon::parse($from)->toDateString(), Carbon::parse($to)->toDateString()];
+            default:
+                return [$now->startOfMonth()->toDateString(), $now->endOfMonth()->toDateString()];
         }
     }
 }
-
-?>

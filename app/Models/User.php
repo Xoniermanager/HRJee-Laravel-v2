@@ -88,7 +88,7 @@ class User extends Authenticatable implements MustVerifyEmail
             return $this->belongsTo(CompanyDetail::class, 'company_id', 'user_id');
         }
     }
-    
+
     public function userCompanyDetails()
     {
         return $this->belongsTo(CompanyDetail::class, 'company_id', 'id')->with('user');
@@ -329,7 +329,6 @@ class User extends Authenticatable implements MustVerifyEmail
                 'details' => $details,
             ];
         }
-
         return $report;
     }
 
@@ -339,7 +338,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function totalActiveEmployees() {
-        
+
         return User::where(['type' => 'user', 'status' => 1])->where('company_id', $this->id)->count();
     }
 
@@ -352,7 +351,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function totalInActiveEmployees() {
-        
+
         return User::where(['type' => 'user', 'status' => 0])->where('company_id', $this->id)->count();
     }
 
