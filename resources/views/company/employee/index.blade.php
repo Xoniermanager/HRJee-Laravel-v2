@@ -775,64 +775,68 @@
 
             });
         </script>
-        <script>
-            document.getElementById('check_all').addEventListener('click', function() {
-                const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
-                const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-                checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
-                updateHiddenInput();
-                togglePunchInRadius(); // Check the punch_in_radius state after "Check All" is clicked
-                updateCheckAllState(); // Update the Check All checkbox state
-            });
+            <script>
+                document.addEventListener('click', function(event) {
+                    // Check All checkbox clicked
+                    if (event.target && event.target.id === 'check_all') {
+                        const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
+                        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+                        checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
+                        updateHiddenInput();
+                        togglePunchInRadius();
+                        updateCheckAllState();
+                    }
+                });
 
-            // Handle changes on individual checkboxes
-            document.querySelectorAll('input[name="user_id[]"]').forEach(checkbox => {
-                checkbox.addEventListener('change', updateHiddenInput);
-                checkbox.addEventListener('change', togglePunchInRadius); // Call this when individual checkboxes change
-                checkbox.addEventListener('change', updateCheckAllState); // Call this to update the Check All state
-            });
+                document.addEventListener('change', function(event) {
+                    if (event.target && event.target.name === 'user_id[]') {
+                        updateHiddenInput();
+                        togglePunchInRadius();
+                        updateCheckAllState();
+                    }
+                });
 
-            // Update hidden input with the checked values
-            function updateHiddenInput() {
-                const checkedValues = Array.from(document.querySelectorAll('input[name="user_id[]"]:checked'))
-                    .map(checkbox => checkbox.value);
-                $('#hidden_user_ids').val(checkedValues).trigger('change');
-            }
 
-            // Toggle the "disabled" class on #punch_in_radius based on checkbox state
-            function togglePunchInRadius() {
-                const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
-                const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-                const punchInRadiusElement = document.getElementById('punch_in_radius');
-
-                if (anyChecked) {
-                    punchInRadiusElement.classList.remove('disabled');
-                } else {
-                    punchInRadiusElement.classList.add('disabled');
+                // Update hidden input with the checked values
+                function updateHiddenInput() {
+                    const checkedValues = Array.from(document.querySelectorAll('input[name="user_id[]"]:checked'))
+                        .map(checkbox => checkbox.value);
+                    $('#hidden_user_ids').val(checkedValues).trigger('change');
                 }
-            }
 
-            // Update the "Check All" checkbox state
-            function updateCheckAllState() {
-                const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
-                const checkAllCheckbox = document.getElementById('check_all');
-                const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-                const noneChecked = Array.from(checkboxes).every(checkbox => !checkbox.checked);
+                // Toggle the "disabled" class on #punch_in_radius based on checkbox state
+                function togglePunchInRadius() {
+                    const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
+                    const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+                    const punchInRadiusElement = document.getElementById('punch_in_radius');
 
-                // If all checkboxes are checked, check the "Check All" checkbox
-                if (allChecked) {
-                    checkAllCheckbox.checked = true;
+                    if (anyChecked) {
+                        punchInRadiusElement.classList.remove('disabled');
+                    } else {
+                        punchInRadiusElement.classList.add('disabled');
+                    }
                 }
-                // If none are checked, uncheck the "Check All" checkbox
-                else if (noneChecked) {
-                    checkAllCheckbox.checked = false;
+
+                // Update the "Check All" checkbox state
+                function updateCheckAllState() {
+                    const checkboxes = document.querySelectorAll('input[name="user_id[]"]');
+                    const checkAllCheckbox = document.getElementById('check_all');
+                    const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+                    const noneChecked = Array.from(checkboxes).every(checkbox => !checkbox.checked);
+                    // If all checkboxes are checked, check the "Check All" checkbox
+                    if (allChecked) {
+                        checkAllCheckbox.checked = true;
+                    }
+                    // If none are checked, uncheck the "Check All" checkbox
+                    else if (noneChecked) {
+                        checkAllCheckbox.checked = false;
+                    }
+                    // If some are checked but not all, don't check the "Check All" checkbox
+                    else {
+                        checkAllCheckbox.checked = false;
+                    }
                 }
-                // If some are checked but not all, don't check the "Check All" checkbox
-                else {
-                    checkAllCheckbox.checked = false;
-                }
-            }
-        </script>
+            </script>
         <script>
             $(document).ready(function() {
                 jQuery("#punchIn_radius_form").validate({
