@@ -60,43 +60,6 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-md-7 mt-3">
-                                    {{-- <form class="d-flex" id="downloadAttendance">
-                                        @csrf
-                                        <select class="form-control filter_form" name="emp_filter" id="emp_filter">
-                                            <option value="current_month"
-                                                {{ request()->get('emp_filter') == 'current_month' || old('emp_filter') == 'current_month' ? 'selected' : '' }}>
-                                                Current Month</option>
-                                            <option value="previous_month"
-                                                {{ request()->get('emp_filter') == 'previous_month' || old('emp_filter') == 'previous_month' ? 'selected' : '' }}>
-                                                Previous Month
-                                            </option>
-                                            <option value="current_quarter"
-                                                {{ request()->get('emp_filter') == 'current_quarter' || old('emp_filter') == 'current_quarter' ? 'selected' : '' }}>
-                                                Current Quarter
-                                            </option>
-                                            <option value="previous_quarter"
-                                                {{ request()->get('emp_filter') == 'previous_quarter' || old('emp_filter') == 'previous_quarter' ? 'selected' : '' }}>
-                                                Previous Quarter
-                                            </option>
-                                            <option value="current_year"
-                                                {{ request()->get('emp_filter') == 'current_year' || old('emp_filter') == 'current_year' ? 'selected' : '' }}>
-                                                Current Year
-                                            </option>
-                                            <option value="previous_year"
-                                                {{ request()->get('emp_filter') == 'previous_year' || old('emp_filter') == 'previous_year' ? 'selected' : '' }}>
-                                                Previous Year
-                                            </option>
-                                            <option value="custom"
-                                                {{ request()->get('emp_filter') == 'custom' || old('emp_filter') == 'custom' ? 'selected' : '' }}>
-                                                Custom
-                                            </option>
-                                        </select>
-                                        <button type="submit" class="btn btn-sm ms-3 btn-primary" title="Download Attendance">
-                                            Download Attendance
-                                        </button>
-                                    </form> --}}
-                                </div>
                             </div>
                         @endif
                         <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
@@ -142,9 +105,7 @@
                                         <option value="">Employee Status</option>
                                         @foreach ($allEmployeeStatus as $employeeStatus)
                                             <option
-                                                {{ request()->get('emp_status_id') == $employeeStatus->id || old('emp_status_id') == $employeeStatus->id
-        ? 'selected'
-        : '' }}
+                                                {{ request()->get('emp_status_id') == $employeeStatus->id || old('emp_status_id') == $employeeStatus->id ? 'selected' : '' }}
                                                 value="{{ $employeeStatus->id }}">{{ $employeeStatus->name }}</option>
                                         @endforeach
                                     </select>
@@ -166,9 +127,7 @@
                                         <option value="">All Employee Type</option>
                                         @foreach ($allEmployeeType as $employeeType)
                                             <option
-                                                {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id') == $employeeType->id
-        ? 'selected'
-        : '' }}
+                                                {{ request()->get('emp_type_id') == $employeeType->id || old('emp_type_id') == $employeeType->id ? 'selected' : '' }}
                                                 value="{{ $employeeType->id }}">{{ $employeeType->name }}</option>
                                         @endforeach
                                     </select>
@@ -178,9 +137,7 @@
                                         <option value="">All Department</option>
                                         @foreach ($alldepartmentDetails as $departmentDetails)
                                             <option
-                                                {{ request()->get('department_id') == $departmentDetails->id || old('department_id') == $departmentDetails->id
-        ? 'selected'
-        : '' }}
+                                                {{ request()->get('department_id') == $departmentDetails->id || old('department_id') == $departmentDetails->id ? 'selected' : '' }}
                                                 value="{{ $departmentDetails->id }}">{{ $departmentDetails->name }}
                                             </option>
                                         @endforeach
@@ -201,9 +158,7 @@
                                         <option value="">Branch</option>
                                         @foreach ($allBranches as $branchDetails)
                                             <option
-                                                {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') == $branchDetails->id
-        ? 'selected'
-        : '' }}
+                                                {{ request()->get('branch_id') == $branchDetails->id || old('branch_id') == $branchDetails->id ? 'selected' : '' }}
                                                 value="{{ $branchDetails->id }}">{{ $branchDetails->name }}</option>
                                         @endforeach
                                     </select>
@@ -213,10 +168,7 @@
                                         <option value="">Qualification</option>
                                         @foreach ($allQualification as $qualificationDetails)
                                             <option
-                                                {{ request()->get('qualification_id') == $qualificationDetails->id ||
-        old('qualification_id') == $qualificationDetails->id
-        ? 'selected'
-        : '' }}
+                                                {{ request()->get('qualification_id') == $qualificationDetails->id || old('qualification_id') == $qualificationDetails->id ? 'selected' : '' }}
                                                 value="{{ $qualificationDetails->id }}">{{ $qualificationDetails->name }}
                                             </option>
                                         @endforeach
@@ -250,10 +202,9 @@
                                 <!--begin::Body-->
                                 <div class="">
                                     <div class="card-body py-3">
-                                        <!--begin::Table container-->
-                                        @include('company.employee.list')
-                                        <!--end::Table container-->
-
+                                        <div id="employee_list">
+                                            @include('company.employee.list', ['allUserDetails' => $allUserDetails])
+                                        </div>
                                     </div>
                                 </div>
                                 <!--begin::Body-->
@@ -453,27 +404,45 @@
         </div>
         <script>
             let submit_handler = false;
-            $(".filter").on("click", function(event) {
-                let filter_id = $(this).val();
-                let selected_status = $(this).prop('checked');
-                if (selected_status) {
-                    jQuery('#' + filter_id).show();
-                } else {
-                    jQuery('#' + filter_id).hide();
-                }
-            });
-            $('.filter_form').on('change', function() {
-                var data = $('#filter_id').serialize();
-                $.ajax({
-                    method: 'GET',
-                    url: company_ajax_base_url + '/employee/get/filter/list',
-                    data: data,
-                    success: function(response) {
-                        $('#employee_list').replaceWith(response.data);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {}
-                });
-            });
+            $(document).ready(function () {
+    $(".filter").on("click", function () {
+        let filter_id = $(this).val();
+        $('#' + filter_id).toggle($(this).prop('checked'));
+    });
+
+    $('.filter_form').on('change', function () {
+        applyFilters(1);
+    });
+
+    $("#search").on('input', function () {
+        applyFilters(1);
+    });
+
+    $(document).on('click', '#employee_list .paginate a', function (e) {
+        e.preventDefault();
+        let page = new URL($(this).attr('href')).searchParams.get('page');
+        applyFilters(page);
+    });
+
+    function applyFilters(page) {
+        let filterData = $('.filter_form').serialize();
+        let search = $('#search').val();
+
+        $.ajax({
+            method: 'GET',
+            url: company_ajax_base_url + '/employee/get/filter/list',
+            data: filterData + '&search=' + encodeURIComponent(search) + '&page=' + page,
+            success: function (response) {
+                $('#employee_list').html(response.data);
+                gettoggleOnAfterFilter();
+            },
+            error: function (jqXHR, textStatus) {
+                console.error('Error:', textStatus);
+            }
+        });
+    }
+});
+
 
             function exportData(submit_form_id) {
                 let data = queryStringToJSON($('#filter_id').serialize());
@@ -503,19 +472,6 @@
 
                 return result;
             }
-            $("#search").on('input', function() {
-                $.ajax({
-                    type: 'GET',
-                    url: company_ajax_base_url + '/employee/get/filter/list',
-                    data: {
-                        'search': $(this).val()
-                    },
-                    success: function(response) {
-                        $('#employee_list').replaceWith(response.data);
-                    }
-                });
-            });
-
             function deleteFunction(id) {
                 event.preventDefault();
                 Swal.fire({
@@ -571,73 +527,86 @@
             }
 
             function handleFaceRecognition(id) {
-                var checked_value = $('#checked_face_value_' + id).prop('checked');
-                let status;
-
-                let status_name;
-                console.log();
-                if (checked_value == true) {
-                    status = 1;
-                    status_name = 'Active';
-                } else {
-                    status = 0;
-                    status_name = 'Inactive';
-                }
-
+                var isChecked = $('#checked_face_value_' + id).prop('checked');
+                var status = isChecked ? 1 : 0;
                 $.ajax({
-                    url: "{{ route('admin.company.facerecognitionUpdate') }}",
-                    type: 'get',
+                    url: "{{ route('employee.allow.facerecognition') }}",
+                    type: 'GET',
                     data: {
-                        'id': id,
-                        'status': status,
+                        id: id,
+                        status: status,
                     },
-                    success: function(res) {
-                        console.log("res => ", res)
+                    success: function (res) {
                         if (res) {
-                            if (res.status == 200) {
-                                swal.fire("Done!", '', "success");
-                                jQuery('#company_branch_list').replaceWith(res.data);
+                            if (res.status === 200) {
+                                Swal.fire("Done!", res.success, "success");
                             } else {
-                                swal.fire("", res.error, "error");
+                                Swal.fire("", res.error || 'Unexpected error', "error");
                             }
-
-
                         } else {
-                            swal.fire("Oops!", 'Something Went Wrong', "error");
-                        }
-                    }
-                })
-            }
-
-
-            jQuery('#export_button').on('click', function() {
-                var filteredData = $('#filter_id').serialize();
-                $.ajax({
-                    type: 'get',
-                    url: "{{ route('employee.export') }}",
-                    data: filteredData,
-                    success: function(response) {
-                        if (response.status) {
-                            Swal.fire({
-                                title: 'Sucess',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
+                            Swal.fire("Oops!", 'Empty response from server', "error");
                         }
                     },
-                    error: function() {
-                        console.log("Export failed");
+                    error: function (xhr, status, error) {
+                        Swal.fire("Oops!", 'Something went wrong', "error");
                     }
                 });
-            });
+            }
+
+            jQuery('#export_button').on('click', function() {
+    var $btn = $(this); // store button
+    var filteredData = $('#filter_id').serialize();
+
+    // Disable button & show SweetAlert loader
+    $btn.prop('disabled', true);
+
+    Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while we prepare your export.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading()
+        }
+    });
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ route('employee.export') }}",
+            data: filteredData,
+            success: function(response) {
+                Swal.close(); // close loader
+
+                if (response.status) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function() {
+                Swal.close();
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Export failed. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            },
+            complete: function() {
+                $btn.prop('disabled', false); // always re-enable
+            }
+        });
+    });
+
         </script>
         <script>
             $(document).ready(function() {
@@ -919,5 +888,20 @@
                     }
                 });
             });
+        </script>
+        <script>
+            function gettoggleOnAfterFilter()
+            {
+                if (typeof KTMenu !== 'undefined') {
+                            KTMenu.createInstances();
+
+                            // fallback: manually initialize
+                            document.querySelectorAll('[data-kt-menu="true"]').forEach((el) => {
+                                if (!el.KTMenuObject) {
+                                    new KTMenu(el);
+                                }
+                            });
+                        }
+            }
         </script>
 @endsection

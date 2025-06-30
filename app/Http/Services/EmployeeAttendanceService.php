@@ -51,6 +51,11 @@ class EmployeeAttendanceService
         $userDetails = Auth()->user() ?? auth()->guard('employee_api')->user();
         $attendanceTime = Carbon::now()->format('Y/m/d H:i:s');
 
+        $userOnLeave = $userDetails->todaysLeave() ?? false;
+        if ($userOnLeave) {
+            return ['status' => false, 'message' => 'You are on leave today and cannot punch in.'];
+        }
+
         $shiftType = $userDetails->details->shift_type;
         $shiftIDs = $this->userShiftService->getTodaysShifts($userDetails->id, $shiftType)->pluck('shift_id')->toArray();
 
@@ -443,7 +448,10 @@ class EmployeeAttendanceService
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year)->where('late', 1);
     }
-
+    public function getTotalHalfDayByMonthByUserId($month, $userId, $year)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year)->where('status', 2);
+    }
     /**
      * Undocumented function
      *
@@ -475,10 +483,35 @@ class EmployeeAttendanceService
      */
     public function editAttendanceByUserId($data)
     {
+        // Convert punch_in and punch_out to full datetime strings
         $data['punch_in'] = date('Y/m/d H:i:s', strtotime($data['date'] . ' ' . $data['punch_in']));
         $data['punch_out'] = date('Y/m/d H:i:s', strtotime($data['date'] . ' ' . $data['punch_out']));
+
+        // Parse punch times
+        $punchIn = Carbon::parse($data['punch_in']);
+        $punchOut = Carbon::parse($data['punch_out']);
+
+        // Calculate total working time
+        $totalMinutes = $punchOut->diffInMinutes($punchIn);
+        $hours = floor($totalMinutes / 60);
+        $minutes = $totalMinutes % 60;
+        $data['total_hours'] = sprintf('%02d:%02d', $hours, $minutes);
+        // Fetch user and shift config
+        $userDetails = User::find($data['user_id']);
+        $shiftDetails = $userDetails->details->officeShift;
+        $officeTimeConfig = $shiftDetails->officeTimingConfigs->toArray();
+        [$isLate, $isShortAttendance, $attendanceStatus] = checkForHalfDayAttendance($shiftDetails->toArray(), $officeTimeConfig, $data['date'], $punchIn, $punchOut);
+
+        $data['is_late'] = $isLate ? 1 : 0;
+        $data['status'] = $attendanceStatus;
+        $data['is_short_attendance'] = $isShortAttendance;
+
+        $data['shift_id'] = $shiftDetails->id;
+        $data['shift_start_time'] = $shiftDetails->start_time;
+        $data['shift_end_time'] = $shiftDetails->end_time;
+        // Prepare for saving
         $payload = Arr::except($data, ['_token', 'date', 'attendance_id']);
-        if (isset($data['attendance_id']) && !empty($data['attendance_id'])) {
+        if (!empty($data['attendance_id'])) {
             return $this->employeeAttendanceRepository->find($data['attendance_id'])->update($payload);
         } else {
             return $this->employeeAttendanceRepository->create($payload);

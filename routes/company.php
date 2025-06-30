@@ -225,7 +225,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/punchIn/radius', 'updatePunchInRadius')->name('update.punhin.radius');
         Route::get('/get-manager-by-departments', 'getAllManager')->name('get.all.manager');
         Route::post('/get-employees-by-departments', 'getAllEmployeesByDepartment')->name('get.all-emp-by-dept');
-
+        Route::get('/face-recognition/update', 'updateFaceRecognitionStatus')->name('employee.allow.facerecognition');
     });
 
     Route::controller(UserAdvanceDetailsController::class)->group(function () {

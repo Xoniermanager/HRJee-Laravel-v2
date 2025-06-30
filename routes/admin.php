@@ -152,7 +152,6 @@ Route::prefix('/admin')->middleware(['Check2FA', 'auth.admin'])->group(function 
         Route::post('/update', 'update_company')->name('admin.company.update');
         Route::get('/delete', 'destroy')->name('admin.company.delete');
         Route::get('/status/update', 'statusUpdate')->name('admin.company.statusUpdate');
-        Route::get('/face-recognition/update', 'updateFaceRecognitionStatus')->name('admin.company.facerecognitionUpdate');
         Route::get('/search', 'search')->name('admin.company.search');
         Route::post('/reset-password', 'resetPassword')->name('admin.company.reset_password');
     });

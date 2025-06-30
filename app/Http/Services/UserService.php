@@ -55,8 +55,7 @@ class UserService
     public function updateFaceRecognitionStatus($userId, $statusValue)
     {
         $userDetails = $this->userRepository->find($userId);
-        $userDetails->details()->update(['allow_face_recognition' => $statusValue]);
-
+        $userDetails->details()->update(['face_recognition' => $statusValue]);
         return true;
     }
 
@@ -171,7 +170,7 @@ class UserService
                 if (isset($request->search) && !empty($request->search)) {
                     $searchKeyword = $request->search;
                     $query->where(function ($query) use ($searchKeyword) {
-                        $query->where('official_email_id', 'LIKE', '%' . $searchKeyword . '%')
+                        $query->orWhere('official_email_id', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('phone', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('emp_id', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('father_name', 'LIKE', '%' . $searchKeyword . '%')
@@ -193,13 +192,12 @@ class UserService
         // Filtering by skill_id
         if (isset($request->skill_id) && !empty($request->skill_id)) {
             $skillId = $request->skill_id;
-            $allEmployeeDetails->orWhereHas('skill', function ($query) use ($skillId) {
+            $allEmployeeDetails->whereHas('skill', function ($query) use ($skillId) {
                 $query->where('skill_id', $skillId);
             });
         }
 
         return $allEmployeeDetails->orderBy('id', 'DESC');
-
     }
 
     public function getManagersByBranchId($branchIDs)
@@ -448,7 +446,6 @@ class UserService
                 'role:id,name'
             ])
             ->get();
-
     }
 
     /**
@@ -483,5 +480,12 @@ class UserService
         $user->save();
 
         return $status;
+    }
+
+    public function getAllEmployeeAllowFaceRecognition($companyId)
+    {
+        return $this->userRepository->whereIn('company_id', $companyId)->where('type', 'user')->whereHas('details', function ($query) {
+            $query->where('face_recognition', true);
+        });
     }
 }
