@@ -29,12 +29,14 @@ class UserAdvanceDetailsController extends Controller
                 return response()->json(['error' => $validateDetails->messages()], 400);
             }
             $data = $request->all();
-            
+
             if ($this->userAdvanceDetailsService->create($data)) {
-                UserDetail::where('user_id', $data['user_id'])->update([
-                    'allow_face_nex' => $data['allow_face_nex']
-                ]);
-                
+                if(isset($data['allow_face_nex']))
+                {
+                    UserDetail::where('user_id', $data['user_id'])->update([
+                        'allow_face_nex' => $data['allow_face_nex']
+                    ]);
+                }
                 return response()->json([
                     'message' => 'Advance Details Added Successfully! Please Continue',
                 ]);
