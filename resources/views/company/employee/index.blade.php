@@ -554,33 +554,59 @@
             }
 
             jQuery('#export_button').on('click', function() {
-                var filteredData = $('#filter_id').serialize();
-                $.ajax({
-                    type: 'get',
-                    url: "{{ route('employee.export') }}",
-                    data: filteredData,
-                    success: function(response) {
-                        if (response.status) {
-                            Swal.fire({
-                                title: 'Sucess',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                    error: function() {
-                        console.log("Export failed");
-                    }
+    var $btn = $(this); // store button
+    var filteredData = $('#filter_id').serialize();
+
+    // Disable button & show SweetAlert loader
+    $btn.prop('disabled', true);
+
+    Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while we prepare your export.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading()
+        }
+    });
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ route('employee.export') }}",
+            data: filteredData,
+            success: function(response) {
+                Swal.close(); // close loader
+
+                if (response.status) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function() {
+                Swal.close();
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Export failed. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
                 });
-            });
+            },
+            complete: function() {
+                $btn.prop('disabled', false); // always re-enable
+            }
+        });
+    });
+
         </script>
         <script>
             $(document).ready(function() {
