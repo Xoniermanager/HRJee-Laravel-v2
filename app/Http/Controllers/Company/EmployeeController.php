@@ -108,8 +108,6 @@ class EmployeeController extends Controller
 
         $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
 
-        $activeUserCount = $this->userService->getActiveEmployees($companyIDs)->count();
-
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
 
         $allCountries = $this->countryService->getAllActiveCountry();
@@ -257,17 +255,12 @@ class EmployeeController extends Controller
 
     public function getfilterlist(Request $request)
     {
-        try {
-            $allUserDetails = $this->userService->searchFilterEmployee($request, Auth()->user()->company_id)->paginate(10);
-            if ($allUserDetails) {
-                return response()->json([
-                    'data' => view('company.employee.list', compact('allUserDetails'))->render()
-                ]);
-            }
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
-        }
+        $allUserDetails = $this->userService->searchFilterEmployee($request, Auth()->user()->company_id)->paginate(10);
+        return response()->json([
+            'data' => view('company.employee.list', compact('allUserDetails'))->render()
+        ]);
     }
+
 
     public function view(User $user)
     {
@@ -411,7 +404,7 @@ class EmployeeController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'An error occurred while importing the file.'.$e->getMessage(),
+                'message' => 'An error occurred while importing the file.' . $e->getMessage(),
             ], 500);
         }
     }
@@ -487,4 +480,35 @@ class EmployeeController extends Controller
 
         return response()->json($response);
     }
+
+    public function updateFaceRecognitionStatus(Request $request)
+    {
+        $user = auth()->user();
+        $companyIDs = getCompanyIDs();
+        $allowedUserLimit = $user->companyDetails->face_recognition_user_limit ?? 0;
+        // Get current count only if enabling
+        if ($request->status == "1") {
+            $currentAllowedCount = $this->userService
+                ->getAllEmployeeAllowFaceRecognition($companyIDs)
+                ->count();
+            if ($currentAllowedCount >= $allowedUserLimit) {
+                return response()->json([
+                    'error' => 'You have reached the limit of allowing face recognition to users.',
+                    'status' => 400
+                ], 400);
+            }
+        }
+        $updated = $this->userService->updateFaceRecognitionStatus($request->id, $request->status);
+        if ($updated) {
+            return response()->json([
+                'success' => 'Face Recognition status updated successfully.',
+                'status' => 200
+            ]);
+        }
+        return response()->json([
+            'error' => 'Something went wrong! Please try again.',
+            'status' => 500
+        ], 500);
+    }
+
 }

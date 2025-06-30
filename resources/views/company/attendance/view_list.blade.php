@@ -5,12 +5,13 @@
         <div class="row text-center mt-4 g-3">
             @php
                 $cards = [
-                    ['id' => 'persent', 'value' => $employeeDetail['totalPresent'], 'label' => 'Total Present', 'icon' => 'fa-user-check', 'bg' => 'bg-success'],
-                    ['id' => 'onleave', 'value' => $employeeDetail['totalLeave'], 'label' => 'Total Leave', 'icon' => 'fa-plane-departure', 'bg' => 'bg-warning'],
+                    ['id' => 'present', 'value' => $employeeDetail['totalPresent'], 'label' => 'Total Present', 'icon' => 'fa-user-check', 'bg' => 'bg-success'],
+                    ['id' => 'half_day', 'value' => $employeeDetail['totalHalfDay'] ?? 0, 'label' => 'Half Day', 'icon' => 'fa-adjust', 'bg' => 'bg-warning'],
+                    ['id' => 'onleave', 'value' => $employeeDetail['totalLeave'], 'label' => 'Total Leave', 'icon' => 'fa-plane-departure', 'bg' => 'bg-primary'],
                     ['id' => 'absent', 'value' => $employeeDetail['totalAbsent'], 'label' => 'Total Absent', 'icon' => 'fa-user-times', 'bg' => 'bg-danger'],
-                    ['id' => 'holiday', 'value' => $employeeDetail['totalHoliday'], 'label' => 'Total Holidays', 'icon' => 'fa-calendar-day', 'bg' => 'bg-primary'],
+                    ['id' => 'holiday', 'value' => $employeeDetail['totalHoliday'], 'label' => 'Total Holidays', 'icon' => 'fa-calendar-day', 'bg' => 'bg-info'],
                     ['id' => 'late', 'value' => $employeeDetail['totalLate'], 'label' => 'Total Late', 'icon' => 'fa-clock', 'bg' => 'bg-secondary'],
-                    ['id' => 'short_attendence', 'value' => $employeeDetail['shortAttendance'], 'label' => 'Short Attendance', 'icon' => 'fa-hourglass-half', 'bg' => 'bg-info']
+                    ['id' => 'short_attendence', 'value' => $employeeDetail['shortAttendance'], 'label' => 'Short Attendance', 'icon' => 'fa-hourglass-half', 'bg' => 'bg-dark'],
                 ];
             @endphp
 
@@ -23,7 +24,7 @@
                                     <i class="fa {{ $card['icon'] }} fa-2x"></i>
                                 </div>
                                 <h2 class="fw-bold mb-1">
-                                    <span id="{{ $card['id'] }}" class="text-white">{{ $card['value'] }}</span>
+                                    <span id="{{ $card['id'] }}">{{ $card['value'] }}</span>
                                 </h2>
                                 <span class="fw-semibold">{{ $card['label'] }}</span>
                             </div>
@@ -58,13 +59,25 @@
                             $statusColor = 'red';
                             $title = '';
 
-                            if (!empty($item->punch_in)) {
-                                $workingHour = getTotalWorkingHour($item->punch_in, $item->punch_out);
-                                $punchIn = date('h:i A', strtotime($item->punch_in));
-                                $punchOut = date('h:i A', strtotime($item->punch_out));
-                                $status = $item->is_short_attendance ? 'Short Attendance' : ($item->late ? 'Late' : 'Present');
-                                $statusColor = $item->leave ? 'red' : ($item->punch_in_by === 'Company' ? 'orange' : ($status === 'Present' ? 'green' : 'yellow'));
-                                $title = "Punch In By " . $item->punch_in_by . " and reason is " . $item->remark;
+                            if (!empty($item['punch_in'])) {
+                                $workingHour = getTotalWorkingHour($item['punch_in'], $item['punch_out']);
+                                $punchIn = date('h:i A', strtotime($item['punch_in']));
+                                $punchOut = date('h:i A', strtotime($item['punch_out']));
+
+                                if ($item['status'] == 2) {
+                                    $status = 'Half Day';
+                                    $statusColor = 'orange';
+                                } elseif ($item['is_short_attendance']) {
+                                    $status = 'Short Attendance';
+                                    $statusColor = 'darkgoldenrod';
+                                } elseif ($item['late']) {
+                                    $status = 'Late';
+                                    $statusColor = 'purple';
+                                } else {
+                                    $status = 'Present';
+                                    $statusColor = 'green';
+                                }
+                                $title = "Punch In By: " . ($item['punch_in_by'] ?? '-') . " | Reason: " . ($item['remark'] ?? '');
                             }
                         @endphp
 
@@ -77,33 +90,44 @@
                             </tr>
                         @endif
 
+                        {{-- Leave Row --}}
+                        @if ($item['leave'])
+                            <tr class="bg-primary text-white fw-bold text-center">
+                                <td colspan="7">
+                                    <i class="fa fa-plane-departure me-2"></i> {{ $key }} - Leave
+                                </td>
+                            </tr>
+                        @endif
+
                         {{-- Holiday Row --}}
                         @if ($item['holiday'])
-                            <tr class="bg-warning text-dark fw-bold text-center">
+                            <tr class="bg-info text-dark fw-bold text-center">
                                 <td colspan="7">
                                     <i class="fa fa-gift me-2"></i> {{ $key }} - Holiday
                                 </td>
                             </tr>
                         @endif
 
-                        {{-- Regular Attendance Row (if not weekend or holiday) --}}
-                        @if (!$item['weekend'] && !$item['holiday'])
+                        {{-- Regular Attendance Row --}}
+                        @if (!$item['weekend'] && !$item['holiday'] && !$item['leave'])
                             <tr>
                                 <td>{{ $i }}</td>
                                 <td>{{ $key }}</td>
-                                <td>{{ $item['leave'] ? 'N/A' : $punchIn }}</td>
-                                <td>{{ $item['leave'] ? 'N/A' : $punchOut }}</td>
-                                <td>{{ $item['leave'] ? 'N/A' : $workingHour }}</td>
+                                <td>{{ ($status == 'Absent') ? 'N/A' : $punchIn }}</td>
+                                <td>{{ ($status == 'Absent') ? 'N/A' : $punchOut }}</td>
+                                <td>{{ ($status == 'Absent') ? 'N/A' : $workingHour }}</td>
                                 <td title="{{ $title }}" style="color: {{ $statusColor }}; font-weight: 500;">
-                                    {{ $item['leave'] ? 'Leave' : $status }}
+                                    {{ $status }}
                                 </td>
                                 <td>
-                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm"
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#edit_attendance_modal"
-                                       onclick="edit_attendance('{{ $item->id ?? '' }}', '{{ !empty($item->punch_in) ? date('H:i', strtotime($item->punch_in)) : '' }}', '{{ !empty($item->punch_out) ? date('H:i', strtotime($item->punch_out)) : '' }}', '{{ $key }}')">
-                                       <i class="fa fa-edit"></i>
-                                    </a>
+                                    {{-- @if (!empty($item['id'])) --}}
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#edit_attendance_modal"
+                                            onclick="edit_attendance('{{ $item['id'] ?? ''}}', '{{ !empty($item['punch_in']) ? date('H:i', strtotime($item['punch_in'])) : '' }}', '{{ !empty($item['punch_out']) ? date('H:i', strtotime($item['punch_out'])) : '' }}', '{{ $key }}')">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    {{-- @endif --}}
                                 </td>
                             </tr>
                             @php $i++; @endphp

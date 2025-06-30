@@ -1,4 +1,4 @@
-<div class="table-responsive" id="employee_list">
+<div class="table-responsive">
 	<!--begin::Table-->
 	<table class="table-row-dashed table-row-gray-300 gs-0 gy-4 table align-middle">
 		<!--begin::Table head-->
@@ -28,13 +28,12 @@
 		</thead>
 		<!--end::Table head-->
 		<!--begin::Table body-->
-		{{-- {{ dd($allUserDetails->toArray()) }} --}}
 		@forelse ($allUserDetails as $key => $singleUserDetails)
 			<tbody class="">
 				<tr>
 					<td><input type="checkbox" name="user_id[]" value="{{ $singleUserDetails->id }}" class="item-checkbox"></td>
 					<td>{{ $key + 1 }}</td>
-					<td>{{ $singleUserDetails->details->emp_id }}</td>
+					<td>{{ $singleUserDetails->details->emp_id ?? '' }}</td>
 					<td>{{ $singleUserDetails->name }}</td>
 					{{-- <td>{{ $singleUserDetails->department->name }}</td>
                 <td>{{ $singleUserDetails->designation->name }}</td> --}}
@@ -70,7 +69,7 @@
 					@if (auth()->user()->companyDetails->allow_face_recognition == 1)
 						<td data-order="Invalid date">
 							<label class="switch">
-								<input type="checkbox" <?= $singleUserDetails->details->allow_face_recognition == '1' ? 'checked' : '' ?>
+								<input type="checkbox" <?= $singleUserDetails->details->face_recognition == '1' ? 'checked' : '' ?>
 									onchange="handleFaceRecognition({{ $singleUserDetails->id }})"
 									id="checked_face_value_{{ $singleUserDetails->id }}">
 								<span class="slider round"></span>
@@ -150,6 +149,7 @@
 		@endforelse
 		<!--end::Table body-->
 	</table>
-	{{ $allUserDetails->links() }}
+    <div class="paginate">
+        {{ $allUserDetails->appends(request()->query())->links() }}
+    </div>
 
-</div>
