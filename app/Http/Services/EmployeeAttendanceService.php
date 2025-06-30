@@ -105,7 +105,18 @@ class EmployeeAttendanceService
                     }
                 }
 
+                $now = Carbon::now();
+                [, , $attendanceStatus] = checkForHalfDayAttendance(
+                    $officeShiftDetails->toArray(),
+                    $officeShiftDetails->officeTimingConfigs->toArray(),
+                    $now->format('Y/m/d'),
+                    Carbon::parse($existingAttendance->punch_in),
+                    $now
+                );
+
                 $data['punch_out'] = $attendanceTime;
+                $data['status'] = $attendanceStatus;
+
                 $existingAttendance->update($data);
                 return ['status' => true, 'data' => 'Punch Out'];
             }
