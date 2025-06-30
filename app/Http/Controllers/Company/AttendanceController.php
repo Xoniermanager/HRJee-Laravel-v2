@@ -129,7 +129,6 @@ class AttendanceController extends Controller
 
     public function viewsearchFilterDetails($month, $year, $employeeDetails, $start_date = null, $end_date = null)
     {
-
         // Step 1: Set Start and End Date
         if ($start_date != "") {
             $startDate = $start_date;
@@ -176,18 +175,18 @@ class AttendanceController extends Controller
             }
 
             // Leave Check
-            $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeDetails->id, $formattedDate, $endDate);
+            $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeDetails->id, $formattedDate, $formattedDate);
 
-            // Attendance Fetch
+            $hasLeave = !empty($checkLeave) ? true : false;            // Attendance Fetch
+            // dd($formattedDate, $endDate);
             $attendance = $this->employeeAttendanceService->getAttendanceByuserId($employeeDetails->id, $startDate)->first();
             $allAttendanceDetails[$displayDate] = $attendance;
             $allAttendanceDetails[$displayDate]['weekend'] = $weekendStatus;
-            $allAttendanceDetails[$displayDate]['leave'] = $checkLeave;
+            $allAttendanceDetails[$displayDate]['leave'] = $hasLeave;
             $allAttendanceDetails[$displayDate]['holiday'] = $holidayStatus;
 
             $startDate = date('Y-m-d', strtotime($startDate . ' +1 day'));
         }
-
         // Step 3: Calculate Total Absent
         $totalAbsent = 0;
         foreach ($allAttendanceDetails as $day => $attendance) {
@@ -196,22 +195,18 @@ class AttendanceController extends Controller
             $isLeave = $attendance['leave'] ?? false;
             $hasAttendance = !empty($attendance['id'] ?? null);
 
-            if (!$isWeekend && !$isHoliday && !$isLeave && !$hasAttendance) {
+            if (!$isWeekend && !$isHoliday && !$hasLeave && !$hasAttendance) {
                 $totalAbsent++;
             }
         }
-
         // Step 4: Return Final Summary
         return [
             'totalPresent' => $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
             'totalLeave' => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
-            'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(
-                Auth::user()->company_id,
-                $month,
-                $year,
-                $employeeDetails->details->company_branch_id
-            )->count(),
+            'totalHoliday' => $this->holidayService->getHolidayByMonthByCompanyBranchId(Auth::user()->company_id,$month,$year,$employeeDetails->details->company_branch_id)->count(),
             'shortAttendance' => $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
+            'totalHalfDay' => $this->employeeAttendanceService->getTotalHalfDayByMonthByUserId($month, $employeeDetails->id, $year)->count(),
+            'getTotalHalfDayByMonthByUserId' => $this->employeeAttendanceService->getTotalHalfDayByMonthByUserId($month, $employeeDetails->id, $year)->count(),
             'totalAbsent' => $totalAbsent,
             'totalLate' => $this->employeeAttendanceService->getLateAttendanceByMonthByUserId($month, $employeeDetails->id, $year)->count(),
             'emp_id' => $employeeDetails->id,

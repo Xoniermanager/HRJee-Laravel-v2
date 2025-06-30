@@ -443,7 +443,10 @@ class EmployeeAttendanceService
     {
         return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year)->where('late', 1);
     }
-
+    public function getTotalHalfDayByMonthByUserId($month, $userId, $year)
+    {
+        return $this->employeeAttendanceRepository->where('user_id', $userId)->whereMonth('punch_in', '=', $month)->whereYear('punch_in', '=', $year)->where('status', 2);
+    }
     /**
      * Undocumented function
      *

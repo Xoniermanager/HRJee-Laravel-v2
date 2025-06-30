@@ -221,34 +221,6 @@ class AdminCompanyController extends Controller
         }
     }
 
-    public function updateFaceRecognitionStatus(Request $request)
-    {
-        $allowedUserLimit = auth()->user()->companyDetails->face_recognition_user_limit;
-
-        $allotedUserLimit = User::where('company_id', auth()->user()->id)->where('type', 'user')->with([
-            'details' => function ($query) {
-                $query->where('allow_face_recognition', 1);
-            }
-        ])->count();
-
-        if ($allowedUserLimit < $allotedUserLimit && $request->status == "1") {
-            return response()->json(['error' => 'You have reached the limit of allowing face recognition to users.', 'status' => 400]);
-        }
-
-        $statusDetails = $this->userService->updateFaceRecognitionStatus($request->id, $request->status);
-        if ($statusDetails) {
-            return response()->json([
-                'success' => 'Face Recognition Updated Successfully',
-                'data' => view("admin.company.company_list", [
-                    'allCompaniesDetails' => $this->userService->getCompanies()->paginate(10)
-                ])->render(),
-                'status' => 200
-            ]);
-        } else {
-            return response()->json(['error' => 'Something Went Wrong!! Please try again', 'status' => 400]);
-        }
-    }
-
     public function resetPassword(Request $request)
     {
         $user = User::find($request->company_id);
