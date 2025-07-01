@@ -44,7 +44,7 @@ class BranchServices
     {
         return $this->branchRepository->whereIn('company_id', $companyId)->where('status', 1)->orderBy('id', 'DESC')->get();
     }
-    
+
     public function create($data)
     {
         $data['company_id'] = Auth()->user()->company_id ?? $data['company_id'];

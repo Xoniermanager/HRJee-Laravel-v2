@@ -114,7 +114,7 @@ class EmployeeController extends Controller
         $allEmployeeType = $this->employeeTypeService->getAllActiveEmployeeType();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartments();
         $allShifts = $this->shiftService->getAllActiveShifts();
-        $allBranches = $this->branchService->all($companyIDs);
+        $allBranches = $this->branchService->getAllCompanyBranchByCompanyId($companyIDs);
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
@@ -133,7 +133,7 @@ class EmployeeController extends Controller
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
         $languages = $this->languagesServices->defaultLanguages();
-        $allBranches = $this->branchService->all([Auth()->user()->company_id]);
+        $allBranches = $this->branchService->getAllCompanyBranchByCompanyId([Auth()->user()->company_id]);
         $allRoles = $this->customRoleService->all(auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $allAssetCategory = $this->assetCategoryServices->getAllActiveAssetCategory();
@@ -154,7 +154,7 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
-        $allBranches = $this->branchService->all([Auth()->user()->id]);
+        $allBranches = $this->branchService->getAllCompanyBranchByCompanyId([Auth()->user()->id]);
         $allRoles = $this->customRoleService->all(Auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages = $this->languagesServices->defaultLanguages();
