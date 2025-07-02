@@ -9,10 +9,20 @@ use App\Http\Controllers\Company\RolesController;
 use App\Http\Controllers\Company\StateController;
 use App\Http\Controllers\Company\CourseController;
 use App\Http\Controllers\Company\PolicyController;
+use App\Http\Controllers\Company\PayoutSettingController;
+use App\Http\Controllers\Company\TicketController;
+use App\Http\Controllers\Company\ConnectorPayoutController;
+use App\Http\Controllers\Company\VisitingCardController;
+use App\Http\Controllers\Company\OfferController;
+use App\Http\Controllers\Company\ManageLenderController;
+use App\Http\Controllers\Company\IncentivePaymentController;
+use App\Http\Controllers\Company\NoticeController;
 use App\Http\Controllers\Company\SalaryController;
 use App\Http\Controllers\Admin\LeaveTypeController;
 use App\Http\Controllers\Company\CompanyController;
+use App\Http\Controllers\Company\LenderController;
 use App\Http\Controllers\Company\CompOffController;
+use App\Http\Controllers\Company\ReportController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\HolidayController;
 use App\Http\Controllers\Company\WeekendController;
@@ -51,6 +61,7 @@ use App\Http\Controllers\Company\RewardCategoryController;
 use App\Http\Controllers\Company\UserCtcDetailsController;
 use App\Http\Controllers\Admin\AssetManufacturerController;
 use App\Http\Controllers\Company\CompanyBranchesController;
+use App\Http\Controllers\Company\CompanyConnectorController;
 use App\Http\Controllers\Company\DispositionCodeController;
 use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Company\PreviousCompanyController;
@@ -59,10 +70,12 @@ use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
 use App\Http\Controllers\Company\AttendanceStatusController;
 use App\Http\Controllers\Company\CompanyDashboardController;
+use App\Http\Controllers\Company\LeadController;
 use App\Http\Controllers\Company\ComplainCategoryController;
 use App\Http\Controllers\Company\LocationTrackingController;
 use App\Http\Controllers\Company\UserAssetDetailsController;
 use App\Http\Controllers\Company\AttendanceRequestController;
+use App\Http\Controllers\Company\ProductController;
 use App\Http\Controllers\Company\ResignationStatusController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
@@ -85,8 +98,7 @@ use App\Http\Controllers\Company\PerformanceReviewCycleController;
 //Common Route Used in Employee and Company Panel
 Route::get('/company/state/get/all/state', [StateController::class, 'getAllStates'])->name('get.all.country.state');
 
-Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess','log.route', 'auth.company'])->group(function ()
-{
+Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUrlAcess', 'log.route', 'auth.company'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('profile', 'company_profile')->name('company.profile');
         Route::get('configuration', 'companyConfiguartion')->name('company.configuration');
@@ -98,7 +110,122 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/dashboard', 'index')->name('company.dashboard');
         Route::get('/employee-search-filter', 'filterEmployees')->name('company.employee_search.filter');
         Route::post('/send-enquiry', 'sendMailForSubscription')->name('company.send-enquiry');
+    });
 
+    Route::prefix('connector')->controller(CompanyConnectorController::class)->group(function () {
+        Route::get('/', 'index')->name('connectors');
+        Route::get('/filter', 'filter')->name('connector.filter');
+        Route::get('/add', 'add')->name('connector.add');
+        Route::post('/store', 'store')->name('connector.store');
+        Route::post('/configure-payout/store', 'storeConfigurePayout')->name('configure-payout.store');
+        Route::get('/edit-connector/{connector:id}', 'edit')->name('connector.edit');
+        Route::post('/payout', 'payout')->name('payout.update');
+        Route::get('/{connector:id}', 'view')->name('connector.view');
+        Route::post('/update/{id}', 'update')->name('connector.update');
+        Route::post('/kyc/update/{id}', 'updateKyc')->name('kyc.update');
+        Route::get('/delete/{id}', 'destroy')->name('connector.delete');
+        Route::get('/search/filtered', 'searchConnectorFilter')->name('connector.search');
+        Route::get('/connectors/search', 'searchConnectors')->name('connectors.search');
+        Route::get('/user/search', 'searchAssignTo')->name('user.search');
+    });
+
+    Route::prefix('lead')->controller(LeadController::class)->group(function () {
+        Route::get('/', 'index')->name('leads');
+        Route::get('/add', 'add')->name('lead.add');
+        Route::post('/store', 'store')->name('lead.store');
+        Route::post('/update-product', 'updateProduct')->name('update.product');
+        // Route::get('/edit/{lead:id}', 'edit')->name('lead.edit');
+        Route::get('/view/{lead:id}', 'view')->name('lead.view');
+        Route::post('/update/{id}', 'update')->name('lead.update');
+        Route::post('/assign/update/{id}', 'updateAssignedTo')->name('lead.assign.update');
+        Route::post('/co-applicant/update/{id}', 'coApplicantUpdate')->name('coapplicant.update');
+        Route::post('/loan/update/{id}', 'loanUpdate')->name('loan.update');
+        Route::post('/income/update/{id}', 'incomeUpdate')->name('income.update');
+        Route::get('/delete/{id}', 'destroy')->name('lead.delete');
+        Route::get('/status/update', 'statusUpdate')->name('lead.statusUpdate');
+        Route::get('/search', 'search')->name('lead.search');
+        Route::post('/loan/upload', 'documents')->name('lead.loan.upload');
+        Route::post('/assign-lender', 'assignLender')->name('lead.lender');
+        Route::post('/lender/decision', 'lenderDecision')->name('lead.lender.decision');
+
+    });
+
+    Route::prefix('/product')->controller(ProductController::class)->group(function () {
+        Route::get('/', 'index')->name('product.index');
+        Route::post('/create', 'store')->name('product.store');
+        Route::post('/update', 'update')->name('product.update');
+        Route::get('/delete', 'destroy')->name('product.delete');
+        Route::get('/status/update', 'statusUpdate')->name('product.statusUpdate');
+        Route::get('/search/filter', 'searchProductFilterList');
+    });
+
+
+    Route::prefix('/manage-lender')->controller(ManageLenderController::class)->group(function () {
+        Route::get('/', 'index')->name('manage-lender.index');
+        Route::post('/create', 'store')->name('manage-lender.store');
+        Route::post('/update', 'update')->name('manage-lender.update');
+        Route::get('/delete', 'destroy')->name('manage-lender.delete');
+        Route::get('/status/update', 'statusUpdate')->name('manage-lender.statusUpdate');
+        Route::get('/search/filter', 'searchDefaultLenderFilterList');
+    });
+
+    Route::prefix('/lender')->controller(LenderController::class)->group(function () {
+        Route::get('/', 'index')->name('lender.index');
+        Route::get('/add', 'add')->name('lender.add');
+        Route::post('/create', 'store')->name('lender.store');
+        Route::get('/edit/{lender:id}', 'edit')->name('lender.edit');
+        Route::post('/update', 'update')->name('lender.update');
+        Route::get('/delete', 'destroy')->name('lender.delete');
+        Route::get('/status/update', 'statusUpdate')->name('lender.statusUpdate');
+        Route::get('/search/filter', 'searchLenderFilterList');
+    });
+
+    Route::prefix('/offer')->controller(OfferController::class)->group(function () {
+        Route::get('/', 'index')->name('offer.index');
+        Route::get('/add', 'add')->name('offer.add');
+        Route::post('/add', 'store')->name('offer.store');
+        Route::get('/edit/{offer:id}', 'edit')->name('offer.edit');
+        Route::post('/update', 'update')->name('offer.update');
+        Route::get('/delete', 'destroy')->name('offer.delete');
+        Route::get('/status/update', 'statusUpdate')->name('offer.statusUpdate');
+        Route::get('/search/filter', 'searchOfferFilterList');
+    });
+    Route::prefix('/notice')->controller(NoticeController::class)->group(function () {
+        Route::get('/', 'index')->name('notice.index');
+        Route::get('/add', 'add')->name('notice.add');
+        Route::post('/add', 'store')->name('notice.store');
+        Route::get('/edit/{offer:id}', 'edit')->name('notice.edit');
+        Route::post('/update', 'update')->name('notice.update');
+        Route::get('/delete', 'destroy')->name('notice.delete');
+        Route::get('/status/update', 'statusUpdate')->name('notice.statusUpdate');
+        Route::get('/search/filter', 'searchNoticeFilterList');
+    });
+    Route::prefix('/visiting-card')->controller(VisitingCardController::class)->group(function () {
+        Route::get('/', 'index')->name('visiting-card.index');
+    });
+    Route::prefix('/incentive-payments')->controller(IncentivePaymentController::class)->group(function () {
+        Route::get('/', 'index')->name('incentive-payments.index');
+        Route::post('/add', 'store')->name('incentive-payments.store');
+        Route::post('/update', 'update')->name('incentive-payments.update');
+        Route::get('/delete', 'destroy')->name('incentive-payments.delete');
+    });
+    Route::prefix('/ticket')->controller(TicketController::class)->group(function () {
+        Route::get('/', 'index')->name('ticket.index');
+        Route::post('/add', 'store')->name('ticket.store');
+        Route::get('/delete', 'destroy')->name('ticket.delete');
+    });
+    Route::prefix('/report')->controller(ReportController::class)->group(function () {
+        Route::get('/', 'index')->name('report');
+        Route::get('/generate', 'reportExport')->name('report.generate');
+    });
+
+    Route::prefix('/payout-setting')->controller(PayoutSettingController::class)->group(function () {
+        Route::get('/', 'index')->name('payout-setting');
+        Route::post('/store', 'store')->name('payout.store');
+    });
+    Route::prefix('/connector-payouts')->controller(ConnectorPayoutController::class)->group(function () {
+        Route::get('/', 'index')->name('connector-payouts');
+        Route::get('/search', 'index')->name('connector-payouts.search');
     });
 
     Route::controller(CompanyBranchesController::class)->group(function () {
@@ -225,10 +352,9 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/export', 'exportEmployee')->name('employee.export');
         Route::post('/export-file', 'uploadImport')->name('upload.file');
         Route::post('/download-attendance', 'downloadA')->name('upload.file');
-        Route::post('/punchIn/radius','updatePunchInRadius')->name('update.punhin.radius');
+        Route::post('/punchIn/radius', 'updatePunchInRadius')->name('update.punhin.radius');
         Route::get('/get-manager-by-departments', 'getAllManager')->name('get.all.manager');
         Route::post('/get-employees-by-departments', 'getAllEmployeesByDepartment')->name('get.all-emp-by-dept');
-
     });
 
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
@@ -599,7 +725,6 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::get('/add/bulk/attendance', 'addBulkAttendance')->name('attendance.add.bulk');
             Route::post('/store/bulk/attendance', 'storeBulkAttendance')->name('store.bulk.attendance');
             Route::post('/download/attendance', 'downloadAttendance')->name('download.attendance');
-
         });
         //Attendance Status Module
         Route::prefix('/attendance-status')->controller(AttendanceStatusController::class)->group(function () {
@@ -800,8 +925,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachFilterList');
     });
 
-      //Address Request Module
-      Route::prefix('/reward')->controller(UserRewardController::class)->group(function () {
+    //Address Request Module
+    Route::prefix('/reward')->controller(UserRewardController::class)->group(function () {
         Route::get('/', 'index')->name('reward.index');
         Route::get('/add', 'add')->name('reward.add');
         Route::post('/store', 'store')->name('reward.store');
@@ -809,7 +934,6 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::post('/update/{id}', 'update')->name('reward.update');
         Route::get('/delete', 'destroy')->name('reward.delete');
         Route::get('/search/filter', 'serachFilterList');
-
     });
 
     //Reward Category Module
@@ -820,7 +944,6 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/delete', 'destroy')->name('reward_category.delete');
         Route::get('/status/update', 'statusUpdate')->name('reward_category.statusUpdate');
         Route::get('/search/filter', 'serachFilterList');
-
     });
     //Hierarchy Module
     Route::prefix('/hierarchy')->controller(HierarchyController::class)->group(function () {
@@ -831,7 +954,6 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::prefix('/log-activity')->controller(LogActivityController::class)->group(function () {
         Route::get('/company/list', 'companyList')->name('company.log_activity');
     });
-
 });
 
 

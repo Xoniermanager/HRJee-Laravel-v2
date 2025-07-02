@@ -203,6 +203,7 @@ class EmployeeController extends Controller
 
     public function store(EmployeeAddRequest $request)
     {
+        dd($request);
         DB::beginTransaction();
         try {
             $companyIDs = getCompanyIDs();

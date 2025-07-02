@@ -18,7 +18,6 @@ function getCompanyIDs()
     } else {
         $companyIDs = User::where('company_id', Auth()->user()->id)->pluck('id')->toArray();
     }
-
     return $companyIDs;
 }
 

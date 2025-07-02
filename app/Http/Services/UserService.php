@@ -342,7 +342,7 @@ class UserService
 
         $liveLocationUserID = $this->userRepository->currentLocations($userIds)->pluck('user_id')->toArray();
         $currentLocations = $this->userRepository->currentLocations($userIds)->get();
-        foreach($currentLocations as $location) {
+        foreach ($currentLocations as $location) {
             $response[] = [
                 "name" => $location->user->name,
                 "userid" => $location->user_id,
@@ -355,7 +355,7 @@ class UserService
 
         $punchInUserIDs = array_diff($userIds, $liveLocationUserID);
         $punchInLocations = $this->userRepository->currentPunchInLocations($punchInUserIDs)->get();
-        foreach($punchInLocations as $location) {
+        foreach ($punchInLocations as $location) {
             $response[] = [
                 "name" => $location->user->name,
                 "userid" => $location->user_id,
@@ -391,7 +391,8 @@ class UserService
         string $userId,
         ?string $date,
         ?int $onlyStayPoints = 0,
-        ?int $onlyNewPoints = 0, $punchOutTime = null
+        ?int $onlyNewPoints = 0,
+        $punchOutTime = null
     ) {
         return $this->userRepository->fetchLocationsOfEmployee($userId, $date, $onlyStayPoints, $onlyNewPoints, $punchOutTime);
     }
@@ -401,7 +402,34 @@ class UserService
         return $this->userRepository->whereIn('company_id', $companyIds)->where('type', 'user')->where('status', 1);
     }
 
-    
+    public function getSerachEmployees($companyId, $request = null)
+    {
+        $allUserDetails = $this->userRepository
+            ->where('type', 'user')
+            ->where('company_id', $companyId);
+
+        if (!empty($request->search)) {
+            $searchKey = $request->search;
+
+            $allUserDetails->where(function ($query) use ($searchKey) {
+                $query->where('name', 'LIKE', '%' . $searchKey . '%')
+                    ->orWhere('email', 'LIKE', '%' . $searchKey . '%');
+            });
+        }
+
+        return $allUserDetails
+            ->with(['details:id,user_id,phone']) 
+            ->orderBy('id', 'DESC')
+            ->select('id', 'name', 'email') 
+            ->get();
+    }
+
+    public function getActiveEmployeeList($companyId)
+    {
+        return $this->userRepository->where('company_id', $companyId)->where('type', 'user')->where('status', 1)->get();
+    }
+
+
     public function getUserSkillsByUserId($id)
     {
         return $this->userRepository->where('id', $id);
@@ -409,23 +437,22 @@ class UserService
 
     public function getAllManagerByCompanyId($companyId)
     {
-        return $this->userRepository->whereIn('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details','role:name,id']);
+        return $this->userRepository->whereIn('company_id', $companyId)->where('type', 'user')->whereNotNull('role_id')->with(['managerEmployees.user.details', 'role:name,id']);
     }
 
     public function getAllManagerByDepartmentId($companyId, $deptId)
     {
         return $this->userRepository->whereIn('company_id', $companyId)
-        ->where('type', 'user')
-        ->whereNotNull('role_id')
-        ->whereHas('details', function ($query) use ($deptId) {
-            $query->where('department_id', $deptId);
-        })
-        ->with([
-            'managerEmployees.user.details',
-            'role:id,name'
-        ])
-        ->get();
-
+            ->where('type', 'user')
+            ->whereNotNull('role_id')
+            ->whereHas('details', function ($query) use ($deptId) {
+                $query->where('department_id', $deptId);
+            })
+            ->with([
+                'managerEmployees.user.details',
+                'role:id,name'
+            ])
+            ->get();
     }
 
     /**
@@ -438,10 +465,10 @@ class UserService
     public function getAllEmployeesByDepartmentId($companyId, $deptId)
     {
         return $this->userRepository->whereIn('company_id', $companyId)
-        ->where('type', 'user')
-        ->whereHas('details', function ($query) use ($deptId) {
-            $query->whereIn('department_id', $deptId);
-        })
-        ->get();
+            ->where('type', 'user')
+            ->whereHas('details', function ($query) use ($deptId) {
+                $query->whereIn('department_id', $deptId);
+            })
+            ->get();
     }
 }
