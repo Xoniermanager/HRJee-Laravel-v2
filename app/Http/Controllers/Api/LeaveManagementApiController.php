@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use Exception;
+use Throwable;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Services\LeaveService;
 use Illuminate\Support\Facades\Log;
@@ -10,7 +12,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\LeaveTypeService;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\EmployeeLeaveAvailableService;
-use Throwable;
 
 class LeaveManagementApiController extends Controller
 {
@@ -58,63 +59,89 @@ class LeaveManagementApiController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'leave_type_id'      => ['required', 'exists:leave_types,id'],
-                'from'               => ['required', 'date'],
-                'to'                 => ['required', 'date'],
-                'is_half_day'        => ['boolean'],
-                'from_half_day'      => ['required_if:is_half_day,==,1', 'in:first_half,second_half'],
-                'to_half_day'        => ['required_if:from,>,to', 'in:first_half,second_half'],
-                'reason'             => ['required'],
+                'leave_type_id' => ['required', 'exists:leave_types,id'],
+                'from' => ['required', 'date'],
+                'to' => ['required', 'date'],
+                'is_half_day' => ['boolean'],
+                'from_half_day' => ['required_if:is_half_day,1', 'in:first_half,second_half'],
+                'to_half_day' => ['required_if:is_half_day,1', 'in:first_half,second_half'],
+                'reason' => ['required'],
             ]);
+
             if ($validator->fails()) {
                 return response()->json([
                     "error" => 'validation_error',
                     "message" => $validator->errors(),
                 ], 400);
             }
+
             $data = $request->all();
             $userID = Auth()->guard('employee_api')->user()->id;
 
-            $availableLeaves = $this->employeeLeaveAvailableService->getAvailableLeaveByUserIdTypeId($userID, $data['leave_type_id']);
+            // Step 1: Get available leave
+            $availableLeave = $this->employeeLeaveAvailableService->getAvailableLeaveByUserIdTypeId($userID, $data['leave_type_id']);
 
-            if ($availableLeaves == NULL || $availableLeaves->available < 0) {
+            if (!$availableLeave || $availableLeave->available <= 0) {
                 return response()->json([
                     'status' => false,
                     'message' => "Leaves not available"
                 ], 400);
             }
 
-            $alreadyAppliedLeave = $this->leaveService->getUserConfirmLeaveByDate($userID, $data['from'], $data['to']);
-            if ($alreadyAppliedLeave) {
+            // Step 2: Calculate number of applied days
+            $from = Carbon::parse($data['from']);
+            $to = Carbon::parse($data['to']);
+            $daysApplied = $from->diffInDays($to) + 1;
+
+            if (!empty($data['is_half_day']) && $data['is_half_day']) {
+                $daysApplied = 0.5;
+            }
+
+            // Step 3: Validate against available balance
+            if ($daysApplied > $availableLeave->available) {
                 return response()->json([
                     'status' => false,
-                    'message' => "You have already applied leave for this date"
+                    'message' => "You are applying for {$daysApplied} day(s), but only {$availableLeave->available} are available."
                 ], 400);
             }
 
+            // Step 4: Prevent duplicate application
+            $alreadyApplied = $this->leaveService->getUserAppliedLeaveByDate($userID, $data['from'], $data['to']);
+            if ($alreadyApplied) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "You have already applied leave for these date(s)"
+                ], 400);
+            }
 
+            // Step 5: Create leave record
             if ($this->leaveService->create($data)) {
                 return response()->json([
                     'status' => true,
                     'message' => "Applied Successfully"
                 ], 200);
             }
+
+            return response()->json([
+                'status' => false,
+                'message' => "Unable to apply leave"
+            ], 500);
+
         } catch (Exception $e) {
             return response()->json([
                 "status" => false,
-                "error" =>  $e->getMessage(),
+                "error" => $e->getMessage(),
                 "message" => "Unable to Apply the Leave"
             ], 500);
         }
     }
 
-
     public function appliedLeaveHistory(Request $request)
     {
         try {
 
-            $appliedLeaves =  $this->leaveService->getAllAppliedLeave();
-            $appliedLeaves->makeHidden(['created_at','updated_at','leave_type_id','leave_applied_by','leave_status_id']);
+            $appliedLeaves = $this->leaveService->getAllAppliedLeave();
+            $appliedLeaves->makeHidden(['created_at', 'updated_at', 'leave_type_id', 'leave_applied_by', 'leave_status_id']);
             // $appliedLeaves->leave_action->makeHidden('leave_id');
             return apiResponse('success', $appliedLeaves);
         } catch (Throwable $th) {
