@@ -57,6 +57,7 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::get('company-details', 'getCompanyDetails');
         Route::get('menu-access', 'getMenuAccess');
         Route::get('get/team/details/{userId}', 'getTeamDetailsByUserId');
+        Route::get('/shift', 'getTodaysShift');
 
         Route::post('update/profile', 'updateProfile');
         Route::patch('toggle-location-tracking', 'toggleUserLocationTracking');
