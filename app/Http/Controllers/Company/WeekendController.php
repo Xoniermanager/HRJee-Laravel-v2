@@ -108,7 +108,7 @@ class WeekendController extends Controller
                 'weekdayId' => $data->weekend_dates,
             ]);
         } else {
-            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+            return response()->json(['status' => false, 'error' => 'Something Went Wrong!! Please try again']);
         }
     }
 }

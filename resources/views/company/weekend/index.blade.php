@@ -221,10 +221,10 @@ Weekend Management
                         $('#weekend_id').val(response.data.id);
                         $('#weekday').val(response.weekdayId).trigger('change');
                     }
-                    else{
-                        $('#weekend_id').val('');
-                        $('#weekday').val('').trigger('change');
-                    }
+                    // else{
+                    //     $('#weekend_id').val('');
+                    //     $('#weekday').val('').trigger('change');
+                    // }
                 },
                 error: function(error_messages) {
                     console.log(error_messages)
