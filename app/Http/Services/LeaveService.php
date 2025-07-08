@@ -39,7 +39,7 @@ class LeaveService
      */
     public function leavesByUserId($userId)
     {
-        return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->with(['leaveStatus'])->paginate(10);
+        return $this->leaveRepository->where('user_id', $userId)->orderBy('id', 'DESC')->with(['leaveStatus', 'leaveType'])->paginate(10);
     }
 
     /**
@@ -273,5 +273,13 @@ class LeaveService
     {
         return $this->leaveRepository->where('user_id', $userID)
             ->where('leave_status_id', 2)->with('user');
+    }
+
+    public function getUserAppliedLeaveByDate($id, $fromdate, $toDate = NULL)
+    {
+        return $this->leaveRepository->where('user_id', $id)->where('from', '<=', $fromdate)
+            ->where('to', '>=', ($toDate ? $toDate : $fromdate))
+            // ->where('leave_status_id', 2)
+            ->first();
     }
 }

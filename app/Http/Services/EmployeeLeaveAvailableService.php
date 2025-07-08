@@ -32,7 +32,13 @@ class EmployeeLeaveAvailableService
    */
   public function getAllLeaveAvailableByUserId($id)
   {
-    return $this->employeeLeaveAvailableRepository->where('user_id', $id)->paginate(10)->groupBy('leave_type_id');
+    return $this->employeeLeaveAvailableRepository
+      ->where('user_id', $id)
+      ->whereHas('leaveType', function ($query) {
+        $query->where('status', 1);
+      })
+      ->paginate(10)
+      ->groupBy('leave_type_id');
   }
 
   /**

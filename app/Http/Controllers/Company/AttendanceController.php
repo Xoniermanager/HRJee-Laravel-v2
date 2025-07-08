@@ -62,7 +62,13 @@ class AttendanceController extends Controller
         if ($allEmployeeDetails) {
             if ($request->has('export')) {
                 $allEmployeeDetails = $this->searchFilterDetails($request->month, $request->year, $request->search, $request->department, $request->manager, $request->branch, true);
-                dispatch(new SendAttendanceReportJob(auth()->user(), $allEmployeeDetails, $request->month, $request->year));
+                dispatch(new SendAttendanceReportJob(
+                    user: auth()->user(), 
+                    range: "",
+                    allEmployeeDetails: $allEmployeeDetails, 
+                    month: $request->month, 
+                    year: $request->year,
+                ));
             } else {
                 return response()->json([
                     'data' => view('company.attendance.list', compact('allEmployeeDetails'))->render()
@@ -195,7 +201,7 @@ class AttendanceController extends Controller
             $isLeave = $attendance['leave'] ?? false;
             $hasAttendance = !empty($attendance['id'] ?? null);
 
-            if (!$isWeekend && !$isHoliday && !$hasLeave && !$hasAttendance) {
+            if (!$isWeekend && !$isHoliday && !$isLeave && !$hasAttendance) {
                 $totalAbsent++;
             }
         }

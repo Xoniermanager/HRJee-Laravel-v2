@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Services\DocumentTypeService;
-use App\Http\Services\UserService;
 use Exception;
 use App\Models\Menu;
 use App\Models\User;
@@ -12,6 +10,7 @@ use App\Models\UserDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use App\Http\Services\UserService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Services\LeaveService;
 use App\Http\Controllers\Controller;
@@ -19,7 +18,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Services\Api\AuthService;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Services\UserShiftService;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\DocumentTypeService;
+use App\Http\Resources\TodaysShiftResource;
 use App\Http\Requests\UserLoginByEmpIdRequest;
 use App\Http\Services\EmployeeAttendanceService;
 
@@ -30,13 +32,15 @@ class AuthController extends Controller
     private $attendanceService;
     private $documentTypeService;
     private $userService;
-    public function __construct(AuthService $userAuthService, LeaveService $leaveService, EmployeeAttendanceService $attendanceService, DocumentTypeService $documentTypeService, UserService $userService)
+    private $userShiftService;
+    public function __construct(AuthService $userAuthService, LeaveService $leaveService, EmployeeAttendanceService $attendanceService, DocumentTypeService $documentTypeService, UserService $userService, UserShiftService $userShiftService)
     {
         $this->userAuthService = $userAuthService;
         $this->leaveService = $leaveService;
         $this->attendanceService = $attendanceService;
         $this->documentTypeService = $documentTypeService;
         $this->userService = $userService;
+        $this->userShiftService = $userShiftService;
     }
     public function login(UserLoginRequest $request)
     {
@@ -365,6 +369,27 @@ class AuthController extends Controller
                 'message' => $msg ?? 'Failed to toggle location tracking',
                 'data' => [],
             ], 200);
+        }
+    }
+
+    public function getTodaysShift()
+    {
+        try {
+            $user = Auth()->guard('employee_api')->user();
+            $shiftType = $user->details->shift_type;
+            $shifts = $this->userShiftService->getTodaysShifts($user->id, $shiftType)
+                ->with('shift.officeTimingConfigs')->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Successfully fetched',
+                'data' => TodaysShiftResource::collection($shifts),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }
