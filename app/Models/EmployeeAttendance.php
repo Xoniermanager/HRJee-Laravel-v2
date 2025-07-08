@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ManagerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EmployeeAttendance extends Model
 {
-    use HasFactory;
+    use HasFactory, ManagerScope;
 
     protected $fillable =
     [

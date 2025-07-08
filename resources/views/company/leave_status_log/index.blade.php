@@ -35,8 +35,8 @@
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
-                    <a href="{{ route('leave.status.log.add') }}" class="btn btn-sm btn-primary align-self-center">
-                        Update Leave Status</a>
+                    {{-- <a href="{{ route('leave.status.log.add') }}" class="btn btn-sm btn-primary align-self-center">
+                        Update Leave Status</a> --}}
                     <!--end::Action-->
                 </div>
                 @if (session('error'))
@@ -54,42 +54,7 @@
                         <!--begin::Table container-->
                         <div class="table-responsive">
                             <!--begin::Table-->
-                            <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-                                <!--begin::Table head-->
-                                <thead>
-                                    <tr class="fw-bold">
-                                        <th>Sr. No.</th>
-                                        <th>Employee Name</th>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th>Final Status </th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <!--end::Table head-->
-                                <!--begin::Table body-->
-                                <tbody class="">
-                                    @foreach ($leaveStatusLogDetails as $index => $leaveStatusLog)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td><a href="#" data-bs-toggle="modal"
-                                                    onClick="getEmployeeLeaveDetails('{{ date('F jS, Y  h:i:s a', strtotime($leaveStatusLog->leave->created_at)) }}','{{ $leaveStatusLog->leave->from }}',
-                                                     '{{ $leaveStatusLog->leave->to }}','{{ $leaveStatusLog->leave->is_half_day }}',
-                                                     '{{ $leaveStatusLog->leave->from_half_day }}','{{ $leaveStatusLog->leave->to_half_day }}',
-                                                     '{{$leaveStatusLog->leaveStatus->name}}')">{{ $leaveStatusLog->leave->user->name }}</a></td>
-                                            <td>{{ $leaveStatusLog->leave->from }}</td>
-                                            <td>{{ $leaveStatusLog->leave->to }}</td>
-                                            <td>{{ $leaveStatusLog->leave->leaveStatus->name }}</td>
-                                            <td>
-                                                <a href="javascript:void(0);" class="leavetracking" data-id="{{ $leaveStatusLog->leave_id }}">
-                                                    <img src="https://cdn-icons-png.flaticon.com/512/3273/3273365.png" class="h-35px" alt="Leave Tracking">
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <!--end::Table body-->
-                            </table>
+                            @include('company.leave_status_log.list')
                             <!--end::Table-->
                         </div>
                         <!--end::Table container-->
@@ -208,49 +173,34 @@
     </div>
 
     <script>
-        function getEmployeeLeaveDetails(appliedDate,from,to,halfDay,fromHalfDay,ToHalfday,leaveStatus) {
+        function getEmployeeLeaveDetails(appliedDate, from, to, halfDay, fromHalfDay, ToHalfday, leaveStatus) {
             var fromHalfDayValue = '';
             var toHalfDayValue = '';
             var isHalfDayValue = '';
-             /** for  Half Day*/
-             if(halfDay == '1')
-            {
+            /** for  Half Day*/
+            if (halfDay == '1') {
                 isHalfDayValue = 'Yes';
-            }
-            else if(halfDay == '0')
-            {
+            } else if (halfDay == '0') {
                 isHalfDayValue = 'No';
-            }
-            else
-            {
+            } else {
                 isHalfDayValue;
             }
 
             /** for From Half Day*/
-            if(fromHalfDay == 'single_half')
-            {
+            if (fromHalfDay == 'single_half') {
                 fromHalfDayValue = 'First Half';
-            }
-            else if(fromHalfDay == 'second_half')
-            {
+            } else if (fromHalfDay == 'second_half') {
                 fromHalfDayValue = 'Second Half';
-            }
-            else
-            {
+            } else {
                 fromHalfDayValue;
             }
 
             /** for To Half Day*/
-            if(ToHalfday == 'single_half')
-            {
+            if (ToHalfday == 'single_half') {
                 toHalfDayValue = 'First Half';
-            }
-            else if(ToHalfday == 'second_half')
-            {
+            } else if (ToHalfday == 'second_half') {
                 toHalfDayValue = 'Second Half';
-            }
-            else
-            {
+            } else {
                 toHalfDayValue;
             }
             $('#applied_date').html(appliedDate);
@@ -265,23 +215,143 @@
         }
         jQuery.noConflict();
         jQuery(document).ready(function($) {
-            $('.leavetracking').on('click', function () {
+            $('.leavetracking').on('click', function() {
                 const leaveId = $(this).data('id');
                 $('#modalContent').html('<p>Loading...</p>'); // Show loading state
                 jQuery('#leaveTrackingModal').modal('show'); // Show modal
 
                 // Fetch data using AJAX
                 $.ajax({
-                    url: '/leave-tracking/'+leaveId, // Update to the correct route
+                    url: '/leave-tracking/' + leaveId, // Update to the correct route
                     method: 'GET',
-                    success: function (response) {
+                    success: function(response) {
                         $('#modalContent').html(response);
                     },
-                    error: function () {
-                        $('#modalContent').html('<p class="text-danger">An error occurred. Please try again.</p>');
+                    error: function() {
+                        $('#modalContent').html(
+                            '<p class="text-danger">An error occurred. Please try again.</p>'
+                            );
                     }
                 });
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.final-status-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const leaveId = this.getAttribute('data-id');
+                    const currentStatus = this.getAttribute('data-current-status');
+
+                    if (currentStatus !== '1') {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Not Editable',
+                            text: 'Only Pending leave requests can be updated.',
+                            confirmButtonColor: '#6366F1' // Indigo
+                        });
+                        return;
+                    }
+
+                    Swal.fire({
+                            title: '<div style="font-size:22px; font-weight:600; color:#3b82f6;">✏️ Update Leave Request Status</div>',
+                            html: `
+                            <div style="font-size:13px; color:#6b7280; margin-bottom:10px;">
+                                Please select the new status and add your remarks below.
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:10px; text-align:left; margin-top:5px;">
+                                <label style="font-weight:500; font-size:13px; color:#374151;">Status <span style="color:red;">*</span></label>
+                                <select id="swal-leave-status" style="
+                                    width:100%; padding:8px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;">
+                                    <option value="">🔽 Select New Status</option>
+                                    <option value="2">✅ Approved</option>
+                                    <option value="3">❌ Rejected</option>
+                                    <option value="4">🚫 Cancelled</option>
+                                </select>
+                                <label style="font-weight:500; font-size:13px; color:#374151;">Remarks <span style="color:red;">*</span></label>
+                                <textarea id="swal-remarks" placeholder="Write your remarks..." style="
+                                    width:100%; height:80px; padding:8px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;"></textarea>
+                            </div>
+                        `,
+                            customClass: {
+                                popup: 'swal-wide' // we'll define below
+                            },
+                            showCancelButton: true,
+                            confirmButtonText: '✅ Submit',
+                            cancelButtonText: '❌ Cancel',
+                            confirmButtonColor: '#10b981', // Tailwind green-500
+                            cancelButtonColor: '#d1d5db', // Tailwind gray-300
+                            focusConfirm: false,
+                            preConfirm: () => {
+                                const status = document.getElementById('swal-leave-status')
+                                    .value;
+                                const remarks = document.getElementById('swal-remarks')
+                                    .value.trim();
+                                if (!status) {
+                                    Swal.showValidationMessage('⚠️ Please select a status');
+                                    return false;
+                                }
+                                if (!remarks) {
+                                    Swal.showValidationMessage('⚠️ Please enter remarks');
+                                    return false;
+                                }
+                                return {
+                                    status,
+                                    remarks
+                                };
+                            }
+                        })
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.showLoading(); // show spinner while saving
+                                fetch('{{ route('leave.status.log.create') }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        },
+                                        body: JSON.stringify({
+                                            leave_id: leaveId,
+                                            leave_status_id: result.value.status,
+                                            remarks: result.value.remarks
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        Swal.hideLoading();
+                                        if (data.success) {
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: '✅ Updated Successfully!',
+                                                text: 'Leave status has been updated.',
+                                                confirmButtonColor: '#10b981'
+                                            }).then(() => location.reload());
+                                        } else {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: '❌ Error',
+                                                text: data.message ||
+                                                    'Something went wrong.',
+                                                confirmButtonColor: '#ef4444'
+                                            });
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                        Swal.hideLoading();
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: '❌ Error',
+                                            text: 'Unexpected error occurred.',
+                                            confirmButtonColor: '#ef4444'
+                                        });
+                                    });
+                            }
+                        });
+                });
+            });
+        });
+    </script>
+
 @endsection

@@ -35,8 +35,8 @@ class LeaveStatusLogController extends Controller
      */
     public function index()
     {
-        $leaveStatusLogDetails = $this->leaveStatusLogService->all();
-
+        $leaveStatusLogDetails = $this->leaveService->all();
+        // dd($leaveStatusLogDetails);
         return view('company.leave_status_log.index', compact('leaveStatusLogDetails'));
     }
 
@@ -48,9 +48,7 @@ class LeaveStatusLogController extends Controller
     public function add()
     {
         $allLeaveDetails = $this->leaveService->getPendingLeavesByUserId();
-        $allLeaveStatusDetails = $this->leaveStatusService->getAllActiveLeaveStatus()->where('id', '!=', '1');
-
-        return view('company.leave_status_log.add', compact('allLeaveDetails', 'allLeaveStatusDetails'));
+        return view('company.leave_status_log.add', compact('allLeaveDetails'));
     }
 
     /**
@@ -118,28 +116,51 @@ class LeaveStatusLogController extends Controller
     public function create(Request $request)
     {
         try {
-            $request->validate([
-                'leave_id'             => ['required', 'exists:leaves,id'],
-                'leave_status_id'      => ['required', 'exists:leave_statuses,id'],
-                'remarks'               => ['required'],
-
+            $validated = $request->validate([
+                'leave_id'         => ['required', 'exists:leaves,id'],
+                'leave_status_id'  => ['required', 'exists:leave_statuses,id'],
+                'remarks'          => ['required', 'string'],
             ]);
-            $data = $request->all();
-            if ($this->leaveStatusLogService->create($data)) {
-                if ($data['leave_status_id'] == 2) {
-                    $leave = $this->leaveService->getDetailsById($data['leave_id']);
+            // Create lave status log
+            if ($this->leaveStatusLogService->create($validated)) {
+                // If approved, debit leave days
+                if ($validated['leave_status_id'] == 2) {
+                    $leave = $this->leaveService->getDetailsById($validated['leave_id']);
 
                     $startDate = Carbon::parse($leave->from);
-                    $endDate = Carbon::parse($leave->to);
-                    $days = $startDate->diffInDays($endDate);
-
-                    $this->employeeLeaveAvailableService->debitLeaveDetails($leave->user_id, $leave->leave_type_id, ($days <= 0 ? 1 : $days));
+                    $endDate   = Carbon::parse($leave->to);
+                    $days      = $startDate->diffInDays($endDate);
+                    $this->employeeLeaveAvailableService->debitLeaveDetails(
+                        $leave->user_id,
+                        $leave->leave_type_id,
+                        ($days <= 0 ? 1 : $days)
+                    );
                 }
 
-                return redirect(route('leave.status.log.index'))->with('success', 'Updated successfully');
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Leave status updated successfully.'
+                ]);
             }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Not authorized to update leave status.'
+            ], 500);
+
         } catch (ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed.',
+                'errors'  => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong.',
+                'error'   => $e->getMessage()
+            ], 500);
         }
     }
 }

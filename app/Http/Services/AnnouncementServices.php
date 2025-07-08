@@ -160,7 +160,7 @@ class AnnouncementServices
       $assignedDepartmentIds = $this->departmentServices->getAllAssignedDepartment($announcementsDetails);
       $assignedDesignationIds = $this->designationServices->getAllAssignedDesignation($announcementsDetails);
 
-      if (in_array($userDetails->details->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->department_id, $assignedDepartmentIds) && in_array($userDetails->designation_id, $assignedDesignationIds)) {
+      if (in_array($userDetails->details->company_branch_id, $assignedCompanyBranchesIds) && in_array($userDetails->details->department_id, $assignedDepartmentIds) && in_array($userDetails->details->designation_id, $assignedDesignationIds)) {
         $allAssignedAnnouncement[] = $announcementsDetails;
       }
     }

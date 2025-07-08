@@ -20,6 +20,9 @@ use App\Exports\EmployeeAttendanceExport;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\AttendanceRequestService;
 use App\Http\Services\EmployeeAttendanceService;
+use App\Http\Services\GenerateSalaryService;
+use App\Http\Services\TaxSlabRuleService;
+use App\Models\UserCtcHistory;
 
 class AttendanceController extends Controller
 {
@@ -29,8 +32,10 @@ class AttendanceController extends Controller
     public $leaveService;
     public $holidayService;
     public $weekendService;
+    public $taxSlabRateService;
+    public $generateSalaryService;
 
-    public function __construct(EmployeeAttendanceService $employeeAttendanceService, EmployeeServices $employeeService, AttendanceRequestService $attendanceRequestService, LeaveService $leaveService, HolidayServices $holidayService, WeekendService $weekendService)
+    public function __construct(EmployeeAttendanceService $employeeAttendanceService, EmployeeServices $employeeService, AttendanceRequestService $attendanceRequestService, LeaveService $leaveService, HolidayServices $holidayService, WeekendService $weekendService, TaxSlabRuleService $taxSlabRateService, GenerateSalaryService $generateSalaryService)
     {
         $this->employeeAttendanceService = $employeeAttendanceService;
         $this->employeeService = $employeeService;
@@ -38,7 +43,8 @@ class AttendanceController extends Controller
         $this->leaveService = $leaveService;
         $this->holidayService = $holidayService;
         $this->weekendService = $weekendService;
-
+        $this->taxSlabRateService = $taxSlabRateService;
+        $this->generateSalaryService = $generateSalaryService;
     }
     public function makeAttendance(Request $request)
     {
@@ -75,7 +81,6 @@ class AttendanceController extends Controller
                     'message' => $attendanceDetails['message'] ?? "You are not allowed to Punch In at this time.",
                 ], 200);
             }
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -122,7 +127,6 @@ class AttendanceController extends Controller
                     'message' => $attendanceDetails['message'] ?? "You are not allowed to Punch In at this time.",
                 ], 200);
             }
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -141,7 +145,6 @@ class AttendanceController extends Controller
                 'status' => true,
                 'data' => $shifts,
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -265,7 +268,6 @@ class AttendanceController extends Controller
                 'status' => true,
                 'data' => $response,
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -306,28 +308,102 @@ class AttendanceController extends Controller
 
     public function generatePaySlip(Request $request)
     {
-        $employeeDetails = User::find(Auth()->guard('employee_api')->user()->id);
-        $checkExistingMonthDetails = UserMonthlySalary::where('user_id', Auth()->guard('employee_api')->user()->id)->where('year', $request->get('year'))->where('month', $request->get('month'))->first();
-        $data = [];
-        if (isset($checkExistingMonthDetails) && !empty($checkExistingMonthDetails)) {
-            $data['getEmployeeMonthlySalary']['others'] = $checkExistingMonthDetails->toArray();
-            $data['getEmployeeMonthlySalary']['monthlyCtc'] = $checkExistingMonthDetails->monthly_ctc;
-            $data['getEmployeeMonthlySalary']['components'] = $checkExistingMonthDetails->userMonthlySalaryComponentLog->toArray();
-            $data['employeeSalary'] = $employeeDetails;
-            $data['status'] = true;
-            $data['mail'] = $checkExistingMonthDetails->mail_send;
-            $pdf = PDF::loadView('salary_temp', ['data' => $data]);
-            $fileName = removingSpaceMakingName($employeeDetails->name) . '-' . Carbon::now()->subMonth()->format('n') . '_salary.pdf';
-            $filePath = '/salaries/' . $fileName;
-            Storage::disk('public')->put($filePath, $pdf->output());
-            return response()->json(['status' => true, 'file_url' => url("storage" . $filePath)]);
+        $employeeId = Auth()->guard('employee_api')->user()->id;
+        $employeeDetails = User::find($employeeId);
+        $year = $request->get('year');
+        $month = $request->get('month');
+        $date = Carbon::create($year, $month, 1);
+
+        // Check for existing monthly salary details
+        $monthlySalaryDetails = UserMonthlySalary::where('user_id', $employeeId)
+            ->where('year', $year)
+            ->where('month', $month)
+            ->first();
+
+        // Prepare the response data
+        $data = [
+            'employeeSalary' => $employeeDetails,
+            'status' => true,
+        ];
+
+        if ($monthlySalaryDetails) {
+            // Existing payslip found
+            $data['getEmployeeMonthlySalary'] = [
+                'others' => $monthlySalaryDetails->toArray(),
+                'monthlyCtc' => $monthlySalaryDetails->monthly_ctc,
+                'components' => $monthlySalaryDetails->userMonthlySalaryComponentLog->toArray(),
+            ];
+            $data['mail'] = $monthlySalaryDetails->mail_send;
         } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Sorry, no payslip generated for your previous month.',
+            // No existing payslip, calculate new salary
+            $userCTCDetails = UserCtcHistory::where('user_id', $employeeId)
+                ->whereDate('effective_date', '<=', $date->startOfMonth())
+                ->orderBy('id', 'DESC')
+                ->first();
+
+            if (!$userCTCDetails) {
+                return response()->json(['status' => false, 'message' => 'No payslip found for this employee for the respective month and year']);
+            }
+
+            $ctcValue = $userCTCDetails->ctc_value;
+            $salaryComponents = $userCTCDetails->userCtcComponentHistory;
+            $applicableTaxRates = $this->taxSlabRateService->getActiveTaxSlab($employeeDetails->company_id);
+            $totalDayPresent = $this->employeeAttendanceService->getTotalWorkingDaysByUserId($year, $month, $employeeId)->first();
+
+            if (!$totalDayPresent || $totalDayPresent->total_present <= 0) {
+                return response()->json(['status' => false, 'message' => "No attendance found for the previous month"]);
+            }
+
+            $totalWorking = $date->daysInMonth;
+            $workingDays = round($totalWorking - $totalDayPresent->total_present, 2);
+            $lossOfPay = 0;
+
+            $getEmployeeMonthlySalary = $this->generateSalaryService->getEmployeeMonthlySalary($ctcValue, $salaryComponents, $applicableTaxRates, $totalWorking, $lossOfPay);
+            $getEmployeeCtcComponents = $this->generateSalaryService->getEmployeeCtcComponents($ctcValue, $salaryComponents, $applicableTaxRates);
+            $userMonthlySalary = $this->generateSalaryService->createUserMonthlySalary($getEmployeeMonthlySalary, [
+                'user_id' => $employeeId,
+                'year' => $year,
+                'month' => $month,
             ]);
+
+            $data['getEmployeeMonthlySalary'] = [
+                'monthlyCtc' => $getEmployeeMonthlySalary,
+                'components' => $getEmployeeCtcComponents,
+            ];
+            $data['mail'] = $userMonthlySalary->mail_send;
         }
+
+        $pdf = PDF::loadView('salary_temp', ['data' => $data]);
+        $fileName = removingSpaceMakingName($employeeDetails->name) . '-' . Carbon::now()->subMonth()->format('n') . '_salary.pdf';
+        $filePath = '/salaries/' . $fileName;
+        Storage::disk('public')->put($filePath, $pdf->output());
+
+        return response()->json(['status' => true, 'file_url' => url("storage" . $filePath)]);
     }
+    // public function generatePaySlip(Request $request)
+    // {
+    //     $employeeDetails = User::find(Auth()->guard('employee_api')->user()->id);
+    //     $checkExistingMonthDetails = UserMonthlySalary::where('user_id', Auth()->guard('employee_api')->user()->id)->where('year', $request->get('year'))->where('month', $request->get('month'))->first();
+    //     $data = [];
+    //     if (isset($checkExistingMonthDetails) && !empty($checkExistingMonthDetails)) {
+    //         $data['getEmployeeMonthlySalary']['others'] = $checkExistingMonthDetails->toArray();
+    //         $data['getEmployeeMonthlySalary']['monthlyCtc'] = $checkExistingMonthDetails->monthly_ctc;
+    //         $data['getEmployeeMonthlySalary']['components'] = $checkExistingMonthDetails->userMonthlySalaryComponentLog->toArray();
+    //         $data['employeeSalary'] = $employeeDetails;
+    //         $data['status'] = true;
+    //         $data['mail'] = $checkExistingMonthDetails->mail_send;
+    //         $pdf = PDF::loadView('salary_temp', ['data' => $data]);
+    //         $fileName = removingSpaceMakingName($employeeDetails->name) . '-' . Carbon::now()->subMonth()->format('n') . '_salary.pdf';
+    //         $filePath = '/salaries/' . $fileName;
+    //         Storage::disk('public')->put($filePath, $pdf->output());
+    //         return response()->json(['status' => true, 'file_url' => url("storage" . $filePath)]);
+    //     } else {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Sorry, no payslip generated for your previous month.',
+    //         ]);
+    //     }
+    // }
 
     public function storeAttendanceRequest(Request $request)
     {
@@ -392,7 +468,7 @@ class AttendanceController extends Controller
             'punch_in' => 'required|date_format:H:i',
             'punch_out' => 'required|date_format:H:i|after:punch_in',
             'reason' => 'required|string|max:255',
-        ], );
+        ],);
         if ($validator->fails()) {
             return response()->json([
                 "error" => 'validation_error',

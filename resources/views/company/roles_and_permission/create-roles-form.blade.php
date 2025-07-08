@@ -20,8 +20,6 @@
                     @if (isset($roles))
                         @method('patch')
                     @endif
-
-
                     <table class="_table table  dt-responsive nowrap">
                         <thead>
                             <tr>

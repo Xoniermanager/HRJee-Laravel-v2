@@ -212,8 +212,10 @@ function getCompanyMenuHtml()
 {
     $html = '';
     $user = Auth::user();
-    $currentUrl = url()->current();
     $urlPrefix = ($user->type == 'company' || session()->has('impersonation')) ? 'company' : 'employee';
+
+    // Get the second segment after /company or /employee
+    $activeSegment = request()->segment(2);
 
     foreach ($user->menu as $menu) {
         if ($menu->children && $menu->children->isNotEmpty() && $menu->status == 1) {
@@ -223,14 +225,19 @@ function getCompanyMenuHtml()
             foreach ($menu->children as $child) {
                 if ($child->role === "company" && $child->status == 1) {
                     $url = "/$urlPrefix/" . ltrim($child->slug, '/');
-                    $isActiveChild = $currentUrl === url($url);
+
+                    // Get first segment of child slug
+                    $childSegment = explode('/', ltrim($child->slug, '/'))[0];
+
+                    // Active if matches second segment
+                    $isActiveChild = ($childSegment === $activeSegment);
 
                     if ($isActiveChild) {
                         $hasActiveChild = true;
                     }
 
                     $subMenuHtml .= '<div class="menu-item ' . ($isActiveChild ? 'active' : '') . '" data-url="' . $url . '">
-                        <a class="menu-link " href="' . $url . '">
+                        <a class="menu-link" href="' . $url . '">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -257,7 +264,8 @@ function getCompanyMenuHtml()
         // Menu without children
         if ($menu->parent_id === null && $menu->children->isEmpty() && $menu->status == 1) {
             $url = "/$urlPrefix/" . ltrim($menu->slug, '/');
-            $isActive = $currentUrl === url($url);
+            $menuSegment = explode('/', ltrim($menu->slug, '/'))[0];
+            $isActive = ($menuSegment === $activeSegment);
 
             $html .= '<div class="menu-item ' . ($isActive ? 'active' : '') . '" data-url="' . $url . '">
                 <a class="menu-link" href="' . $url . '">
@@ -273,7 +281,7 @@ function getCompanyMenuHtml()
     // Face Recognition Menu
     if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
         $faceUrl = '/company/face-recognition';
-        $isActive = $currentUrl === url($faceUrl);
+        $isActive = (request()->segment(2) === 'face-recognition');
 
         $html .= '<div class="menu-item ' . ($isActive ? 'active' : '') . '" data-url="' . $faceUrl . '">
             <a class="menu-link" href="' . $faceUrl . '">
@@ -287,6 +295,7 @@ function getCompanyMenuHtml()
 
     return $html;
 }
+
 use Illuminate\Support\Facades\URL;
 
 function getEmployeeMenuHtml()

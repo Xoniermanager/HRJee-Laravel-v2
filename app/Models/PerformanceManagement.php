@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ManagerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PerformanceManagement extends Model
 {
-    use HasFactory;
+    use HasFactory,ManagerScope;
 
     protected $fillable = ['cycle_id', 'company_id', 'user_id', 'start_date', 'end_date', 'leave_ranking', 'attendance_ranking', 'task_ranking', 'is_approved', 'created_by'];
 

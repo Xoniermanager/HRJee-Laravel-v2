@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ManagerScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EmployeeLeaveAvailable extends Model
 {
-    use HasFactory;
+    use HasFactory, ManagerScope;
 
     protected $fillable = ['user_id','leave_type_id','available'];
 

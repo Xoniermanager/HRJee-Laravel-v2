@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\SalaryComponentService;
 use App\Http\Requests\SalaryComponentStoreRequest;
 use App\Http\Requests\SalaryComponentUpdateRequest;
+use App\Models\DemoSalaryComponent;
 
 class SalaryComponentController extends Controller
 {
@@ -74,4 +75,112 @@ class SalaryComponentController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
+
+    public function demo()
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+       // get stored components
+       $storedComponents = DemoSalaryComponent::where('user_id', $user->id)->get();
+
+       $earnings = $storedComponents->where('type', 'earning');
+       $deductions = $storedComponents->where('type', 'deduction');
+
+       // defaults if empty
+       if ($earnings->isEmpty()) {
+           $earnings = collect([
+               (object)['name' => 'Basic', 'value' => '', 'selected' => true],
+               (object)['name' => 'HRA', 'value' => '', 'selected' => true],
+           ]);
+       }
+       if ($deductions->isEmpty()) {
+           $deductions = collect([
+               (object)['name' => 'PF', 'value' => '', 'selected' => true],
+               (object)['name' => 'TaxRate', 'value' => '', 'selected' => true],
+           ]);
+       }
+
+        return view('salary-design', compact('earnings', 'deductions','storedComponents'));
+    }
+    public function storeDemo(Request $request)
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+        // save earnings
+        if($request->earnings) {
+            foreach ($request->earnings as $item) {
+                if (!empty($item['id'])) {
+                    // Update existing
+                    DemoSalaryComponent::where('id', $item['id'])
+                        ->where('user_id', $user->id)
+                        ->update([
+                            'value' => $item['value'],
+                            'selected' => isset($item['selected']) ? 1 : 0
+                        ]);
+                } else if (isset($item['selected'])) {
+                    // New dynamic component: create only if selected
+                    DemoSalaryComponent::create([
+                        'user_id' => $user->id,
+                        'type' => 'earning',
+                        'name' => $item['name'],
+                        'value' => $item['value'],
+                        'selected' => 1
+                    ]);
+                } else {
+                    // Default component with no id (first time): create and mark selected=1
+                    DemoSalaryComponent::create([
+                        'user_id' => $user->id,
+                        'type' => 'earning',
+                        'name' => $item['name'],
+                        'value' => $item['value'],
+                        'selected' => 1
+                    ]);
+                }
+            }
+        }
+
+        // save deductions
+        if($request->deductions) {
+            foreach ($request->deductions as $item) {
+                if (!empty($item['id'])) {
+                    // Update existing
+                    DemoSalaryComponent::where('id', $item['id'])
+                        ->where('user_id', $user->id)
+                        ->update([
+                            'value' => $item['value'],
+                            'selected' => isset($item['selected']) ? 1 : 0
+                        ]);
+                } else if (isset($item['selected'])) {
+                    // New dynamic component: create only if selected
+                    DemoSalaryComponent::create([
+                        'user_id' => $user->id,
+                        'type' => 'deduction',
+                        'name' => $item['name'],
+                        'value' => $item['value'],
+                        'selected' => 1
+                    ]);
+                } else {
+                    // Default component with no id (first time): create and mark selected=1
+                    DemoSalaryComponent::create([
+                        'user_id' => $user->id,
+                        'type' => 'deduction',
+                        'name' => $item['name'],
+                        'value' => $item['value'],
+                        'selected' => 1
+                    ]);
+                }
+            }
+        }
+
+        return back()->with('success', 'Salary components saved successfully!');
+    }
+
+    public function destroy($id)
+    {
+    $component = DemoSalaryComponent::findOrFail($id);
+    $component->delete();
+
+    return response()->json(['success' => true, 'message' => 'Component deleted successfully.']);
+    }
+
 }

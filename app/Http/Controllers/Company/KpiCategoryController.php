@@ -5,17 +5,17 @@ namespace App\Http\Controllers\Company;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Services\PerformanceCategoryService;
+use App\Http\Services\KpiCategoryService;
 use Illuminate\Support\Facades\Validator;
 
 
-class PerformanceCategoryController extends Controller
+class KpiCategoryController extends Controller
 {
 
-    private $performanceCategoryService;
-    public function __construct(PerformanceCategoryService $performanceCategoryService)
+    private $kpiCategoryService;
+    public function __construct(KpiCategoryService $kpiCategoryService)
     {
-        $this->performanceCategoryService = $performanceCategoryService;
+        $this->kpiCategoryService = $kpiCategoryService;
     }
 
     /**
@@ -24,8 +24,8 @@ class PerformanceCategoryController extends Controller
     public function index()
     {
 
-        return view('company.performance-category.index', [
-            'performanceCategories' => $this->performanceCategoryService->all([auth()->user()->id])
+        return view('company.kpi-category.index', [
+            'kpiCategories' => $this->kpiCategoryService->all([auth()->user()->id])
         ]);
     }
 
@@ -35,8 +35,8 @@ class PerformanceCategoryController extends Controller
     public function store(Request $request)
     {
         try {
-            $validateCountryData  = Validator::make($request->all(), [
-                'name' => 'required|string|unique:countries,name',
+            $validateCountryData = Validator::make($request->all(), [
+                'name' => 'required|string|unique:kpi_categories,name',
             ]);
             if ($validateCountryData->fails()) {
 
@@ -45,17 +45,17 @@ class PerformanceCategoryController extends Controller
             $data = $request->all();
             $data['company_id'] = auth()->user()->company_id;
             $data['created_by'] = auth()->user()->id;
-            if ($this->performanceCategoryService->create($data)) {
+            if ($this->kpiCategoryService->create($data)) {
 
                 return response()->json([
-                    'message' => 'Category Created Successfully!',
-                    'data'   =>  view('company.performance-category.list', [
-                        'performanceCategories' => $this->performanceCategoryService->all([auth()->user()->id])
+                    'message' => 'KPI Category Created Successfully!',
+                    'data' => view('company.kpi-category.list', [
+                        'kpiCategories' => $this->kpiCategoryService->all([auth()->user()->id])
                     ])->render()
                 ]);
             }
         } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -64,8 +64,8 @@ class PerformanceCategoryController extends Controller
      */
     public function update(Request $request)
     {
-        $validateCountryData  = Validator::make($request->all(), [
-            'name' => 'required|string|unique:performance_categories,name,' . $request->company_id,
+        $validateCountryData = Validator::make($request->all(), [
+            'name' => 'required|string|unique:kpi_categories,name,' . $request->company_id,
         ]);
 
         if ($validateCountryData->fails()) {
@@ -73,14 +73,14 @@ class PerformanceCategoryController extends Controller
             return response()->json(['error' => $validateCountryData->messages()], 400);
         }
         $updateData = $request->except(['_token', 'id']);
-        $companyStatus = $this->performanceCategoryService->updateDetails($updateData, $request->id);
+        $companyStatus = $this->kpiCategoryService->updateDetails($updateData, $request->id);
         if ($companyStatus) {
 
             return response()->json(
                 [
-                    'message' => 'Category Updated Successfully!',
-                    'data'   =>  view('company.performance-category.list', [
-                        'performanceCategories' => $this->performanceCategoryService->all([auth()->user()->id])
+                    'message' => 'KPI Category Updated Successfully!',
+                    'data' => view('company.kpi-category.list', [
+                        'kpiCategories' => $this->kpiCategoryService->all([auth()->user()->id])
                     ])->render()
                 ]
             );
@@ -93,13 +93,13 @@ class PerformanceCategoryController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
-        $data = $this->performanceCategoryService->deleteDetails($id);
+        $data = $this->kpiCategoryService->deleteDetails($id);
         if ($data) {
 
             return response()->json([
-                'success' => 'Category Deleted Successfully',
-                'data'   =>  view('company.performance-category.list', [
-                    'performanceCategories' => $this->performanceCategoryService->all([auth()->user()->id])
+                'success' => 'KPI Category Deleted Successfully',
+                'data' => view('company.kpi-category.list', [
+                    'kpiCategories' => $this->kpiCategoryService->all([auth()->user()->id])
                 ])->render()
             ]);
         } else {
@@ -107,18 +107,18 @@ class PerformanceCategoryController extends Controller
             return response()->json(['error' => 'Something Went Wrong!! Please try again']);
         }
     }
-    
+
     public function statusUpdate(Request $request)
     {
         $id = $request->id;
         $data['status'] = $request->status;
-        $statusDetails = $this->performanceCategoryService->updateDetails($data, $id);
+        $statusDetails = $this->kpiCategoryService->updateDetails($data, $id);
         if ($statusDetails) {
 
             return response()->json([
                 'success' => 'Status Updated Successfully',
-                'data'   =>  view("company.performance-category.list", [
-                    'performanceCategories' => $this->performanceCategoryService->all([auth()->user()->id])
+                'data' => view("company.kpi-category.list", [
+                    'kpiCategories' => $this->kpiCategoryService->all([auth()->user()->id])
                 ])->render()
             ]);
         } else {
@@ -129,13 +129,13 @@ class PerformanceCategoryController extends Controller
 
     public function search(Request $request)
     {
-        $searchedItems = $this->performanceCategoryService->serachFilterList($request);
+        $searchedItems = $this->kpiCategoryService->serachFilterList($request);
         if ($searchedItems) {
 
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view("company.performance-category.list", [
-                    'performanceCategories' => $searchedItems
+                'data' => view("company.kpi-category.list", [
+                    'kpiCategories' => $searchedItems
                 ])->render()
             ]);
         } else {

@@ -2,9 +2,10 @@
 
 namespace App\Http\Services;
 
-use App\Models\Leave;
 use Carbon\Carbon;
+use App\Models\Leave;
 use App\Models\LeaveStatus;
+use App\Models\EmployeeManager;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\LeaveRepository;
 use App\Repositories\LeaveManagerUpdateRepository;
@@ -50,55 +51,68 @@ class LeaveService
      */
     public function create(array $data)
     {
-        $payload = array();
-        $payload =
-            [
-                'leave_type_id' => $data['leave_type_id'],
-                'from' => $data['from'],
-                'to' => $data['to'],
-                'reason' => $data['reason'],
-                'leave_status_id' => LeaveStatus::PENDING
-            ];
+        $payload = [
+            'leave_type_id'    => $data['leave_type_id'],
+            'from'             => $data['from'],
+            'to'               => $data['to'],
+            'reason'           => $data['reason'],
+            'leave_status_id'  => LeaveStatus::PENDING
+        ];
 
+        // handle who applied
         if (isset($data['leave_applied_by']) && !empty($data['leave_applied_by'])) {
             $payload['user_id'] = $data['user_id'];
         } else {
-            $payload['leave_applied_by'] = Auth()->user()->company_id ?? Auth::user()->id ?? Auth()->user()->id;
-            //$payload['user_id'] = Auth()->user()->company_id ?? Auth::user()->id ?? Auth()->user()->id;
+            $payload['leave_applied_by'] = Auth()->user()->id;
             $payload['user_id'] = Auth::user()->id;
         }
+
+        // handle half day
         if (isset($data['is_half_day']) && !empty($data['is_half_day'])) {
             $payload['is_half_day'] = $data['is_half_day'];
             $payload['from_half_day'] = $data['from_half_day'];
             $payload['to_half_day'] = $data['to_half_day'] ?? '';
         }
+
+        // create leave entry
         $appliedLeaveDetails = $this->leaveRepository->create($payload);
 
+        // prepare manager updates
         $leaveManagerPayload = [];
-        $managers = auth()->user()->managers;
-        foreach ($managers as $manager) {
-            $leaveManagerPayload[] = [
-                'manager_id' => $manager->manager_id,
-                'leave_id' => $appliedLeaveDetails->id,
-                'leave_status_id' => 1,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ];
+        $managers = EmployeeManager::where('user_id', $payload['user_id'])->get();
+
+        if ($managers->isNotEmpty()) {
+            foreach ($managers as $manager) {
+                $leaveManagerPayload[] = [
+                    'manager_id'       => $manager->manager_id,
+                    'leave_id'         => $appliedLeaveDetails->id,
+                    'leave_status_id'  => LeaveStatus::PENDING,
+                    'created_at'       => now(),
+                    'updated_at'       => now(),
+                ];
+            }
+
+            $this->leaveManagerUpdateRepository->insert($leaveManagerPayload);
         }
 
-        $this->leaveManagerUpdateRepository->insert($leaveManagerPayload);
+        // build response
+        $response = ['status' => true, 'message' => 'Leave applied successfully', 'data' => []];
 
-        $response = array('status' => true, 'message' => 'Leave Apply successfully', 'data' => []);
+        // if leave created, calculate days and debit leave (optional until approved)
         if ($appliedLeaveDetails) {
             $startDate = Carbon::parse($data['from']);
             $endDate = Carbon::parse($data['to']);
             $days = $startDate->diffInDays($endDate);
-            $days = $days == 0 ? 1 : $days; //if applied for only one day then days diff will show 0 so
-            //$data = $this->employeeLeaveAvailableService->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days); //leave should not debit till not approved
-            $data = [];
-            $response = array('status' => true, 'message' => 'Leave Apply successfully', 'data' => $data);
+            $days = $days == 0 ? 1 : $days;
+
+            // note: consider skipping debit until approved, depends on your business rule
+            $data = $this->employeeLeaveAvailableService->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days);
+
+            $response = ['status' => true, 'message' => 'Leave applied successfully', 'data' => $data];
         }
+
         return $response;
+
     }
 
     /**

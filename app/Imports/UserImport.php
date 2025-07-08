@@ -80,7 +80,7 @@ class UserImport implements
     protected function preloadExistingUsers()
     {
         // Get all existing emails and emp_ids in one query
-        $existingEmails = User::where('company_id', $this->companyId)
+        $existingEmails = User::managerFilter()->where('company_id', $this->companyId)
             ->pluck('email')
             ->mapWithKeys(function ($email) {
                 return [strtolower(trim($email)) => true];

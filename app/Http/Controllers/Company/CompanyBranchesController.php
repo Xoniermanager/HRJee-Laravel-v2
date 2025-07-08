@@ -171,12 +171,10 @@ class CompanyBranchesController extends Controller
     {
         $branchIds = $request->branch_id;
         $allManagers = $this->userService->getManagersByBranchId($branchIds);
-        // dd($allManagers);
         $response = [
             'status' => true,
             'data' => $allManagers
         ];
-
         return json_encode($response);
     }
 }

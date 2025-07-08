@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ManagerScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AssignTask extends Model
 {
-    use HasFactory;
+    use HasFactory,ManagerScope;
     protected $fillable = ['user_id', 'user_end_status', 'final_status', 'response_data', 'company_id', 'created_by', 'document', 'image', 'disposition_code_id', 'remark', 'visit_address', 'longitude', 'latitude', 'visit_address_latitude', 'visit_address_longitude', 'completed_at'];
     public function user()
     {

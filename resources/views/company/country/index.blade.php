@@ -342,7 +342,7 @@ Country
         jQuery("#status").on('change', function() {
             search_filter_results();
         });
-        jQuery(document).on('click', '#contact_list a', function(e) {
+        jQuery(document).on('click', '#contact_list .paginate a', function(e) {
             e.preventDefault();
             var page_no = $(this).attr('href').split('page=')[1];
             search_filter_results(page_no);

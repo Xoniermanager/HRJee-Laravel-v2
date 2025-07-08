@@ -1,181 +1,162 @@
-<div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
-    <!--begin::Container-->
-    <div class="container-xxl" id="kt_content_container">
-        <!--begin::Row-->
-        <div class="row gy-5 g-xl-10">
-            <!--begin::Col-->
-            <div class="card card-body col-md-12">
-                <div class="mb-xl-10 mb-5">
-                    <div class="card-body pt-5">
-                        <div class="d-flex">
-                            <div class="col-md-6 m-0">
-                                <!--begin::Timeline-->
-                                <div class="timeline timeline-border-dashed">
-                                    <!--begin::Timeline item-->
-                                    <div class="timeline-item pb-3rem">
-                                        <!--begin::Timeline line-->
-                                        <div class="timeline-line"></div>
-                                        <!--end::Timeline line-->
+@php
+    $leaveLogStatusDetails = $leaveDetails->leaveAction ?? collect();
+    $leaveManagerDetails = $leaveDetails->managerAction ?? collect();
 
-                                        <!--begin::Timeline icon-->
-                                        <div class="timeline-icon">
-                                            <i class="fa fa-circle fs-2 text-info"><span class="path1"></span><span
-                                                    class="path2"></span></i>
-                                        </div>
-                                        <!--end::Timeline icon-->
+    // Final manager status: priority - cancelled > rejected > approved > pending
+    if ($leaveManagerDetails->where('leave_status_id', 4)->isNotEmpty()) {
+        $finalManagerStatus = 'CANCELLED';
+    } elseif ($leaveManagerDetails->where('leave_status_id', 3)->isNotEmpty()) {
+        $finalManagerStatus = 'REJECTED';
+    } elseif ($leaveManagerDetails->where('leave_status_id', 2)->isNotEmpty()) {
+        $finalManagerStatus = 'APPROVED';
+    } else {
+        $finalManagerStatus = 'PENDING';
+    }
 
-                                        <!--begin::Timeline content-->
-                                        <div class="timeline-content m-0">
-                                            <!--begin::Label-->
-                                            <span class="fs-8 fw-bolder text-info text-uppercase">Leave Applied
-                                            </span>
-                                            <!--begin::Label-->
-                                            <!--begin::Title-->
-                                            <a href="#"
-                                                class="fs-7 d-block text-hover-primary text-gray-800">{{ getFormattedDate($leaveDetails->created_at ?? '') }}</a>
-                                            <!--end::Title-->
+    $finalStatus = $leaveDetails->leaveStatus;
 
-                                        </div>
-                                        <!--end::Timeline content-->
-                                    </div>
-                                    <!--end::Timeline item-->
-                                    <!--begin::Timeline item-->
-                                    @if (count($leaveLogStatusDetails))
-                                        @foreach ($leaveLogStatusDetails as $leaveLogStatusDetail)
-                                            @if ($leaveLogStatusDetail->leaveStatus->id == 2)
-                                                <!--end::Timeline item-->
-                                                <!--begin::Timeline item-->
-                                                <div class="timeline-item pb-3rem">
-                                                    <!--begin::Timeline line-->
-                                                    <div class="timeline-line"></div>
-                                                    <!--end::Timeline line-->
+    // Split logs
+    $managerLogs = $leaveLogStatusDetails->filter(fn($log) => $log->actionTakenBy->userRole->category === 'custom');
+    $hrLogs = $leaveLogStatusDetails->filter(fn($log) => $log->actionTakenBy->userRole->name === 'HR');
+@endphp
 
-                                                    <!--begin::Timeline icon-->
-                                                    <div class="timeline-icon">
-                                                        <i class="fa fa-circle fs-2 text-success"><span
-                                                                class="path1"></span><span class="path2"></span></i>
-                                                    </div>
-                                                    <!--end::Timeline icon-->
+<div class="content fade-in-image">
+    <div class="container-xxl">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="timeline p-4 bg-white rounded shadow-sm">
 
-                                                    <!--begin::Timeline content-->
-                                                    <div class="timeline-content m-0">
-                                                        <!--begin::Label-->
-                                                        <span
-                                                            class="fs-8 fw-bolder text-success text-uppercase">{{ $leaveLogStatusDetail->leaveStatus->name }} by {{ $leaveLogStatusDetail->actionTakenBy->name }}
-                                                        </span>
-                                                        <!--begin::Label-->
-
-                                                        <!--begin::Title-->
-                                                        <a href="#"
-                                                            class="fs-7 d-block text-hover-primary text-gray-800">{{ getFormattedDate($leaveLogStatusDetail->created_at ?? '') }}</a>
-                                                        <span
-                                                            class="fw-semibold text-gray-500">{{ $leaveLogStatusDetail->remarks }}
-                                                        </span>
-                                                        <!--end::Title-->
-
-                                                    </div>
-                                                    <!--end::Timeline content-->
-                                                </div>
-                                                <!--end::Timeline item-->
-                                                <!--begin::Timeline item-->
-                                                <!--end::Timeline item-->
-                                            @else
-                                                <div class="timeline-item">
-                                                    <!--begin::Timeline line-->
-                                                    <div class="timeline-line"></div>
-                                                    <!--end::Timeline line-->
-
-                                                    <!--begin::Timeline icon-->
-                                                    <div class="timeline-icon">
-                                                        <i class="fa fa-circle fs-2 text-danger"><span
-                                                                class="path1"></span><span class="path2"></span></i>
-                                                    </div>
-                                                    <!--end::Timeline icon-->
-
-                                                    <!--begin::Timeline content-->
-                                                    <div class="timeline-content m-0">
-                                                        <!--begin::Label-->
-                                                        <span
-                                                            class="fs-8 fw-bolder text-danger text-uppercase">{{ $leaveLogStatusDetail->leaveStatus->name }} by {{ $leaveLogStatusDetail->actionTakenBy->name }}</span>
-                                                        <!--begin::Label-->
-
-                                                        <!--begin::Title-->
-                                                        <a href="#"
-                                                            class="fs-7 d-block text-hover-primary text-gray-800">{{ getFormattedDate($leaveLogStatusDetail->created_at ?? '') }}</a>
-                                                        <!--end::Title-->
-                                                        <span
-                                                            class="fw-semibold text-gray-500">{{ $leaveLogStatusDetail->remarks }}
-                                                        </span>
-                                                    </div>
-                                                    <!--end::Timeline content-->
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        <div class="timeline-item pb-3rem">
-                                            <!--begin::Timeline line-->
-                                            <div class="timeline-line"></div>
-                                            <!--end::Timeline line-->
-
-                                            <!--begin::Timeline icon-->
-                                            <div class="timeline-icon">
-                                                <i class="fa fa-circle fs-2 text-warning"><span
-                                                        class="path1"></span><span class="path2"></span></i>
-                                            </div>
-                                            <!--end::Timeline icon-->
-
-                                            <!--begin::Timeline content-->
-                                            <div class="timeline-content m-0">
-                                                <!--begin::Label-->
-                                                <span class="fs-8 fw-bolder text-warning text-uppercase">Pending</span>
-                                                <!--begin::Label-->
-
-                                                <!--begin::Title-->
-                                                <a href="#"
-                                                    class="fs-7 d-block text-hover-primary text-gray-800">{{ getFormattedDate($leaveDetails->created_at ?? '') }}</a>
-                                                <!--end::Title-->
-
-                                            </div>
-                                            <!--end::Timeline content-->
-                                        </div>
-                                    @endif
-									@foreach ($leaveManagerDetails as $leaveManagerDetail)
-									@if($leaveManagerDetail->leave_status_id == 1)
-									<div class="timeline-item pb-3rem">
-										<!--begin::Timeline line-->
-										<div class="timeline-line"></div>
-										<!--end::Timeline line-->
-
-										<!--begin::Timeline icon-->
-										<div class="timeline-icon">
-											<i class="fa fa-circle fs-2 text-warning"><span
-													class="path1"></span><span class="path2"></span></i>
-										</div>
-										<!--end::Timeline icon-->
-
-										<!--begin::Timeline content-->
-										<div class="timeline-content m-0">
-											<!--begin::Label-->
-											<span class="fs-8 fw-bolder text-warning text-uppercase">Pending by {{ $leaveManagerDetail->manager->name }}</span>
-											<!--begin::Label-->
-
-											<!--begin::Title-->
-											<a href="#"
-												class="fs-7 d-block text-hover-primary text-gray-800">{{ getFormattedDate($leaveDetails->created_at ?? '') }}</a>
-											<!--end::Title-->
-
-										</div>
-										<!--end::Timeline content-->
-									</div>
-									@endif
-									@endforeach
-                                </div>
-                                <!--end::Timeline-->
-                            </div>
+                    {{-- Leave Applied --}}
+                    <div class="timeline-item mb-4">
+                        <div class="timeline-marker bg-info"></div>
+                        <div class="timeline-content p-3 rounded bg-light">
+                            <span class="fs-8 fw-bolder text-info text-uppercase">Leave Applied</span>
+                            <a class="fs-7 d-block text-hover-primary text-gray-800">
+                                {{ getFormattedDate($leaveDetails->created_at ?? '') }}
+                            </a>
                         </div>
                     </div>
-                    <!--begin::Body-->
-                </div>
+
+                    {{-- Manager Final Status (clickable to view details) --}}
+                    <div class="timeline-item mb-3">
+                        <div class="timeline-marker
+                            @if ($finalManagerStatus == 'APPROVED') bg-success
+                            @elseif ($finalManagerStatus == 'REJECTED') bg-danger
+                            @elseif ($finalManagerStatus == 'CANCELLED') bg-secondary
+                            @else bg-warning @endif">
+                        </div>
+                        <div class="timeline-content p-3 rounded bg-light">
+                            <a class="fs-8 fw-bolder text-uppercase d-block text-hover-primary" data-bs-toggle="collapse" href="#managerLogsCollapse" role="button" aria-expanded="false">
+                                Manager Final Status: {{ $finalManagerStatus }} <small>(click to view details)</small>
+                            </a>
+                            <a class="fs-7 d-block text-hover-primary text-gray-800">
+                                {{ getFormattedDate($leaveDetails->updated_at ?? '') }}
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- Manager Logs (collapse) --}}
+                    <div class="collapse" id="managerLogsCollapse">
+                        <div class="mt-2 mb-2">
+                            <span class="fs-8 fw-bold text-gray-600 text-uppercase">All Manager Actions</span>
+                        </div>
+
+                        @forelse($leaveManagerDetails as $manager)
+                            <div class="timeline-item mb-3">
+                                <div class="timeline-marker
+                                    @if($manager->leave_status_id == 2) bg-success
+                                    @elseif($manager->leave_status_id == 3) bg-danger
+                                    @elseif($manager->leave_status_id == 4) bg-secondary
+                                    @else bg-warning @endif">
+                                </div>
+                                <div class="timeline-content p-3 rounded bg-white shadow-sm">
+                                    {{-- Status title --}}
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="fs-8 fw-bolder text-uppercase
+                                            @if($manager->leave_status_id == 2) text-success
+                                            @elseif($manager->leave_status_id == 3) text-danger
+                                            @elseif($manager->leave_status_id == 4) text-secondary
+                                            @else text-warning @endif">
+                                            {{ strtoupper(optional($manager->leaveStatus)->name ?? 'Pending') }}
+                                        </span>
+                                        <small class="text-muted">{{ getFormattedDate($manager->updated_at ?? '') }}</small>
+                                    </div>
+
+                                    {{-- Manager name and role --}}
+                                    <div class="fw-semibold mb-1">
+                                        — by <span class="text-dark">{{ optional($manager->manager)->name ?? '-' }}</span>
+                                        <small class="text-muted">({{ optional($manager->manager->userRole)->name ?? '-' }})</small>
+                                    </div>
+
+                                    {{-- Remark if exists --}}
+                                    @if($manager->remark)
+                                        <div class="fw-normal text-gray-600 small">{{ $manager->remark }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="timeline-item mb-3">
+                                <div class="timeline-marker bg-warning"></div>
+                                <div class="timeline-content p-3 rounded bg-light">
+                                    <span class="fs-8 fw-bolder text-warning text-uppercase">Pending</span>
+                                    <a class="fs-7 d-block text-hover-primary text-gray-800">
+                                        {{ getFormattedDate($leaveDetails->created_at ?? '') }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endforelse
+
+                        {{-- HR Logs --}}
+                        @if ($hrLogs->isNotEmpty())
+                            <div class="mt-4 mb-2">
+                                <span class="fs-8 fw-bold text-primary text-uppercase">HR Status</span>
+                            </div>
+                            @foreach ($hrLogs as $log)
+                                <div class="timeline-item mb-3">
+                                    <div class="timeline-marker bg-primary"></div>
+                                    <div class="timeline-content p-3 rounded bg-white shadow-sm">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fs-8 fw-bolder text-uppercase text-primary">
+                                                {{ strtoupper($log->leaveStatus->name) }}
+                                            </span>
+                                            <small class="text-muted">{{ getFormattedDate($log->created_at ?? '') }}</small>
+                                        </div>
+
+                                        <div class="fw-semibold mb-1">
+                                            — by <span class="text-dark">{{ $log->actionTakenBy->name }}</span>
+                                            <small class="text-muted">({{ $log->actionTakenBy->userRole->name ?? '-' }})</small>
+                                        </div>
+
+                                        @if($log->remarks)
+                                            <div class="fw-normal text-gray-600 small">{{ $log->remarks }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+
+                    {{-- Final Leave Status by HR --}}
+                    <div class="timeline-item mt-4 mb-2">
+                        <div class="timeline-marker
+                            @if($finalStatus?->name == 'APPROVED') bg-success
+                            @elseif($finalStatus?->name == 'REJECTED') bg-danger
+                            @elseif($finalStatus?->name == 'CANCELLED') bg-secondary
+                            @else bg-warning
+                            @endif">
+                        </div>
+                        <div class="timeline-content p-3 rounded bg-light">
+                            <span class="fs-8 fw-bolder text-uppercase">
+                                Final Leave Status: {{ $finalStatus?->name ?? 'PENDING' }}
+                            </span>
+                            <a class="fs-7 d-block text-hover-primary text-gray-800">
+                                {{ getFormattedDate($leaveDetails->updated_at ?? $leaveDetails->created_at ?? '') }}
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div> <!-- end::Timeline -->
             </div>
         </div>
     </div>

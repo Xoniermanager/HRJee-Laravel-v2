@@ -62,38 +62,52 @@ class AdminCompanyController extends Controller
         ]);
     }
 
-    protected function createRoleForCompany($companyId, $menuIds, $companyName)
+    protected function createRoleForCompany($companyId, $menuIds)
     {
         DB::beginTransaction();
-
         try {
             $menus = Menu::whereIn('id', $menuIds)->get();
-            $adminRole = Role::updateOrCreate(
-                [
-                    'company_id' => $companyId,
-                    'name' => "$companyName Admin",
-                ],
-                [
+            $roles = [
+                'Admin' => [
                     'description' => 'Administrator with full access',
-                    'category' => 'default',
-                    'status' => true,
-                ]
-            );
-
-            $syncData = [];
-            foreach ($menus as $menu) {
-                $syncData[$menu->id] = [
-                    'can_create' => true,
-                    'can_read' => true,
-                    'can_update' => true,
-                    'can_delete' => true,
-                ];
+                    'permissions' => ['can_create' => true, 'can_read' => true, 'can_update' => true, 'can_delete' => true],
+                ],
+                'Employee' => [
+                    'description' => 'Standard employee role',
+                    'permissions' => ['can_create' => false, 'can_read' => true, 'can_update' => false, 'can_delete' => false],
+                ],
+                'HR' => [
+                    'description' => 'HR with specific permissions',
+                    'permissions' => ['can_create' => true, 'can_read' => true, 'can_update' => true, 'can_delete' => false],
+                ],
+            ];
+            $createdRoleIds = [];
+            foreach ($roles as $roleName => $roleData) {
+                // Create or update role
+                $role = Role::updateOrCreate(
+                    [
+                        'company_id' => $companyId,
+                        'created_by' => $companyId,
+                        'name' => $roleName,
+                    ],
+                    [
+                        'description' => $roleData['description'],
+                        'category' => 'default',
+                        'status' => true,
+                    ]
+                );
+                // Build sync data for menus
+                $syncData = [];
+                foreach ($menus as $menu) {
+                    $syncData[$menu->id] = $roleData['permissions'];
+                }
+                // Sync permissions
+                $role->menus()->sync($syncData);
+                // Store created role IDs
+                $createdRoleIds[strtolower($roleName) . '_role_id'] = $role->id;
             }
-
-            $adminRole->menus()->sync($syncData);
             DB::commit();
-
-            return $adminRole->id;
+            return $createdRoleIds;
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
@@ -115,9 +129,7 @@ class AdminCompanyController extends Controller
                 } catch (\Throwable $th) {
                     return response()->json(['error' => 'Something went wrong. Please try again.']);
                 }
-
-                $userCreated->update(['role_id' => $roleId, 'company_id' => $userCreated->id]);
-
+                $userCreated->update(['role_id' => $roleId['admin_role_id'], 'company_id' => $userCreated->id]);
                 $request['user_id'] = $userCreated->id;
                 if ($request->hasFile('logo')) {
                     $nameForImage = removingSpaceMakingName($request->name);

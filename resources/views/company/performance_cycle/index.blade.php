@@ -2,22 +2,20 @@
 @section('title','Performance Review Cycle')
 @section('content')
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
-    <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
         <div class="row gy-5 g-xl-10">
-            <!--begin::Col-->
             <div class="card card-body col-md-12">
                 <div class="card-header cursor-pointer p-0">
-                    <!--begin::Card title-->
-                    <div class="card-title m-0">
-                    </div>
-                    <!--end::Card title-->
-                    <!--begin::Action-->
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#kt_modal_category"
-                        class="btn btn-sm btn-primary align-self-center">
-                        Add Review Cycle</a>
-                    <!--end::Action-->
+                    <div class="card-title m-0"></div>
+                    <a href="{{ route('performance-cycle-add') }}" class="btn btn-sm btn-primary align-self-center">Add Review Cycle</a>
                 </div>
+                @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
+                @if (session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
+
                 <div class="mb-5 mb-xl-10">
                     @include('company.performance_cycle.list')
                 </div>
@@ -79,7 +77,7 @@
                             @foreach ($allDepartments as $department)
                             <option value={{$department->id}}>{{$department->name}}</option>
                             @endforeach
-                            
+
                         </select>
                     </div>
 
@@ -91,7 +89,7 @@
                             {{-- @foreach ($allEmployeeDetails as $employee)
                             <option value={{$employee->id}}>{{$employee->name}}</option>
                             @endforeach --}}
-                            
+
                         </select>
                     </div>
                     <!--end::Wrapper-->
@@ -111,23 +109,8 @@
             </div>
             <!--end::Modal body-->
         </div>
-        <!--end::Modal content-->
     </div>
-    <!--end::Modal dialog-->
 </div>
-
-@endsection
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<!-- Moment.js (required by Daterangepicker) -->
-<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-
-<!-- Daterangepicker CSS & JS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
 <script>
     jQuery.noConflict();
     jQuery(document).ready(function($) {
@@ -208,7 +191,7 @@
                                 `<option value="${employee.id}" ${isSelected ? 'selected' : ''}>${employee.name}</option>`
                             );
                         });
-                        
+
                         $employeeSelect.trigger('change');
                     },
                     error: function () {
@@ -248,37 +231,37 @@
     }
 
     function deleteFunction(id) {
-        event.preventDefault();
         Swal.fire({
-            title: "Are you sure?",
+            title: 'Are you sure?',
             text: "You won't be able to revert this!",
-            icon: "warning",
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "<?= route('performance-categories.delete') ?>",
-                    type: "get",
+                    url: "{{ url('/company/performance-review-cycles/delete/') }}/" + id,
+                    type: 'DELETE',
                     data: {
-                        id: id
+                        _token: '{{ csrf_token() }}'
                     },
-                    success: function(res) {
-                        Swal.fire("Done!", "It was succesfully deleted!", "success");
-                        $('#leave_type_list').replaceWith(res.data);
+                    success: function(response) {
+                        if(response.status){
+                            Swal.fire('Deleted!', response.message, 'success').then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
                     },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        Swal.fire("Error deleting!", "Please try again", "error");
+                    error: function() {
+                        Swal.fire('Error!', 'Something went wrong.', 'error');
                     }
                 });
             }
         });
     }
-</script>
-<style>
-.error {
-    color: red;
-}
-</style>
+    </script>
+@endsection

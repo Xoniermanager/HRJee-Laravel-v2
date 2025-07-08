@@ -101,6 +101,7 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
+        session()->forget('impersonation');
         return redirect(route('base'));
     }
 

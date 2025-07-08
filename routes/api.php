@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\ConfigDataController;
 use App\Http\Controllers\Api\ResignationController;
+use App\Http\Controllers\Api\SupportController;
 use App\Http\Controllers\Api\AnnouncementController;
 use Illuminate\Foundation\Console\RouteCacheCommand;
 use App\Http\Controllers\Admin\LogActivityController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Api\LocationVisitAPiController;
 use App\Http\Controllers\Api\LeaveAvailableApiController;
 use App\Http\Controllers\Api\LeaveManagementApiController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
+use App\Models\Support;
 
 /*
 |--------------------------------------------------------------------------
@@ -136,6 +138,15 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::post('/', 'apply');
         Route::put('/{id}', 'edit');
         Route::put('/{id}/withdraw', 'withdraw');
+    });
+
+    /** Support Modules */
+    Route::prefix('support')->controller(SupportController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'view');
+        Route::post('/', 'apply');
+        Route::put('/{id}', 'edit');
+        Route::delete('/{id}', 'delete');
     });
 
 

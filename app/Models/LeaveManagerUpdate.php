@@ -15,4 +15,8 @@ class LeaveManagerUpdate extends Model
     {
         return $this->belongsTo(User::class,'manager_id','id');
     }
+    public function leaveStatus()
+    {
+        return $this->belongsTo(LeaveStatus::class);
+    }
 }

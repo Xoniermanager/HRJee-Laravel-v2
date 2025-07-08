@@ -11,11 +11,11 @@
                     <th>Permissions</th>
                 </tr>
             </thead>
-            @forelse ($roles as $role) 
+            @forelse ($roles as $role)
             <tbody class="">
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    
+
                     <td>{{ $role->name }} </td>
                     <td>
                         @forelse ($role->menus as $menu)
@@ -29,7 +29,7 @@
                         No Permission available
                         @endforelse
                     </td>
-                    
+
                 </tr>
             </tbody>
             @empty
@@ -42,5 +42,8 @@
             <!--end::Table body-->
         </table>
         <!--end::Table-->
+    </div>
+    <div class="mt-3 paginate">
+        {!! $roles->links() !!}
     </div>
 </div>

@@ -34,25 +34,19 @@ class PerformanceCycleService
      */
     public function create(array $data)
     {
+        // Create the cycle record
         $cycle = $this->performanceCycleRepository->create([
             'company_id' => $data['company_id'],
             'title' => $data['title'],
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
-            'department_id' => implode(',', $data['department_id'])
+            'department_id' => implode(',', $data['department_id']),
+            'company_branch_id' => implode(',', $data['company_branch_id']),
+            'designation_id' => implode(',', $data['designation_id']),
         ]);
 
-        $userPayload = [];
-        foreach ($data['employee_id'] as $value) {
-            $userPayload[] = [
-                'performance_review_cycle_id' => $cycle->id,
-                'user_id' => $value,
-                'created_at' => date("Y-m-d H:i:s"),
-                'updated_at' => date("Y-m-d H:i:s"),
-            ];
-        }
-
-        $this->reviewCycleUserRepository->insert($userPayload);
+        // Sync employees via relation (clean and efficient)
+        $cycle->users()->sync($data['employee_id']);
 
         return true;
     }
@@ -60,9 +54,7 @@ class PerformanceCycleService
 
     public function getCycle($cycleID)
     {
-        $cycle = $this->performanceCycleRepository->where('id', $cycleID)->first();
-
-        return $cycle;
+        return $this->performanceCycleRepository->where('id', $cycleID)->first();
     }
 
     /**
@@ -74,24 +66,19 @@ class PerformanceCycleService
      */
     public function updateDetails(array $data, $id)
     {
-        $this->performanceCycleRepository->find($id)->update([
+        // Find and update the cycle
+        $cycle = $this->performanceCycleRepository->find($id);
+        $cycle->update([
             'title' => $data['title'],
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
-            'department_id' => implode(',', $data['department_id'])
+            'department_id' => implode(',', $data['department_id']),
+            'company_branch_id' => implode(',', $data['company_branch_id']),
+            'designation_id' => implode(',', $data['designation_id']),
         ]);
 
-        $userPayload = [];
-        foreach ($data['employee_id'] as $value) {
-            $userPayload[] = [
-                'performance_review_cycle_id' => $id,
-                'user_id' => $value,
-                'created_at' => date("Y-m-d H:i:s"),
-                'updated_at' => date("Y-m-d H:i:s"),
-            ];
-        }
-        $this->reviewCycleUserRepository->where('performance_review_cycle_id', $id)->delete();
-        $this->reviewCycleUserRepository->insert($userPayload);
+        // Sync the users
+        $cycle->users()->sync($data['employee_id']);
 
         return true;
     }
@@ -121,7 +108,7 @@ class PerformanceCycleService
         if (isset($request->search) && !empty($request->search)) {
             $performanceCategories = $performanceCategories->where('title', 'Like', '%' . $request->search . '%');
         }
-        
+
         return $performanceCategories->orderBy('id', 'DESC')->paginate(10);
     }
 }

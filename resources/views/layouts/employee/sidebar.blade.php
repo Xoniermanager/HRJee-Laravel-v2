@@ -42,7 +42,7 @@
 								<div class="d-flex align-items-center">
 									<!--begin::Avatar-->
 									<div class="symbol symbol-circle symbol-40px">
-										<img src="{{ Auth::user()->details->profile_image ? Storage::url(Auth::user()->details->profile_image) : asset('employee/assets/media/user.jpg') }}" alt="photo">
+										<img src="{{ auth()->user()->details->profile_name ?? ''}}" alt="photo">
 									</div>
 									<!--end::Avatar-->
 
@@ -55,7 +55,7 @@
 
 										<!--begin::Major-->
 										<span class="text-muted fw-semibold d-block fs-7 lh-1">
-											{{ Auth::user()->details->designation->name }} </a></span>
+											{{ auth()->user()->details->designation->name ?? ''}} </a></span>
 										<!--end::Major-->
 									</div>
 									<!--end::User info-->
@@ -88,7 +88,7 @@
 													</div>
 
 													<a class="fw-semibold text-muted text-hover-primary fs-7">
-														{{ Auth::user()->details->designation->name }} </a>
+														{{ auth()->user()->details->designation->name ?? '' }} </a>
 												</div>
 												<!--end::Username-->
 											</div>

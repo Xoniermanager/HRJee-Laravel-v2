@@ -38,7 +38,7 @@ class CompanyDashboardController extends Controller
 
     public function index(Request $request)
     {
-        $companyId = auth()->user()->id;
+        $companyId = auth()->user()->company_id;
         $companyIDs = getCompanyIDs();
         $daysLeft = 10;
 
@@ -50,7 +50,7 @@ class CompanyDashboardController extends Controller
         $today = today();
 
         // Shared query builder
-        $query = User::with(['details', 'details.designation'])
+        $query = User::managerFilter()->with(['details', 'details.designation'])
             ->where('company_id', $companyId)
             ->where('type', 'user')
             ->where('status', 1)
@@ -120,7 +120,7 @@ class CompanyDashboardController extends Controller
             'total_present' => EmployeeAttendance::whereDate('punch_in', $today)
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
                 ->count(),
-            'total_active_employee' => User::with(['details', 'details.designation'])
+            'total_active_employee' => User::managerFilter()->with(['details', 'details.designation'])
             ->where('company_id', $companyId)
             ->where('type', 'user')
             ->where('status', 1)
