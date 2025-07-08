@@ -10,6 +10,6 @@
             @endif
         </li>
     @endif
-    
+
     @endforeach
 </ul>

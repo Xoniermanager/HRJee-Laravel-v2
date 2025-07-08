@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Scopes\ManagerScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -121,6 +123,106 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(EmployeeManager::class, 'manager_id', 'id');
     }
+
+    /**
+     * Recursively get all manager User models (direct & indirect)
+     */
+    public function allManagerUsers(&$visited = [])
+    {
+        $all = collect();
+
+        $directManagerIds = $this->managers->pluck('manager_id')->unique();
+        $directManagers = User::whereIn('id', $directManagerIds)->get();
+
+        foreach ($directManagers as $manager) {
+            if (in_array($manager->id, $visited)) {
+                continue;
+            }
+
+            $visited[] = $manager->id;
+            $all->push($manager);
+
+            $all = $all->merge($manager->allManagerUsers($visited));
+        }
+
+        return $all;
+    }
+
+    /**
+     * Get all managers with their level.
+     * [
+     *   ['manager' => User, 'level' => 1],
+     *   ['manager' => User, 'level' => 2],
+     *   ...
+     * ]
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function allManagersWithLevel($currentLevel = 1, &$visited = [])
+    {
+        $result = collect();
+
+        $directManagerIds = $this->managers->pluck('manager_id')->unique();
+        $directManagers = User::whereIn('id', $directManagerIds)->get();
+
+        foreach ($directManagers as $manager) {
+            if (in_array($manager->id, $visited)) {
+                continue;
+            }
+
+            $visited[] = $manager->id;
+
+            $result->push([
+                'manager' => $manager,
+                'level' => $currentLevel,
+            ]);
+
+            $higherManagers = $manager->allManagersWithLevel($currentLevel + 1, $visited);
+            $result = $result->merge($higherManagers);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get the highest level number in the manager chain.
+     *
+     * @return int|null
+     */
+    public function topLevelNumber()
+    {
+        $managersWithLevels = $this->allManagersWithLevel();
+        return $managersWithLevels->max('level');
+    }
+
+    /**
+     * Get manager User(s) at the highest level.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function topLevelManagers()
+    {
+        $managersWithLevels = $this->allManagersWithLevel();
+        $topLevel = $managersWithLevels->max('level');
+
+        return $managersWithLevels
+            ->where('level', $topLevel)
+            ->pluck('manager'); // returns collection of User models
+    }
+
+    /**
+     * Check if given manager ID belongs to top-level managers.
+     *
+     * @param int $managerId
+     * @return bool
+     */
+    public function isTopLevelManager($managerId)
+    {
+        return $this->topLevelManagers()
+            ->pluck('id')
+            ->contains($managerId);
+    }
+
 
     public function pastWorkDetails()
     {
@@ -356,4 +458,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return User::where(['type' => 'user', 'status' => 0])->where('company_id', $this->id)->count();
     }
 
+    public function scopeManagerFilter($query)
+    {
+        if (!Auth::check()) {
+            return $query;
+        }
+        $user = Auth::user();
+         if ($user->userRole && $user->userRole->category == 'custom') {
+            $userIDs = EmployeeManager::where('manager_id', $user->id)->pluck('user_id');
+            return $query->whereIn('id', $userIDs);
+         }
+        return $query;
+    }
 }

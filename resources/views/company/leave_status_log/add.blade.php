@@ -19,25 +19,25 @@
                                 <div class="row">
                                     <div class="col-md-5 form-group">
                                         <label for="" class="required">Employee Leave</label>
-                                        <select name="leave_id" class="form-control"
-                                            onchange="get_details_using_leave_id()" id="leave_details">
+                                        <select name="leave_id" class="form-control" onchange="get_details_using_leave_id()" id="leave_details">
                                             <option value="">Please Select Employee</option>
-                                            @if (auth()->user()->type == 'company')
-                                                @foreach ($allLeaveDetails as $leaveDetails)
+                                            @foreach ($allLeaveDetails as $leaveDetails)
+                                                @php
+                                                    // Find if current user has a pending manager action for this leave
+                                                    $pendingManager = optional($leaveDetails->managerAction)
+                                                        ->where('manager_id', auth()->id())
+                                                        ->where('leave_status_id', 2)
+                                                        ->first();
+                                                @endphp
+
+                                                @if (is_null($pendingManager))
                                                     <option value="{{ $leaveDetails->id }}">
-                                                        {{ $leaveDetails->user->name }} ( {{ $leaveDetails->from }} To
-                                                        {{ $leaveDetails->to }})</option>
-                                                @endforeach
-                                            @else
-                                                @foreach ($allLeaveDetails as $leaveDetails)
-                                                    @if(in_array(auth()->user()->id, $leaveDetails->user->managers->pluck('manager_id')->toArray()))
-                                                    <option value="{{ $leaveDetails->id }}">
-                                                        {{ $leaveDetails->user->name }} ( {{ $leaveDetails->from }} To
-                                                        {{ $leaveDetails->to }})</option>
-                                                    @endif
-                                                @endforeach
-                                            @endif
+                                                        {{ $leaveDetails->user->name }} ({{ $leaveDetails->from }} To {{ $leaveDetails->to }})
+                                                    </option>
+                                                @endif
+                                            @endforeach
                                         </select>
+
                                         @if ($errors->has('leave_type_id'))
                                             <div class="text-danger">{{ $errors->first('leave_type_id') }}</div>
                                         @endif
@@ -49,10 +49,9 @@
                                     <label for="" class="required">Leave Status </label>
                                     <select name="leave_status_id" class="form-control">
                                         <option value="">Please Select the Status</option>
-                                        @foreach ($allLeaveStatusDetails as $leaveStatusDetails)
-                                            <option value="{{ $leaveStatusDetails->id }}">
-                                                {{ $leaveStatusDetails->name }}</option>
-                                        @endforeach
+                                        <option value="2">Approved</option>
+                                        <option value="3">Rejected</option>
+                                        <option value="4">Cancelled</option>
                                     </select>
                                     @if ($errors->has('leave_type_id'))
                                         <div class="text-danger">{{ $errors->first('leave_type_id') }}</div>

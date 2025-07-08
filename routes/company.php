@@ -351,6 +351,7 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
             Route::post('/create', 'store')->name('assign_permission.store');
             Route::get('/assigned-permission', 'getAssignedPermissions')->name('assign_permission.assigned');
             Route::get('/delete', 'destroy')->name('assign_permissions.delete');
+            Route::get('/search/filter', 'serachAssignedRoleFilterList');
         });
 
         Route::get('permissions', [PermissionsController::class, 'index'])->name('permissions');

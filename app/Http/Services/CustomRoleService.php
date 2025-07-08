@@ -23,7 +23,6 @@ class CustomRoleService
   {
     return $this->customRoleRepository
       ->where('company_id', $companyId)
-      ->where('category', 'custom')
       ->orderBy('id', 'DESC')
       ->get();
   }
@@ -38,8 +37,7 @@ class CustomRoleService
   {
     return $this->customRoleRepository
       ->where('company_id', $id)
-      ->where('category', 'custom')
-      ->orderBy('id', 'DESC')->get();
+      ->orderBy('id', 'DESC');
   }
 
   /**
@@ -96,7 +94,7 @@ class CustomRoleService
    */
   public function serachRoleFilterList($request, $companyID)
     {
-        $roleDetails = $this->customRoleRepository->where('company_id', $companyID)->where('category', 'custom');
+        $roleDetails = $this->customRoleRepository->where('company_id', $companyID);
         /**List By Search or Filter */
         if (isset($request['search']) && !empty($request['search'])) {
             $roleDetails = $roleDetails->where('name', 'Like', '%' . $request['search'] . '%');
@@ -104,6 +102,16 @@ class CustomRoleService
         /**List By Status or Filter */
         if (isset($request['status']) && $request['status'] != "") {
             $roleDetails = $roleDetails->where('status', $request['status']);
+        }
+        return $roleDetails->orderBy('id', 'DESC')->paginate(10);
+    }
+
+    public function customserachRoleFilterList($request,$companyID)
+    {
+        $roleDetails = $this->customRoleRepository->where('name', '!=', 'Admin')->with('menus')->where('company_id', $companyID);
+        /**List By Search or Filter */
+        if (isset($request['search']) && !empty($request['search'])) {
+            $roleDetails = $roleDetails->where('name', 'Like', '%' . $request['search'] . '%');
         }
         return $roleDetails->orderBy('id', 'DESC')->paginate(10);
     }

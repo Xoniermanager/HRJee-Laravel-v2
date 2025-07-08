@@ -339,7 +339,7 @@ class AttendanceController extends Controller
             $userCTCDetails = UserCtcHistory::where('user_id', $employeeId)
                 ->whereDate('effective_date', '<=', $date->startOfMonth())
                 ->orderBy('id', 'DESC')
-                ->first();  
+                ->first();
 
             if (!$userCTCDetails) {
                 return response()->json(['status' => false, 'message' => 'No payslip found for this employee for the respective month and year']);

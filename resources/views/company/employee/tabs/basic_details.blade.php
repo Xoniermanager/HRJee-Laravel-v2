@@ -199,10 +199,17 @@
                 <select class="form-control" name="role_id">
                     <option value="">Select Role</option>
                     @forelse ($allRoles as $role)
-                        <option {{ ($singleUserDetails->role_id ?? 'old("role_id")') == $role->id ? 'selected' : '' }}
-                            value="{{ $role->id }}">{{ $role->name }}</option>
+                    @php
+                        $selectedRoleId = $singleUserDetails->role_id ?? old('role_id');
+                        $isSelected = $selectedRoleId
+                            ? ($selectedRoleId == $role->id)
+                            : ($role->name == 'Employee');
+                    @endphp
+                    <option value="{{ $role->id }}" {{ $isSelected ? 'selected' : '' }}>
+                        {{ $role->name }}
+                    </option>
                     @empty
-                        <option value="">No Roles Found</option>
+                    <option value="">No Roles Found</option>
                     @endforelse
                 </select>
             </div>
@@ -523,50 +530,60 @@
     }
     /** end get all Designation Using Department Id*/
 
-    /** get all managers using branch Id*/
-    jQuery('#company_branch_id').on('change', function() {
-        var company_branch_id = $(this).val();
-        const all_company_branch_id = [company_branch_id];
-        getAllManagersUsingBranchId(all_company_branch_id);
+    /** get all managers using branch Id */
+    $(document).ready(function() {
+    var initial_branch_id = $('#company_branch_id').val();
+    let managerIds = @json($singleUserDetails->managers->pluck('manager_id')); // this is an array
+
+    if (initial_branch_id) {
+        const all_company_branch_id = [initial_branch_id];
+        getAllManagersUsingBranchId(all_company_branch_id, managerIds);
+    }
     });
 
-    function getAllManagersUsingBranchId(all_company_branch_id) {
-        if (all_company_branch_id) {
-            $.ajax({
-                url: "{{ route('get.all.managers') }}",
-                type: "GET",
-                dataType: "json",
-                data: {
-                    'branch_id': all_company_branch_id
-                },
-                success: function(response) {
-                    var select = $('#manager_id');
-                    select.empty();
-                    if (response.status == true) {
-                        $('#manager_id').append(
-                            '<option>Select The Manager</option>');
-                        $.each(response.data, function(key, value) {
-                            select.append('<option value=' + value.id + '>' + value.name +
-                                '</option>');
+    function getAllManagersUsingBranchId(all_company_branch_id, selectedManagerIds = []) {
+            if (all_company_branch_id) {
+                $.ajax({
+                    url: "{{ route('get.all.managers') }}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        'branch_id': all_company_branch_id
+                    },
+                    success: function(response) {
+                        var select = $('#manager_id');
+                        select.empty();
+
+                        if (response.status == true) {
+                            select.append('<option value="">Select The Manager</option>');
+
+                            $.each(response.data, function(key, value) {
+                                let selected = (selectedManagerIds && selectedManagerIds.includes(value.id)) ? 'selected' : '';
+                                select.append('<option value="' + value.id + '" ' + selected + '>' + value.name + '</option>');
+                            });
+                        } else {
+                            select.append('<option value="">' + response.error + '</option>');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Something Went Wrong!! Please try Again"
                         });
-                    } else {
-                        select.append('<option value="">' + response.error +
-                            '</option>');
                     }
-                },
-                error: function() {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Something Went Wrong!! Please try Again"
-                    });
-                    return false;
-                }
-            });
-        } else {
-            $('#designation_id').empty();
+                });
+            } else {
+                $('#manager_id').empty();
+            }
         }
-    }
+
+        // Also keep existing change event
+        jQuery('#company_branch_id').on('change', function() {
+            var company_branch_id = $(this).val();
+            const all_company_branch_id = [company_branch_id];
+            getAllManagersUsingBranchId(all_company_branch_id);
+        });
     /** end get all Designation Using Department Id*/
 
     jQuery('#shift').change(function() {

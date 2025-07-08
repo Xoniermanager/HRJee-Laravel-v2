@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Scopes\ManagerScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LeaveStatusLog extends Model
 {
-    use HasFactory;
+    use HasFactory,ManagerScope;
 
     protected $fillable = [
         'leave_id', 'action_taken_by', 'leave_status_id', 'remarks'

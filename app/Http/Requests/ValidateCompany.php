@@ -33,7 +33,7 @@ class ValidateCompany extends FormRequest
                 'sometimes',
                 'required',
                 'confirmed',
-                Password::min(12)
+                Password::min(6)
                     ->mixedCase()
                     ->letters()
                     ->numbers()

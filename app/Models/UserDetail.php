@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ManagerScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserDetail extends Model
 {
-    use HasFactory;
+    use HasFactory,ManagerScope;
     protected $fillable = [
         'user_id',
         'emp_id',

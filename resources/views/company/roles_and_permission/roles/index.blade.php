@@ -3,6 +3,13 @@
 @section('title')
     Roles
 @endsection
+<style>
+    .disabled-switch {
+    opacity: 0.4;   /* Make it look dimmed */
+    pointer-events: none; /* Ensure it's not clickable (extra safety) */
+}
+
+</style>
 <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
@@ -333,11 +340,15 @@
         jQuery("#status").on('change', function() {
             search_filter_results();
         });
-
-        function search_filter_results() {
+        jQuery(document).on('click', '#office_time_list .paginate a', function (e) {
+        e.preventDefault();
+        var page_no = $(this).attr('href').split('page=')[1];
+        search_filter_results(page_no);
+        });
+        function search_filter_results(page_no = 1) {
             $.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/roles/search/filter',
+                url: company_ajax_base_url + '/roles/search/filter?page='+ page_no,
                 data: {
                     'status': $('#status').val(),
                     'search': $('#search').val()

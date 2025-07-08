@@ -58,6 +58,8 @@
         </table>
         <!--end::Table-->
     </div>
-    {{ $allCountryDetails->links() }}
+    <div class="paginate">
+        {{ $allCountryDetails->links() }}
+    </div>
     <!--end::Table container-->
 </div>

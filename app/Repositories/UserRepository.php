@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Repositories;
-use App\Models\User;
-use App\Models\UserLiveLocation;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\EmployeeManager;
+use App\Models\UserLiveLocation;
+use Illuminate\Support\Facades\Auth;
 use Prettus\Repository\Eloquent\BaseRepository;
+use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class DepartmentRepositoryEloquent.
@@ -76,5 +79,24 @@ class UserRepository extends BaseRepository
         }
 
         UserLiveLocation::insert($data);
+    }
+
+    public function boot()
+    {
+        // Apply a default condition
+        $this->pushCriteria(app(RequestCriteria::class));
+
+
+        $this->scopeQuery(function ($query) {
+            if (!Auth::check()) {
+                return $query;
+            }
+            $user = Auth::user();
+            if ($user->userRole && $user->userRole->category === 'custom') {
+                $userIDs = EmployeeManager::where('manager_id', $user->id)->pluck('user_id');
+                return $query->whereIn('id', $userIDs);
+             }
+            return $query;
+        });
     }
 }
