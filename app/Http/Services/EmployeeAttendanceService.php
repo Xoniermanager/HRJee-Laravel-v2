@@ -520,7 +520,6 @@ class EmployeeAttendanceService
         $data['is_late'] = $isLate ? 1 : 0;
         $data['status'] = $attendanceStatus;
         $data['is_short_attendance'] = $isShortAttendance;
-
         $data['shift_id'] = $officeShiftDetails->id;
         $data['shift_start_time'] = $officeShiftDetails->start_time;
         $data['shift_end_time'] = $officeShiftDetails->end_time;
