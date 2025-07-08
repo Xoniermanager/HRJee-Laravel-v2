@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\PerformanceCategory;
+use App\Models\KpiCategory;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -10,7 +10,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
  *
  * @package namespace App\Repositories;
  */
-class PerformanceCategoryRepository extends BaseRepository
+class KpiCategoryRepository extends BaseRepository
 {
     /**
      * Specify Model class name
@@ -19,6 +19,6 @@ class PerformanceCategoryRepository extends BaseRepository
      */
     public function model()
     {
-        return PerformanceCategory::class;
+        return KpiCategory::class;
     }
 }

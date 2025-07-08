@@ -260,7 +260,7 @@ class UserService
                 if (isset($request->search) && !empty($request->search)) {
                     $searchKeyword = $request->search;
                     $query->where(function ($query) use ($searchKeyword) {
-                        $query->where('official_email_id', 'LIKE', '%' . $searchKeyword . '%')
+                        $query->orWhere('official_email_id', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('phone', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('emp_id', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('father_name', 'LIKE', '%' . $searchKeyword . '%')

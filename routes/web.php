@@ -28,7 +28,7 @@ use App\Http\Controllers\Employee\PayslipsMangementController;
 use App\Http\Controllers\Employee\EmployeeAttendanceController;
 use App\Http\Controllers\Employee\EmployeeBreakHistoryController;
 use App\Http\Controllers\Employee\UserRewardController;
-use App\Http\Controllers\Employee\PerformanceManagementController;
+use App\Http\Controllers\Employee\KpiEmployeeManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -204,10 +204,11 @@ Route::prefix('employee')->middleware(['checkAccountStatus', 'Check2FA','log.rou
     });
 
     //Performance Mgmt Module
-    Route::prefix('/performance-reviews')->controller(PerformanceManagementController::class)->group(function () {
-        Route::get('/', 'index')->name('performance-management.index');
-        Route::get('/view/{id}', 'view')->name('performance-management.view');
+    Route::prefix('/kpi-employee-management')->name('kpi-employee.')->controller(KpiEmployeeManagementController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/{kpi}/submit-achievement', 'submitAchievement')->name('submitAchievement');
     });
+
 });
 /**----------------- End Employee Pannel Route ----------------------*/
 Route::get('/send-sms', [SmsController::class, 'send']);

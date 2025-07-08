@@ -45,6 +45,7 @@ use App\Http\Controllers\Company\LocationVisitController;
 use App\Http\Controllers\Company\AddressRequestController;
 use App\Http\Controllers\Company\ComplainStatusController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
+use App\Http\Controllers\Company\KpiReviewCycleController;
 use App\Http\Controllers\Company\LeaveStatusLogController;
 use App\Http\Controllers\Company\PolicyCategoryController;
 use App\Http\Controllers\Company\RewardCategoryController;
@@ -67,16 +68,16 @@ use App\Http\Controllers\Company\ResignationStatusController;
 use App\Http\Controllers\Company\OfficeTimingConfigController;
 use App\Http\Controllers\Company\UserAddressDetailsController;
 use App\Http\Controllers\Company\UserAdvanceDetailsController;
+use App\Http\Controllers\Company\KpiCategoryController;
 use App\Http\Controllers\Company\UserDocumentDetailsController;
 use App\Http\Controllers\Company\UserPastWorkDetailsController;
 use App\Http\Controllers\Company\UserRelativeDetailsController;
 use App\Http\Controllers\Company\LeaveCreditManagementController;
+use App\Http\Controllers\Company\KpiManagementController;
 use App\Http\Controllers\Company\EmployeeLeaveAvailableController;
+use App\Http\Controllers\Company\PerformanceReviewCycleController;
 use App\Http\Controllers\Export\EmployeeAttendanceExportController;
 use App\Http\Controllers\Company\UserQualificationDetailsController;
-use App\Http\Controllers\Company\PerformanceManagementController;
-use App\Http\Controllers\Company\PerformanceCategoryController;
-use App\Http\Controllers\Company\PerformanceReviewCycleController;
 
 // Route::get('/test',function()
 // {
@@ -226,6 +227,12 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/get-manager-by-departments', 'getAllManager')->name('get.all.manager');
         Route::post('/get-employees-by-departments', 'getAllEmployeesByDepartment')->name('get.all-emp-by-dept');
         Route::get('/face-recognition/update', 'updateFaceRecognitionStatus')->name('employee.allow.facerecognition');
+    });
+
+     //Employee Module
+    Route::prefix('/employee')->controller(EmployeeController::class)->group(function () {
+        Route::get('/exit/list', 'exitEmployeeList')->name('employee.exit.employeelist');
+        Route::get('/exit/filter/search', 'searchFilterForExitEmployee')->name('remployee.exit.employeelist');
     });
 
     Route::controller(UserAdvanceDetailsController::class)->group(function () {
@@ -759,36 +766,17 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/search/filter', 'serachFilterList');
     });
 
-
-    //Performance Mgmt Module
-    Route::prefix('/performance-management')->controller(PerformanceManagementController::class)->group(function () {
-        Route::get('/', 'index')->name('performance-management.index');
-        Route::get('/add', 'add')->name('performance-management.add');
-        Route::post('/add', 'addPerformance')->name('performance-management.store');
-        Route::get('/edit/{id}', 'edit')->name('performance-management.edit');
-        Route::post('/update/{id}', 'update')->name('performance-management.update');
-        Route::get('/get-skills/{userID}', 'getSkills')->name('performance-management.get-skills');
-        Route::get('/filter', 'filterPerformance')->name('performance-management.filter-performance');
-    });
-
-    //Performance Category Module
-    Route::prefix('/performance-categories')->controller(PerformanceCategoryController::class)->group(function () {
-        Route::get('/', 'index')->name('performance-categories');
-        Route::post('/create', 'store')->name('performance-categories.store');
-        Route::post('/update', 'update')->name('performance-categories.update');
-        Route::get('/delete', 'destroy')->name('performance-categories.delete');
-        Route::get('/search', 'search')->name('performance-categories.search');
-    });
-
     //Performance Review Cycle Module
     Route::prefix('/performance-review-cycles')->controller(PerformanceReviewCycleController::class)->group(function () {
-        Route::get('/', 'index')->name('performance-cycle');
+        Route::get('/', 'index')->name('performance-cycle-index');
+        Route::get('/add', 'add')->name('performance-cycle-add');
         Route::post('/create', 'store')->name('performance-cycle.store');
         Route::get('/edit/{id}', 'edit')->name('performance-cycle.edit');
-        Route::post('/update', 'update')->name('performance-cycle.update');
-        Route::get('/delete', 'destroy')->name('performance-cycle.delete');
+        Route::post('/update/{id}', 'update')->name('performance-cycle.update');
+        Route::delete('/delete/{id}', 'destroy')->name('performance-cycle.delete');
         Route::get('/search', 'search')->name('performance-cycle.search');
         Route::get('/employees/{cycleId}', 'getEmployeesByCycle')->name('performance-cycle.employees');
+        Route::post('get-designations-by-dept', 'getDesignationsByDept')->name('get.designations.by-dept');
     });
 
     //Address Request Module
@@ -830,11 +818,45 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/company/list', 'companyList')->name('company.log_activity');
     });
 
+
+    //KPI Review Cycle
+    Route::prefix('/kpi-review-cycles')->controller(KpiReviewCycleController::class)->group(function () {
+        Route::get('/', 'index')->name('kpi-review-cycles.index');
+        Route::post('/store', 'store')->name('kpi-review-cycles.store');
+        Route::post('/update', 'update')->name('kpi-review-cycles.update');
+        Route::get('/delete', 'delete')->name('kpi-review-cycles.delete');
+        Route::get('/toggle-status','toggleStatus')->name('kpi-review-cycles.toggle-status');
+    });
+
+    //Kpi Category Module
+    Route::prefix('/kpi-category')->controller(KpiCategoryController::class)->group(function () {
+        Route::get('/', 'index')->name('kpi-category');
+        Route::post('/create', 'store')->name('kpi-category.store');
+        Route::post('/update', 'update')->name('kpi-category.update');
+        Route::get('/delete', 'destroy')->name('kpi-category.delete');
+        Route::get('/status-update', 'statusUpdate')->name('kpi-category.status');
+        Route::get('/search/filter', 'search')->name('kpi-category.search');
+    });
+
+     ///kpi-management Mgmt Module
+     Route::prefix('/kpi-management')->name('kpi-management.')->controller(KpiManagementController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/add', 'add')->name('add');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/edit/{id}', 'edit')->name('edit');
+        Route::post('/update/{id}', 'update')->name('update');
+        Route::delete('/delete/{id}', 'destroy')->name('delete');
+        Route::get('/toggle-status/{id}', 'toggleStatus')->name('toggle-status');
+    });
 });
 
 
 Route::prefix('/export')->controller(EmployeeAttendanceExportController::class)->group(function () {
     Route::get('/employee/attendance', 'employeeAttendanceExport')->name('export.employee.attendance');
 });
-
+Route::middleware(['auth'])->group(function() {
+    Route::get('/salary-components', [SalaryComponentController::class, 'demo'])->name('salary-components.index');
+    Route::post('/salary-components/store', [SalaryComponentController::class, 'storeDemo'])->name('salary-components.store');
+    Route::delete('salary-components/{id}', [SalaryComponentController::class, 'destroy'])->name('salary-components.destroy');
+});
 /**---------------End Company Panel Route----------------*/

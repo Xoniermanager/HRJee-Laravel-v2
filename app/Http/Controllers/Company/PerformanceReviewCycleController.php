@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Company;
 
 use Exception;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Services\PerformanceCycleService;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Services\UserService;
-use Illuminate\Validation\Rule;
-use App\Models\ReviewCycleUser;
 use App\Models\User;
+use App\Models\Designations;
+use Illuminate\Http\Request;
+use App\Models\ReviewCycleUser;
+use Illuminate\Validation\Rule;
+use App\Http\Services\UserService;
+use App\Http\Controllers\Controller;
+use App\Http\Services\BranchServices;
 use App\Http\Services\DepartmentServices;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\PerformanceCycleService;
+use App\Models\UserDetail;
 
 class PerformanceReviewCycleController extends Controller
 {
@@ -19,12 +22,14 @@ class PerformanceReviewCycleController extends Controller
     private $performanceCycleService;
     public $userService;
     private $departmentService;
+    private $branchService;
 
-    public function __construct(DepartmentServices $departmentService, UserService $userService, PerformanceCycleService $performanceCycleService)
+    public function __construct(DepartmentServices $departmentService, UserService $userService, PerformanceCycleService $performanceCycleService, BranchServices $branchService)
     {
         $this->performanceCycleService = $performanceCycleService;
         $this->userService = $userService;
         $this->departmentService = $departmentService;
+        $this->branchService = $branchService;
     }
 
     /**
@@ -33,78 +38,66 @@ class PerformanceReviewCycleController extends Controller
     public function index()
     {
         $companyIDs = getCompanyIDs();
-        
+
         return view('company.performance_cycle.index', [
-            'performanceCategories' => $this->performanceCycleService->all($companyIDs),
-            'allEmployeeDetails' => $this->userService->getActiveEmployees($companyIDs)->get(),
-            'allDepartments' => $this->departmentService->getAllActiveDepartmentsByCompanyId($companyIDs)
+            'performanceCategories' => $this->performanceCycleService->all($companyIDs)
         ]);
+    }
+
+    public function add()
+    {
+        $companyIDs = getCompanyIDs();
+        $allDepartment = $this->departmentService->getAllActiveDepartmentsByCompanyId($companyIDs);
+        $allBranch = $this->branchService->getAllCompanyBranchByCompanyId($companyIDs);
+        return view('company.performance_cycle.add', compact('allDepartment', 'allBranch'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         try {
+            // Validate
             $validateData = Validator::make($request->all(), [
-                'title' => [
-                    'required',
-                    'string',
-                    // Rule::unique('performance_review_cycles')->where(function ($query) use ($request) {
-                    //     return $query->where('company_id', auth()->user()->company_id);
-                    // }),
-                ],
+                'title' => 'required|string',
+                'daterange' => 'required|string',
+                'company_branch_id' => 'required|array|min:1',
+                'department_id' => 'required|array|min:1',
+                'designation_id' => 'required|array|min:1',
+                'employee_id' => 'required|array|min:1',
             ]);
 
             if ($validateData->fails()) {
-
-                return response()->json(['error' => $validateData->messages()], 400);
+                return back()
+                    ->withErrors($validateData)
+                    ->withInput();
             }
 
-            if($request->get('id') != "") {
-                $updateData = $request->except(['_token', 'id']);
-                $dates = explode(' - ', $updateData['daterange']);
+            // Process dates
+            $dates = explode(' - ', $request->daterange);
+            $startDate = $dates[0] ?? null;
+            $endDate = $dates[1] ?? null;
 
-                
-                $updateData['start_date'] = $dates[0];
-                $updateData['end_date'] = $dates[1];
-                $companyStatus = $this->performanceCycleService->updateDetails($updateData, $request->id);
-
-                if ($companyStatus) {
-
-                    return response()->json(
-                        [
-                            'message' => 'Cycle Updated Successfully!',
-                            'data'   =>  view('company.performance_cycle.list', [
-                                'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
-                            ])->render()
-                        ]
-                    );
-                }
+            $data = $request->except(['_token', 'id', 'daterange']);
+            $data['start_date'] = $startDate;
+            $data['end_date'] = $endDate;
+            // Create mode
+            $data['company_id'] = auth()->user()->company_id;
+            $data['created_by'] = auth()->user()->id;
+            $created = $this->performanceCycleService->create($data);
+            if ($created) {
+                return redirect(route('performance-cycle-index'))->with('success', 'Review Cycle created successfully!');
             } else {
-                $data = $request->all();
-                $dates = explode(' - ', $data['daterange']);
-
-                $data['company_id'] = auth()->user()->company_id;
-                $data['created_by'] = auth()->user()->id;
-                $data['start_date'] = $dates[0];
-                $data['end_date'] = $dates[1];
-                if ($this->performanceCycleService->create($data)) {
-
-                    return response()->json([
-                        'message' => 'Cycle Created Successfully!',
-                        'data'   =>  view('company.performance_cycle.list', [
-                            'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
-                        ])->render()
-                    ]);
-                }
+                return back()->with('error', 'Creation failed. Please try again.');
             }
-            
-        } catch (Exception $e) {
-            return response()->json(['error' =>  $e->getMessage()], 400);
+            // }
+        } catch (\Exception $e) {
+            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
+
 
     /**
      * Undocumented function
@@ -114,84 +107,100 @@ class PerformanceReviewCycleController extends Controller
      */
     public function edit($id)
     {
-        try {
-            $cycle = $this->performanceCycleService->getCycle($id); 
+        $companyIDs = getCompanyIDs();
 
-            $cycle->employee_ids = $cycle->userList();
-            $cycle->department_ids = explode(',',  $cycle->department_id);
+        $allDepartment = $this->departmentService->getAllActiveDepartmentsByCompanyId($companyIDs);
+        $allBranch = $this->branchService->getAllCompanyBranchByCompanyId($companyIDs);
 
-
-            return response()->json([
-                'status' => true,
-                'data' => $cycle
-            ]);
-        } catch (Exception $e) {
-            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
+        $performanceCycle = $this->performanceCycleService->getCycle($id);
+        if (!$performanceCycle) {
+            abort(404, 'Performance Cycle not found');
         }
+
+        // explode saved IDs to arrays (stored as CSV)
+        $selectedDepartments = $performanceCycle->department_id ? explode(',', $performanceCycle->department_id) : [];
+        $selectedBranches = $performanceCycle->company_branch_id ? explode(',', $performanceCycle->company_branch_id) : [];
+        $selectedDesignations = $performanceCycle->designation_id ? explode(',', $performanceCycle->designation_id) : [];
+        $selectedEmployees = $performanceCycle->users ? $performanceCycle->users->pluck('id')->toArray() : [];
+
+        // load designations & employees from selected departments
+        $allDesignations = Designations::whereIn('department_id', $selectedDepartments)->get();
+        $allEmployees = UserDetail::whereIn('department_id', $selectedDepartments)->get();
+
+        return view('company.performance_cycle.edit', compact(
+            'allDepartment',
+            'allBranch',
+            'performanceCycle',
+            'allDesignations',
+            'allEmployees',
+            'selectedDepartments',
+            'selectedBranches',
+            'selectedDesignations',
+            'selectedEmployees'
+        ));
     }
+
+
+
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $validateData = Validator::make($request->all(), [
-            'title' => [
-                'required',
-                'string',
-                Rule::unique('performance_review_cycles')->where(function ($query) use ($request) {
-                    return $query->where('company_id', auth()->user()->company_id);
-                }),
-            ],
-        ]);
+        try {
+            // Validate
+            $validateData = Validator::make($request->all(), [
+                'title' => 'required|string',
+                'daterange' => 'required|string',
+                'company_branch_id' => 'required|array|min:1',
+                'department_id' => 'required|array|min:1',
+                'designation_id' => 'required|array|min:1',
+                'employee_id' => 'required|array|min:1',
+            ]);
 
-        if ($validateData->fails()) {
+            if ($validateData->fails()) {
+                return back()
+                    ->withErrors($validateData)
+                    ->withInput();
+            }
 
-            return response()->json(['error' => $validateData->messages()], 400);
-        }
-
-        $updateData = $request->except(['_token', 'id']);
-        $dates = explode(' - ', $updateData['daterange']);
-
-           
-        $updateData['start_date'] = $dates[0];
-        $updateData['end_date'] = $dates[1];
-        $companyStatus = $this->performanceCycleService->updateDetails($updateData, $request->id);
-
-        if ($companyStatus) {
-
-            return response()->json(
-                [
-                    'message' => 'Cycle Updated Successfully!',
-                    'data'   =>  view('company.performance_cycle.list', [
-                        'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
-                    ])->render()
-                ]
-            );
+            // Process dates
+            $dates = explode(' - ', $request->daterange);
+            $startDate = $dates[0] ?? null;
+            $endDate = $dates[1] ?? null;
+            $data = $request->except(['_token', 'id', 'daterange']);
+            $data['start_date'] = $startDate;
+            $data['end_date'] = $endDate;
+            $updated = $this->performanceCycleService->updateDetails($data, $id);
+            if ($updated) {
+                return redirect(route('performance-cycle-index'))->with('success', 'Review Cycle updated successfully!');
+            } else {
+                return back()->with('error', 'Update failed. Please try again.');
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $id = $request->id;
-        $data = $this->performanceCycleService->deleteDetails($id);
-        if ($data) {
-
-            return response()->json([
-                'success' => 'Cycle Deleted Successfully',
-                'data'   =>  view('company.performance_cycle.list', [
-                    'performanceCategories' => $this->performanceCycleService->all([auth()->user()->id])
-                ])->render()
-            ]);
-        } else {
-
-            return response()->json(['error' => 'Something Went Wrong!! Please try again']);
+        $cycle = $this->performanceCycleService->getCycle($id); // or use repository
+        if ($cycle) {
+            // Detach related users (if using pivot)
+            $cycle->users()->detach();
+            // Delete the cycle
+            $cycle->delete();
+            return response()->json(['status' => true, 'message' => 'Performance cycle deleted successfully.']);
         }
+
+        return response()->json(['status' => false, 'message' => 'Performance cycle not found.']);
     }
+
 
     public function search(Request $request)
     {
@@ -200,7 +209,7 @@ class PerformanceReviewCycleController extends Controller
 
             return response()->json([
                 'success' => 'Searching...',
-                'data'   =>  view("company.performance_cycle.list", [
+                'data' => view("company.performance_cycle.list", [
                     'performanceCategories' => $searchedItems
                 ])->render()
             ]);
@@ -213,7 +222,7 @@ class PerformanceReviewCycleController extends Controller
     public function getEmployeesByCycle($id)
     {
         $employee_ids = ReviewCycleUser::where('performance_review_cycle_id', $id)->pluck('user_id')->toArray();
-        if(auth()->user()->type == "company") {
+        if (auth()->user()->type == "company") {
             $employees = User::whereIn('id', $employee_ids ?? [])->doesntHave('managerEmployees')->select('id', 'name')->get();
 
             // $employees = User::whereIn('id', $employee_ids ?? [])->select('id', 'name')->get();
@@ -228,4 +237,10 @@ class PerformanceReviewCycleController extends Controller
             'employees' => $employees
         ]);
     }
+    public function getDesignationsByDept(Request $request)
+    {
+        $designations = Designations::whereIn('department_id', $request->department_ids)->get(['id', 'name']);
+        return response()->json(['data' => $designations]);
+    }
+
 }

@@ -509,17 +509,21 @@ class EmployeeAttendanceService
         $data['total_hours'] = sprintf('%02d:%02d', $hours, $minutes);
         // Fetch user and shift config
         $userDetails = User::find($data['user_id']);
-        $shiftDetails = $userDetails->details->officeShift;
-        $officeTimeConfig = $shiftDetails->officeTimingConfigs->toArray();
-        [$isLate, $isShortAttendance, $attendanceStatus] = checkForHalfDayAttendance($shiftDetails->toArray(), $officeTimeConfig, $data['date'], $punchIn, $punchOut);
+        $shiftType = $userDetails->details->shift_type;
+        $shiftIDs = $this->userShiftService->getTodaysShifts($userDetails->id, $shiftType)->pluck('shift_id')->toArray();
+        $shifts = $this->shiftService->getByIdShifts($shiftIDs);
 
+        // Check if user is within allowed punch-in time for any shift
+        $shiftCheck = $this->userShiftService->isUserAllowedToPunchIn($shifts);
+        $officeShiftDetails = $shiftCheck['officeShift'];
+        [$isLate, $isShortAttendance, $attendanceStatus] = checkForHalfDayAttendance($officeShiftDetails->toArray(), $officeShiftDetails->officeTimingConfigs->toArray(), $data['date'], $punchIn, $punchOut);
         $data['is_late'] = $isLate ? 1 : 0;
         $data['status'] = $attendanceStatus;
         $data['is_short_attendance'] = $isShortAttendance;
 
-        $data['shift_id'] = $shiftDetails->id;
-        $data['shift_start_time'] = $shiftDetails->start_time;
-        $data['shift_end_time'] = $shiftDetails->end_time;
+        $data['shift_id'] = $officeShiftDetails->id;
+        $data['shift_start_time'] = $officeShiftDetails->start_time;
+        $data['shift_end_time'] = $officeShiftDetails->end_time;
         // Prepare for saving
         $payload = Arr::except($data, ['_token', 'date', 'attendance_id']);
         if (!empty($data['attendance_id'])) {

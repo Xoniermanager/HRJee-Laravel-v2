@@ -7,33 +7,36 @@
             <thead>
                 <tr class="fw-bold">
                     <th>Sr. No.</th>
-                    <th>Title</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    {{-- <th>Status</th> --}}
+                    <th>Name</th>
+                    <th>Status</th>
                     <th class="float-right">Action</th>
                 </tr>
             </thead>
             <!--end::Table head-->
             <!--begin::Table body-->
-            @forelse ($performanceCategories as $key => $cycle)
+            @forelse ($kpiCategories as $key => $category)
             <tbody class="">
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td> <a href="#">{{ $cycle->title }}</a></td>
-                    <td> <a href="#">{{ $cycle->start_date }}</a></td>
-                    <td> <a href="#">{{ $cycle->end_date }}</a></td>
+                    <td> <a href="#" onClick="edit_leave_type('{{ $category->id }}', '{{ $category->name }}')">{{ $category->name }}</a>
+                    </td>
+                    <td data-order="Invalid date">
+                        <label class="switch">
+                            <input type="checkbox" <?=$category->status == '1' ? 'checked' : '' ?>
+                            onchange="handleStatus({{ $category->id }})" id="checked_value_{{$category->id}}">
+                            <span class="slider round"></span>
+                        </label>
+                    </td>
                     <td>
                         <div class="d-flex justify-content-end flex-shrink-0">
-                            <a href="{{ route('performance-cycle.edit',$cycle->id) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                            <a href="#" data-bs-toggle="modal" onClick="edit_leave_type('{{ $category->id }}', '{{ $category->name }}')" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                 <i class="fa fa-edit"></i>
                                 <!--end::Svg Icon-->
                             </a>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onclick="deleteFunction('{{ $cycle->id }}')">
+                            <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onclick="deleteFunction('{{ $category->id }}')">
                                 <i class="fa fa-trash"></i>
                             </a>
-
                         </div>
                     </td>
                 </tr>
@@ -41,7 +44,7 @@
             @empty
             <td colspan="3">
                 <span class="text-danger">
-                    <strong>No Cycle Found!</strong>
+                    <strong>No Categories Found!</strong>
                 </span>
             </td>
             @endforelse
@@ -49,8 +52,8 @@
         </table>
         <!--end::Table-->
     </div>
-    <div class="mt-3">
-        {{ $performanceCategories->links() }}
+    <div class="mt-3 paginate">
+        {{ $kpiCategories->links() }}
     </div>
     <!--end::Table container-->
 </div>

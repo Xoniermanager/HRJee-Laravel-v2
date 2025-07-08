@@ -9,14 +9,16 @@ class PerformanceReviewCycle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['company_id', 'title', 'start_date', 'end_date', 'department_id', 'created_by'];
+    protected $fillable = ['company_id', 'title', 'start_date', 'end_date', 'department_id', 'created_by', 'company_branch_id', 'designation_id'];
 
     public function users()
     {
-        return $this->hasMany(ReviewCycleUser::class, 'performance_review_cycle_id', 'id');
+        return $this->belongsToMany(User::class, 'review_cycle_users', 'performance_review_cycle_id', 'user_id')
+            ->withTimestamps();
     }
 
-    public function userList() {
+    public function userList()
+    {
         $users = [];
 
         foreach ($this->users as $value) {
