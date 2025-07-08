@@ -18,8 +18,8 @@ class SendAttendanceReportMail extends Mailable
     public function __construct($fileName, $fromDate, $toDate)
     {
         $this->fileName = $fileName;
-        $this->$fromDate = $fromDate;
-        $this->$toDate = $toDate;
+        $this->fromDate = $fromDate;
+        $this->toDate = $toDate;
 
         Log::info('Building attendance report mailcxvzxcvcxv', [
             'fileName' => $this->fileName,
@@ -35,8 +35,12 @@ class SendAttendanceReportMail extends Mailable
             'from' => $this->fromDate,
             'to' => $this->toDate,
         ]);
+
         return $this->subject('Your Attendance Report')
-            ->view('email.attendance-report')  // This is the blade view file for body
+            ->view('email.attendance-report', [
+                "fromDate" => $this->fromDate,
+                "toDate" => $this->toDate
+            ])  // This is the blade view file for body
             ->attach(storage_path('app/' . $this->fileName));
     }
 }

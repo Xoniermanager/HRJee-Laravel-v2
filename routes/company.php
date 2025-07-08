@@ -55,6 +55,7 @@ use App\Http\Controllers\Company\CompanyBranchesController;
 use App\Http\Controllers\Company\DispositionCodeController;
 use App\Http\Controllers\Company\FaceRecognitionController;
 use App\Http\Controllers\Company\PreviousCompanyController;
+use App\Http\Controllers\Company\SupportController;
 use App\Http\Controllers\Company\SalaryComponentController;
 use App\Http\Controllers\Company\UserBankDetailsController;
 use App\Http\Controllers\Company\AssignPermissionController;
@@ -160,6 +161,13 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/', 'index')->name('rindex');
         Route::get('/{id}', 'view')->name('rview');
         Route::post('/{id}/status', 'changeStatus')->name('rchange-status');
+    });
+
+    // Support Management
+    Route::prefix('support')->name('support.')->controller(SupportController::class)->group(function () {
+        Route::get('/', 'index')->name('support.index');
+        Route::get('/delete', 'delete')->name('support.delete');
+        Route::post('/update', 'reply')->name('support.update');
     });
 
     //Country Module
