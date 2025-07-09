@@ -373,7 +373,7 @@
                                         data-close-on-select="false" data-placeholder="Select the Employee"
                                         data-allow-clear="true" multiple="multiple" name="user_id[]"
                                         id="hidden_user_ids">
-                                        @foreach ($allUserDetails as $item)
+                                        @foreach ($allEmployeeDetails as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>

@@ -113,8 +113,9 @@ class EmployeeController extends Controller
         $allQualification = $this->qualificationService->getAllActiveQualification();
         $allSkills = $this->skillServices->getAllActiveSkills();
         $allSalaryStructured = $this->salaryService->getAllActiveSalaries(Auth()->user()->company_id);
+        $allEmployeeDetails = $this->userService->searchFilterEmployee($request == null, Auth()->user()->company_id)->get();
 
-        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills', 'allSalaryStructured', 'activeUserCount'));
+        return view('company.employee.index', compact('allUserDetails', 'allEmployeeStatus', 'allCountries', 'allEmployeeType', 'allEmployeeStatus', 'alldepartmentDetails', 'allShifts', 'allBranches', 'allQualification', 'allSkills', 'allSalaryStructured', 'activeUserCount','allEmployeeDetails'));
     }
 
     public function add()
