@@ -66,8 +66,9 @@ class AssignTaskService
         $payload['response_data'] = json_encode(Arr::except($data, ['_token', 'user_id', 'document', 'image', 'disposition_code_id', 'user_end_status', 'final_status']));
         $payload['user_id'] = $data['user_id'];
         $payload['disposition_code_id'] = $data['disposition_code_id'];
-        $payload['visit_address'] = $data['visit_address'];
-
+        $payload['visit_address'] =     $data['visit_address'];
+        $payload['user_end_status']  =  $data['user_end_status'];
+        $payload['final_status']  =  $data['final_status'];
         // retrieve latitude longitude from visit address
         $result = app('geocoder')->geocode($data['visit_address'])->get();
         $coordinates = $result[0]->getCoordinates();

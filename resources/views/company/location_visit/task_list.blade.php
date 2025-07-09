@@ -29,12 +29,12 @@
                                 <!--end::Svg Icon-->
                             </a>
                             <a href="{{ route('location_visit.edit_task_assign', $item->id) }}"
-                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 {{ $item->user_end_status == 'completed' ? 'disabled' : '' }}">
+                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 {{ $item->final_status == 'completed' ? 'disabled' : '' }}">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                 <i class="fa fa-edit"></i>
                                 <!--end::Svg Icon-->
                             </a>
-                            <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 {{ $item->user_end_status == 'completed' ? 'disabled' : '' }}"
+                            <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 {{ $item->final_status == 'completed' ? 'disabled' : '' }}"
                                 onclick="deleteFunction('{{ $item->id }}')">
                                 <i class="fa fa-trash"></i>
                             </a>
