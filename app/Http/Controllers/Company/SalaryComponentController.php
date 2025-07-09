@@ -78,36 +78,49 @@ class SalaryComponentController extends Controller
 
     public function demo()
     {
-        $user = \Illuminate\Support\Facades\Auth::user();
+        // Load saved components
+        $storedComponents = DemoSalaryComponent::where('user_id', Auth()->user()->id)->get();
 
-       // get stored components
-       $storedComponents = DemoSalaryComponent::where('user_id', $user->id)->get();
+        // Split by type
+        $earnings = $storedComponents->where('type', 'earning');
+        $deductions = $storedComponents->where('type', 'deduction');
 
-       $earnings = $storedComponents->where('type', 'earning');
-       $deductions = $storedComponents->where('type', 'deduction');
+        // Defaults if empty
+        if ($earnings->isEmpty()) {
+            $earnings = collect([
+                (object) ['name' => 'Basic', 'value' => 0, 'selected' => true],
+                (object) ['name' => 'HRA', 'value' => 0, 'selected' => true],
+            ]);
+        }
+        if ($deductions->isEmpty()) {
+            $deductions = collect([
+                (object) ['name' => 'PF', 'value' => 0, 'selected' => true],
+                (object) ['name' => 'ESI', 'value' => 0, 'selected' => true],
+            ]);
+        }
 
-       // defaults if empty
-       if ($earnings->isEmpty()) {
-           $earnings = collect([
-               (object)['name' => 'Basic', 'value' => '', 'selected' => true],
-               (object)['name' => 'HRA', 'value' => '', 'selected' => true],
-           ]);
-       }
-       if ($deductions->isEmpty()) {
-           $deductions = collect([
-               (object)['name' => 'PF', 'value' => '', 'selected' => true],
-               (object)['name' => 'TaxRate', 'value' => '', 'selected' => true],
-           ]);
-       }
+        $totalEarnings = $earnings->sum('value');
+        $totalDeductions = $deductions->sum('value');
 
-        return view('salary-design', compact('earnings', 'deductions','storedComponents'));
+        $earningComponents = config('services.earnings');
+        $deductionComponents = config('services.deductions');
+
+        return view('salary-design', compact(
+            'earnings',
+            'deductions',
+            'storedComponents',
+            'totalEarnings',
+            'totalDeductions',
+            'earningComponents',
+            'deductionComponents'
+        ));
     }
     public function storeDemo(Request $request)
     {
         $user = \Illuminate\Support\Facades\Auth::user();
 
         // save earnings
-        if($request->earnings) {
+        if ($request->earnings) {
             foreach ($request->earnings as $item) {
                 if (!empty($item['id'])) {
                     // Update existing
@@ -140,7 +153,7 @@ class SalaryComponentController extends Controller
         }
 
         // save deductions
-        if($request->deductions) {
+        if ($request->deductions) {
             foreach ($request->deductions as $item) {
                 if (!empty($item['id'])) {
                     // Update existing
@@ -177,10 +190,10 @@ class SalaryComponentController extends Controller
 
     public function destroy($id)
     {
-    $component = DemoSalaryComponent::findOrFail($id);
-    $component->delete();
+        $component = DemoSalaryComponent::findOrFail($id);
+        $component->delete();
 
-    return response()->json(['success' => true, 'message' => 'Component deleted successfully.']);
+        return response()->json(['success' => true, 'message' => 'Component deleted successfully.']);
     }
 
 }
