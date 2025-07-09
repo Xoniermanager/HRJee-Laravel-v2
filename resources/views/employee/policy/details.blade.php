@@ -43,6 +43,9 @@
                                 <object data="{{ $policyDetails->file }}" type="application/pdf" width="100%"
                                     height="200">
                                 </object>
+                                <a href="{{ $policyDetails->file }}" download class="btn btn-outline-primary">
+                                    <i class="fa fa-download me-1"></i> Download File
+                                </a>
                             </div>
                             <!--end::Feature post-->
                         </div>
