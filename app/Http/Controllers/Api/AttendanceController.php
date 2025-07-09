@@ -424,6 +424,14 @@ class AttendanceController extends Controller
             $data['user_id'] = Auth()->user()->id;
             $data['company_id'] = Auth()->user()->company_id;
             $data['created_by'] = Auth()->user()->id;
+            // Check if a request already exists for the same user on the same date
+            $exists = $this->attendanceRequestService->getDetailsByUserIdByDate($data['user_id'],$data['date'])->exists();
+            if ($exists) {
+                return response()->json([
+                    "error" => 'duplicate_request',
+                    "message" => "A request already exists for this date.",
+                ], 400);
+            }
             if ($this->attendanceRequestService->storeAttendanceRequest($data)) {
                 return response()->json([
                     'status' => true,
@@ -468,7 +476,7 @@ class AttendanceController extends Controller
             'punch_in' => 'required|date_format:H:i',
             'punch_out' => 'required|date_format:H:i|after:punch_in',
             'reason' => 'required|string|max:255',
-        ],);
+        ], );
         if ($validator->fails()) {
             return response()->json([
                 "error" => 'validation_error',

@@ -85,4 +85,9 @@ class AttendanceRequestService
     {
         return $this->attendanceRequestRepository->find($requestId)->delete();
     }
+
+    public function getDetailsByUserIdByDate($userId,$date)
+    {
+        return $this->attendanceRequestRepository->where('company_id', Auth()->user()->company_id)->where('user_id',$userId)->where('date',$date);
+    }
 }
