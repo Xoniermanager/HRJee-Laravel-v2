@@ -33,16 +33,16 @@ class WeekendService
             // } else {
             //     $data['weekend_dates'] = json_encode(explode(",", [$data['weekend_dates']]));
             // }
-            
+
             $payload = Arr::except($data, ['_token', 'weekend_id']);
-            
+
             if (isset($data['weekend_id']) && !empty($data['weekend_id'])) {
                 $this->weekendRepository->find($data['weekend_id'])->update($payload);
                 $response = $this->weekendRepository->find($data['weekend_id']);
             } else {
                 $response = $this->weekendRepository->create($payload);
             }
-            
+
             return $response;
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred, please try again later.'], 400);

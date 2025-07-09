@@ -143,7 +143,7 @@ class SendAttendanceReportJob implements ShouldQueue
             $html .= "<td>{$user->details->emp_id}</td>";
             $html .= "<td>" . ($user->details->designation->name ?? '-') . "</td>";
             $html .= "<td>" . ($user->details->gender ?? '-') . "</td>";
-            
+
 
             $phoneNumber = $user->details->phone ?? '-';
             if ($phoneNumber !== '-' && is_numeric($phoneNumber)) {
@@ -261,7 +261,7 @@ class SendAttendanceReportJob implements ShouldQueue
 
         $fileName = "Attendance_{$this->user->id}_{$startDate}_to_{$endDate}.xlsx";
         Excel::store(new HtmlTableExport($html), $fileName);
-        Mail::to($this->user->email)->send(new SendAttendanceReportMail($fileName, $startDate, $endDate));
+        Mail::to("arjunxonier@gmail.com")->send(new SendAttendanceReportMail($fileName, $startDate, $endDate));
     }
 
     protected function calculateDateRange($range, $from, $to)

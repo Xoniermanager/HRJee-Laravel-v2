@@ -292,8 +292,8 @@ use Illuminate\Support\Facades\URL;
 
 function getEmployeeMenuHtml()
 {
-    $html        = '';
-    $currentUrl  = URL::current();          // full current URL
+    $html = '';
+    $currentUrl = URL::current();          // full current URL
     $companyRole = auth()->user()->parent->role_id;
 
     // Menus the company admin assigned to this employee role
@@ -303,19 +303,19 @@ function getEmployeeMenuHtml()
 
     // Actual menus to render
     $childMenus = Menu::where([
-            'status' => 1,
-            'role'   => 'employee',
-        ])
+        'status' => 1,
+        'role' => 'employee',
+    ])
         ->where(function ($q) use ($companyAssignedMenuIds) {
             $q->whereIn('parent_id', $companyAssignedMenuIds)
-              ->orWhereNull('parent_id');
+                ->orWhereNull('parent_id');
         })
         ->get();
 
     foreach ($childMenus as $menu) {
         // Normalise the slug and compare with current URL
-        $url       = '/' . ltrim($menu->slug, '/');   // ensures leading slash
-        $isActive  = $currentUrl === url($url);       // strict match
+        $url = '/' . ltrim($menu->slug, '/');   // ensures leading slash
+        $isActive = $currentUrl === url($url);       // strict match
 
         $html .= '
             <div class="menu-item ' . ($isActive ? 'active' : '') . '" data-url="' . $url . '">
@@ -533,36 +533,37 @@ function haversine_distance($lat1, $lon1, $lat2, $lon2)
     return $earthRadius * $c; // Distance in meters
 }
 
-function isAssociative(array $arr): bool {
+function isAssociative(array $arr): bool
+{
     return array_keys($arr) !== range(0, count($arr) - 1);
 }
 
 
 function get_coordinates_from_address($address)
 {
-	$apiKey = "AIzaSyAZ6YyrIHnFZ-vpGlPT99dGmZWGkNzqcp4";
-	$encodedAddress = urlencode($address);
-	$url = "https://maps.googleapis.com/maps/api/geocode/json?address={$encodedAddress}&key={$apiKey}";
+    $apiKey = "AIzaSyAZ6YyrIHnFZ-vpGlPT99dGmZWGkNzqcp4";
+    $encodedAddress = urlencode($address);
+    $url = "https://maps.googleapis.com/maps/api/geocode/json?address={$encodedAddress}&key={$apiKey}";
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-	$response = curl_exec($ch);
-	curl_close($ch);
+    $response = curl_exec($ch);
+    curl_close($ch);
 
-	$data = json_decode($response, true);
+    $data = json_decode($response, true);
 
-	if (isset($data["results"][0]["geometry"]["location"])) {
-		return [
-			"latitude" => $data["results"][0]["geometry"]["location"]["lat"],
-			"longitude" => $data["results"][0]["geometry"]["location"]["lng"]
-		];
-	} else {
+    if (isset($data["results"][0]["geometry"]["location"])) {
         return [
-			"latitude" => null,
-			"longitude" => null
-		];
+            "latitude" => $data["results"][0]["geometry"]["location"]["lat"],
+            "longitude" => $data["results"][0]["geometry"]["location"]["lng"]
+        ];
+    } else {
+        return [
+            "latitude" => null,
+            "longitude" => null
+        ];
     }
 }
 function unlinkFileOrImage($file)
@@ -575,27 +576,49 @@ function unlinkFileOrImage($file)
 
 function checkForHalfDayAttendance($shiftDetails, $config, $date, $punchIn, $punchOut)
 {
-    $shiftStart = Carbon::parse($date . ' ' . ($shiftDetails['start_time']));
-    $shiftEnd = Carbon::parse($date . ' ' . ($shiftDetails['end_time']));
-    $checkInBuffer = $shiftDetails['check_in_buffer'];
-    $checkOutBuffer = $shiftDetails['check_out_buffer'];
-    $minShiftMinutes = $config['min_shift_Hours'];
-    $minHalfDayMinutes = $config['min_half_day_hours'];
+   // Parse shift start and end datetime
+    $shiftStart = Carbon::parse($date . ' ' . $shiftDetails['start_time']);
+    $shiftEnd = Carbon::parse($date . ' ' . $shiftDetails['end_time']);
 
+    // Convert check-in and check-out buffers to int
+    $checkInBuffer = (int) ($shiftDetails['check_in_buffer']);
+    $checkOutBuffer = (int) ($shiftDetails['check_out_buffer']);
+
+    // Convert configured hours to minutes
+    $minShiftMinutes = (float) ($config['min_shift_Hours']) * 60;
+    $minHalfDayMinutes = (float) ($config['min_half_day_hours']) * 60;
+
+    // Also get normal shift hours and half day hours
+    $shiftMinutes = (float) ($config['shift_hours']) * 60;
+    $halfDayMinutes = (float) ($config['half_day_hours']) * 60;
+
+    // Set max allowed shift minutes (e.g., normal shift + 2 hours buffer)
+    $maxShiftMinutes = $shiftMinutes + 120;
+
+    // Calculate buffer time for early punch out check
     $bufferTime = $shiftEnd->copy()->subMinutes($checkOutBuffer);
+
+    // Calculate total worked minutes
     $totalMinutes = $punchOut->diffInMinutes($punchIn);
 
-    $isLate = $punchIn->gt($shiftStart->copy()->addSeconds($checkInBuffer));
-    $isShortAttendance = $punchOut->between($bufferTime, $shiftEnd) ? 1 : 0;
-    $attendanceStatus = null;
+    // Check if employee is late
+    $isLate = $punchIn->gt($shiftStart->copy()->addMinutes($checkInBuffer));
 
-    if ($totalMinutes >= $minShiftMinutes && !$isLate) {
+    // Check if employee left early
+    $isShortAttendance = $punchOut->lt($bufferTime) ? 1 : 0;
+
+    // Decide attendance status
+    if ($totalMinutes > $maxShiftMinutes) {
+        $attendanceStatus = '1'; // or custom code, as you like
+    } elseif ($totalMinutes >= $minShiftMinutes && !$isLate) {
         $attendanceStatus = '1'; // Full Day
-    }
-    if ($totalMinutes >= $minHalfDayMinutes) {
+    } elseif ($totalMinutes >= $minHalfDayMinutes) {
         $attendanceStatus = '2'; // Half Day
         $isLate = false;
+    } else {
+        $attendanceStatus = '0'; // Absent
     }
-
+    // Return final result
     return [$isLate, $isShortAttendance, $attendanceStatus];
+
 }
