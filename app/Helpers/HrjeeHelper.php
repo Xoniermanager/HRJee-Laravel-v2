@@ -608,7 +608,7 @@ function checkForHalfDayAttendance($shiftDetails, $config, $date, $punchIn, $pun
     $isShortAttendance = $punchOut->lt($bufferTime) ? 1 : 0;
 
     // Decide attendance status
-    if ($totalMinutes > $maxShiftMinutes) {
+    if ($totalMinutes > $maxShiftMinutes && !$isLate) {
         $attendanceStatus = '1'; // or custom code, as you like
     } elseif ($totalMinutes >= $minShiftMinutes && !$isLate) {
         $attendanceStatus = '1'; // Full Day
@@ -616,7 +616,7 @@ function checkForHalfDayAttendance($shiftDetails, $config, $date, $punchIn, $pun
         $attendanceStatus = '2'; // Half Day
         $isLate = false;
     } else {
-        $attendanceStatus = '0'; // Absent
+        $attendanceStatus = '1'; // Absent
     }
     // Return final result
     return [$isLate, $isShortAttendance, $attendanceStatus];
