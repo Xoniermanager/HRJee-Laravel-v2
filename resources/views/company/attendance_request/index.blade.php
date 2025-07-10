@@ -73,8 +73,8 @@
                                 },
                                 success: function (res) {
                                     if (res.status) {
+                                        search_filter_results();
                                         Swal.fire("Done!", res.message, "success");
-                                        $('#address_request_list').replaceWith(res.data);
                                     } else {
                                         Swal.fire("Oops!", res.message, "error");
                                     }
@@ -89,11 +89,16 @@
             jQuery("#status").on('change', function () {
                 search_filter_results();
             });
+            jQuery(document).on('click', '#attendance_request_list .paginate a', function(e) {
+            e.preventDefault();
+            var page_no = $(this).attr('href').split('page=')[1];
+            search_filter_results(page_no);
+            });
 
-            function search_filter_results() {
+            function search_filter_results(page_no = 1) {
                 $.ajax({
                     type: 'GET',
-                    url: company_ajax_base_url + '/attendance-request/search/filter',
+                    url: company_ajax_base_url + '/attendance-request/search/filter?page=' + page_no,
                     data: {
                         'status': $('#status').val(),
                         'search': $('#search').val()
