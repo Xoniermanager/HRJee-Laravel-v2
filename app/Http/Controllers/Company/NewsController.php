@@ -31,9 +31,9 @@ class NewsController extends Controller
     {
         $companyIDs = getCompanyIDs();
         $allNewsDetails = $this->newsService->all();
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->company_id);
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         return view('company.news.index', compact('allNewsDetails', 'allNewsCategoryDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
 
@@ -42,8 +42,8 @@ class NewsController extends Controller
         $companyIDs = getCompanyIDs();
 
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->company_id);
         return view('company.news.add', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'allNewsCategoryDetails'));
     }
     public function store(NewsStoreRequest $request)
@@ -63,8 +63,8 @@ class NewsController extends Controller
         $companyIDs = getCompanyIDs();
         $editNewsDetails = $this->newsService->findByNewsId($id);
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
-        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
+        $allNewsCategoryDetails = $this->newsCategoryService->getAllActiveNewsCategoryByCompanyID(Auth()->user()->company_id);
         return view('company.news.edit', compact('editNewsDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails', 'allNewsCategoryDetails'));
     }
     public function view($id)
