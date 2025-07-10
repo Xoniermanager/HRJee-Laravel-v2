@@ -27,9 +27,6 @@ class AttendanceRequestController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => "Attendance Request Status Updated Successfully",
-                'data' => view('company.attendance_request.list', [
-                    'allAttendanceDetails' => $this->attendanceRequestService->getAttendanceRequestByCompanyId(Auth()->user()->company_id)->paginate(10)
-                ])->render()
             ]);
         } else {
             return response()->json(['status' => false, 'message' => 'Something Went Wrong!! Please try again']);

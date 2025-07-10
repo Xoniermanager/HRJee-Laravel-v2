@@ -23,8 +23,8 @@
                         <td>{{ $item->user->name }}</td>
                         <td>{{ $item->user->email }}</td>
                         <td>{{ getFormattedDate($item->date) }}</td>
-                        <td>{{ date('H:i A',strtotime($item->punch_in)) }}</td>
-                        <td>{{ date('H:i A',strtotime($item->punch_out)) }}</td>
+                        <td>{{ date('H:i A', strtotime($item->punch_in)) }}</td>
+                        <td>{{ date('H:i A', strtotime($item->punch_out)) }}</td>
                         <td>{{ $item->reason }}</td>
                         <td data-order="Invalid date">
                             @if($item->status == 'pending')
@@ -35,11 +35,11 @@
                                     <option value="rejected">Rejected</option>
                                 </select>
                             @else
-                                    @if ($item->status == 'approved')
+                                @if ($item->status == 'approved')
                                     <span class="btn btn-success btn-sm">Approved</span>
-                                    @else
+                                @else
                                     <span class="btn btn-danger btn-sm">Rejected</span>
-                                    @endif
+                                @endif
                             @endif
                         </td>
                     </tr>
@@ -55,7 +55,8 @@
         </table>
         <!--end::Table-->
     </div>
-    {{ $allAttendanceDetails->links() }}
+    <div class="paginate">
+        {{ $allAttendanceDetails->links() }}
+    </div>
     <!--end::Table container-->
-
 </div>
