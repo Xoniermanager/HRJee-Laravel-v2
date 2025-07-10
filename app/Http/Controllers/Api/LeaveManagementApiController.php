@@ -106,7 +106,7 @@ class LeaveManagementApiController extends Controller
             }
 
             // Step 4: Prevent duplicate application
-            $alreadyApplied = $this->leaveService->getUserAppliedLeaveByDate($userID, $data['from'], $data['to']);
+            $alreadyApplied = $this->leaveService->getUserAppliedLeaveByDate($userID, $data['from'], $data['to'],$data['leave_type_id']);
             if ($alreadyApplied) {
                 return response()->json([
                     'status' => false,

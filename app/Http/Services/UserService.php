@@ -139,39 +139,18 @@ class UserService
     {
         // dd($companyId);
         $allEmployeeDetails = $this->userRepository
-            ->where('type', 'user')
             ->where('company_id', $companyId)
-            ->whereHas('details', function ($query) use ($request) {
-                $query->whereNull('exit_date');
-                // Filtering by details-related fields
-                if (isset($request->gender) && !empty($request->gender)) {
-                    $query->where('gender', $request->gender);
-                }
-                if (isset($request->emp_status_id) && !empty($request->emp_status_id)) {
-                    $query->where('employee_status_id', $request->emp_status_id);
-                }
-                if (isset($request->marital_status) && !empty($request->marital_status)) {
-                    $query->where('marital_status', $request->marital_status);
-                }
-                if (isset($request->emp_type_id) && !empty($request->emp_type_id)) {
-                    $query->where('employee_type_id', $request->emp_type_id);
-                }
-                if (isset($request->department_id) && !empty($request->department_id)) {
-                    $query->where('department_id', $request->department_id);
-                }
-                if (isset($request->shift_id) && !empty($request->shift_id)) {
-                    $query->where('shift_id', $request->shift_id);
-                }
-                if (isset($request->branch_id) && !empty($request->branch_id)) {
-                    $query->where('company_branch_id', $request->branch_id);
-                }
-                if (isset($request->qualification_id) && !empty($request->qualification_id)) {
-                    $query->where('qualification_id', $request->qualification_id);
-                }
-                if (isset($request->search) && !empty($request->search)) {
-                    $searchKeyword = $request->search;
-                    $query->where(function ($query) use ($searchKeyword) {
-                        $query->orWhere('official_email_id', 'LIKE', '%' . $searchKeyword . '%')
+            ->where('type', 'user');
+
+        if (isset($request->search) && !empty($request->search)) {
+            $searchKeyword = $request->search;
+
+            // Combine search on name/email OR inside details
+            $allEmployeeDetails->where(function ($query) use ($searchKeyword) {
+                $query->where('name', 'LIKE', '%' . $searchKeyword . '%')
+                    ->orWhere('email', 'LIKE', '%' . $searchKeyword . '%')
+                    ->orWhereHas('details', function ($q) use ($searchKeyword) {
+                        $q->where('official_email_id', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('phone', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('emp_id', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('father_name', 'LIKE', '%' . $searchKeyword . '%')
@@ -179,18 +158,40 @@ class UserService
                             ->orWhere('offer_letter_id', 'LIKE', '%' . $searchKeyword . '%')
                             ->orWhere('official_mobile_no', 'LIKE', '%' . $searchKeyword . '%');
                     });
-                }
-            });
-        if (isset($request->search) && !empty($request->search)) {
-
-            $searchKeyword = $request->search;
-            // Main search filter for the users table
-            $allEmployeeDetails->orWhere(function ($query) use ($searchKeyword) {
-                $query->where('name', 'LIKE', '%' . $searchKeyword . '%')
-                    ->orWhere('email', 'LIKE', '%' . $searchKeyword . '%');
             });
         }
-        // Filtering by skill_id
+
+        // other filters:
+        $allEmployeeDetails->whereHas('details', function ($query) use ($request) {
+            $query->whereNull('exit_date');
+
+            if (isset($request->gender) && !empty($request->gender)) {
+                $query->where('gender', $request->gender);
+            }
+            if (isset($request->emp_status_id) && !empty($request->emp_status_id)) {
+                $query->where('employee_status_id', $request->emp_status_id);
+            }
+            if (isset($request->marital_status) && !empty($request->marital_status)) {
+                $query->where('marital_status', $request->marital_status);
+            }
+            if (isset($request->emp_type_id) && !empty($request->emp_type_id)) {
+                $query->where('employee_type_id', $request->emp_type_id);
+            }
+            if (isset($request->department_id) && !empty($request->department_id)) {
+                $query->where('department_id', $request->department_id);
+            }
+            if (isset($request->shift_id) && !empty($request->shift_id)) {
+                $query->where('shift_id', $request->shift_id);
+            }
+            if (isset($request->branch_id) && !empty($request->branch_id)) {
+                $query->where('company_branch_id', $request->branch_id);
+            }
+            if (isset($request->qualification_id) && !empty($request->qualification_id)) {
+                $query->where('qualification_id', $request->qualification_id);
+            }
+        });
+
+        // skill_id filter
         if (isset($request->skill_id) && !empty($request->skill_id)) {
             $skillId = $request->skill_id;
             $allEmployeeDetails->whereHas('skill', function ($query) use ($skillId) {
@@ -216,7 +217,7 @@ class UserService
                 }
             ])
 
-        ->get();
+            ->get();
     }
 
     public function getAllManagedUsers($managerId, &$users = [])
@@ -233,26 +234,12 @@ class UserService
 
     public function getFaceRecognitionUsers($companyId)
     {
-        if (Auth()->user()->type == "user") {
-            $managerID = Auth()->user()->id;
-            $allEmployeeDetails = $this->userRepository
-                ->where('type', 'user')
-                ->where('company_id', $companyId)
-                ->whereHas('details', function ($query) {
-                    $query->where('face_recognition', 1)->where('face_kyc', '!=', NULL);
-                })
-                ->whereHas('managerEmployees', function ($query) use ($managerID) {
-                    $query->where('manager_id', $managerID);
-                });
-        } else {
-            $allEmployeeDetails = $this->userRepository
-                ->where('type', 'user')
-                ->where('company_id', $companyId)
-                ->whereHas('details', function ($query) {
-                    $query->where('face_recognition', 1)->where('face_kyc', '!=', NULL);
-                });
-        }
-
+        $allEmployeeDetails = $this->userRepository
+            ->where('type', 'user')
+            ->where('company_id', $companyId)
+            ->whereHas('details', function ($query) {
+                $query->where('face_recognition', 1)->where('face_kyc', '!=', NULL);
+            });
         return $allEmployeeDetails->orderBy('id', 'DESC');
     }
 

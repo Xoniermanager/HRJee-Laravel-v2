@@ -74,9 +74,12 @@ class AuthController extends Controller
             if ($user->status == '0') {
                 return redirect()->back()->with(['error' => 'Your Account is not Active. Please Contact to Admin']);
             }
-
+            $email = $user->email;
+            if ($user->type === 'user') {
+                $email = $user->details->official_email_id;
+            }
             // Generate OTP
-            $genrateOtpresponse = $this->sendOtpService->generateOTP($user->email, $user->type);
+            $genrateOtpresponse = $this->sendOtpService->generateOTP($email, $user->type);
             if ($genrateOtpresponse['status'] == true) {
                 session(['otp_pending_user' => $user->id]);
                 return redirect('/verify/otp')->with('message', $genrateOtpresponse['message']);

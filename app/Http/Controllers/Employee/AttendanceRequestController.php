@@ -52,6 +52,10 @@ class AttendanceRequestController extends Controller
     {
         try {
             $data = $request->all();
+            $exists = $this->attendanceRequestService->getDetailsByUserIdByDate( Auth()->user()->id,$data['date'])->exists();
+            if ($exists) {
+                return back()->with('error', 'A request already exists for this date.');
+            }
             if ($this->attendanceRequestService->updateAttendanceRequest($data, $requestId)) {
                 return redirect(route('employee.attendance.request.index'))->with('success', 'Attendance Request Updated successfully');
             }

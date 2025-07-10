@@ -261,7 +261,7 @@ class SendAttendanceReportJob implements ShouldQueue
 
         $fileName = "Attendance_{$this->user->id}_{$startDate}_to_{$endDate}.xlsx";
         Excel::store(new HtmlTableExport($html), $fileName);
-        Mail::to("arjunxonier@gmail.com")->send(new SendAttendanceReportMail($fileName, $startDate, $endDate));
+        Mail::to($this->user->email)->send(new SendAttendanceReportMail($fileName, $startDate, $endDate));
     }
 
     protected function calculateDateRange($range, $from, $to)
