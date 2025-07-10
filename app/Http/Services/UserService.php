@@ -137,6 +137,7 @@ class UserService
 
     public function searchFilterEmployee($request = null, $companyId)
     {
+        // dd($companyId);
         $allEmployeeDetails = $this->userRepository
             ->where('type', 'user')
             ->where('company_id', $companyId)
