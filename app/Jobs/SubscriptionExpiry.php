@@ -13,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 class SubscriptionExpiry implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
+
     public function __construct()
     {}
     public function handle()
@@ -22,11 +22,11 @@ class SubscriptionExpiry implements ShouldQueue
 
             $expiredDate = date('Y-m-d', strtotime('+7 days'));
             $subscriptionExpiredCompanies = CompanyDetail::with('user', 'subscriptionPlan')->where('subscription_expiry_date', '<=', $expiredDate)->get();
-            
+
             foreach ($subscriptionExpiredCompanies as $item) {
-                      
+
                 Mail::to($item->user->email)->send(new SubscriptionExpiryMail($item->subscription_expiry_date, $item->username, $item->user->email));
-                    
+
             }
         } catch (\Exception $e) {
             \Log::error('Error sending file: ' . $e->getMessage());

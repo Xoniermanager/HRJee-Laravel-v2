@@ -250,7 +250,7 @@ class EmployeeController extends Controller
     public function getfilterlist(Request $request)
     {
         $companyIDs = getCompanyIDs();
-        $allUserDetails = $this->userService->searchFilterEmployee($request, $companyIDs)->paginate(10);
+        $allUserDetails = $this->userService->searchFilterEmployee($request, Auth()->user()->company_id)->paginate(10);
         return response()->json([
             'data' => view('company.employee.list', compact('allUserDetails'))->render()
         ]);

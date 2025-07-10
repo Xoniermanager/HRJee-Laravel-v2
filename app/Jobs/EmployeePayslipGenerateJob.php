@@ -37,7 +37,7 @@ class EmployeePayslipGenerateJob implements ShouldQueue
                 if ($pdfData['status']) {
                     if ($pdfData['mail'] == '0') {
                         $pdf = PDF::loadView('salary_temp', ['data' => $pdfData]);
-                        Mail::to("arjun@xoniertechnologies.com")->send(new EmployeePayslipFile($pdf, $item->name));
+                        Mail::to($item->details->official_email_id)->send(new EmployeePayslipFile($pdf, $item->name));
                         UserMonthlySalary::where('user_id', $item->id)->where('year', $request['year'])->where('month', $request['month'])->update(['mail_send' => 1]);
                     }
                 }

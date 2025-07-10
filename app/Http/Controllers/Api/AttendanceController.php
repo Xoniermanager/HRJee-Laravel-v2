@@ -485,6 +485,14 @@ class AttendanceController extends Controller
         }
         try {
             $data = $request->all();
+             // Check if a request already exists for the same user on the same date
+             $exists = $this->attendanceRequestService->getDetailsByUserIdByDate(Auth()->user()->id,$data['date'])->exists();
+             if ($exists) {
+                 return response()->json([
+                     "error" => 'duplicate_request',
+                     "message" => "A request already exists for this date.",
+                 ], 400);
+             }
             if ($this->attendanceRequestService->updateAttendanceRequest($data, $requestId)) {
                 return response()->json([
                     'status' => true,

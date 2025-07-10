@@ -289,11 +289,11 @@ class LeaveService
             ->where('leave_status_id', 2)->with('user');
     }
 
-    public function getUserAppliedLeaveByDate($id, $fromdate, $toDate = NULL)
+    public function getUserAppliedLeaveByDate($id, $fromdate, $toDate = NULL,$leaveTypeId)
     {
         return $this->leaveRepository->where('user_id', $id)->where('from', '<=', $fromdate)
             ->where('to', '>=', ($toDate ? $toDate : $fromdate))
-            // ->where('leave_status_id', 2)
+            ->where('leave_type_id',$leaveTypeId)
             ->first();
     }
 }
