@@ -1,50 +1,97 @@
 jQuery(document).ready(function () {
+    jQuery.validator.addMethod("validName", function(value, element) {
+        return this.optional(element) || /^[a-zA-Z\s.\-]+$/.test(value);
+    }, "Name can only contain letters, spaces, dots");
+    jQuery.validator.addMethod("validPasswordComplex", function(value, element) {
+        if (value === "") return true; // optional: allow empty
+        // Regex: at least one lowercase, one uppercase, one digit, min length 6
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(value);
+    }, "Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one digit.");
 
     /** Basic Details created Ajax*/
     jQuery("#basic_create_form").validate({
         rules: {
-            name: "required",
-            email: "required",
-            // password: "required",
-            official_email_id: "required",
+            name: {
+                required: true,
+                minlength: 5,
+                maxlength: 255,
+                validName: true
+            },
+            father_name: {
+                minlength: 3,
+                maxlength: 100,
+                validName: true
+            },
+            mother_name: {
+                minlength: 3,
+                maxlength: 100,
+                validName: true
+            },
+            password: {
+                validPasswordComplex: true
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            official_email_id: {
+                required: true,
+                email: true
+            },
             blood_group: "required",
             gender: "required",
             marital_status: "required",
-            employee_status_id: "required",
+            // employee_status_id: "required",
             date_of_birth: "required",
             joining_date: "required",
             phone: "required",
-            // profile_image: "required",
             employee_type_id: 'required',
             department_id: 'required',
             designation_id: 'required',
             company_branch_id: 'required',
-            // role_id: 'required',
             qualification_id: 'required',
-            skill_id: 'required',  // Corrected to treat skill_id as a required field, no need for []
-            shift_id: 'required',
+            skill_id: 'required',
+            role_id: 'required',
         },
         messages: {
-            name: "Please enter the Full Name",
-            email: "Please enter the Email",
-            // password: "Please enter the Password",
-            official_email_id: "Please enter the Official Email",
+            name: {
+                required: "Please enter your name",
+                minlength: "Name must be at least 5 characters long",
+                maxlength: "Name cannot be more than 255 characters"
+            },
+            father_name: {
+                minlength: "Father's name must be at least 3 characters long",
+                maxlength: "Father's name cannot be more than 100 characters"
+            },
+            mother_name: {
+                minlength: "Mother's name must be at least 3 characters long",
+                maxlength: "Mother's name cannot be more than 100 characters"
+            },
+            password: {
+                validPasswordComplex: "Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one digit."
+            },
+            email: {
+                required: "Please enter the Email",
+                email: "Please enter a valid Email address"
+            },
+            official_email_id: {
+                required: "Please enter the Official Email",
+                email: "Please enter a valid Email address"
+            },
             blood_group: "Please select the Blood Group",
             gender: "Please select the Gender",
             marital_status: "Please select the Marital Status",
-            employee_status_id: "Please select the Employee Status",
+            // employee_status_id: "Please select the Employee Status",
             date_of_birth: "Please fill the Date of Birth",
             joining_date: "Please fill the Joining Date",
             phone: "Please enter the Phone",
-            // profile_image: "Please upload the profile images",
             employee_type_id: 'Please Select The Employee type',
             department_id: 'Please Select the Department',
             designation_id: 'Please Select the Designation',
             company_branch_id: 'Please Select the Branch',
-            // role_id: 'Please Select the role',
             qualification_id: 'Please select the qualification',
-            skill_id: 'Please select the skill', // Corrected message for skill_id
-            shift_id: 'Please Select the Shift',
+            skill_id: 'Please select the skill',
+            role_id: 'Please Select the job role',
         },
         submitHandler: function (form) {
             if (submit_handler == true) {
@@ -55,6 +102,7 @@ jQuery(document).ready(function () {
             }
         }
     });
+
 
 
     /** Advance Details Validation */

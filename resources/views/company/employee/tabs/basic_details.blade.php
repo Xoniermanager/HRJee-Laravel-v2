@@ -129,7 +129,7 @@
                         value="S">Single</option>
                 </select>
             </div>
-            <div class="col-md-4 form-group">
+            {{-- <div class="col-md-4 form-group">
                 <label for="" class="required">Emp Status</label>
                 <select class="form-control" name="employee_status_id">
                     <option value="">Select The Employee Status</option>
@@ -142,16 +142,16 @@
                         <option value="">No Employee Status Found</option>
                     @endforelse
                 </select>
-            </div>
+            </div> --}}
             <div class="col-md-4 form-group">
                 <label for="" class="required">Date of Birth</label>
                 <input class="form-control" type="date" name="date_of_birth"
-                    value="{{ $singleUserDetails->details->date_of_birth ?? '' }}">
+                    value="{{ $singleUserDetails->details->date_of_birth ?? '' }}" max="{{ date('Y-m-d') }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="" class="required">Date of Joining</label>
                 <input class="form-control" type="date" name="joining_date"
-                    value="{{ $singleUserDetails->details->joining_date ?? '' }}">
+                    value="{{ $singleUserDetails->details->joining_date ?? '' }}" max="{{ date('Y-m-d') }}">
             </div>
             <div class="col-md-4 form-group">
                 <label for="" class="required">Phone Number</label>
@@ -195,15 +195,14 @@
                     @if (isset($singleUserDetails->details->offer_letter_id)) @endif>
             </div>
             <div class="col-md-4 form-group">
-                <label for="" class="required">Role</label>
+                <label for="" class="required">Job Role</label>
                 <select class="form-control" name="role_id">
                     <option value="">Select Role</option>
                     @forelse ($allRoles as $role)
                     @php
                         $selectedRoleId = $singleUserDetails->role_id ?? old('role_id');
                         $isSelected = $selectedRoleId
-                            ? ($selectedRoleId == $role->id)
-                            : ($role->name == 'Employee');
+                            ? ($selectedRoleId == $role->id) : ($role->name == 'Employee');
                     @endphp
                     <option value="{{ $role->id }}" {{ $isSelected ? 'selected' : '' }}>
                         {{ $role->name }}
@@ -292,20 +291,17 @@
                 <div class="form-group col-md-4">
                     <label for="">Shift Type:</label>
                     <select id="shift_type_selector" class="form-control" name="shift_type">
-                        <option {{ ($singleUserDetails->details->shift_type == 'single' ? 'selected' : '') }} value="single">Single
-                            Shift (Whole Week)</option>
+                        <option {{ ($singleUserDetails->details->shift_type == 'single' ? 'selected' : '') }} value="single">Fixed Shift</option>
                         <option value="daily" {{ $singleUserDetails->details->shift_type == 'daily' ? 'selected' : '' }}>
-                            Daily Shift
-                            (Different Each Day)</option>
+                            Rotational Shift</option>
                     </select>
                 </div>
             @else
              <div class="form-group col-md-4">
                 <label for="">Shift Type:</label>
                 <select id="shift_type_selector" class="form-control" name="shift_type">
-                    <option value="single">Single
-                        Shift (Whole Week)</option>
-                    <option value="daily">Daily Shift (Different Each Day)</option>
+                    <option value="single">Fixed Shift</option>
+                    <option value="daily">Rotational Shift</option>
                 </select>
             </div>
             @endif
