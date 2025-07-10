@@ -31,9 +31,9 @@ class PolicyController extends Controller
     {
         $companyIDs = getCompanyIDs();
         $allPolicyDetails = $this->policyService->all();
-        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->id);
+        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->company_id);
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         return view('company.policy.index', compact('allPolicyDetails', 'allPolicyCategoryDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails'));
     }
 
@@ -41,8 +41,8 @@ class PolicyController extends Controller
     {
         $companyIDs = getCompanyIDs();
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
-        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
+        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->company_id);
         return view('company.policy.add', compact('allCompanyBranchesDetails', 'allDepartmentsDetails', 'allPolicyCategoryDetails'));
     }
     public function store(PolicyStoreRequest $request)
@@ -61,8 +61,8 @@ class PolicyController extends Controller
         $companyIDs = getCompanyIDs();
         $editPolicyDetails = $this->policyService->findByPolicyId($id);
         $allCompanyBranchesDetails = $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs);
-        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->id);
-        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->id);
+        $allDepartmentsDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
+        $allPolicyCategoryDetails = $this->policyCategoryService->getAllActivePolicyCategoryUsingByCompanyID(Auth()->user()->company_id);
         return view('company.policy.edit', compact('editPolicyDetails', 'allCompanyBranchesDetails', 'allDepartmentsDetails', 'allPolicyCategoryDetails'));
     }
     public function view($id)
