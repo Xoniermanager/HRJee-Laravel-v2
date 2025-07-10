@@ -3,7 +3,7 @@
 @section('content')
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <div class="container-xxl" id="kt_content_container">
-            <div class="col-lg-12 col-xl-12 col-xxl-12 mb-5">
+            <div class="col-lg-12 col-xl-12 col-xxl-12">
                 <!--begin::Timeline widget 3-->
                 <div class="card h-md-100 p-0">
                     <!--begin::Header-->
@@ -76,17 +76,28 @@
                                                 <div class="row g-2 align-items-center mb-2 component-item">
                                                     <input type="hidden" name="deductions[{{ $i }}][id]"
                                                         value="{{ $d->id ?? '' }}">
-                                                    <div class="col-7">
-                                                        <input type="text" name="deductions[{{ $i }}][name]"
-                                                            value="{{ strtoupper($d->name) }}"
-                                                            class="form-control form-control-sm bg-light" readonly>
+                                                    <div class="col-6">
+                                                        <div class="d-flex align-items-center">
+                                                            <input type="text" name="deductions[{{ $i }}][name]"
+                                                                value="{{ strtoupper($d->name) }}"
+                                                                class="form-control form-control-sm bg-light" readonly>
+                                                            @if(in_array(strtolower($d->name), ['pf', 'esi']))
+                                                                <i class="fa fa-info-circle text-info ms-2 cursor-pointer"
+                                                                   data-bs-toggle="tooltip"
+                                                                   data-bs-placement="top"
+                                                                   title="Click for calculation details"
+                                                                   onclick="show{{ ucfirst(strtolower($d->name)) }}Info()"></i>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                     <div class="col-4">
                                                         <input type="number" name="deductions[{{ $i }}][value]"
-                                                            value="{{ $d->value }}" class="form-control form-control-sm" min="0"
-                                                            step="0.01" required>
+                                                            value="{{ $d->value }}"
+                                                            class="form-control form-control-sm {{ in_array(strtolower($d->name), ['pf', 'esi']) ? 'bg-light' : '' }}"
+                                                            min="0" step="0.01" required
+                                                            {{ in_array(strtolower($d->name), ['pf', 'esi']) ? 'readonly' : '' }}>
                                                     </div>
-                                                    <div class="col-1 text-end">
+                                                    <div class="col-2 text-end">
                                                         @if(!in_array(strtolower($d->name), ['pf', 'esi']))
                                                             <button type="button" class="btn btn-sm btn-outline-danger"
                                                                 onclick="deleteComponent(this, '{{ $d->id ?? '' }}')"><i
@@ -140,14 +151,13 @@
                                                 <i class="fa fa-equals me-2"></i> Overall Total
                                             </h6>
                                             <div class="d-flex justify-content-center align-items-center gap-2">
-                                                <span class="fw-semibold text-muted">Total Earnings + Total Deductions:</span>
+                                                <span class="fw-semibold text-muted">Total Earnings - Total Deductions:</span>
                                                 <span id="overall-total" class="fs-5 fw-bold text-primary">0.00</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
 
                             {{-- Submit --}}
                             <div class="text-end m-4">
@@ -160,6 +170,7 @@
             </div>
         </div>
     </div>
+
     {{-- Component List Modal --}}
     <div class="modal fade" id="componentListModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -170,7 +181,6 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
-
                         {{-- Earnings --}}
                         <div class="col-md-6">
                             <h6 class="fw-semibold text-success">EARNINGS</h6>
@@ -222,7 +232,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -233,20 +242,77 @@
             </div>
         </div>
     </div>
+
+    {{-- PF Information Modal --}}
+    <div class="modal fade" id="pfInfoModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title text-white"><i class="fa fa-info-circle me-2"></i>PF Calculation Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="fw-bold text-primary">Provident Fund (PF) Calculation:</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>Rate:</strong> 12% of Basic Salary</li>
+                        {{-- <li><strong>Ceiling:</strong> Maximum Basic for PF calculation is ₹15,000</li> --}}
+                        <li><strong>Current Basic:</strong> ₹<span id="currentBasic">0</span></li>
+                        {{-- <li><strong>PF Applicable Basic:</strong> ₹<span id="pfApplicableBasic">0</span></li> --}}
+                        <li><strong>PF Amount:</strong> ₹<span id="pfAmount">0</span></li>
+                    </ul>
+                    <div class="alert alert-info small">
+                        <i class="fa fa-lightbulb me-1"></i>
+                        <strong>Note:</strong> PF is calculated as 12% of Basic Salary, but the maximum Basic salary considered for PF calculation is ₹15,000 per month.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ESI Information Modal --}}
+    <div class="modal fade" id="esiInfoModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title"><i class="fa fa-info-circle me-2"></i>ESI Calculation Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="fw-bold text-primary">Employee State Insurance (ESI) Calculation:</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>Rate:</strong> 0.75% of Gross Salary</li>
+                        <li><strong>Ceiling:</strong> Applicable only if monthly salary ≤ ₹21,000</li>
+                        <li><strong>Current Total Earnings:</strong> ₹<span id="currentGross">0</span></li>
+                        <li><strong>ESI Applicable:</strong> <span id="esiApplicable">No</span></li>
+                        <li><strong>ESI Amount:</strong> ₹<span id="esiAmount">0</span></li>
+                    </ul>
+                    <div class="alert alert-warning small">
+                        <i class="fa fa-lightbulb me-1"></i>
+                        <strong>Note:</strong> ESI is applicable only if the total monthly salary is ₹21,000 or less. If applicable, ESI is calculated as 0.75% of gross salary.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Scripts --}}
     <script>
         let earningIndex = {{ count($earnings) }};
         let deductionIndex = {{ count($deductions) }};
 
+        // Initialize tooltips
+        $(document).ready(function() {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+            updateSummary();
+        });
+
         function addNewComponent(type) {
             let inputId = type === 'earning' ? '#newEarningComponent' : '#newDeductionComponent';
             let val = $(inputId).val().trim();
             if (val) {
-                let displayText = val.toUpperCase(); // Show in uppercase
-
+                let displayText = val.toUpperCase();
                 let container = $(`#${type}-components`);
 
-                // Add "Other" heading if not already present
                 if (container.find('.other-heading').length === 0) {
                     container.append(`<div class="fw-semibold small text-muted mt-2 other-heading">Non Existing Component</div>`);
                 }
@@ -261,7 +327,6 @@
                 $(inputId).val('');
             }
         }
-
 
         function openComponentModal() {
             document.querySelectorAll('#componentListModal input[name="component"]').forEach(cb => cb.checked = false);
@@ -288,23 +353,42 @@
                 });
                 if (!exists) {
                     let index = type === 'earning' ? earningIndex++ : deductionIndex++;
+                    let readonly = (cb.value.toUpperCase() === 'PF' || cb.value.toUpperCase() === 'ESI') ? 'readonly' : '';
+                    let bgClass = (cb.value.toUpperCase() === 'PF' || cb.value.toUpperCase() === 'ESI') ? 'bg-light' : '';
+                    let infoIcon = '';
+
+                    if (cb.value.toUpperCase() === 'PF' || cb.value.toUpperCase() === 'ESI') {
+                        infoIcon = `<i class="fa fa-info-circle text-info ms-2 cursor-pointer"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      title="Click for calculation details"
+                                      onclick="show${cb.value.charAt(0).toUpperCase() + cb.value.slice(1).toLowerCase()}Info()"></i>`;
+                    }
+
                     let html = `
-                                      <div class="row g-2 align-items-center mb-2 component-item">
-                                        <input type="hidden" name="${type}s[${index}][id]" value="">
-                                        <div class="col-7">
-                                          <input type="text" name="${type}s[${index}][name]" value="${cb.value}" class="form-control form-control-sm bg-light" readonly>
-                                        </div>
-                                        <div class="col-4">
-                                          <input type="number" name="${type}s[${index}][value]" class="form-control form-control-sm" min="0" step="0.01" required>
-                                        </div>
-                                        <div class="col-1 text-end">
-                                          <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteComponent(this)"><i class="fa fa-times"></i></button>
-                                        </div>
-                                      </div>`;
+                        <div class="row g-2 align-items-center mb-2 component-item">
+                            <input type="hidden" name="${type}s[${index}][id]" value="">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <input type="text" name="${type}s[${index}][name]" value="${cb.value}" class="form-control form-control-sm bg-light" readonly>
+                                    ${infoIcon}
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <input type="number" name="${type}s[${index}][value]" class="form-control form-control-sm ${bgClass}" min="0" step="0.01" required ${readonly}>
+                            </div>
+                            <div class="col-2 text-end">
+                                ${(cb.value.toUpperCase() !== 'PF' && cb.value.toUpperCase() !== 'ESI') ?
+                                    `<button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteComponent(this)"><i class="fa fa-times"></i></button>` :
+                                    ''}
+                            </div>
+                        </div>`;
                     $(`#${type}s-list`).append(html);
                 }
             });
-            $('#componentListModal').modal('hide'); updateSummary();
+            $('#componentListModal').modal('hide');
+            $('[data-bs-toggle="tooltip"]').tooltip();
+            updateSummary();
         }
 
         function deleteComponent(btn, id = null) {
@@ -318,32 +402,111 @@
                     }
                 });
             } else {
-                $(btn).closest('.component-item').remove(); updateSummary();
+                $(btn).closest('.component-item').remove();
+                updateSummary();
             }
         }
 
+        function calculatePF() {
+            let basic = 0;
+            $('#earnings-list input[name*="[name]"]').each(function() {
+                if ($(this).val().toUpperCase() === 'BASIC') {
+                    basic = parseFloat($(this).closest('.component-item').find('input[name*="[value]"]').val()) || 0;
+                }
+            });
+            // PF calculation: 12% of Basic, max Basic for PF is 15000
+             let pfApplicableBasic = Math.min(basic);
+            let pfAmount = pfApplicableBasic * 0.12;
+            // Update PF field
+            $('#deductions-list input[name*="[name]"]').each(function() {
+                if ($(this).val().toUpperCase() === 'PF') {
+                    $(this).closest('.component-item').find('input[name*="[value]"]').val(pfAmount.toFixed(2));
+                }
+            });
+
+            return { basic, pfApplicableBasic, pfAmount };
+        }
+
+        function calculateESI() {
+            let totalEarnings = 0;
+            $('#earnings-list input[name*="[value]"]').each(function() {
+                totalEarnings += parseFloat(this.value) || 0;
+            });
+
+            // ESI calculation: 0.75% of gross salary if gross <= 21000
+            let esiAmount = 0;
+            let esiApplicable = totalEarnings <= 21000;
+
+            if (esiApplicable) {
+                esiAmount = totalEarnings * 0.0075;
+            }
+
+            // Update ESI field
+            $('#deductions-list input[name*="[name]"]').each(function() {
+                if ($(this).val().toUpperCase() === 'ESI') {
+                    $(this).closest('.component-item').find('input[name*="[value]"]').val(esiAmount.toFixed(2));
+                }
+            });
+
+            return { totalEarnings, esiApplicable, esiAmount };
+        }
+
         function updateSummary() {
+            // Calculate PF and ESI first
+            calculatePF();
+            calculateESI();
+
             let e = 0, d = 0;
             $('#summary-earnings').empty();
             $('#earnings-list input[name*="[value]"]').each(function () {
-                let v = parseFloat(this.value) || 0; e += v;
+                let v = parseFloat(this.value) || 0;
+                e += v;
                 $('#summary-earnings').append(`<li class="list-group-item d-flex justify-content-between">${$(this).closest('.component-item').find('input[name*="[name]"]').val()}<span>${v.toFixed(2)}</span></li>`);
             });
 
             $('#summary-deductions').empty();
             $('#deductions-list input[name*="[value]"]').each(function () {
-                let v = parseFloat(this.value) || 0; d += v;
+                let v = parseFloat(this.value) || 0;
+                d += v;
                 $('#summary-deductions').append(`<li class="list-group-item d-flex justify-content-between">${$(this).closest('.component-item').find('input[name*="[name]"]').val()}<span>${v.toFixed(2)}</span></li>`);
             });
 
             $('#total-earnings').text(e.toFixed(2));
             $('#total-deductions').text(d.toFixed(2));
 
-            let net = e + d;
+            let net = e - d;
             $('#overall-total').text(net.toFixed(2));
         }
-        $(document).on('input', 'input[name$="[value]"]', updateSummary); $(document).ready(updateSummary);
+
+        function showPfInfo() {
+            let pfData = calculatePF();
+            $('#currentBasic').text(pfData.basic.toFixed(2));
+            $('#pfApplicableBasic').text(pfData.pfApplicableBasic.toFixed(2));
+            $('#pfAmount').text(pfData.pfAmount.toFixed(2));
+            $('#pfInfoModal').modal('show');
+        }
+
+        function showEsiInfo() {
+            let esiData = calculateESI();
+            $('#currentGross').text(esiData.totalEarnings.toFixed(2));
+            $('#esiApplicable').text(esiData.esiApplicable ? 'Yes' : 'No');
+            $('#esiAmount').text(esiData.esiAmount.toFixed(2));
+            $('#esiInfoModal').modal('show');
+        }
+
+        // Event listeners
+        $(document).on('input', 'input[name$="[value]"]', function() {
+            // Don't allow manual editing of PF and ESI
+            let componentName = $(this).closest('.component-item').find('input[name*="[name]"]').val().toUpperCase();
+            if (componentName === 'PF' || componentName === 'ESI') {
+                return false;
+            }
+            updateSummary();
+        });
+
+        $(document).ready(updateSummary);
     </script>
+
     {{-- Optional style --}}
     <style>
         .component-item:hover {
@@ -403,6 +566,14 @@
 
         .border-top {
             border-top: 1px solid #e7eaf0 !important;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .fa-info-circle:hover {
+            color: #0d6efd !important;
         }
     </style>
 @endsection

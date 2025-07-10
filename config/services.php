@@ -62,6 +62,7 @@ return [
             'DA (DEARNESS ALLOWANCE)',
             'VARIABLE PAY',
             'OTHER EARNING',
+            'DRIVER ALLOWANCE',
         ],
     'deductions' => [
             'PROVIDENT FUND (PF)',
