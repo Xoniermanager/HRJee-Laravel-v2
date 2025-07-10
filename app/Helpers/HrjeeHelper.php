@@ -269,10 +269,9 @@ function getCompanyMenuHtml()
             </div>';
         }
     }
-
     // Face Recognition Menu
-    if ($user->type == "company" && $user->companyDetails->allow_face_recognition) {
-        $faceUrl = '/company/face-recognition';
+    if ((session()->has('impersonation') || $user->type == "company") && $user->companyDetails->allow_face_recognition) {
+        $faceUrl = '/company/face-recognitions';
         $isActive = $currentUrl === url($faceUrl);
 
         $html .= '<div class="menu-item ' . ($isActive ? 'active' : '') . '" data-url="' . $faceUrl . '">
