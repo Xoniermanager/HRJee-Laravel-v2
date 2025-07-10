@@ -199,7 +199,7 @@ class UserService
             });
         }
 
-        return $allEmployeeDetails->orderBy('id', 'DESC');
+        return $allEmployeeDetails->orderBy('name', 'ASC');
     }
 
     public function getManagersByBranchId($branchIDs)
