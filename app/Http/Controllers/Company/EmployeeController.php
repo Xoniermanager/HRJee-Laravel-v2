@@ -120,7 +120,6 @@ class EmployeeController extends Controller
 
     public function add()
     {
-
         $allCountries = $this->countryService->getAllActiveCountry();
         $allPreviousCompany = $this->previousCompanyService->getAllActivePreviousCompany();
         $allQualification = $this->qualificationService->getAllActiveQualification();
@@ -150,7 +149,7 @@ class EmployeeController extends Controller
         $allEmployeeStatus = $this->employeeStatusService->getAllActiveEmployeeStatus();
         $alldepartmentDetails = $this->departmentService->getAllActiveDepartmentsByCompanyId(Auth()->user()->company_id);
         $allDocumentTypeDetails = $this->documentTypeService->getAllActiveDocumentType();
-        $allBranches = $this->branchService->getAllCompanyBranchByCompanyId([Auth()->user()->id]);
+        $allBranches = $this->branchService->getAllCompanyBranchByCompanyId([Auth()->user()->company_id]);
         $allRoles = $this->customRoleService->all(Auth()->user()->company_id);
         $allShifts = $this->shiftService->getAllActiveShifts();
         $languages = $this->languagesServices->defaultLanguages();
@@ -159,7 +158,6 @@ class EmployeeController extends Controller
         $singleUserDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'ctcDetails');
         $allManagers = $this->qualificationService->getAllActiveQualification();
         $userAllShifts = $this->userShiftService->getByUserId([$user->id])->get()->groupBy('shift_day');
-
         $userShifts = [];
         foreach ($userAllShifts as $key => $shifts) {
             if (str_contains($key, 'day')) {
