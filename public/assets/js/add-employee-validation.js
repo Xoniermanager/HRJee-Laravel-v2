@@ -1,8 +1,8 @@
 jQuery(document).ready(function () {
-    jQuery.validator.addMethod("validName", function(value, element) {
+    jQuery.validator.addMethod("validName", function (value, element) {
         return this.optional(element) || /^[a-zA-Z\s.\-]+$/.test(value);
     }, "Name can only contain letters, spaces, dots");
-    jQuery.validator.addMethod("validPasswordComplex", function(value, element) {
+    jQuery.validator.addMethod("validPasswordComplex", function (value, element) {
         if (value === "") return true; // optional: allow empty
         // Regex: at least one lowercase, one uppercase, one digit, min length 6
         return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(value);
@@ -44,7 +44,12 @@ jQuery(document).ready(function () {
             // employee_status_id: "required",
             date_of_birth: "required",
             joining_date: "required",
-            phone: "required",
+            phone: {
+                required: true,
+                digits: true,
+                minlength: 10,
+                maxlength: 10
+            },
             employee_type_id: 'required',
             department_id: 'required',
             designation_id: 'required',
@@ -84,7 +89,12 @@ jQuery(document).ready(function () {
             // employee_status_id: "Please select the Employee Status",
             date_of_birth: "Please fill the Date of Birth",
             joining_date: "Please fill the Joining Date",
-            phone: "Please enter the Phone",
+            phone: {
+                required: "Please enter your phone number",
+                digits: "Please enter only digits",
+                minlength: "Phone number must be exactly 10 digits",
+                maxlength: "Phone number must be exactly 12 digits"
+            },
             employee_type_id: 'Please Select The Employee type',
             department_id: 'Please Select the Department',
             designation_id: 'Please Select the Designation',
@@ -106,14 +116,83 @@ jQuery(document).ready(function () {
 
 
     /** Advance Details Validation */
+    $.validator.addMethod("validPAN", function (value, element) {
+        return this.optional(element) || /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value);
+    }, "Please enter a valid PAN Card Number (e.g., ABCDE1234F)");
+
     jQuery("#advance_details_form").validate({
         rules: {
-            aadhar_no: "required",
-            pan_no: "required",
+            aadhar_no: {
+                required: true,
+                digits: true,
+                minlength: 12,
+                maxlength: 12
+            },
+            pan_no: {
+                required: true,
+                validPAN: true,    // use the custom method
+                minlength: 10,
+                maxlength: 10
+            },
+            uan_no: {
+                digits: true,
+                minlength: 12,
+                maxlength: 12
+            },
+            esic_no: {
+                digits: true,
+                minlength: 10,
+                maxlength: 17
+            },
+            insurance_no: {
+                maxlength: 20
+            },
+            driving_licence_no: {
+                maxlength: 20
+            },
+            pf_no: {
+                maxlength: 20
+            },
+            probation_period: {
+                digits: true,
+                maxlength: 3
+            }
         },
         messages: {
-            aadhar_no: "Please enter the Aadhar Number",
-            pan_no: "Please enter the Pan Card Number",
+            aadhar_no: {
+                required: "Please enter the Aadhar Number",
+                digits: "Aadhar Number must contain only digits",
+                minlength: "Aadhar Number must be exactly 12 digits",
+                maxlength: "Aadhar Number must be exactly 12 digits"
+            },
+            pan_no: {
+                required: "Please enter the PAN Card Number",
+                minlength: "PAN Card Number must be exactly 10 characters",
+                maxlength: "PAN Card Number must be exactly 10 characters"
+            },
+            uan_no: {
+                digits: "UAN Number must contain only digits",
+                minlength: "UAN Number must be exactly 12 digits",
+                maxlength: "UAN Number must be exactly 12 digits"
+            },
+            esic_no: {
+                digits: "ESIC Number must contain only digits",
+                minlength: "ESIC Number must be at least 10 digits",
+                maxlength: "ESIC Number must not exceed 17 digits"
+            },
+            insurance_no: {
+                maxlength: "Insurance Number must not exceed 20 characters"
+            },
+            driving_licence_no: {
+                maxlength: "Driving Licence Number must not exceed 20 characters"
+            },
+            pf_no: {
+                maxlength: "PF Number must not exceed 20 characters"
+            },
+            probation_period: {
+                digits: "Please enter only digits",
+                maxlength: "Probation Period must not exceed 3 digits"
+            },
         },
         submitHandler: function (form) {
             if (submit_handler == true) {
@@ -124,6 +203,15 @@ jQuery(document).ready(function () {
             }
         }
     });
+    // Allow only letters and spaces for city
+    $.validator.addMethod("validCity", function (value, element) {
+        return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+    }, "City name must contain only letters and spaces");
+
+    // Allow letters, numbers, spaces, and dash for postal code
+    $.validator.addMethod("validPostal", function (value, element) {
+        return this.optional(element) || /^[a-zA-Z0-9\s\-]+$/.test(value);
+    }, "Postal Code can contain letters, numbers, spaces, and dashes");
 
     /**Address Validation */
     /** Address Details created Ajax*/
@@ -132,15 +220,51 @@ jQuery(document).ready(function () {
             l_address: "required",
             l_country_id: "required",
             l_state_id: "required",
-            l_city: "required",
-            l_pincode: "required",
+            l_city: {
+                required: true,
+                validCity: true,
+                maxlength: 50
+            },
+            l_pincode: {
+                required: true,
+                validPostal: true,
+                minlength: 3,
+                maxlength: 12
+            },
+            p_city: {
+                validCity: true,
+                maxlength: 50
+            },
+            p_pincode: {
+                validPostal: true,
+                minlength: 3,
+                maxlength: 12
+            }
         },
         messages: {
             l_address: "Please enter the Address",
             l_country_id: "Please select the Country",
             l_state_id: "Please select the State",
-            l_city: "Please enter the City",
-            l_pincode: "Please enter the Pincode",
+            l_city: {
+                required: "Please enter the City",
+                validCity: "City name must contain only letters and spaces",
+                maxlength: "City name should not exceed 50 characters"
+            },
+            l_pincode: {
+                required: "Please enter the Postal Code",
+                validPostal: "Postal Code can contain letters, numbers, spaces, and dashes",
+                minlength: "Postal Code must be at least 3 characters",
+                maxlength: "Postal Code must not exceed 12 characters"
+            },
+            p_city: {
+                validCity: "City name must contain only letters and spaces",
+                maxlength: "City name should not exceed 50 characters"
+            },
+            p_pincode: {
+                validPostal: "Postal Code can contain letters, numbers, spaces, and dashes",
+                minlength: "Postal Code must be at least 3 characters",
+                maxlength: "Postal Code must not exceed 12 characters"
+            },
         },
         submitHandler: function (form) {
             if (submit_handler == true) {
@@ -153,19 +277,68 @@ jQuery(document).ready(function () {
     });
 
     /**Bank Details Validation Ajax */
+    // Allow letters, spaces, numbers for account name
+    $.validator.addMethod("validAccountName", function (value, element) {
+        return this.optional(element) || /^[a-zA-Z0-9\s]+$/.test(value);
+    }, "Account name can contain letters, numbers and spaces");
+
+    // Allow only letters & spaces for bank name
+    $.validator.addMethod("validBankName", function (value, element) {
+        return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+    }, "Bank name must contain only letters and spaces");
+
+    // Validate IFSC format: 4 letters + 0 + 6 digits
+    $.validator.addMethod("validIFSC", function (value, element) {
+        return this.optional(element) || /^[A-Z]{4}0[0-9]{6}$/.test(value);
+    }, "Please enter a valid IFSC Code (e.g., SBIN0005900)");
+
     /** Bank Details created Ajax*/
     jQuery("#bank_details_form").validate({
         rules: {
-            account_name: 'required',
-            account_number: 'required',
-            bank_name: 'required',
-            ifsc_code: 'required'
+            account_name: {
+                required: true,
+                validAccountName: true,
+                maxlength: 50
+            },
+            account_number: {
+                required: true,
+                digits: true,
+                minlength: 9,
+                maxlength: 20
+            },
+            bank_name: {
+                required: true,
+                validBankName: true,
+                maxlength: 50
+            },
+            ifsc_code: {
+                required: true,
+                validIFSC: true,
+                maxlength: 11
+            }
         },
         messages: {
-            account_name: 'Please Enter the Account Name',
-            account_number: 'Please Enter the Account Number ',
-            bank_name: 'Please Enter the Bank Name',
-            ifsc_code: 'Please Enter the IFSC Code'
+            account_name: {
+                required: 'Please enter the Account Name',
+                validAccountName: 'Account name can contain letters, numbers and spaces',
+                maxlength: 'Account name should not exceed 50 characters'
+            },
+            account_number: {
+                required: 'Please enter the Account Number',
+                digits: 'Account Number must contain only numbers',
+                minlength: 'Account Number must be at least 9 digits',
+                maxlength: 'Account Number must not exceed 20 digits'
+            },
+            bank_name: {
+                required: 'Please enter the Bank Name',
+                validBankName: 'Bank name must contain only letters and spaces',
+                maxlength: 'Bank name should not exceed 50 characters'
+            },
+            ifsc_code: {
+                required: 'Please enter the IFSC Code',
+                validIFSC: 'Please enter a valid IFSC Code (e.g., SBIN0005900)',
+                maxlength: 'IFSC Code must be exactly 11 characters'
+            }
         },
         submitHandler: function (form) {
             if (submit_handler == true) {

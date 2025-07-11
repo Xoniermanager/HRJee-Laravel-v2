@@ -150,26 +150,57 @@
     /** end Qualification HTMl*/
 
     /** Qualification Details created Ajax*/
-    jQuery(document).ready(function() {
-        jQuery("#qualification_details_form").validate({
-            rules: {
-                "degree[][university]": "required",
-                "degree[][course]": "required",
-                "degree[][year]": "required",
-                "degree[][percentage]": "required"
-            },
+    jQuery(document).ready(function () {
+    var form = jQuery("#qualification_details_form");
+
+    // Initialize validation
+    form.validate({
+        ignore: [], // validate all fields, even hidden
+        submitHandler: function (form) {
+            createQualification(form);
+        }
+    });
+
+    // Add rules dynamically to existing fields
+    jQuery('.degree-institute').each(function () {
+        jQuery(this).rules("add", { required: true, messages: { required: "Please Enter the Institute Name" } });
+    });
+    jQuery('.degree-university').each(function () {
+        jQuery(this).rules("add", { required: true, messages: { required: "Please Enter the University Name" } });
+    });
+    jQuery('.degree-course').each(function () {
+        jQuery(this).rules("add", { required: true, messages: { required: "Please Enter the Course Name" } });
+    });
+    jQuery('.degree-year').each(function () {
+        jQuery(this).rules("add", {
+            required: true,
+            digits: true,
+            minlength: 4,
+            maxlength: 4,
             messages: {
-                'degree[][institute]': 'Please Enter the Institute Name',
-                'degree[][university]': 'Please Enter the University Name',
-                'degree[][course]': 'Please Enter the Course Name',
-                'degree[][year]': 'Please Enter the year',
-                'degree[][percentage]': 'Please Enter Percentage %'
-            },
-            submitHandler: function(form) {
-                createQualification(form);
+                required: "Please Enter the year",
+                digits: "Year must be digits",
+                minlength: "Year must be 4 digits",
+                maxlength: "Year must be 4 digits"
             }
         });
     });
+    jQuery('.degree-percentage').each(function () {
+        jQuery(this).rules("add", {
+            required: true,
+            number: true,
+            min: 0,
+            max: 100,
+            messages: {
+                required: "Please Enter Percentage %",
+                number: "Must be a number",
+                min: "Cannot be less than 0",
+                max: "Cannot be more than 100"
+            }
+        });
+    });
+});
+
 
 
     function createQualification(form) {

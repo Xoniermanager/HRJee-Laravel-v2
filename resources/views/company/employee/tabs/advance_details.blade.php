@@ -12,7 +12,7 @@
             </div>
             <div class="col-md-4 form-group">
                 <label for="">PAN Number *</label>
-                <input class="form-control" type="text" name="pan_no" value="{{ $userAdvanceDetails->pan_no ?? '' }}">
+                <input class="form-control" type="text" name="pan_no" value="{{ $userAdvanceDetails->pan_no ?? '' }}" id="pan_no">
             </div>
             <div class="col-md-4 form-group">
                 <label for="">UAN No</label>

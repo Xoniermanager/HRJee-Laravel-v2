@@ -30,12 +30,12 @@ $addressTypeValue = '1';
                 <h4>Present Address</h4>
                 <div class="row">
                     <div class="col-md-12 form-group">
-                        <label for="">Address *</label>
+                        <label for="" class="required">Address</label>
                         <textarea class="form-control alldetails" type="text" name="l_address"
                             id="l_address">{{ $local->address ?? '' }}</textarea>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="">Country *</label>
+                        <label for="" class="required">Country</label>
                         <select class="form-control alldetails" id="l_country_id" name="l_country_id">
                             <option value="">Please Select Country</option>
                             @forelse ($allCountries as $countriesDetails)
@@ -48,17 +48,17 @@ $addressTypeValue = '1';
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="">State *</label>
+                        <label for="" class="required">State</label>
                         <select name="l_state_id" class="form-control alldetails" id="l_state_id">
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="">City *</label>
+                        <label for="" class="required">City </label>
                         <input class="form-control alldetails" type="text" name="l_city" id="l_city"
                             value="{{ $local->city ?? '' }}">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="">Pincode *</label>
+                        <label for="" class="required">Pincode</label>
                         <input class="form-control alldetails" type="text" name="l_pincode" id="l_pincode"
                             value="{{ $local->pin_code ?? '' }}">
                     </div>
@@ -74,12 +74,12 @@ $addressTypeValue = '1';
                 </h4>
                 <div class="row">
                     <div class="col-md-12 form-group">
-                        <label for="">Address *</label>
+                        <label for="" class="required">Address</label>
                         <textarea class="form-control" type="text" name="p_address" id="p_address" {{ $inputDisabled
                             ?? '' }}> {{ $permanent->address ?? '' }}</textarea>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="">Country *</label>
+                        <label for="" class="required">Country</label>
                         <select class="form-control" id="p_country_id" name="p_country_id" {{ $inputDisabled ?? '' }}>
                             <option value="">Please Select Country</option>
                             @forelse ($allCountries as $countriesDetails)
@@ -92,21 +92,20 @@ $addressTypeValue = '1';
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="">State *</label>
+                        <label for="" class="required">State</label>
                         <select name="p_state_id" class="form-control" id="p_state_id" {{ $inputDisabled ?? ''
                             }}></select>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="">City *</label>
+                        <label for="" class="required">City</label>
                         <input class="form-control" type="text" name="p_city" id="p_city"
                             value="{{ $permanent->city ?? '' }}" {{ $inputDisabled ?? '' }}>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="">Pincode *</label>
+                        <label for="" class="required">Pincode</label>
                         <input class="form-control" type="text" name="p_pincode" id="p_pincode"
                             value="{{ $permanent->pin_code ?? '' }}" {{ $inputDisabled ?? '' }}>
                     </div>
-
                 </div>
             </div>
         </div>
