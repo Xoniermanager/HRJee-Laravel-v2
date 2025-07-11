@@ -8,8 +8,8 @@ use App\Models\User;
 use App\Models\Policy;
 use App\Models\Announcement;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
 use App\Http\Services\SendNotification;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,36 +20,43 @@ class SendDailyCompanyNotifications implements ShouldQueue
 
     public function handle()
     {
-        $today = Carbon::today();
+        $today = Carbon::today()->toDateString();
 
-        // get today's active items with relations
+        // Fetch only unsent items (is_sent = 0) active today
         $announcements = Announcement::with(['designations', 'departments', 'companyBranches'])
-            ->whereDate('start_date_time', $today)
             ->where('status', 1)
+            ->where('is_sent', 0)
+            ->whereDate('start_date_time', '<=', $today)
+            ->whereDate('expires_at_time', '>=', $today)
             ->get();
 
         $newsList = News::with(['designations', 'departments', 'companyBranches'])
-            ->whereDate('start_date', $today)
             ->where('status', 1)
+            ->where('is_sent', 0)
+            ->whereDate('start_date', '<=', $today)
+            ->whereDate('end_date', '>=', $today)
             ->get();
 
         $policies = Policy::with(['designations', 'departments', 'companyBranches'])
-            ->whereDate('start_date', $today)
             ->where('status', 1)
+            ->where('is_sent', 0)
+            ->whereDate('start_date', '<=', $today)
+            ->whereDate('end_date', '>=', $today)
             ->get();
 
+        // Process all items
         foreach ([$announcements, $newsList, $policies] as $items) {
             foreach ($items as $item) {
                 $companyId = $item->company_id;
 
-                // Build user query base: active, company, has fcm_token
+                // Base user query: active users with fcm_token
                 $query = User::query()
                     ->where('type', 'user')
                     ->where('company_id', $companyId)
                     ->where('status', 1)
                     ->whereNotNull('fcm_token');
 
-                // Branches
+                // Filter by branches if needed
                 if ($item->all_company_branch != 1) {
                     $branchIds = $item->companyBranches->pluck('id')->toArray();
                     if (!empty($branchIds)) {
@@ -59,7 +66,7 @@ class SendDailyCompanyNotifications implements ShouldQueue
                     }
                 }
 
-                // Departments
+                // Filter by departments if needed
                 if ($item->all_department != 1) {
                     $departmentIds = $item->departments->pluck('id')->toArray();
                     if (!empty($departmentIds)) {
@@ -69,7 +76,7 @@ class SendDailyCompanyNotifications implements ShouldQueue
                     }
                 }
 
-                // Designations
+                // Filter by designations if needed
                 if ($item->all_designation != 1) {
                     $designationIds = $item->designations->pluck('id')->toArray();
                     if (!empty($designationIds)) {
@@ -79,23 +86,29 @@ class SendDailyCompanyNotifications implements ShouldQueue
                     }
                 }
 
-                // get target users
+                // Get target users
                 $users = $query->get(['id', 'name', 'fcm_token']);
+
                 foreach ($users as $user) {
-                    $title = "New " . class_basename($item); // e.g., Announcement, News, Policy
-                    $body = "Dear {$user->name}, there is a new {$title}: {$item->title}.";
-                    // Send notification (also log in DB if you want inside sendNotification)
+                    $typeName = class_basename($item); // e.g., Announcement, News, Policy
+                    $title = "New {$typeName}";
+                    $body = "Dear {$user->name}, there is a new {$typeName}: {$item->title}.";
+
+                    // Send notification
                     SendNotification::send(
                         $user->fcm_token,
                         $title,
                         $body,
                         [
                             'item_id' => $item->id,
-                            'item_type' => class_basename($item)
+                            'item_type' => $typeName
                         ],
                         $user->id
                     );
                 }
+
+                // ✅ Mark as sent
+                $item->update(['is_sent' => 1]);
             }
         }
     }
