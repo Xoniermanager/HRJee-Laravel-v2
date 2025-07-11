@@ -529,6 +529,7 @@
     /** get all managers using branch Id */
     $(document).ready(function() {
     var initial_branch_id = $('#company_branch_id').val();
+    let managerIds = []
     @if(isset($singleUserDetails) && $singleUserDetails->managers && $singleUserDetails->managers->isNotEmpty())
     let managerIds = @json($singleUserDetails->managers->pluck('manager_id'));
     @endif
