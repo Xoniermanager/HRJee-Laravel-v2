@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Policy extends Model
 {
     use HasFactory,CompanyScope;
-    protected $fillable = ['title', 'image', 'policy_category_id', 'start_date', 'end_date', 'description', 'file', 'designation_id', 'department_id', 'news_category_id', 'company_branch_id', 'status','all_company_branch','all_department','all_designation','company_id','company_branches','created_by'];
+    protected $fillable = ['title', 'image', 'policy_category_id', 'start_date', 'end_date', 'description', 'file', 'designation_id', 'department_id', 'news_category_id', 'company_branch_id', 'status','all_company_branch','all_department','all_designation','company_id','company_branches','created_by','is_sent'];
 
     public function designations()
     {
