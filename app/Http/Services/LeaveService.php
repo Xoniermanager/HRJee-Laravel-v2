@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Leave;
 use App\Models\LeaveStatus;
 use App\Models\EmployeeManager;
@@ -51,68 +52,118 @@ class LeaveService
      */
     public function create(array $data)
     {
+        // 1️⃣ Build initial payload
         $payload = [
-            'leave_type_id'    => $data['leave_type_id'],
-            'from'             => $data['from'],
-            'to'               => $data['to'],
-            'reason'           => $data['reason'],
-            'leave_status_id'  => LeaveStatus::PENDING
+            'leave_type_id' => $data['leave_type_id'],
+            'from' => $data['from'],
+            'to' => $data['to'],
+            'reason' => $data['reason'],
+            'leave_status_id' => LeaveStatus::PENDING
         ];
 
         // handle who applied
-        if (isset($data['leave_applied_by']) && !empty($data['leave_applied_by'])) {
+        if (!empty($data['leave_applied_by'])) {
             $payload['user_id'] = $data['user_id'];
         } else {
-            $payload['leave_applied_by'] = Auth()->user()->id;
-            $payload['user_id'] = Auth::user()->id;
+            $payload['leave_applied_by'] = auth()->id();
+            $payload['user_id'] = auth()->id();
         }
 
-        // handle half day
-        if (isset($data['is_half_day']) && !empty($data['is_half_day'])) {
+        // handle half day leave
+        if (!empty($data['is_half_day'])) {
             $payload['is_half_day'] = $data['is_half_day'];
             $payload['from_half_day'] = $data['from_half_day'];
             $payload['to_half_day'] = $data['to_half_day'] ?? '';
         }
 
-        // create leave entry
+        // 2️⃣ Create leave entry
         $appliedLeaveDetails = $this->leaveRepository->create($payload);
 
-        // prepare manager updates
+        // 3️⃣ Prepare manager updates
         $leaveManagerPayload = [];
-        $managers = EmployeeManager::where('user_id', $payload['user_id'])->get();
+        $managers = EmployeeManager::with('user')->where('user_id', $payload['user_id'])->get();
 
         if ($managers->isNotEmpty()) {
             foreach ($managers as $manager) {
                 $leaveManagerPayload[] = [
-                    'manager_id'       => $manager->manager_id,
-                    'leave_id'         => $appliedLeaveDetails->id,
-                    'leave_status_id'  => LeaveStatus::PENDING,
-                    'created_at'       => now(),
-                    'updated_at'       => now(),
+                    'manager_id' => $manager->manager_id,
+                    'leave_id' => $appliedLeaveDetails->id,
+                    'leave_status_id' => LeaveStatus::PENDING,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
             }
-
             $this->leaveManagerUpdateRepository->insert($leaveManagerPayload);
         }
 
-        // build response
+        // 4️⃣ Build & send notifications to managers and HR
+        $startDate = Carbon::parse($payload['from'])->format('d M Y');
+        $endDate = Carbon::parse($payload['to'])->format('d M Y');
+        $applicantName = auth()->user()->name ?? 'An employee';
+
+        $title = "New Leave Request Applied";
+        $body = "{$applicantName} applied for leave from {$startDate} to {$endDate}.";
+
+        // send to managers if exist
+        if ($managers->isNotEmpty()) {
+            foreach ($managers as $manager) {
+                $managerUser = $manager->manager; // get manager's user via relation
+                if ($managerUser) {
+                    SendNotification::send(
+                        '$managerUser->fcm_token',
+                        $title,
+                        $body,
+                        [
+                            'leave_id' => $appliedLeaveDetails->id,
+                            'user_id' => $payload['user_id'],
+                        ],
+                        $managerUser->id
+                    );
+                }
+            }
+        }
+
+        // send to HR users if any
+        $companyId = auth()->user()->company_id;
+
+        $hrUsers = User::where('company_id', $companyId)
+            ->whereHas('userRole', fn($q) => $q->where('name', 'HR'))
+            ->get();
+
+        if ($hrUsers->isNotEmpty()) {
+            foreach ($hrUsers as $hr) {
+                // if ($hr->fcm_token) {
+                    SendNotification::send(
+                        '$hr->fcm_token',
+                        $title,
+                        $body,
+                        [
+                            'leave_id' => $appliedLeaveDetails->id,
+                            'user_id' => $payload['user_id'],
+                        ],
+                        $hr->id
+                    );
+                // }
+            }
+        }
+
+        // 5️⃣ Calculate leave days & debit leave
         $response = ['status' => true, 'message' => 'Leave applied successfully', 'data' => []];
 
-        // if leave created, calculate days and debit leave (optional until approved)
         if ($appliedLeaveDetails) {
-            $startDate = Carbon::parse($data['from']);
-            $endDate = Carbon::parse($data['to']);
-            $days = $startDate->diffInDays($endDate);
-            $days = $days == 0 ? 1 : $days;
+            $start = Carbon::parse($data['from']);
+            $end = Carbon::parse($data['to']);
+            $days = $start->diffInDays($end);
+            $days = ($days == 0) ? 1 : $days;
 
-            // note: consider skipping debit until approved, depends on your business rule
-            $data = $this->employeeLeaveAvailableService->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days);
+            // Debit leave balance
+            $leaveDebit = $this->employeeLeaveAvailableService
+                ->debitLeaveDetails($payload['user_id'], $data['leave_type_id'], $days);
 
-            $response = ['status' => true, 'message' => 'Leave applied successfully', 'data' => $data];
+            $response = ['status' => true, 'message' => 'Leave applied successfully', 'data' => $leaveDebit];
         }
 
         return $response;
-
     }
 
     /**
@@ -289,11 +340,11 @@ class LeaveService
             ->where('leave_status_id', 2)->with('user');
     }
 
-    public function getUserAppliedLeaveByDate($id, $fromdate, $toDate = NULL,$leaveTypeId)
+    public function getUserAppliedLeaveByDate($id, $fromdate, $toDate = NULL, $leaveTypeId)
     {
         return $this->leaveRepository->where('user_id', $id)->where('from', '<=', $fromdate)
             ->where('to', '>=', ($toDate ? $toDate : $fromdate))
-            ->where('leave_type_id',$leaveTypeId)
+            ->where('leave_type_id', $leaveTypeId)
             ->first();
     }
 }
