@@ -18,7 +18,7 @@ class AssignTaskService
     }
     public function create(array $data)
     {
-        $data['response_data'] = json_encode(Arr::except($data, ['_token', 'user_id', 'user_end_status', 'final_status', 'document', 'image', 'disposition_code_id']));
+        $data['response_data'] = json_encode(Arr::except($data, ['_token', 'user_id','document', 'image', 'disposition_code_id']));
         $data['company_id'] = Auth()->user()->company_id;
         $data['created_by'] = Auth()->user()->id;
         $userDetails = User::find($data['user_id']);
@@ -34,7 +34,6 @@ class AssignTaskService
         $coordinates = $result[0]->getCoordinates();
         $data['visit_address_latitude'] = $coordinates->getLatitude();
         $data['visit_address_longitude'] = $coordinates->getLongitude();
-
         return $this->assignTaskRepository->create(Arr::except($data, ['_token']));
     }
     public function getTaskDetailsByCompanyId($companyId)

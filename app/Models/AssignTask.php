@@ -48,8 +48,8 @@ class AssignTask extends Model
         $payload = [
             'user_id' => $this->user_id,
             'assign_task_id' => $this->id,
-            'from_status' => $this->user_end_status,
-            'to_status' => $this->user_end_status,
+            'from_status' => 'pending',
+            'to_status' => 'pending',
             'response_data' => $this->response_data,
             'company_id' => Auth()->user()->company_id,
             'created_by' => Auth()->user()->id,
