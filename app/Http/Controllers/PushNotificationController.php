@@ -9,14 +9,12 @@ class PushNotificationController extends Controller
 {
     public function sendTest()
     {
-        // example user (make sure user has fcm_token in DB)
         $user = User::find(2);
 
-        // if (!$user || !$user->fcm_token) {
-        //     return 'No user or missing FCM token.';
-        // }
-
-        $success = SendNotification::sendNotification(
+        if (!$user || !$user->fcm_token) {
+            return 'No user or missing FCM token for Arjun User.';
+        }
+        $success = SendNotification::send(
             $user->fcm_token,
             'Hello!',
             'This is a test push from static FcmV1Service!',

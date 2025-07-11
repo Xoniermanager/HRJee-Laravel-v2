@@ -39,17 +39,42 @@ class LeaveStatusLogService
     {
         $user = auth()->user();
         $data['action_taken_by'] = $user->id;
+
         // Create leave status log
         $record = $this->leaveStatusLogRepository->create($data);
-        if ($record) {
+
+        if ($record)
+        {
+            // Find the leave and user who requested it
+            $leave = $record->leave;
+            $targetUser = $leave?->user;
+            if ($targetUser && $targetUser->fcm_token) {
+                $statusTitle = match ($data['leave_status_id']) {
+                    '2' => 'Approved',
+                    '3' => 'Rejected',
+                    '4' => 'Cancelled',
+                    default => 'Updated',
+                };
+
+                $title = "Leave Status {$statusTitle}";
+                $body  = "Your leave request ({$leave->start_date} to {$leave->end_date}) has been {$statusTitle} by {$user->name}.";
+
+                SendNotification::sendNotification(
+                    $targetUser->fcm_token,
+                    $title,
+                    $body,
+                    [],
+                    $targetUser->id
+                );
+            }
             $payload = ['leave_status_id' => $data['leave_status_id']];
+
             if ($user->userRole->name === 'HR') {
                 // HR directly updates final leave status
                 return $this->leaveService->updateDetails($payload, $data['leave_id']);
 
             } elseif ($user->userRole->category == 'custom') {
-                // For Manager updates
-                // Update manager's own leave_manager_updates row
+                // Manager updates
                 $update = $this->leaveManagerUpdateRepository
                     ->where('leave_id', $data['leave_id'])
                     ->where('manager_id', $user->id)
@@ -57,6 +82,7 @@ class LeaveStatusLogService
                         'leave_status_id' => $data['leave_status_id'],
                         'remark' => $data['remarks'],
                     ]);
+
                 if ($data['leave_status_id'] == '2') { // Approved
                     return $update;
                 } else {
@@ -64,9 +90,8 @@ class LeaveStatusLogService
                     return $update;
                 }
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
 

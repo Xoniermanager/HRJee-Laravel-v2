@@ -10,7 +10,7 @@ class SendNotification
     /**
      * Send FCM notification (static)
      */
-    public static function sendNotification($token, $title, $body, array $data = [], $userId = null)
+    public static function send($token, $title, $body, array $data = [], $userId = null)
     {
         $serviceAccountPath = base_path('firebase-service-account.json');
         // Load the JSON and get project_id directly
@@ -27,7 +27,7 @@ class SendNotification
 
         $payload = [
             'message' => [
-                'token' => $token, 
+                'token' => $token,
                 'notification' => [
                     'title' => $title,
                     'body' => $body,

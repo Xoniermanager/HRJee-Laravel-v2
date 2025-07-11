@@ -16,6 +16,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('entries:export-delete')->daily();
         $schedule->command('attendance:auto-punchout')->everyFiveMinutes();
         $schedule->command('app:leave-credit-command')->daily();
+        $schedule->job(new \App\Jobs\SendDailyCompanyNotifications)
+        ->dailyAt('08:00');
     }
 
     /**

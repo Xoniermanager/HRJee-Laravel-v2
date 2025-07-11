@@ -873,5 +873,10 @@ Route::middleware(['auth'])->group(function() {
 use App\Http\Controllers\PushNotificationController;
 
 Route::get('/send-test-notification', [PushNotificationController::class, 'sendTest']);
+Route::get('/test-daily-notification-job', function () {
+    // dispatch now (sync)
+    \App\Jobs\SendDailyCompanyNotifications::dispatch();
 
+    return response()->json(['status' => true, 'message' => 'Job dispatched successfully!']);
+});
 /**---------------End Company Panel Route----------------*/
