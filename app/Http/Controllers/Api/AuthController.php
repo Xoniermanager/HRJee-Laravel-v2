@@ -323,13 +323,13 @@ class AuthController extends Controller
                 'max:1024',
                 'mimes:jpg,jpeg,png,webp,pdf',
             ];
-            
+
             $messages["{$field}.required"] = "{$doc->name} is required.";
             $messages["{$field}.file"] = "{$doc->name} must be a valid file.";
             $messages["{$field}.max"] = "{$doc->name} size must be less than 1MB.";
             $messages["{$field}.mimes"] = "{$doc->name} must be an image or PDF file.";
         }
-        
+
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
@@ -355,15 +355,15 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => "Location tracking switched to ". ($status ? 'active' : 'inactive'),
+                'message' => "Location tracking switched to " . ($status ? 'active' : 'inactive'),
                 'data' => [],
             ], 200);
         } catch (\Throwable $th) {
             $msg = null;
 
-            if($th->getCode() == 400)
+            if ($th->getCode() == 400)
                 $msg = $th->getMessage();
-            
+
             return response()->json([
                 'status' => false,
                 'message' => $msg ?? 'Failed to toggle location tracking',
@@ -392,4 +392,55 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function saveDeviceToken(Request $request)
+    {
+        try {
+            // Validate input
+            $validator = Validator::make($request->all(), [
+                'fcm_token' => 'required', // add min length to avoid empty or short invalid tokens
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Validation failed.',
+                    'errors'  => $validator->errors(),
+                ], 422);
+            }
+
+            // Get authenticated user from employee_api guard
+            $user = Auth()->guard('employee_api')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Unauthorized.',
+                ], 401);
+            }
+
+            // Update FCM token
+            $user->fcm_token = $request->fcm_token;
+            $updated = $user->save();
+
+            if ($updated) {
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'Device token updated successfully!',
+                ], 200);
+            } else {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Could not update device token.',
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'An error occurred while updating device token.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

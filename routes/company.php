@@ -868,4 +868,10 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/salary-components/store', [SalaryComponentController::class, 'storeDemo'])->name('salary-components.store');
     Route::delete('salary-components/{id}', [SalaryComponentController::class, 'destroy'])->name('salary-components.destroy');
 });
+
+
+use App\Http\Controllers\PushNotificationController;
+
+Route::get('/send-test-notification', [PushNotificationController::class, 'sendTest']);
+
 /**---------------End Company Panel Route----------------*/
