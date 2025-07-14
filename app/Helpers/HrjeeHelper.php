@@ -575,11 +575,11 @@ function unlinkFileOrImage($file)
 
 function checkForHalfDayAttendance($shiftDetails, $config, $date, $punchIn, $punchOut)
 {
-   // Parse shift start and end datetime
+    // Parse shift start and end datetime
     $shiftStart = Carbon::parse($date . ' ' . $shiftDetails['start_time']);
     $shiftEnd = Carbon::parse($date . ' ' . $shiftDetails['end_time']);
 
-    // Convert check-in and check-out buffers to int
+    // Convert buffers to int
     $checkInBuffer = (int) ($shiftDetails['check_in_buffer']);
     $checkOutBuffer = (int) ($shiftDetails['check_out_buffer']);
 
@@ -587,37 +587,41 @@ function checkForHalfDayAttendance($shiftDetails, $config, $date, $punchIn, $pun
     $minShiftMinutes = (float) ($config['min_shift_Hours']) * 60;
     $minHalfDayMinutes = (float) ($config['min_half_day_hours']) * 60;
 
-    // Also get normal shift hours and half day hours
+    // Normal shift hours and half day hours
     $shiftMinutes = (float) ($config['shift_hours']) * 60;
     $halfDayMinutes = (float) ($config['half_day_hours']) * 60;
 
-    // Set max allowed shift minutes (e.g., normal shift + 2 hours buffer)
+    // Set max allowed shift minutes (normal shift + 2 hours buffer)
     $maxShiftMinutes = $shiftMinutes + 120;
 
     // Calculate buffer time for early punch out check
     $bufferTime = $shiftEnd->copy()->subMinutes($checkOutBuffer);
 
-    // Calculate total worked minutes
-    $totalMinutes = $punchOut->diffInMinutes($punchIn);
+    // Default values
+    $isLate = false;
+    $isShortAttendance = 0;
+    $attendanceStatus = '1'; // Default 'Present' or your code
 
-    // Check if employee is late
-    $isLate = $punchIn->gt($shiftStart->copy()->addMinutes($checkInBuffer));
-
-    // Check if employee left early
-    $isShortAttendance = $punchOut->lt($bufferTime) ? 1 : 0;
-
-    // Decide attendance status
-    if ($totalMinutes > $maxShiftMinutes && !$isLate) {
-        $attendanceStatus = '1'; // or custom code, as you like
-    } elseif ($totalMinutes >= $minShiftMinutes && !$isLate) {
-        $attendanceStatus = '1'; // Full Day
-    } elseif ($totalMinutes >= $minHalfDayMinutes) {
-        $attendanceStatus = '2'; // Half Day
-        $isLate = false;
+    if ($punchOut) {
+        $totalMinutes = $punchOut->diffInMinutes($punchIn);
+        $isLate = $punchIn->gt($shiftStart->copy()->addMinutes($checkInBuffer));
+        $isShortAttendance = $punchOut->lt($bufferTime) ? 1 : 0;
+        if ($totalMinutes > $maxShiftMinutes) {
+            $attendanceStatus = '1'; // Present
+        } elseif ($totalMinutes >= $minShiftMinutes) {
+            $attendanceStatus = '1'; // Full Day
+        } elseif ($totalMinutes >= $minHalfDayMinutes) {
+            $attendanceStatus = '2'; // Half Day
+        } elseif ($totalMinutes < $minHalfDayMinutes) {
+            $attendanceStatus = '2'; // Absent or very short
+        }
+        // Note: keep isLate flag separately, do NOT mix into attendanceStatus
     } else {
-        $attendanceStatus = '1'; // Absent
+        // Editing today, punchOut missing
+        $isLate = $punchIn->gt($shiftStart->copy()->addMinutes($checkInBuffer));
+        $isShortAttendance = 0;
+        $attendanceStatus = '1'; // Present
     }
-    // Return final result
+    // Return final array
     return [$isLate, $isShortAttendance, $attendanceStatus];
-
 }

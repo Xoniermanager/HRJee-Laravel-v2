@@ -63,10 +63,10 @@ class AttendanceController extends Controller
             if ($request->has('export')) {
                 $allEmployeeDetails = $this->searchFilterDetails($request->month, $request->year, $request->search, $request->department, $request->manager, $request->branch, true);
                 dispatch(new SendAttendanceReportJob(
-                    user: auth()->user(), 
+                    user: auth()->user(),
                     range: "",
-                    allEmployeeDetails: $allEmployeeDetails, 
-                    month: $request->month, 
+                    allEmployeeDetails: $allEmployeeDetails,
+                    month: $request->month,
                     year: $request->year,
                 ));
             } else {
@@ -259,14 +259,12 @@ class AttendanceController extends Controller
             'from_date' => 'required|date|before_or_equal:to_date',
             'to_date' => 'required|date|after_or_equal:from_date',
             'punch_in' => 'required|date_format:H:i|before:punch_out',
-            'punch_out' => 'required|date_format:H:i|after:punch_in',
+            'punch_out' => 'sometimes|nullable|date_format:H:i|after:punch_in',
             'remark' => 'required|string|max:255',
         ]);
-
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
         try {
             DB::beginTransaction();
             $request['punch_in_using'] = 'Web';
