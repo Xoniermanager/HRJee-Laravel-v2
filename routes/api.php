@@ -61,6 +61,8 @@ Route::middleware(['auth:sanctum', 'log.route'])->group(function () {
         Route::get('get/team/details/{userId}', 'getTeamDetailsByUserId');
         Route::get('/shift', 'getTodaysShift');
         Route::post('save/token', 'saveDeviceToken');
+        Route::post('send/notification/battery/percentage', 'sendNotificationBatteryPercentage');
+        Route::post('/notifications/{id}', 'updateNotificationStatus');
 
         Route::post('update/profile', 'updateProfile');
         Route::patch('toggle-location-tracking', 'toggleUserLocationTracking');

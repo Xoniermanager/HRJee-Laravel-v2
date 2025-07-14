@@ -52,7 +52,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function menu()
     {
-        if($this->role) {
+        if ($this->role) {
             return $this->role->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
         } else {
             return $this->userRole->belongsToMany(Menu::class)->orderBy('order_no', 'asc')->with(['children']);
@@ -85,7 +85,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function companyDetails()
     {
-        if($this->type == "company") {
+        if ($this->type == "company") {
             return $this->hasOne(CompanyDetail::class, 'user_id');
         } else {
             return $this->belongsTo(CompanyDetail::class, 'company_id', 'user_id');
@@ -355,18 +355,20 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(EmployeeManager::class, 'id', 'user_id');
     }
 
-    public function currentLocations($userIDs) {
+    public function currentLocations($userIDs)
+    {
         $today = Carbon::today();
 
         return UserLiveLocation::whereIn('user_id', $userIDs)->whereDate('created_at', $today)
-        ->latest('created_at')->with('user');
+            ->latest('created_at')->with('user');
     }
 
-    public function currentPunchInLocations($userIDs) {
+    public function currentPunchInLocations($userIDs)
+    {
         $today = Carbon::today();
 
         return EmployeeAttendance::whereIn('user_id', $userIDs)->whereDate('created_at', $today)
-        ->latest('created_at')->with('user');
+            ->latest('created_at')->with('user');
     }
 
     public function getPreviousMonthAttendanceWithLeave($month, $year)
@@ -382,22 +384,22 @@ class User extends Authenticatable implements MustVerifyEmail
 
         // Fetch attendance and leaves for the user for the previous month
         $attendances = EmployeeAttendance::where('user_id', $userId)
-        ->whereBetween('punch_in', [$startDate->toDateString(), $endDate->toDateString()])
-        ->get()
-        ->groupBy(function ($item) {
-            return Carbon::parse($item->punch_in)->toDateString();
-        });
+            ->whereBetween('punch_in', [$startDate->toDateString(), $endDate->toDateString()])
+            ->get()
+            ->groupBy(function ($item) {
+                return Carbon::parse($item->punch_in)->toDateString();
+            });
 
         $leaves = Leave::where('user_id', $userId)
-        ->where(function ($query) use ($startDate, $endDate) {
-            $query->whereBetween('from', [$startDate, $endDate])
-                ->orWhereBetween('to', [$startDate, $endDate])
-                ->orWhere(function ($q) use ($startDate, $endDate) {
-                    $q->where('from', '<', $startDate)
-                        ->where('to', '>', $endDate);
-                });
-        })
-        ->get();
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('from', [$startDate, $endDate])
+                    ->orWhereBetween('to', [$startDate, $endDate])
+                    ->orWhere(function ($q) use ($startDate, $endDate) {
+                        $q->where('from', '<', $startDate)
+                            ->where('to', '>', $endDate);
+                    });
+            })
+            ->get();
 
         $report = [];
 
@@ -436,12 +438,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $report;
     }
 
-    public function totalCompanyEmployees() {
+    public function totalCompanyEmployees()
+    {
 
         return User::where('type', 'user')->where('company_id', $this->id)->count();
     }
 
-    public function totalActiveEmployees() {
+    public function totalActiveEmployees()
+    {
 
         return User::where(['type' => 'user', 'status' => 1])->where('company_id', $this->id)->count();
     }
@@ -454,7 +458,8 @@ class User extends Authenticatable implements MustVerifyEmail
             ->count();
     }
 
-    public function totalInActiveEmployees() {
+    public function totalInActiveEmployees()
+    {
 
         return User::where(['type' => 'user', 'status' => 0])->where('company_id', $this->id)->count();
     }
@@ -465,10 +470,15 @@ class User extends Authenticatable implements MustVerifyEmail
             return $query;
         }
         $user = Auth::user();
-         if ($user->userRole && $user->userRole->category == 'custom') {
+        if ($user->userRole && $user->userRole->category == 'custom') {
             $userIDs = EmployeeManager::where('manager_id', $user->id)->pluck('user_id');
             return $query->whereIn('id', $userIDs);
-         }
+        }
         return $query;
+    }
+
+    public function pushNotifications()
+    {
+        return $this->hasMany(PushNotification::class);
     }
 }
