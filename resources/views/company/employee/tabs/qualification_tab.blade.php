@@ -71,172 +71,165 @@
     <button onclick="show_next_tab('past_work_tab')" class="tab-btn-inline btnnext btn btn-primary float-right">Next <i
             class="fa fa-arrow-right"></i> </button>
 </div>
-<script>
-    /** Qualification HTML*/
-    var qualification_counter = {{ $i }};
+    <script>
+        var qualification_counter = {{ $i }};
+    </script>
 
-    function get_qualification_html() {
-        var degree_name = $('#qualification_id').find(':selected').text().trim();
-        var degree_id = $('#qualification_id').find(':selected').val();
-        var exist = false;
-        jQuery('.degree_name').each(function(key, ele) {
-            var existing_ele = jQuery(ele).text().trim();
-            if (existing_ele == degree_name) {
-                exist = true;
+    <script>
+    jQuery(document).ready(function () {
+        var form = jQuery("#qualification_details_form");
+
+        // Initialize validation
+        form.validate({
+            ignore: [],
+            errorClass: 'text-danger',
+            submitHandler: function (form) {
+                createQualification(form);
             }
         });
-        if (exist == false) {
-            var qualificationhtml = '<div class="row"><div class="panel-head"><h5 class="degree_name">' + degree_name +
-                '</h5></div>\
-                                     <div class="panel-body"><div class="row"><div class="col-md-3 form-group"><label for="">Institute/College *</label><input class="form-control" type="text" name="degree[' +
-                qualification_counter +
-                '][institute]"></div>\
-                                     <div class="col-md-3 form-group"><label for="">University *</label><input class="form-control" type="text" name="degree[' +
-                qualification_counter +
-                '][university]"></div>\
-                                     <div class="col-md-3 form-group"><label for="">Course *</label><input class="form-control" type="text" name="degree[' +
-                qualification_counter +
-                '][course]"></div>\
-                                     <div class="col-md-1 form-group"><label for="">Year *</label><input class="form-control" type="text" name="degree[' +
-                qualification_counter +
-                '][year]"></div>\
-                                     <div class="col-md-1 form-group"><label for="">Percentage*</label><input class="form-control" type="text" name="degree[' +
-                qualification_counter + '][percentage]">\
-                                     <input class="form-control" type="hidden" name="degree[' + qualification_counter +
-                '][qualification_id]" value="' + degree_id +
-                '"></div>\
-                                     <div class="col-md-1 form-group text-center mt-5"><button class="btn btn-danger btn-sm mt-3" onclick="remove_qualification_html(this)"> <i class="fa fa-minus"></i></button></div></div></div></div>';
-            $('#qualification_html').append(qualificationhtml);
-            qualification_counter += 1;
-        }
 
-    }
+        // Add validation to all existing fields initially
+        addValidationRules();
 
-    function remove_qualification_html(ele, id = null) {
-        if (id != null) {
-            event.preventDefault();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: company_ajax_base_url + '/employee/qualification/delete/' + id,
-                        type: "get",
-                        success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            jQuery(ele).parent().parent().parent().parent().remove();
-                        },
-                        error: function(xhr, ajaxOptions, thrownError) {
-                            Swal.fire("Error deleting!", "Please try again", "error");
-                        }
-                    });
+        // redefine get_qualification_html to always add validation after adding html
+        window.get_qualification_html = function() {
+            var degree_name = $('#qualification_id').find(':selected').text().trim();
+            var degree_id = $('#qualification_id').find(':selected').val();
+            var exist = false;
+            jQuery('.degree_name').each(function() {
+                if ($(this).text().trim() == degree_name) {
+                    exist = true;
                 }
             });
-        } else {
-            jQuery(ele).parent().parent().parent().parent().remove();
-        }
-    }
+            if (!exist && degree_id) {
+                var index = qualification_counter;
+                var html = `
+                <div class="row">
+                  <div class="panel-head"><h5 class="degree_name">${degree_name}</h5></div>
+                  <div class="panel-body"><div class="row">
+                    <div class="col-md-3 form-group">
+                      <label>Institute/College *</label>
+                      <input class="form-control" type="text" name="degree[${index}][institute]">
+                    </div>
+                    <div class="col-md-3 form-group">
+                      <label>University *</label>
+                      <input class="form-control" type="text" name="degree[${index}][university]">
+                    </div>
+                    <div class="col-md-3 form-group">
+                      <label>Course *</label>
+                      <input class="form-control" type="text" name="degree[${index}][course]">
+                    </div>
+                    <div class="col-md-1 form-group">
+                      <label>Year *</label>
+                      <input class="form-control" type="text" name="degree[${index}][year]">
+                    </div>
+                    <div class="col-md-1 form-group">
+                      <label>Percentage*</label>
+                      <input class="form-control" type="text" name="degree[${index}][percentage]">
+                      <input type="hidden" name="degree[${index}][qualification_id]" value="${degree_id}">
+                    </div>
+                    <div class="col-md-1 form-group text-center mt-5">
+                      <button type="button" class="btn btn-danger btn-sm mt-3" onclick="remove_qualification_html(this)">
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </div>
+                  </div></div>
+                </div>`;
+                $('#qualification_html').append(html);
+                qualification_counter++;
 
-    function deleteFunction(id) {
-
-    }
-
-    /** end Qualification HTMl*/
-
-    /** Qualification Details created Ajax*/
-    jQuery(document).ready(function () {
-    var form = jQuery("#qualification_details_form");
-
-    // Initialize validation
-    form.validate({
-        ignore: [], // validate all fields, even hidden
-        submitHandler: function (form) {
-            createQualification(form);
-        }
-    });
-
-    // Add rules dynamically to existing fields
-    jQuery('.degree-institute').each(function () {
-        jQuery(this).rules("add", { required: true, messages: { required: "Please Enter the Institute Name" } });
-    });
-    jQuery('.degree-university').each(function () {
-        jQuery(this).rules("add", { required: true, messages: { required: "Please Enter the University Name" } });
-    });
-    jQuery('.degree-course').each(function () {
-        jQuery(this).rules("add", { required: true, messages: { required: "Please Enter the Course Name" } });
-    });
-    jQuery('.degree-year').each(function () {
-        jQuery(this).rules("add", {
-            required: true,
-            digits: true,
-            minlength: 4,
-            maxlength: 4,
-            messages: {
-                required: "Please Enter the year",
-                digits: "Year must be digits",
-                minlength: "Year must be 4 digits",
-                maxlength: "Year must be 4 digits"
+                // Add validation to these new fields by name
+                addValidationRulesForIndex(index);
             }
-        });
-    });
-    jQuery('.degree-percentage').each(function () {
-        jQuery(this).rules("add", {
-            required: true,
-            number: true,
-            min: 0,
-            max: 100,
-            messages: {
-                required: "Please Enter Percentage %",
-                number: "Must be a number",
-                min: "Cannot be less than 0",
-                max: "Cannot be more than 100"
+        }
+
+        window.remove_qualification_html = function(ele, id = null) {
+            if (id) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.get(company_ajax_base_url + '/employee/qualification/delete/' + id, function () {
+                            Swal.fire("Deleted!", "Record removed.", "success");
+                            $(ele).closest('.row').remove();
+                        }).fail(() => Swal.fire("Error!", "Please try again.", "error"));
+                    }
+                });
+            } else {
+                $(ele).closest('.row').remove();
             }
-        });
+        }
+
+        /** add validation to all existing fields initially **/
+        function addValidationRules() {
+            $('[name^="degree["]').each(function () {
+                var name = $(this).attr('name');
+                addRuleByFieldName(name);
+            });
+        }
+
+        /** add validation to new fields by index **/
+        function addValidationRulesForIndex(index) {
+            addRuleByFieldName(`degree[${index}][institute]`);
+            addRuleByFieldName(`degree[${index}][university]`);
+            addRuleByFieldName(`degree[${index}][course]`);
+            addRuleByFieldName(`degree[${index}][year]`);
+            addRuleByFieldName(`degree[${index}][percentage]`);
+        }
+
+        /** core: add validation rules by name **/
+        function addRuleByFieldName(name) {
+            var field = $('[name="'+name+'"]');
+            if (name.includes('[institute]')) {
+                field.rules('add', { required: true, messages: { required: "Please enter the institute name" } });
+            }
+            if (name.includes('[university]')) {
+                field.rules('add', { required: true, messages: { required: "Please enter the university name" } });
+            }
+            if (name.includes('[course]')) {
+                field.rules('add', { required: true, messages: { required: "Please enter the course name" } });
+            }
+            if (name.includes('[year]')) {
+                field.rules('add', {
+                    required: true, digits: true, minlength:4, maxlength:4,
+                    messages: { required:"Enter year", digits:"Must be digits", minlength:"4 digits", maxlength:"4 digits" }
+                });
+            }
+            if (name.includes('[percentage]')) {
+                field.rules('add', {
+                    required: true, number: true, min:0, max:100,
+                    messages: { required:"Enter %", number:"Must be number", min:"Min 0", max:"Max 100" }
+                });
+            }
+        }
     });
-});
-
-
 
     function createQualification(form) {
-        var qualification_details_data = $(form).serialize();
         $.ajax({
             url: "{{ route('employee.qualification.details') }}",
-            type: 'POST',
-            data: qualification_details_data,
-            success: function(response) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: response.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+            type: "POST",
+            data: $(form).serialize(),
+            success: function(res) {
+                Swal.fire({ icon: "success", title: res.message, showConfirmButton:false, timer:1500 });
                 jQuery('.nav-pills a[href="#past_work_tab"]').tab('show');
-                // This variable is used on save all records button
                 all_data_saved = true;
             },
-            error: function(error_messages) {
-                for (let [key, value] of Object.entries(error_messages.responseJSON.errors)) {
-                    let split_arr = key.split('.');
-                    let error_key = 'input[name="' + split_arr[0] + '[' + split_arr[1] + ']' + '[' +
-                        split_arr[2] + ']"]';
-                    $(document).find(error_key).after(
-                        '<span class="_error' + split_arr[1] + ' text text-danger">' + value[0].replace(
-                            split_arr[0] + '.' + split_arr[1] + '.', ' ') + '</span>');
-                    setTimeout(function() {
-                        jQuery('._error' + split_arr[1]).remove();
-                    }, 3000);
-                }
-                // This variable is used on save all records button
+            error: function(errors) {
                 all_data_saved = false;
                 jQuery('.nav-pills a[href="#qualification_tab"]').tab('show');
+                $.each(errors.responseJSON.errors, function (key, messages) {
+                    var parts = key.split('.');
+                    var selector = `input[name="${parts[0]}[${parts[1]}][${parts[2]}]"]`;
+                    $(selector).after(`<span class="text-danger _error${parts[1]}">${messages[0]}</span>`);
+                    setTimeout(() => { $('.'+ `_error${parts[1]}`).remove(); }, 3000);
+                });
             }
         });
     }
-</script>
+    </script>
+

@@ -93,59 +93,74 @@
     <!--end::Wrapper-->
 </div>
 <script>
-    /** Previous Company HTML*/
-    var previous_company_counter = {{ $i }};
+    var previous_company_counter = {{ $i ?? 0 }};
 
     function get_previous_company_html() {
         var previous_company = $('select[name=previous_company_id]').find(':selected').text().trim();
-        var previous_company_id = $('select[name=previous_company_id]').find(':selected').val();
-        var exist = false;
-        if (previous_company_id != '') {
-            jQuery('.previous_company').each(function(key, ele) {
-                var existing_ele = jQuery(ele).text().trim();
-                if (existing_ele == previous_company) {
-                    exist = true;
-                }
-            });
-            if (exist == false) {
-                var previous_company_html = '<div class="row"><div class="panel-head"><h5 class="previous_company">' +
-                    previous_company +
-                    '</h5></div>\
-                        <div class="panel-body"><div class="row"><div class="col-md-3 form-group"><label for="">Designation *</label><input class="form-control" type="text" name="previous_company[' +
-                    previous_company_counter +
-                    '][designation]"></div>\
-                        <div class="col-md-2 form-group"><label for="">From *</label><input class="form-control" type="date" name="previous_company[' +
-                    previous_company_counter +
-                    '][from]"></div>\
-                        <div class="col-md-2 form-group"><label for="">To *</label><input class="form-control" type="date" name="previous_company[' +
-                    previous_company_counter +
-                    '][to]"></div>\
-                        <div class="col-md-2 form-group"><label for="">Duration (In Years) *</label><input class="form-control" type="text" name="previous_company[' +
-                    previous_company_counter +
-                    '][duration]"><input class="form-control" type="hidden" name="previous_company[' +
-                    previous_company_counter + '][previous_company_id]" value="' + previous_company_id +
-                    '"></div>\
-                        <div class="col-md-2 form-group text-center"><label for="">Current Company *</label><p class="mt-2"><input class="h-20w-100" type="checkbox" name="[' +
-                    previous_company_counter +
-                    '][current_company]" value="1"></p></div>\
-                        <div class="col-md-1 form-group text-center mt-5"><button class="btn btn-danger btn-sm mt-3" onclick="remove_previous_company_html(this)"> <i class="fa fa-minus"></i></button></div></div></div></div>';
-                $('#previous_company_html').append(previous_company_html);
-                previous_company_counter += 1;
+        var previous_company_id = $('select[name=previous_company_id]').val();
 
-            }
-        } else {
+        if (!previous_company_id) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Please Select the Previous Company"
+                text: "Please select the previous company"
             });
             return false;
         }
 
+        var exists = false;
+        $('.previous_company').each(function() {
+            if ($(this).text().trim() === previous_company) {
+                exists = true;
+            }
+        });
+
+        if (!exists) {
+            var html = `
+                <div class="row">
+                    <div class="panel-head">
+                        <h5 class="previous_company">${previous_company}</h5>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <label>Designation *</label>
+                                <input class="form-control" type="text" name="previous_company[${previous_company_counter}][designation]">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>From *</label>
+                                <input class="form-control" type="date" name="previous_company[${previous_company_counter}][from]">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>To *</label>
+                                <input class="form-control" type="date" name="previous_company[${previous_company_counter}][to]">
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label>Duration (In Years) *</label>
+                                <input class="form-control" type="text" name="previous_company[${previous_company_counter}][duration]">
+                                <input type="hidden" name="previous_company[${previous_company_counter}][previous_company_id]" value="${previous_company_id}">
+                            </div>
+                            <div class="col-md-2 form-group text-center">
+                                <label>Current Company *</label>
+                                <p class="mt-2">
+                                    <input class="h-20w-100" type="checkbox" name="previous_company[${previous_company_counter}][current_company]" value="1">
+                                </p>
+                            </div>
+                            <div class="col-md-1 form-group text-center mt-5">
+                                <button type="button" class="btn btn-danger btn-sm mt-3" onclick="remove_previous_company_html(this)">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            $('#previous_company_html').append(html);
+            previous_company_counter++;
+        }
     }
 
-    function remove_previous_company_html(ele,id = null) {
-        if (id != null) {
+    function remove_previous_company_html(ele, id = null) {
+        if (id) {
             event.preventDefault();
             Swal.fire({
                 title: "Are you sure?",
@@ -159,28 +174,25 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         url: company_ajax_base_url + '/employee/past/work/delete/' + id,
-                        type: "get",
-                        success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
-                            jQuery(ele).parent().parent().parent().parent().remove();
+                        type: "GET",
+                        success: function() {
+                            Swal.fire("Deleted!", "Successfully removed!", "success");
+                            $(ele).closest('.row').remove();
                         },
-                        error: function(xhr, ajaxOptions, thrownError) {
-                            Swal.fire("Error deleting!", "Please try again", "error");
+                        error: function() {
+                            Swal.fire("Error!", "Please try again.", "error");
                         }
                     });
                 }
             });
         } else {
-            jQuery(ele).parent().parent().parent().parent().remove();
+            $(ele).closest('.row').remove();
         }
     }
 
-    /** end Previous Company HTML*/
-
-    jQuery(document).ready(function() {
-        jQuery("#past_work_details").validate({
-            rules: {},
-            messages: {},
+    $(document).ready(function() {
+        $("#past_work_details").validate({
+            // Add static rules here if needed
             submitHandler: function(form) {
                 createPastWorkDetails(form);
             }
@@ -188,11 +200,15 @@
     });
 
     function createPastWorkDetails(form) {
-        var past_work_details_data = $(form).serialize();
+        var data = $(form).serialize();
+
+        // Clear old errors
+        $('._error').remove();
+
         $.ajax({
             url: "{{ route('employee.past.work.details') }}",
-            type: 'POST',
-            data: past_work_details_data,
+            type: "POST",
+            data: data,
             success: function(response) {
                 Swal.fire({
                     position: "top-end",
@@ -201,22 +217,27 @@
                     showConfirmButton: false,
                     timer: 1500
                 });
-                jQuery('.nav-pills a[href="#family_details_tab"]').tab('show');
-                // This variable is used on save all records button
+                $('.nav-pills a[href="#family_details_tab"]').tab('show');
                 all_data_saved = true;
             },
-            error: function(error_messages) {
-                // This variable is used on save all records button
+            error: function(error) {
                 all_data_saved = false;
-                jQuery('.nav-pills a[href="#past_work_tab"]').tab('show');
-                for (let [key, value] of Object.entries(error_messages.responseJSON.errors)) {
-                    let split_arr = key.split('.');
-                    let error_key = 'input[name="' + split_arr[0] +'['+split_arr[1]+']'+'['+split_arr[2]+']"]';
-                    $(document).find(error_key).after(
-                        '<span class="_error'+split_arr[1]+' text text-danger">' + value[0].replace(split_arr[0]+'.'+split_arr[1]+'.',' ') + '</span>');
-                    setTimeout(function() {
-                        jQuery('._error'+split_arr[1]).remove();
-                    }, 3000);
+                $('.nav-pills a[href="#past_work_tab"]').tab('show');
+
+                if (error.responseJSON && error.responseJSON.errors) {
+                    $.each(error.responseJSON.errors, function(key, messages) {
+                        // Example key: previous_company.0.designation
+                        var parts = key.split('.');
+                        var fieldName = parts[0] + '[' + parts[1] + ']' + '[' + parts[2] + ']';
+                        var input = $('[name="' + fieldName + '"]');
+
+                        if (input.length) {
+                            input.after('<span class="_error text-danger">' + messages[0] + '</span>');
+                        }
+                    });
+
+                    // Remove errors after 3s
+                    setTimeout(() => { $('._error').remove(); }, 3000);
                 }
             }
         });
