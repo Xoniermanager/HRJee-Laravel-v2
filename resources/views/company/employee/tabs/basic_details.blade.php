@@ -529,15 +529,18 @@
     /** get all managers using branch Id */
     $(document).ready(function() {
     var initial_branch_id = $('#company_branch_id').val();
-    let managerIds = []
+
+    let managerIds = [];
     @if(isset($singleUserDetails) && $singleUserDetails->managers && $singleUserDetails->managers->isNotEmpty())
-    let managerIds = @json($singleUserDetails->managers->pluck('manager_id'));
+        managerIds = @json($singleUserDetails->managers->pluck('manager_id'));
     @endif
+
     if (initial_branch_id) {
         const all_company_branch_id = [initial_branch_id];
         getAllManagersUsingBranchId(all_company_branch_id, managerIds);
     }
     });
+
 
     function getAllManagersUsingBranchId(all_company_branch_id, selectedManagerIds = []) {
             if (all_company_branch_id) {

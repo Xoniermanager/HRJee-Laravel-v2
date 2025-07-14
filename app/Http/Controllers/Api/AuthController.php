@@ -380,7 +380,6 @@ class AuthController extends Controller
             $shiftType = $user->details->shift_type;
             $shifts = $this->userShiftService->getTodaysShifts($user->id, $shiftType)
                 ->with('shift.officeTimingConfigs')->get();
-
             return response()->json([
                 'status' => true,
                 'message' => 'Successfully fetched',

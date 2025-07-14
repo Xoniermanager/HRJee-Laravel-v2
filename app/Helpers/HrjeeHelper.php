@@ -148,6 +148,24 @@ function getTotalWorkingHour($startTime, $endTime)
     return $diff->d * 24 + $diff->h . ' hours ' . $diff->i . ' minutes';
 }
 
+/**
+ * Convert "1 hours 30 minutes" into total minutes
+ */
+function convertBreakTimeToMinutes($breakTimeString)
+{
+    $minutes = 0;
+
+    if (preg_match('/(\d+)\s*hours?/', $breakTimeString, $hourMatch)) {
+        $minutes += $hourMatch[1] * 60;
+    }
+
+    if (preg_match('/(\d+)\s*minutes?/', $breakTimeString, $minuteMatch)) {
+        $minutes += $minuteMatch[1];
+    }
+
+    return $minutes;
+}
+
 
 function getFormattedDate($date)
 {

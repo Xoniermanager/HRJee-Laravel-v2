@@ -80,7 +80,7 @@ class PRMApiController extends Controller
             'category_id' => 'required|exists:prm_categories,id',
             'bill_date' => 'required|date',
             'amount' => 'required|numeric|regex:/^\d{1,10}(\.\d{1,2})?$/',
-            'document' => 'nullable|sometimes|file|mimes:jpg,png,jpeg,pdf',
+            'document' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:3072'],
             'remark' => 'required|string',
         ]);
         if ($validator->fails()) {

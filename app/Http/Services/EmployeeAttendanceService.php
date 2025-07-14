@@ -325,6 +325,9 @@ class EmployeeAttendanceService
         $data['shift_start_time'] = $officeStartTime;
         $data['shift_end_time'] = $officeEndTime;
         $data['punch_in'] = $attendanceTime;
+        $data['company_id'] = $authDetails->company_id;
+        $data['created_by'] = $authDetails->company_id;
+        $data['punch_in_using'] = 'Face';
         // Create attendance
         $this->employeeAttendanceRepository->create($data);
         return ['status' => true, 'message' => 'Punch In', 'data' => $userDetails];

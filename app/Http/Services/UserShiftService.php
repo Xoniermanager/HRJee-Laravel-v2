@@ -50,10 +50,10 @@ class UserShiftService
             }
 
             $response = $this->userShiftRepository->insert($payload);
-            
+
             return $response;
         } catch (\Exception $e) {
-           
+
             return response()->json(['error' => 'An error occurred, please try again later.'], 400);
         }
     }
@@ -61,18 +61,16 @@ class UserShiftService
     public function deleteByUserId($userID)
     {
         $deletedData = $this->userShiftRepository->where('user_id', $userID)->delete();
-        
+
         return $deletedData;
     }
 
     public function getTodaysShifts($userId, $shiftType)
     {
         if($shiftType == "single") {
-
             return $this->userShiftRepository->where('user_id', $userId);
         } else {
             $today = date('l');
-
             return $this->userShiftRepository->where('user_id', $userId)->where('shift_day', $today);
         }
     }
@@ -92,7 +90,7 @@ class UserShiftService
             }
 
             $earlyWindow = $start->copy()->subMinutes($shift->check_in_buffer); // minutes before shift
-            
+
             if ($now->between($earlyWindow, $end)) {
                 return [
                     'in_shift' => true,
@@ -102,7 +100,7 @@ class UserShiftService
                     'message' => $message
                 ];
             }
-            
+
             $message = "You can only punch in within $shift->check_in_buffer minutes before your shift start time.";
         }
 
@@ -112,5 +110,5 @@ class UserShiftService
 
 
 
-    
+
 }

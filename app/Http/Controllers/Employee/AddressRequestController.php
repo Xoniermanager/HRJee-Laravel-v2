@@ -46,7 +46,7 @@ class AddressRequestController extends Controller
             $data = $request->all();
             $data['user_id'] = Auth()->user()->id;
             $data['company_id'] = Auth()->user()->company_id;
-            $data['created_by'] = Auth()->user()->id;
+            $data['created_by'] = Auth()->user()->company_id;
             if ($this->addressRequestService->create($data)) {
                 return response()->json([
                     'message' => 'Address Request Added Successfully!',
