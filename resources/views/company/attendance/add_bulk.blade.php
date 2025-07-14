@@ -1,142 +1,152 @@
 @extends('layouts.company.main')
 @section('content')
-@section('title','Add Bulk Attendance')
-<div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
-    <!--begin::Container-->
-    <div class="container-xxl" id="kt_content_container">
-        <!--begin::Row-->
-        <div class="col-lg-12 col-xl-12 col-xxl-12 mb-5">
-            <!--begin::Timeline widget 3-->
-            <div class="card h-md-100">
-                <!--begin::Header-->
-                <div class="card-header p-0 align-items-center">
-                    <div class="card-body">
-                        @if (session('error'))
-                        <div class="alert alert-danger alert-dismissible">
-                            {{ session('error') }}
-                        </div>
-                        @endif
-                        @if (session('success'))
-                        <div class="alert alert-success alert-dismissible">
-                            {{ session('success') }}
-                        </div>
-                        @endif
-                        <form action="{{ route('store.bulk.attendance') }}" method="post" enctype="multipart/form-data"
-                            id="add_attendance">
-                            @csrf
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-12 form-group demo-section k-header" id="example"
-                                        role="application">
-                                        <label class="required">Employee</label>
-                                        <select id="FeaturesSelect" multiple="multiple"
-                                            data-placeholder="Select Employee" name="employee_id[]">
-                                            @foreach ($allEmployeeDetails as $employeeDetails)
-                                            <option value="{{ $employeeDetails->id }}" {{ is_array(old('employee_id'))
-                                                && in_array($employeeDetails->id, old('employee_id')) ? 'selected' : ''
-                                                }}>
-                                                {{ $employeeDetails->name .' - ('.$employeeDetails->details->emp_id.')'}}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('employee_id'))
-                                        <div class="text-danger">{{ $errors->first('employee_id') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="required">From Date</label>
-                                        <input class="form-control" name="from_date" type="date"
-                                            value="{{ old('from_date') }}" max="{{ date('Y-m-d') }}">
-                                        @if ($errors->has('from_date'))
-                                        <div class="text-danger">{{ $errors->first('from_date') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="required">To Date</label>
-                                        <input class="form-control" name="to_date" type="date" max="{{ date('Y-m-d') }}"
-                                            value="{{ old('to_date') }}">
-                                        @if ($errors->has('to_date'))
-                                        <div class="text-danger">{{ $errors->first('to_date') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="required">Punch In Time</label>
-                                        <input class="form-control" name="punch_in" type="time"
-                                            value="{{ date('H:i') ?? old('punch_in') }}">
-                                        @if ($errors->has('punch_in'))
-                                        <div class="text-danger">{{ $errors->first('punch_in') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="required">Punch Out Time</label>
-                                        <input class="form-control" name="punch_out" type="time"
-                                            value="{{ date('H:i') ?? old('punch_out') }}">
-                                        @if ($errors->has('punch_out'))
-                                        <div class="text-danger">{{ $errors->first('punch_out') }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-12 form-group">
-                                        <label class="required">Remark</label>
-                                        <Textarea class="form-control" placeholder="Enter the remark"
-                                            name="remark">{{ old('remark') }}</Textarea>
-                                        @if ($errors->has('remark'))
-                                        <div class="text-danger">{{ $errors->first('remark') }}</div>
-                                        @endif
-                                    </div>
+@section('title', 'Add Bulk Attendance')
+    <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
+        <!--begin::Container-->
+        <div class="container-xxl" id="kt_content_container">
+            <!--begin::Row-->
+            <div class="col-lg-12 col-xl-12 col-xxl-12 mb-5">
+                <!--begin::Timeline widget 3-->
+                <div class="card h-md-100">
+                    <!--begin::Header-->
+                    <div class="card-header p-0 align-items-center">
+                        <div class="card-body">
+                            @if (session('error'))
+                                <div class="alert alert-danger alert-dismissible">
+                                    {{ session('error') }}
                                 </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </form>
+                            @endif
+                            @if (session('success'))
+                                <div class="alert alert-success alert-dismissible">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+                            <form action="{{ route('store.bulk.attendance') }}" method="post" enctype="multipart/form-data"
+                                id="add_attendance">
+                                @csrf
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12 form-group demo-section k-header" id="example"
+                                            role="application">
+                                            <label class="required">Employee</label>
+                                            <select id="FeaturesSelect" multiple="multiple"
+                                                data-placeholder="Select Employee" name="employee_id[]">
+                                                @foreach ($allEmployeeDetails as $employeeDetails)
+                                                 <option value="{{ $employeeDetails->id }}" {{ is_array(old('employee_id')) && in_array($employeeDetails->id, old('employee_id')) ? 'selected' : ''}}>
+                                                {{ $employeeDetails->name . ' - (' . $employeeDetails->details->emp_id . ')'}}</option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('employee_id'))
+                                                <div class="text-danger">{{ $errors->first('employee_id') }}</div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="required">From Date</label>
+                                            <input class="form-control" name="from_date" type="date"
+                                                value="{{ old('from_date') }}" max="{{ date('Y-m-d') }}">
+                                            @if ($errors->has('from_date'))
+                                                <div class="text-danger">{{ $errors->first('from_date') }}</div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="required">To Date</label>
+                                            <input class="form-control" name="to_date" type="date" max="{{ date('Y-m-d') }}"
+                                                value="{{ old('to_date') }}">
+                                            @if ($errors->has('to_date'))
+                                                <div class="text-danger">{{ $errors->first('to_date') }}</div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="required">Punch In Time</label>
+                                            <input class="form-control" name="punch_in" type="time"
+                                                value="{{ date('H:i') ?? old('punch_in') }}">
+                                            @if ($errors->has('punch_in'))
+                                                <div class="text-danger">{{ $errors->first('punch_in') }}</div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="">Punch Out Time</label>
+                                            <input class="form-control" name="punch_out" type="time"
+                                                value="{{ old('punch_out') }}">
+                                            @if ($errors->has('punch_out'))
+                                                <div class="text-danger">{{ $errors->first('punch_out') }}</div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <label class="required">Remark</label>
+                                            <Textarea class="form-control" placeholder="Enter the remark"
+                                                name="remark">{{ old('remark') }}</Textarea>
+                                            @if ($errors->has('remark'))
+                                                <div class="text-danger">{{ $errors->first('remark') }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<script>
-    $(document).ready(function() {
-        $("#FeaturesSelect").kendoMultiSelect({
-            headerTemplate: '<div style="padding:4px 8px"><input type="checkbox" id="selectAll" /> Select All Employee</div>',
-            autoClose: true,
-            dataBound: function() {
-                var items = this.ul.find("li");
-            },
-            change: function(e) {
-                var totalItems = this.dataSource.data().length;
-                var selected = this.value().length;
-                if (totalItems != selected) {
-                    $('#selectAll').prop('checked', false);
-                } else {
-                    $('#selectAll').prop('checked', true);
+    <script>
+        $(document).ready(function () {
+            $("#FeaturesSelect").kendoMultiSelect({
+                headerTemplate: '<div style="padding:4px 8px"><input type="checkbox" id="selectAll" /> Select All Employee</div>',
+                autoClose: true,
+                dataBound: function () {
+                    var items = this.ul.find("li");
+                },
+                change: function (e) {
+                    var totalItems = this.dataSource.data().length;
+                    var selected = this.value().length;
+                    if (totalItems != selected) {
+                        $('#selectAll').prop('checked', false);
+                    } else {
+                        $('#selectAll').prop('checked', true);
+                    }
                 }
-            }
-        }).data("kendoMultiSelect");
+            }).data("kendoMultiSelect");
 
-        $('#selectAll').change(function() {
-            var multiSelect = $("#FeaturesSelect").data("kendoMultiSelect");
-            if ($(this).prop('checked')) {
-                selectAll();
-            } else {
-                multiSelect.value(null);
-                $("#FeaturesSelect_listbox > li > input").prop("checked", false);
-            }
+            $('#selectAll').change(function () {
+                var multiSelect = $("#FeaturesSelect").data("kendoMultiSelect");
+                if ($(this).prop('checked')) {
+                    selectAll();
+                } else {
+                    multiSelect.value(null);
+                    $("#FeaturesSelect_listbox > li > input").prop("checked", false);
+                }
+            });
         });
-    });
 
-    function selectAll() {
-        var multiselect = $("#FeaturesSelect").data("kendoMultiSelect");
-        var selectedValues = [];
-        for (var i = 0; i < multiselect.dataSource.data().length; i++) {
-            var item = multiselect.dataSource.data()[i];
-            selectedValues.push(item.value);
+        function selectAll() {
+            var multiselect = $("#FeaturesSelect").data("kendoMultiSelect");
+            var selectedValues = [];
+            for (var i = 0; i < multiselect.dataSource.data().length; i++) {
+                var item = multiselect.dataSource.data()[i];
+                selectedValues.push(item.value);
+            }
+
+            $("#FeaturesSelect_listbox > li > input").prop("checked", true);
+            multiselect.value(selectedValues);
+            multiselect.close();
         }
-
-        $("#FeaturesSelect_listbox > li > input").prop("checked", true);
-        multiselect.value(selectedValues);
-        multiselect.close();
-    }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script>
     $(document).ready(function() {
-        jQuery("#add_attendance").validate({
+
+        // ✅ Custom validator: to_date >= from_date
+        $.validator.addMethod("dateGreaterOrEqual", function(value, element) {
+            var fromDate = $('input[name="from_date"]').val();
+            if (!fromDate || !value) return true; // skip if empty, required will catch
+            var from = moment(fromDate, ['YYYY-MM-DD', 'DD/MM/YYYY', 'DD-MM-YYYY', 'D MMMM YYYY']);
+            var to = moment(value, ['YYYY-MM-DD', 'DD/MM/YYYY', 'DD-MM-YYYY', 'D MMMM YYYY']);
+            return to.isSameOrAfter(from);
+        }, "To Date must be same as or after From Date");
+
+        $("#add_attendance").validate({
             rules: {
                 'employee_id[]': {
                     required: true,
@@ -145,15 +155,26 @@
                 },
                 from_date: {
                     required: true,
+                    date: true
                 },
                 to_date: {
                     required: true,
+                    date: true,
+                    dateGreaterOrEqual: true
                 },
                 punch_in: {
                     required: true,
                 },
                 punch_out: {
-                    required: true,
+                    required: {
+                        depends: function(element) {
+                            var selectedDate = $('input[name="from_date"]').val();
+                            if (!selectedDate) return true; // still require if no date
+                            var today = moment().format('YYYY-MM-DD');
+                            var selectedFormatted = moment(selectedDate, ['YYYY-MM-DD', 'DD/MM/YYYY', 'DD-MM-YYYY', 'D MMMM YYYY']).format('YYYY-MM-DD');
+                            return selectedFormatted !== today;
+                        }
+                    }
                 },
                 remark: {
                     required: true,
@@ -170,6 +191,7 @@
                 },
                 to_date: {
                     required: "Please select a to date.",
+                    dateGreaterOrEqual: "To Date must be same as or after From Date."
                 },
                 punch_in: {
                     required: "Please enter the punch-in time.",
@@ -188,5 +210,6 @@
             }
         });
     });
-</script>
+    </script>
+
 @endsection

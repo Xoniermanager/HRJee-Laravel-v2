@@ -22,7 +22,6 @@ class AutoPunchOutEmployees extends Command
             $shiftEndTime = $officeShiftDetails->end_time;
             $shiftEnd = Carbon::parse($shiftEndTime);
             $forceOutTime = $shiftEnd->copy()->addMinutes($autoPunchoutTime);
-
             // Perform auto punch out if current time >= force out time and not already punched out
             if (now()->gte($forceOutTime) && !$attendance->punch_out) {
                 $now = Carbon::now();
@@ -33,14 +32,12 @@ class AutoPunchOutEmployees extends Command
                     Carbon::parse($attendance->punch_in),
                     $now
                 );
-
                 $attendance->punch_out = $forceOutTime;
                 $attendance->is_auto_punch_out = 1;
-                $data['status'] = $attendanceStatus;
+                $attendance->status = $attendanceStatus;
                 $attendance->save();
                 $this->info("Auto punched out user {$attendance->user_id} at {$forceOutTime}");
             }
-
         }
         $this->info("Checked and updated all auto punch-outs.");
     }

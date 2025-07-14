@@ -185,7 +185,8 @@ class EmployeeAttendanceService
         $data['shift_id'] = $officeShiftDetails->id;
         $data['shift_start_time'] = $officeStartTime;
         $data['shift_end_time'] = $officeEndTime;
-
+        $data['company_id'] = $userDetails->company_id;
+        $data['created_at'] = $userDetails->company_id;
         // Create attendance
         $this->employeeAttendanceRepository->create($data);
         return ['status' => true, 'data' => 'Punch In'];
@@ -277,7 +278,6 @@ class EmployeeAttendanceService
                 $existingAttendance->update($data);
                 return ['status' => true, 'message' => 'Punch Out', 'data' => $userDetails];
             }
-
         }
 
         // Handle holidays
@@ -355,7 +355,6 @@ class EmployeeAttendanceService
                 ->whereIn('shift_id', $shiftIDs)->with('shift')
                 ->get()->toArray();
         } else {
-
             return [];
         }
     }
@@ -494,39 +493,72 @@ class EmployeeAttendanceService
      */
     public function editAttendanceByUserId($data)
     {
-        // Convert punch_in and punch_out to full datetime strings
+        $selectedDate = Carbon::parse($data['date'])->format('Y-m-d');
+        $today = Carbon::today()->format('Y-m-d');
+
+        // Always convert punch_in to full datetime string
         $data['punch_in'] = date('Y/m/d H:i:s', strtotime($data['date'] . ' ' . $data['punch_in']));
-        $data['punch_out'] = date('Y/m/d H:i:s', strtotime($data['date'] . ' ' . $data['punch_out']));
 
-        // Parse punch times
+        // punch_out may be null if editing today's attendance
+        if (!empty($data['punch_out'])) {
+            $data['punch_out'] = date('Y/m/d H:i:s', strtotime($data['date'] . ' ' . $data['punch_out']));
+        } else {
+            $data['punch_out'] = null;
+        }
+
+        // Parse punchIn and punchOut (if exists)
         $punchIn = Carbon::parse($data['punch_in']);
-        $punchOut = Carbon::parse($data['punch_out']);
+        $punchOut = $data['punch_out'] ? Carbon::parse($data['punch_out']) : null;
 
-        // Calculate total working time
-        $totalMinutes = $punchOut->diffInMinutes($punchIn);
-        $hours = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
-        $data['total_hours'] = sprintf('%02d:%02d', $hours, $minutes);
+        // Calculate total_hours if punch_out exists
+        if ($punchOut) {
+            $totalMinutes = $punchOut->diffInMinutes($punchIn);
+            $hours = floor($totalMinutes / 60);
+            $minutes = $totalMinutes % 60;
+            $data['total_hours'] = sprintf('%02d:%02d', $hours, $minutes);
+        } else {
+            $data['total_hours'] = null; // editing today's attendance, punch_out missing
+        }
+
         // Fetch user and shift config
         $userDetails = User::find($data['user_id']);
         $shiftType = $userDetails->details->shift_type;
-        $shiftIDs = $this->userShiftService->getTodaysShifts($userDetails->id, $shiftType)->pluck('shift_id')->toArray();
+        $shiftIDs = $this->userShiftService
+            ->getTodaysShifts($userDetails->id, $shiftType)
+            ->pluck('shift_id')
+            ->toArray();
+
         $shifts = $this->shiftService->getByIdShifts($shiftIDs);
 
-        // Check if user is within allowed punch-in time for any shift
+        // Find matching shift
         $shiftCheck = $this->userShiftService->isUserAllowedToPunchIn($shifts);
         $officeShiftDetails = $shiftCheck['officeShift'];
-        [$isLate, $isShortAttendance, $attendanceStatus] = checkForHalfDayAttendance($officeShiftDetails->toArray(), $officeShiftDetails->officeTimingConfigs->toArray(), $data['date'], $punchIn, $punchOut);
-        $data['is_late'] = $isLate ? 1 : 0;
+
+        // Always check late / half day / status
+        [$isLate, $isShortAttendance, $attendanceStatus] = checkForHalfDayAttendance(
+            $officeShiftDetails->toArray(),
+            $officeShiftDetails->officeTimingConfigs->toArray(),
+            $data['date'],
+            $punchIn,
+            $punchOut
+        );
+        // Fill other fields
+        $data['late'] = $isLate ? 1 : 0;
         $data['status'] = $attendanceStatus;
         $data['is_short_attendance'] = $isShortAttendance;
         $data['shift_id'] = $officeShiftDetails->id;
         $data['shift_start_time'] = $officeShiftDetails->start_time;
         $data['shift_end_time'] = $officeShiftDetails->end_time;
-        // Prepare for saving
+
+        // Prepare payload without system fields
         $payload = Arr::except($data, ['_token', 'date', 'attendance_id']);
+
+        // Save or update
         if (!empty($data['attendance_id'])) {
-            return $this->employeeAttendanceRepository->find($data['attendance_id'])->update($payload);
+            // update according to total working hour
+            return $this->employeeAttendanceRepository
+                ->find($data['attendance_id'])
+                ->update($payload);
         } else {
             return $this->employeeAttendanceRepository->create($payload);
         }
@@ -542,50 +574,85 @@ class EmployeeAttendanceService
     {
         $startDate = Carbon::createFromFormat('Y-m-d', $data['from_date']);
         $endDate = Carbon::createFromFormat('Y-m-d', $data['to_date']);
+        $today = Carbon::today()->format('Y-m-d');
         $payload = [];
+
         for ($date = $startDate; $date <= $endDate; $date->addDay()) {
-            $mainDate = $date->toDateString();
-            // $weekDayNumber = $date->dayOfWeekIso;
-            $weekDayNumber = $date;
+            $mainDate = $date->toDateString(); // eg: '2025-07-15'
+            $weekDayNumber = $date->dayOfWeekIso; // 1=Mon .. 7=Sun
 
             foreach ($data['employee_id'] as $employeeId) {
-                //Get Employee Details By User Id
+                // get employee details
                 $employeeDetails = $this->employeeService->getUserDetailById($employeeId);
                 if ($employeeDetails->details->joining_date <= $mainDate) {
-                    // Check Holiday for Particular date
+
+                    // skip if holiday / leave / weekend / existing attendance
                     $checkHoliday = $this->holidayService->getHolidayByCompanyBranchId($employeeDetails->company_id, $mainDate, $employeeDetails->details->company_branch_id);
-                    // Check Attendance if employee existing
                     $checkExistingAttendance = $this->getAttendanceByDateByUserId($employeeId, $mainDate)->first();
-
-                    //Check Leave if employee applied and status was approved
                     $checkLeave = $this->leaveService->getUserConfirmLeaveByDate($employeeId, $mainDate);
+                    $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId(
+                        $employeeDetails->company_id,
+                        $employeeDetails->details->company_branch_id,
+                        $employeeDetails->details->department_id,
+                        $weekDayNumber
+                    );
 
-                    //Check Weekend if Existing
-                    $checkWeekend = $this->weekendService->getWeekendDetailByWeekdayId($employeeDetails->company_id, $employeeDetails->details->company_branch_id, $employeeDetails->details->department_id, $weekDayNumber);
+                    if (!$checkHoliday && !$checkExistingAttendance && !$checkLeave && !$checkWeekend) {
 
-                    if ($checkHoliday == null && $checkExistingAttendance == null && $checkLeave == null && $checkWeekend == null) {
+                        // build punch_in
+                        $punchIn = Carbon::parse($mainDate . ' ' . $data['punch_in']);
+
+                        // punch_out: null if date == today, else required
+                        $punchOut = null;
+                        if ($mainDate != $today && !empty($data['punch_out'])) {
+                            $punchOut = Carbon::parse($mainDate . ' ' . $data['punch_out']);
+                        }
+
+                        // fetch shift details
+                        $shiftType = $employeeDetails->details->shift_type;
+                        $shiftIDs = $this->userShiftService->getTodaysShifts($employeeId, $shiftType)->pluck('shift_id')->toArray();
+                        $shifts = $this->shiftService->getByIdShifts($shiftIDs);
+                        $shiftCheck = $this->userShiftService->isUserAllowedToPunchIn($shifts);
+                        $officeShiftDetails = $shiftCheck['officeShift'];
+
+                        // calc late / half-day / short attendance / status
+                        [$isLate, $isShortAttendance, $attendanceStatus] = checkForHalfDayAttendance(
+                            $officeShiftDetails->toArray(),
+                            $officeShiftDetails->officeTimingConfigs->toArray(),
+                            $mainDate,
+                            $punchIn,
+                            $punchOut
+                        );
                         $payload[] = [
-                            'punch_in' => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_in'])),
-                            'punch_out' => date('Y-m-d H:i:s', strtotime($mainDate . ' ' . $data['punch_out'])),
                             'user_id' => $employeeId,
+                            'company_id' => $data['company_id'],
                             'remark' => $data['remark'],
+                            'punch_in' => $punchIn->format('Y-m-d H:i:s'),
+                            'punch_out' => $punchOut ? $punchOut->format('Y-m-d H:i:s') : null,
                             'punch_in_using' => $data['punch_in_using'],
                             'punch_in_by' => $data['punch_in_by'],
-                            'company_id' => $data['company_id'],
+                            'status' => $attendanceStatus,
+                            'late' => $isLate ? 1 : 0,
+                            'is_short_attendance' => $isShortAttendance,
+                            'shift_id' => $officeShiftDetails->id ?? null,
+                            'shift_start_time' => $officeShiftDetails->start_time ?? null,
+                            'shift_end_time' => $officeShiftDetails->end_time ?? null,
                             'created_by' => $data['created_by'],
                             'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now()
+                            'updated_at' => Carbon::now(),
                         ];
                     }
                 }
             }
         }
-        if (isset($payload) && !empty($payload)) {
+        // save payload
+        if (!empty($payload)) {
             $this->employeeAttendanceRepository->insert($payload);
             return true;
         } else {
             return false;
         }
+
     }
 
     /**
@@ -648,9 +715,7 @@ class EmployeeAttendanceService
             foreach ($attendances as $key => $attendance) {
                 $resp = [];
                 $resp['punch_in'] = date('H:i A', strtotime($attendance->punch_in));
-                $resp['punch_out'] = $attendance->punch_out
-                    ? date('H:i A', strtotime($attendance->punch_out))
-                    : null;
+                $resp['punch_out'] = $attendance->punch_out ? date('H:i A', strtotime($attendance->punch_out)) : null;
                 if ($attendance->punch_out) {
                     $punchIn = Carbon::parse($attendance->punch_in);
                     $punchOut = Carbon::parse($attendance->punch_out);
