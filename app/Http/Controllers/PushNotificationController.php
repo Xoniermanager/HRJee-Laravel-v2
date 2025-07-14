@@ -24,4 +24,28 @@ class PushNotificationController extends Controller
 
         return $success ? 'Notification sent!' : 'Notification failed.';
     }
+
+    public function markAsRead($id)
+    {
+        $user = auth()->user();
+
+        $notification = $user->pushNotifications()->where('id', $id)->first();
+
+        if ($notification) {
+            $notification->update(['status' => false]); // false = read
+        }
+
+        return response()->json(['status' => 'ok']);
+    }
+
+    public function clearAll()
+    {
+        $user = auth()->user();
+
+        // Update all to read in one query
+        $user->pushNotifications()->where('status', true)->update(['status' => false]);
+
+        return response()->json(['status' => 'ok']);
+    }
+
 }

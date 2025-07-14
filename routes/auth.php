@@ -6,6 +6,7 @@ use App\Http\Controllers\Company\AdminController;
 use App\Http\Controllers\Employee\AuthController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\EmployeeComplainController;
+use App\Http\Controllers\PushNotificationController;
 use App\Http\Controllers\Company\EmployeeSalaryController;
 use App\Http\Controllers\Employee\LeaveTrackingController;
 use App\Http\Controllers\Employee\ForgetPasswordController;
@@ -101,3 +102,8 @@ Route::controller(AuthController::class)->middleware('log.route')->group(functio
  Route::get('/leave-tracking/{id}', [LeaveTrackingController::class, 'index'])->name('employee.leave.tracking');
 
 Route::middleware('log.route')->get('/employee/payslip/generate-pdf', [EmployeeSalaryController::class,'generatePDF']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/notifications/read/{id}', [PushNotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/clear-all', [PushNotificationController::class, 'clearAll'])->name('notifications.clearAll');
+});

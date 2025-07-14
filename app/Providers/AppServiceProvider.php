@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Country;
 use App\Observers\CompanyBranchObserver;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,5 +38,17 @@ class AppServiceProvider extends ServiceProvider
         });
         Company::observe(CompanyObserver::class);
         CompanyBranch::observe(CompanyBranchObserver::class);
+
+
+        View::composer('*', function ($view) {
+            $user = Auth::user();
+
+            if ($user) {
+                $notifications = $user->pushNotifications()->where('status',true)->orderBy('id','DESC')->take(20)->get();
+                $view->with('globalNotifications', $notifications);
+            } else {
+                $view->with('globalNotifications', collect());
+            }
+        });
     }
 }

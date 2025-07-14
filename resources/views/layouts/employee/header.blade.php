@@ -11,6 +11,7 @@
 			</h1>
 			<!--end::Heading-->
 		</div>
+
 		<div class="page-title d-flex flex-column align-items-start justify-content-center me-lg-2 pb-lg-0 flex-wrap pb-5"
 			data-kt-swapper="true" data-kt-swapper-mode="prepend"
 			data-kt-swapper-parent="{default: '#kt_content_container', lg: '#kt_header_container'}">
@@ -22,6 +23,7 @@
 			@endif
 			<!--end::Heading-->
 		</div>
+        @include('layouts.notification_dropdown')
 		<!--end::Page title=-->
 		<!--begin::Wrapper-->
 		<div class="d-flex d-lg-none align-items-center ms-n2">

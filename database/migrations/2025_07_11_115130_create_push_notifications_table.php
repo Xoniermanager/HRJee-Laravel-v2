@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('token')->nullable();
             $table->boolean('success')->default(false);
             $table->text('response')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

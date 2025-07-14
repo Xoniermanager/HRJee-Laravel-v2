@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Services\Api\AuthService;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Services\SendNotification;
 use App\Http\Services\UserShiftService;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\DocumentTypeService;
@@ -56,7 +57,7 @@ class AuthController extends Controller
     {
         $user = Auth()->guard('employee_api')->user();
         try {
-            $employeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'documentDetails.documentTypes:name,id', 'userActiveLocation', 'userReward', 'userReward.rewardCategory:name,id', 'managerEmployees.user.details', 'role:name,id');
+            $employeeDetails = $user->load('details', 'addressDetails', 'bankDetails', 'advanceDetails', 'pastWorkDetails', 'documentDetails', 'qualificationDetails', 'familyDetails', 'skill', 'language', 'assetDetails', 'documentDetails.documentTypes:name,id', 'userActiveLocation', 'userReward', 'userReward.rewardCategory:name,id', 'managerEmployees.user.details', 'role:name,id','pushNotifications');
             $companyAssignedMenuIds = MenuRole::where('role_id', $user->parent->role_id)->pluck('menu_id')->toArray();
             $employeeDetails['menu_access'] = Menu::where(['status' => 1, 'role' => 'employee'])
                 ->where(function ($query) use ($companyAssignedMenuIds) {
@@ -441,6 +442,107 @@ class AuthController extends Controller
                 'error'   => $e->getMessage(),
             ], 500);
         }
+    }
+
+
+    public function sendNotificationBatteryPercentage(Request $request)
+    {
+            $request->validate([
+                'title' => 'required|string',
+                'body'  => 'required|string',
+            ]);
+
+            $title = $request->title;
+            $body  = $request->body;
+
+            $userDetails = auth()->user();
+
+            // Get all managers related to the user (assuming this gives you actual User models)
+            $allManagers = $userDetails->managers;
+
+            // Get all HR users in the same company
+            $hrUsers = User::where('company_id', $userDetails->company_id)
+                ->whereHas('userRole', fn($q) => $q->where('name', 'HR'))
+                ->get();
+
+            // Only send notifications if there is at least one manager or HR
+            if ($allManagers->isEmpty() && $hrUsers->isEmpty()) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'No managers or HR users found to notify.',
+                ]);
+            }
+            $payload = [
+                'user_id' => $userDetails->id,
+            ];
+            $notifiedManagers = [];
+            $notifiedHRs = [];
+
+            // Send notification to all managers
+            foreach ($allManagers as $managerUser) {
+                if (!empty($managerUser->manager->fcm_token)) {
+                    SendNotification::send(
+                        $managerUser->manager->fcm_token,
+                        $title,
+                        $body,
+                        $payload,
+                        $managerUser->managerid
+                    );
+                    $notifiedManagers[] = [
+                        'id'    => $managerUser->manager->id,
+                        'name'  => $managerUser->manager->name,
+                        'email' => $managerUser->manager->email,
+                    ];
+                }
+            }
+
+            // Send notification to all HR users
+            foreach ($hrUsers as $hrUser) {
+                if (!empty($hrUser->fcm_token)) {
+                    SendNotification::send(
+                        $hrUser->fcm_token,
+                        $title,
+                        $body,
+                        $payload,
+                        $hrUser->id
+                    );
+                    $notifiedHRs[] = [
+                        'id'    => $hrUser->id,
+                        'name'  => $hrUser->name,
+                        'email' => $hrUser->email,
+                    ];
+                }
+            }
+
+            return response()->json([
+                'status'   => true,
+                'message'  => 'Battery low notification sent successfully.',
+                'notified' => [
+                    'managers' => $notifiedManagers,
+                    'hrs'      => $notifiedHRs,
+                ],
+            ]);
+    }
+
+    public function updateNotificationStatus($notificationId)
+    {
+        $user = auth()->user();
+        // Find this user's notification by ID
+        $notification = $user->pushNotifications()->where('id', $notificationId)->first();
+
+        if ($notification) {
+            $notification->status = false; // mark as inactive / read
+            $notification->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Notification marked as inactive',
+                'notification_id' => $notificationId
+            ]);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Notification not found'
+        ], 404);
     }
 
 }
