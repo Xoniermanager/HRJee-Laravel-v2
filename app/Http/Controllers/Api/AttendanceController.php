@@ -93,8 +93,6 @@ class AttendanceController extends Controller
     {
         try {
             $data = $request->all();
-            $data['punch_in_using'] = 'Face';
-
             $attendanceDetails = $this->employeeAttendanceService->createUsingFace($data);
 
             if ($attendanceDetails['status'] === true && $attendanceDetails['message'] === 'Punch Out') {
@@ -161,12 +159,13 @@ class AttendanceController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'from_date' => ['required', 'date'],
-                'to_date' => ['required', 'date'],
+                'to_date'   => ['required', 'date'],
             ]);
+
             if ($validator->fails()) {
                 return response()->json([
-                    "error" => 'validation_error',
-                    "message" => $validator->errors(),
+                    "error"   => 'validation_error',
+                    "message" => implode(' ', $validator->errors()->all()),
                 ], 422);
             }
             $finalData = [];
@@ -559,21 +558,21 @@ class AttendanceController extends Controller
         try {
             $year = date('Y');
             $month = $month ?? date('m');
-            $employeeDetails = Auth()->user();
+            $employeeDetails = auth()->user();
 
             $selectedDate = Carbon::createFromDate($year, $month, 1);
             $startDate = $selectedDate->startOfMonth()->toDateString();
 
             if ($selectedDate->isFuture()) {
-                // Don't show any future attendance
-                $endDate = now()->toDateString(); // Or skip processing by returning empty dataset
+                $endDate = now()->toDateString();
             } elseif ($selectedDate->isSameMonth(now())) {
-                $endDate = now()->toDateString(); // Up to today for current month
+                $endDate = now()->toDateString();
             } else {
-                $endDate = $selectedDate->endOfMonth()->toDateString(); // Full month for past months
+                $endDate = $selectedDate->endOfMonth()->toDateString();
             }
 
             $leaveDetail = $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year, 1);
+
             $attendanceDetails = $this->employeeAttendanceService->getEmployeeAttendanceBetweenTwoDates(
                 $employeeDetails->id,
                 $employeeDetails->company_id,
@@ -583,27 +582,52 @@ class AttendanceController extends Controller
                 $endDate
             );
 
-            $attendanceByMonth = $this->employeeAttendanceService->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year);
-            $shortAttendance = $this->employeeAttendanceService->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year);
-            $holidayDetails = $this->holidayService->getHolidayByMonthByCompanyBranchId(
-                $employeeDetails->company_id,
-                $month,
-                $year,
-                $employeeDetails->details->company_branch_id
-            )->select('date', 'name as title')->get();
+            $attendanceByMonth = $this->employeeAttendanceService
+                ->getAllAttendanceByMonthByUserId($month, $employeeDetails->id, $year)
+                ->get(); // ✅ now it's a collection so you can use map()
+
+            $shortAttendance = $this->employeeAttendanceService
+                ->getShortAttendanceByMonthByUserId($month, $employeeDetails->id, $year)
+                ->get();
+
+            $holidayDetails = $this->holidayService
+                ->getHolidayByMonthByCompanyBranchId(
+                    $employeeDetails->company_id,
+                    $month,
+                    $year,
+                    $employeeDetails->details->company_branch_id
+                )
+                ->select('date', 'name as title')
+                ->get();
+
+            // Format attendance details: punch_in, punch_out, total_working_hour, total_break_hour
+            $attendanceFormatted = $attendanceByMonth->map(function ($item) {
+                // Parse total_break_hour into minutes
+                $breakMinutes = !empty($item->total_break_time) ? convertBreakTimeToMinutes($item->total_break_time) : 0;
+                return [
+                    'punch_in'           => $item->punch_in ?? null,
+                    'punch_out'          => $item->punch_out ?? null,
+                    'total_break_hour'   => $item->total_break_time ?? null,
+                    'total_working_hour' => getTotalWorkingHour(
+                        $item->punch_in,
+                        $item->punch_out,
+                        $breakMinutes
+                    ),
+                ];
+            });
 
             $data = [
-                'attendanceDetails' => $attendanceByMonth->get('punch_in'),
-                'totalPresent' => $attendanceByMonth->count(),
-                'totalLeave' => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
-                'leaveDetails' => $leaveDetail,
-                'totalHalfDayLeave' => $leaveDetail->where('is_half_day', 1)->count(),
-                'totalHoliday' => $holidayDetails->count(),
-                'holidayDetails' => $holidayDetails ?? [],
-                'shortAttendance' => $shortAttendance->count(),
-                'shortAttendanceDetails' => $shortAttendance->get('punch_in'),
-                'totalAbsent' => count($attendanceDetails['absences'] ?? []),
-                'absentDetails' => $attendanceDetails['absences'] ?? [],
+                'attendanceDetails'      => $attendanceFormatted,
+                'totalPresent'          => $attendanceByMonth->count(),
+                'totalLeave'            => $this->leaveService->getTotalLeaveByUserIdByMonth($employeeDetails->id, $month, $year),
+                'leaveDetails'          => $leaveDetail,
+                'totalHalfDayLeave'     => $leaveDetail->where('is_half_day', 1)->count(),
+                'totalHoliday'          => $holidayDetails->count(),
+                'holidayDetails'        => $holidayDetails ?? [],
+                'shortAttendance'       => $shortAttendance->count(),
+                'shortAttendanceDetails'=> $shortAttendance->pluck('punch_in'),
+                'totalAbsent'           => count($attendanceDetails['absences'] ?? []),
+                'absentDetails'         => $attendanceDetails['absences'] ?? [],
             ];
 
             return response()->json([
@@ -611,6 +635,7 @@ class AttendanceController extends Controller
                 'message' => "All Attendance Details",
                 'data' => $data
             ], 200);
+
         } catch (Exception $e) {
             return response()->json([
                 "status" => false,
@@ -618,5 +643,6 @@ class AttendanceController extends Controller
                 "message" => "Unable to Fetch Attendance Details"
             ], 500);
         }
+
     }
 }

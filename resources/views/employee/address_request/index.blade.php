@@ -166,15 +166,16 @@
         <!--end::Modal dialog-->
     </div>
     <script>
-        function edit_address_request_details(id,address,reason) {
+        function edit_address_request_details(id, address, reason) {
             $('#id').val(id);
             $('#address').val(address);
             $('#reason').val(reason);
-            jQuery('#edit_address_request').modal('show');
+            $('#edit_address_request').modal('show');
         }
+
         jQuery.noConflict();
         jQuery(document).ready(function($) {
-            jQuery("#add_address_request_form").validate({
+            $("#add_address_request_form").validate({
                 rules: {
                     address: "required",
                     reason: "required",
@@ -184,34 +185,32 @@
                     reason: "Please Enter the Reason",
                 },
                 submitHandler: function(form) {
-                    var country_data = $(form).serialize();
+                    var formData = $(form).serialize();
                     $.ajax({
                         url: "{{ route('employee.address.request.store') }}",
                         type: 'POST',
-                        data: country_data,
+                        data: formData,
                         success: function(response) {
                             jQuery('#add_address_request_modal').modal('hide');
-                            swal.fire("Done!", response.message, "success");
+                            Swal.fire("Done!", response.message, "success");
                             $('#address_request_list').replaceWith(response.data);
-                            jQuery("#add_address_request_form")[0].reset();
-
+                            $("#add_address_request_form")[0].reset();
                         },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span class="' + error_key +
-                                    '_error text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("." + error_key + "_error").remove();
-                                }, 5000);
+                        error: function(xhr) {
+                            let errors = xhr.responseJSON?.error || {};
+                            for (var key in errors) {
+                                $('[name=' + key + ']').next('.' + key + '_error').remove();
+                                $('[name=' + key + ']').after(
+                                    '<span class="' + key + '_error text text-danger">' + errors[key] + '</span>'
+                                );
+                                setTimeout(() => $("." + key + "_error").remove(), 5000);
                             }
                         }
                     });
                 }
             });
-            jQuery("#address_request_update_form").validate({
+
+            $("#address_request_update_form").validate({
                 rules: {
                     address: "required",
                     reason: "required",
@@ -221,30 +220,38 @@
                     reason: "Please Enter the Reason",
                 },
                 submitHandler: function(form) {
-                    var country_data = $(form).serialize();
+                    var formData = $(form).serialize();
                     $.ajax({
-                        url: "<?= route('employee.address.request.update') ?>",
-                        type: 'post',
-                        data: country_data,
+                        url: "{{ route('employee.address.request.update') }}",
+                        type: 'POST',
+                        data: formData,
                         success: function(response) {
                             jQuery('#edit_address_request').modal('hide');
-                            swal.fire("Done!", response.message, "success");
-                            jQuery('#address_request_list').replaceWith(response.data);
+                            Swal.fire("Done!", response.message, "success");
+                            $('#address_request_list').replaceWith(response.data);
                         },
-                        error: function(error_messages) {
-                            let errors = error_messages.responseJSON.error;
-                            for (var error_key in errors) {
-                                $(document).find('[name=' + error_key + ']').after(
-                                    '<span id="' + error_key +
-                                    '_error" class="text text-danger">' + errors[
-                                        error_key] + '</span>');
-                                setTimeout(function() {
-                                    jQuery("#" + error_key + "_error").remove();
-                                }, 5000);
+                        error: function(xhr) {
+                            let errors = xhr.responseJSON?.error || {};
+                            for (var key in errors) {
+                                $('[name=' + key + ']').next('#' + key + '_error').remove();
+                                $('[name=' + key + ']').after(
+                                    '<span id="' + key + '_error" class="text text-danger">' + errors[key] + '</span>'
+                                );
+                                setTimeout(() => $("#" + key + "_error").remove(), 5000);
                             }
                         }
                     });
                 }
+            });
+
+            $("#status").on('change', function() {
+                search_filter_results();
+            });
+
+            $(document).on('click', '#address_request_list a', function(e) {
+                e.preventDefault();
+                var page = $(this).attr('href').split('page=')[1];
+                search_filter_results(page);
             });
         });
 
@@ -261,42 +268,34 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "<?= route('employee.address.request.delete') ?>",
-                        type: "get",
-                        data: {
-                            id: id
-                        },
+                        url: "{{ route('employee.address.request.delete') }}",
+                        type: "GET",
+                        data: { id: id },
                         success: function(res) {
-                            Swal.fire("Done!", "It was succesfully deleted!", "success");
+                            Swal.fire("Done!", "It was successfully deleted!", "success");
                             $('#address_request_list').replaceWith(res.data);
                         },
-                        error: function(xhr, ajaxOptions, thrownError) {
+                        error: function() {
                             Swal.fire("Error deleting!", "Please try again", "error");
                         }
                     });
                 }
             });
         }
-        jQuery("#status").on('change', function() {
-            search_filter_results();
-        });
-        jQuery(document).on('click', '#address_request_list a', function(e) {
-            e.preventDefault();
-            var page_no = $(this).attr('href').split('page=')[1];
-            search_filter_results(page_no);
-        });
 
         function search_filter_results(page_no = 1) {
             $.ajax({
                 type: 'GET',
                 url: employee_ajax_base_url + '/address/request/search/filter?page=' + page_no,
-                data: {
-                    'status': $('#status').val(),
-                },
+                data: { 'status': $('#status').val() },
                 success: function(response) {
                     $('#address_request_list').replaceWith(response.data);
+                },
+                error: function() {
+                    Swal.fire("Error!", "Could not load data.", "error");
                 }
             });
         }
-    </script>
+        </script>
+
     @endsection

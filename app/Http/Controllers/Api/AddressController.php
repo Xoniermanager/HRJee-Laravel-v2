@@ -41,7 +41,6 @@ class AddressController extends Controller
     public function getAllAddresses(Request $request)
     {
         try {
-
             $address = $this->userAddressServices->getDetailById(Auth::guard('employee_api')->user()->id);
             if (count($address) > 0)
                 return apiResponse('address', $address);
@@ -261,6 +260,7 @@ class AddressController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => "All Attendance Request List",
+                'active_address' => Auth()->guard('employee_api')->user()->userActiveLocation,
                 'data' => $addressRequestDetails
             ], 200);
         } catch (Exception $e) {
