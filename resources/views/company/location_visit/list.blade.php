@@ -42,6 +42,26 @@
                                 <option value="rejected">Rejected</option>
                             </select>
                         </div>
+                        <div class="d-flex align-items-center gap-2 ms-2">
+                            {{-- Export button --}}
+                            <a href="#" class="btn btn-sm btn-primary d-flex align-items-center" id="exportBtn">
+                                <i class="fas fa-file-export me-2"></i> Export
+                            </a>
+
+                            {{-- Import button --}}
+                            {{-- <form action="{{ route('location_visit.import_tasks') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center mb-0">
+                                @csrf
+                                <label class="btn btn-sm btn-success mb-0 d-flex align-items-center">
+                                    <i class="fas fa-file-import me-2"></i> Import
+                                    <input type="file" name="import_file" accept=".csv" onchange="this.form.submit()" hidden>
+                                </label>
+                            </form> --}}
+
+                            {{-- Download Template --}}
+                            {{-- <a href="{{ asset('templates/task_import_template.csv') }}" download class="btn btn-sm btn-secondary d-flex align-items-center">
+                                <i class="fas fa-download me-2"></i> Template
+                            </a> --}}
+                        </div>
                         <!--end::Card title-->
                         <!--begin::Action-->
                         <a href="{{ route('location_visit.add_task') }}" class="btn btn-sm btn-primary align-self-center">
@@ -59,7 +79,7 @@
                         </div>
                     @endif
                     <div class="mb-5 mb-xl-10">
-                        <div class="card-body py-3">
+                        <div class="card-body py-3" id="task_list">
                             <!--begin::Table container-->
                             @include('company.location_visit.task_list')
                             <!--end::Table container-->
@@ -138,19 +158,40 @@
         jQuery("#user_id").on('change', function () {
             search_filter_results();
         });
-        function search_filter_results() {
-            $.ajax({
+        jQuery(document).on('click', '#task_list .paginate a', function (e) {
+            e.preventDefault();
+            var page_no = $(this).attr('href').split('page=')[1];
+            search_filter_results(page_no);
+        });
+        function search_filter_results(page_no = 1) {
+            jQuery.ajax({
                 type: 'GET',
-                url: company_ajax_base_url + '/location-visit/search/task',
+                url: company_ajax_base_url + '/location-visit/search/task?page=' + page_no,
                 data: {
-                    'final_status': $('#final_status').val(),
-                    'search': $('#search').val(),
-                    'user_id': $('#user_id').val(),
+                    'final_status': jQuery('#final_status').val(),
+                    'search': jQuery('#search').val(),
+                    'user_id': jQuery('#user_id').val(),
                 },
                 success: function (response) {
-                    $('#task_list').replaceWith(response.data);
+                    jQuery('#task_list').replaceWith(response.data);
                 }
             });
         }
+        $('#exportBtn').click(function (e) {
+            e.preventDefault();
+            let btn = $(this);
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Exporting...');
+
+            let params = $.param({
+                final_status: $('#final_status').val(),
+                search: $('#search').val(),
+                user_id: $('#user_id').val()
+            });
+            window.location.href = "{{ route('location_visit.export_tasks') }}?" + params;
+
+            setTimeout(() => {
+                btn.prop('disabled', false).html('Export');
+            }, 1500);
+        });
     </script>
 @endsection

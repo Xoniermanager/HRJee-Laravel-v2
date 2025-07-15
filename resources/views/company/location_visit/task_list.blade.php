@@ -1,4 +1,4 @@
-<div class="table-responsive" id="task_list">
+<div class="table-responsive">
     <!--begin::Table-->
     <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
         <!--begin::Table head-->
@@ -52,5 +52,7 @@
         <!--end::Table body-->
     </table>
     <!--end::Table-->
-    {{ $allTaskDetails->links() }}
+    <div class="paginate">
+        {{ $allTaskDetails->links() }}
+    </div>
 </div>

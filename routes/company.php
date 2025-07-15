@@ -739,6 +739,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/task/delete/{id}', 'deleteTaskAssigned')->name('location_visit.delete_task_assign');
         Route::get('/view/task/{id}', 'viewTaskAssigned')->name('location_visit.view_task_assign');
         Route::get('/search/task', 'searchFilterTask');
+        Route::get('/export/tasks','exportTasks')->name('location_visit.export_tasks');
+        Route::get('/import/tasks','exportTasks')->name('location_visit.import_tasks');
     });
 
     //Dispostion Code Module

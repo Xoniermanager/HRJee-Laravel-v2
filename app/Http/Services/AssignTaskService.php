@@ -110,7 +110,7 @@ class AssignTaskService
                     ->orWhere('email', 'like', '%' . $searchKey . '%');
             });
         }
-        return $taskDetails->paginate(10);
+        return $taskDetails->orderBy('id','DESC');
     }
 
     public function getAssignedTaskByEmployeeId($userId, $payload = [])

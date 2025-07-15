@@ -10,6 +10,8 @@ use App\Http\Requests\FormStoreRequest;
 use App\Http\Services\AssignTaskService;
 use App\Http\Services\DispositionCodeService;
 use App\Http\Services\EmployeeServices;
+use Illuminate\Support\Facades\Response;
+
 
 class LocationVisitController extends Controller
 {
@@ -17,7 +19,7 @@ class LocationVisitController extends Controller
     public $employeeService;
     public $assignTaskService;
     public $dispositionCodeService;
-    public function __construct(FormService $formService, EmployeeServices $employeeService, AssignTaskService $assignTaskService,DispositionCodeService $dispositionCodeService)
+    public function __construct(FormService $formService, EmployeeServices $employeeService, AssignTaskService $assignTaskService, DispositionCodeService $dispositionCodeService)
     {
         $this->formService = $formService;
         $this->employeeService = $employeeService;
@@ -44,9 +46,9 @@ class LocationVisitController extends Controller
 
     public function assignTaskList()
     {
-        $allTaskDetails = $this->assignTaskService->getTaskDetailsByCompanyId(Auth()->user()->company_id)->orderBy('id',"DESC")->paginate(10);
+        $allTaskDetails = $this->assignTaskService->getTaskDetailsByCompanyId(Auth()->user()->company_id)->orderBy('id', "DESC")->paginate(10);
         $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();
-        return view('company.location_visit.list', compact('allTaskDetails','allEmployeeDetails'));
+        return view('company.location_visit.list', compact('allTaskDetails', 'allEmployeeDetails'));
     }
     public function addTask()
     {
@@ -79,7 +81,7 @@ class LocationVisitController extends Controller
         $allEmployeeDetails = $this->employeeService->getAllEmployeeByCompanyId(Auth()->user()->company_id)->get();
         $fieldDetails = $this->formService->getFormFieldsByCompanyId(Auth()->user()->company_id);
         $dispositionCodeDetails = $this->dispositionCodeService->getDispositionCodeByCompanyId(Auth()->user()->company_id);
-        return view('company.location_visit.edit_task', compact('taskdetails', 'allEmployeeDetails', 'fieldDetails','dispositionCodeDetails'));
+        return view('company.location_visit.edit_task', compact('taskdetails', 'allEmployeeDetails', 'fieldDetails', 'dispositionCodeDetails'));
     }
 
     public function updateTaskAssigned(Request $request, $taskId)
@@ -122,10 +124,34 @@ class LocationVisitController extends Controller
 
     public function searchFilterTask(Request $request)
     {
-        $allTaskDetails = $this->assignTaskService->searchFilterTask($request->all());
+        $allTaskDetails = $this->assignTaskService->searchFilterTask($request->all())->paginate(10);
         return response()->json([
-            'success' => 'Task Deleted Successfully',
-            'data' => view('company.location_visit.task_list',compact('allTaskDetails'))->render()
+            'data' => view('company.location_visit.task_list', compact('allTaskDetails'))->render()
+        ]);
+    }
+
+    public function exportTasks(Request $request)
+    {
+        $allTaskDetails = $this->assignTaskService->searchFilterTask($request->all())->get();
+        $dynamicFields = [];
+        foreach ($allTaskDetails as $task) {
+            $responseData = json_decode($task->response_data, true);
+            if (is_array($responseData)) {
+                foreach ($responseData as $key => $value) {
+                    $dynamicFields[$key] = true;
+                }
+            }
+        }
+        $dynamicFields = array_keys($dynamicFields);
+
+        // Render Blade view to HTML
+        $html = view('company.location_visit.exports.tasks_html', compact('allTaskDetails', 'dynamicFields'))->render();
+
+        $filename = 'tasks_export_' . now()->format('Ymd_His') . '.xls';
+
+        return Response::make($html, 200, [
+            'Content-Type' => 'application/vnd.ms-excel',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
         ]);
     }
 }
