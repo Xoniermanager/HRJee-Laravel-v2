@@ -136,6 +136,7 @@
             const savedExpiry = localStorage.getItem(COUNTDOWN_KEY);
 
             if (!savedExpiry) {
+                // First load → start new timer
                 const newExpiry = now + RESEND_WAIT_TIME;
                 localStorage.setItem(COUNTDOWN_KEY, newExpiry);
                 startTimer(RESEND_WAIT_TIME);
@@ -143,12 +144,14 @@
                 resendLink.style.pointerEvents = "none";
                 resendLink.style.opacity = "0.5";
             } else if (now < savedExpiry) {
+                // Continue running timer
                 const remaining = savedExpiry - now;
                 startTimer(remaining);
                 resendLink.classList.add("disabled");
                 resendLink.style.pointerEvents = "none";
                 resendLink.style.opacity = "0.5";
             } else {
+                // Expired
                 timerSpan.textContent = " - Code Expired";
                 resendLink.classList.remove("disabled");
                 resendLink.style.pointerEvents = "auto";
@@ -167,10 +170,11 @@
                 resendLink.style.opacity = "0.5";
                 codeExpiredMessage.style.display = "none";
 
-                // Redirect to resend route
+                // Redirect to resend route (triggers server to resend OTP)
                 window.location.href = "{{ route('resendOtp') }}";
             });
 
+            // Auto move to next input
             document.querySelectorAll('.authInput').forEach((el, idx) => {
                 el.addEventListener("keyup", () => {
                     if (el.value.length === 1) {
@@ -180,6 +184,7 @@
                 });
             });
 
+            // On submit, gather OTP and submit the form
             document.getElementById("kt_sign_in_submit").addEventListener("click", function () {
                 let otp = '';
                 for (let i = 0; i < 4; i++) {
@@ -187,22 +192,21 @@
                 }
                 document.getElementById("otp").value = otp;
 
-                // Clear the countdown from localStorage after successful submission
-                localStorage.removeItem(COUNTDOWN_KEY);
-
+                // ⚠️ Do NOT clear localStorage here; keep the timer running in case of error
                 document.getElementById("kt_sign_in_form").submit();
             });
         });
+        </script>
 
-    </script>
-    <script>
-        // Automatically fade out all alerts after 5 seconds
+        <!-- Optional: fade out alerts after 5 seconds -->
+        <script>
         setTimeout(() => {
             document.querySelectorAll('.alert').forEach(alert => {
                 alert.classList.add('fade-out');
-                setTimeout(() => alert.remove(), 1000); // Remove after fade
+                setTimeout(() => alert.remove(), 1000);
             });
         }, 5000);
-    </script>
+        </script>
+
 </body>
 </html>

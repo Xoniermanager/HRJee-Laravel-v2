@@ -62,12 +62,7 @@ class AttendanceController extends Controller
         if ($allEmployeeDetails) {
             if ($request->has('export')) {
                 $allEmployeeDetails = $this->searchFilterDetails($request->month, $request->year, $request->search, $request->department, $request->manager, $request->branch, true);
-                dispatch(new SendAttendanceReportJob(
-                    user: auth()->user(),
-                    range: "",
-                    allEmployeeDetails: $allEmployeeDetails,
-                    month: $request->month,
-                    year: $request->year,
+                dispatch(new SendAttendanceReportJob(auth()->user(),$allEmployeeDetails,$request->month, $request->year,
                 ));
             } else {
                 return response()->json([
