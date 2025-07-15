@@ -39,7 +39,7 @@ class EmployeeAddRequest extends FormRequest
                 'nullable',
                 'string',
                 'min:6',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
+                // 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
             ],
             'father_name' => [
                 'sometimes',

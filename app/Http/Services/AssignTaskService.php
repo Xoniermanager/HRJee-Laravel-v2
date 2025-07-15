@@ -93,25 +93,28 @@ class AssignTaskService
     {
         $taskDetails = $this->assignTaskRepository->where('company_id', Auth()->user()->company_id);
 
-        if (isset($searchKey['user_id']) && !empty($searchKey['user_id'])) {
+        if (!empty($searchKey['user_id'])) {
             $taskDetails->where('user_id', $searchKey['user_id']);
         }
 
-        if (isset($searchKey['final_status']) && !empty($searchKey['final_status'])) {
-            $taskDetails->where('user_end_status', $searchKey['final_status']);
-            $taskDetails->orWhere('final_status', $searchKey['final_status']);
-        }
-
-        if (isset($searchKey['search']) && !empty($searchKey['search'])) {
-            $searchKey = $searchKey['search'];
-            // Searching by name or email in the related user
-            $taskDetails->whereHas('user', function ($query) use ($searchKey) {
-                $query->where('name', 'like', '%' . $searchKey . '%')
-                    ->orWhere('email', 'like', '%' . $searchKey . '%');
+        if (!empty($searchKey['final_status'])) {
+            $taskDetails->where(function ($query) use ($searchKey) {
+                $query->where('user_end_status', $searchKey['final_status'])
+                      ->orWhere('final_status', $searchKey['final_status']);
             });
         }
-        return $taskDetails->orderBy('id','DESC');
+
+        if (!empty($searchKey['search'])) {
+            $searchTerm = $searchKey['search'];
+            $taskDetails->whereHas('user', function ($query) use ($searchTerm) {
+                $query->where('name', 'like', '%' . $searchTerm . '%')
+                      ->orWhere('email', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        return $taskDetails->orderBy('id', 'DESC');
     }
+
 
     public function getAssignedTaskByEmployeeId($userId, $payload = [])
     {

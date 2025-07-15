@@ -740,7 +740,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
         Route::get('/view/task/{id}', 'viewTaskAssigned')->name('location_visit.view_task_assign');
         Route::get('/search/task', 'searchFilterTask');
         Route::get('/export/tasks','exportTasks')->name('location_visit.export_tasks');
-        Route::get('/import/tasks','exportTasks')->name('location_visit.import_tasks');
+        Route::post('/import/tasks','importTasks')->name('location_visit.import_tasks');
+        Route::get('/download-template', 'downloadTemplate')->name('location_visit.download_template');
     });
 
     //Dispostion Code Module

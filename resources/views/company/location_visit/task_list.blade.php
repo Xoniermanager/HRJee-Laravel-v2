@@ -16,7 +16,7 @@
             @forelse ($allTaskDetails as $index => $item)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ $item->user->name }}</td>
+                    <td>{{ $item->user->name .' ('.$item->user->details->emp_id.')'}}</td>
                     <td>{{ $item->visit_address }}</td>
                     <td>{{ ucfirst($item->user_end_status) }}</td>
                     <td>{{  ucfirst($item->final_status) }}</td>
