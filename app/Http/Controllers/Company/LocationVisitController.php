@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Company;
 
 use Exception;
+use App\Imports\TaskImport;
 use Illuminate\Http\Request;
 use App\Http\Services\FormService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormStoreRequest;
-use App\Http\Services\AssignTaskService;
-use App\Http\Services\DispositionCodeService;
 use App\Http\Services\EmployeeServices;
+use App\Http\Services\AssignTaskService;
 use Illuminate\Support\Facades\Response;
+use App\Exports\TaskImportTemplateExport;
+use App\Http\Services\DispositionCodeService;
+use Maatwebsite\Excel\Validators\ValidationException;
+use Maatwebsite\Excel\Facades\Excel; // ✅ this is the Facade, supports static download()
 
 
 class LocationVisitController extends Controller
@@ -70,7 +74,6 @@ class LocationVisitController extends Controller
             $this->assignTaskService->create($data);
             return redirect(route('location_visit.assign_task'))->with(['success' => 'Assined Task Successfully']);
         } catch (Exception $e) {
-            dd($e->getMessage());
             return back()->with(['error' => $e->getMessage()]);
         }
     }
@@ -153,5 +156,43 @@ class LocationVisitController extends Controller
             'Content-Type' => 'application/vnd.ms-excel',
             'Content-Disposition' => "attachment; filename=\"$filename\"",
         ]);
+    }
+
+    public function downloadTemplate()
+    {
+        $dynamicFields = collect(
+            $this->formService
+                ->getFormFieldsByCompanyId(Auth()->user()->company_id)
+                ->formfield ?? []
+        )->pluck('label')->toArray();
+
+        return Excel::download(new TaskImportTemplateExport($dynamicFields), 'task_import_template.xlsx');
+    }
+
+    public function importTasks(Request $request)
+    {
+        $request->validate([
+            'import_file' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+
+        try {
+            Excel::import(new TaskImport, $request->file('import_file'));
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Import completed successfully!'
+            ]);
+        } catch (ValidationException $e) {
+            // single validation error we throw inside TaskImport
+            return response()->json([
+                'status' => 'error',
+                'errors' => [$e->getMessage()]
+            ], 422);
+        } catch (\Throwable $e) {
+            // fallback for unexpected errors
+            return response()->json([
+                'status' => 'error',
+                'errors' => [$e->getMessage()]
+            ], 500);
+        }
     }
 }

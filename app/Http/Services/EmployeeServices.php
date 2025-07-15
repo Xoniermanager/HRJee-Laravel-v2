@@ -66,8 +66,8 @@ class EmployeeServices
                 $status = 'updatedData';
                 $id = $existingDetails->user_id;
             } else {
+                $data['employee_status_id'] = '1';
                 $createdEmployee = $this->userDetailRepository->create($data);
-
                 $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);
                 $this->updateActiveLocationByUserId($data['company_branch_id'], $createdEmployee->user_id);

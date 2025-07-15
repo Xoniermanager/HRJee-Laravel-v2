@@ -31,7 +31,7 @@
                             <select class="form-control ml-2" id="user_id">
                                 <option value="">Select Employee</option>
                                 @foreach ($allEmployeeDetails as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name .' ('.$item->details->emp_id.')'}}</option>
                                 @endforeach
                             </select>
                             <select class="form-control ml-2" id="final_status">
@@ -42,30 +42,31 @@
                                 <option value="rejected">Rejected</option>
                             </select>
                         </div>
-                        <div class="d-flex align-items-center gap-2 ms-2">
+                        <div class="d-flex align-items-center gap-2">
+                            {{-- Download Template --}}
+                            <a href="{{ route('location_visit.download_template') }}"
+                                class="btn btn-sm btn-secondary d-flex align-items-center text-white">
+                                <i class="fas fa-download me-2"></i> Template
+                            </a>
+                            {{-- Import button --}}
+                            <form id="importForm" enctype="multipart/form-data" class="d-flex align-items-center mb-0">
+                                @csrf
+                                <label class="btn btn-sm btn-success d-flex align-items-center">
+                                    <i class="fas fa-file-import"></i> Import
+                                    <input type="file" name="import_file" accept=".csv,.xlsx,.xls" hidden>
+                                </label>
+                            </form>
                             {{-- Export button --}}
                             <a href="#" class="btn btn-sm btn-primary d-flex align-items-center" id="exportBtn">
                                 <i class="fas fa-file-export me-2"></i> Export
                             </a>
-
-                            {{-- Import button --}}
-                            {{-- <form action="{{ route('location_visit.import_tasks') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center mb-0">
-                                @csrf
-                                <label class="btn btn-sm btn-success mb-0 d-flex align-items-center">
-                                    <i class="fas fa-file-import me-2"></i> Import
-                                    <input type="file" name="import_file" accept=".csv" onchange="this.form.submit()" hidden>
-                                </label>
-                            </form> --}}
-
-                            {{-- Download Template --}}
-                            {{-- <a href="{{ asset('templates/task_import_template.csv') }}" download class="btn btn-sm btn-secondary d-flex align-items-center">
-                                <i class="fas fa-download me-2"></i> Template
-                            </a> --}}
+                            <a href="{{ route('location_visit.add_task') }}"
+                                class="btn btn-sm btn-primary align-self-center">
+                                Assign Task</a>
                         </div>
                         <!--end::Card title-->
                         <!--begin::Action-->
-                        <a href="{{ route('location_visit.add_task') }}" class="btn btn-sm btn-primary align-self-center">
-                            Assign Task</a>
+
                         <!--end::Action-->
                     </div>
                     @if (session('error'))
@@ -192,6 +193,74 @@
             setTimeout(() => {
                 btn.prop('disabled', false).html('Export');
             }, 1500);
+        });
+    </script>
+    <script>
+        document.querySelector('input[name="import_file"]').addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) {
+                Swal.fire('Error', 'Please select a file before uploading.', 'warning');
+                return;
+            }
+
+            const formData = new FormData(document.getElementById('importForm'));
+
+            Swal.fire({
+                title: 'Uploading...',
+                html: 'Please wait while your file is being processed.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            fetch('{{ route('location_visit.import_tasks') }}', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            })
+                .then(async res => {
+                    let data;
+                    try {
+                        data = await res.json();
+                    } catch {
+                        throw new Error('Invalid JSON response from server.');
+                    }
+                    Swal.close();
+                    if (data.status === 'success') {
+                        search_filter_results();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Import Successful!',
+                            text: data.message,
+                            timer: 3000
+                        });
+                    } else if (data.status === 'error' && data.errors) {
+                        const maxToShow = 5;
+                        const extraCount = data.errors.length - maxToShow;
+                        let html = '<ul style="text-align:left;">';
+                        data.errors.slice(0, maxToShow).forEach(e => {
+                            html += `<li>${e}</li>`;
+                        });
+                        html += '</ul>';
+                        if (extraCount > 0) {
+                            html += `<p>...and ${extraCount} more errors.</p>`;
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Import failed!',
+                            html: html,
+                            width: '600px'
+                        });
+                    } else {
+                        Swal.fire('Error', 'Something went wrong.', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.close();
+                    Swal.fire('Error', 'Unexpected error occurred: ' + error.message, 'error');
+                });
         });
     </script>
 @endsection
