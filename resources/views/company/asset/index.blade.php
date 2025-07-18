@@ -9,8 +9,8 @@ Asset
         <!--begin::Row-->
         <div class="row gy-5 g-xl-10">
             <!--begin::Col-->
-            <div class="card card-body col-md-12">
-                <div class="card-header cursor-pointer p-0">
+            <div class="card custom-table p-0">
+                <div class="card-header cursor-pointer">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
                         <div class="d-flex align-items-center position-relative my-1">
@@ -30,7 +30,7 @@ Asset
                                 type="text" name="search" value="{{ request()->get('search') }}" id="search">
                             <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
                         </div>
-                        <select class="form-control min-w-150px me-2" id="status">
+                        <select class="form-control min-w-100px me-2" id="status">
                             <option value="">Allocation Status</option>
                             <option {{ old('status')=='available' || request()->get('status') == 'available' ?
                                 'selected' : '' }}
@@ -39,7 +39,7 @@ Asset
                                 'selected' : '' }}
                                 value="allocated">Allocated</option>
                         </select>
-                        <select class="form-control min-w-150px me-2" id="category_id">
+                        <select class="form-control min-w-100px me-2" id="category_id">
                             <option value="">Category</option>
                             @foreach ($allAssetCategory as $assetCategory)
                             <option {{ old('category_id')==$assetCategory->id || request()->get('category_id') ==
@@ -50,7 +50,7 @@ Asset
                                 {{ $assetCategory->name }}</option>
                             @endforeach
                         </select>
-                        <select class="form-control min-w-150px me-2" id="manufacturer_id">
+                        <select class="form-control min-w-100px me-2" id="manufacturer_id">
                             <option value="">Manufacturer</option>
                             @foreach ($allAssetManufacturer as $assetManufacturer)
                             <option {{ old('manufacturer_id')==$assetManufacturer->id ||
@@ -61,7 +61,7 @@ Asset
                                 {{ $assetManufacturer->name }}</option>
                             @endforeach
                         </select>
-                        <select class="form-control min-w-150px me-2" id="ownership">
+                        <select class="form-control min-w-100px me-2" id="ownership">
                             <option value="">OwnerShip</option>
                             <option {{ old('ownership')=='rented' || request()->get('ownership') == 'rented' ?
                                 'selected' : '' }}
@@ -70,11 +70,9 @@ Asset
                                 : '' }}
                                 value="owned">Owned</option>
                         </select>
-                        <a href="#" class="btn btn-sm btn-danger ms-3 align-self-center"
-                            onclick="exportData()">Export</a>
+
                     </div>
-                    <!--end::Card title-->
-                    <!--begin::Action-->
+                    <a href="#" class="btn btn-sm btn-dark ms-3 align-self-center" onclick="exportData()">Export</a>
                     <a href="{{ route('asset.add') }}" class="btn btn-sm btn-primary align-self-center"> Add Asset</a>
                 </div>
                 @if (session('error'))

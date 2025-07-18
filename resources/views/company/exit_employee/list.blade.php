@@ -1,4 +1,4 @@
-<div id="list_employee">
+<div id="card-body list_employee">
 	<div class="table-responsive">
 		<!--begin::Table-->
 		<table class="table-row-dashed table-row-gray-300 gs-0 gy-4 table align-middle">

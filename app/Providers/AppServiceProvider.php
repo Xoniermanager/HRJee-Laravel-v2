@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
             if ($user) {
                 if ($user->type === 'company') {
                     // Get notifications for the company
-                    $notifications = PushNotification::where('company_id', $user->id)
+                    $notifications = PushNotification::where('company_id', $user->id)->with(['user.details'])
                         ->where('status', true)
                         ->orderBy('id', 'DESC')
                         ->get();

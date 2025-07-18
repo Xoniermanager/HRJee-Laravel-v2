@@ -22,6 +22,8 @@
             <!--end::Heading-->
         </div>
         @endif
+        @include('layouts.notification_dropdown')
+
         <!--end::Page title=-->
         <!--begin::Wrapper-->
         <div class="d-flex d-lg-none align-items-center ms-n2">

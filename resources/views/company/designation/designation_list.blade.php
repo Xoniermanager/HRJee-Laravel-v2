@@ -1,4 +1,4 @@
-<div class="card-body py-3" id="designation_list">
+<div class="" id="designation_list">
     <!--begin::Table container-->
     <div class="table-responsive">
         <!--begin::Table-->
@@ -34,12 +34,12 @@
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <a href="#" data-bs-toggle="modal"
                                     onClick="edit_designation_details('{{ $designationDetail->id }}', '{{ $designationDetail->name }}','{{ $designationDetail->department_id }}')"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    class="btn btn-primary btn-sm me-1">
                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                     <i class="fa fa-edit"></i>
                                     <!--end::Svg Icon-->
                                 </a>
-                                <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                <a href="#" class="btn btn-danger btn-sm me-1"
                                     onclick="deleteFunction('{{ $designationDetail->id }}')">
                                     <i class="fa fa-trash"></i>
                                 </a>

@@ -35,7 +35,7 @@
                         <td class="text-end">
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <button type="button"
-                                    class="btn btn-icon btn-bg-light btn-active-color-info btn-sm me-1 show-report-btn"
+                                    class="btn btn-info btn-sm me-1 show-report-btn btn-light"
                                     title="Show Report" data-kpi-users='@json($kpi->users->map(function ($user) {
                                         return [
                                             "name" => $user->name,
@@ -47,7 +47,7 @@
                                 </button>
                                 <!-- View Details -->
                                 <button type="button"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 view-details-btn"
+                                    class="btn btn-dark btn-sm me-1 view-details-btn"
                                     title="View Details" data-branches='@json($kpi->branches->pluck("name"))'
                                     data-departments='@json($kpi->departments->pluck("name"))'
                                     data-designations='@json($kpi->designations->pluck("name"))'
@@ -64,11 +64,11 @@
 
                                 <!-- Edit -->
                                 <a href="{{ route('kpi-management.edit', $kpi->id) }}"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" title="Edit">
+                                    class="btn btn-primary btn-sm me-1" title="Edit">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 <!-- Delete -->
-                                <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                <a href="#" class="btn btn-danger btn-sm me-1"
                                     title="Delete" onclick="deleteFunction('{{ $kpi->id }}')">
                                     <i class="fa fa-trash"></i>
                                 </a>

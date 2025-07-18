@@ -8,7 +8,7 @@
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
         <div class="row gy-5 g-xl-10">
-            <div class="card card-body col-md-12">
+            <div class="custom-table card p-0">
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
@@ -56,7 +56,7 @@
                     <!--end::Action-->
                 </div>
 
-                <div class="mb-5 mb-xl-10">
+                <div class="card-body mb-5 mb-xl-10">
                     @include('company.designation.designation_list')
                 </div>
             </div>

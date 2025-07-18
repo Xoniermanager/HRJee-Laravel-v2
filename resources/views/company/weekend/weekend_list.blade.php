@@ -43,11 +43,11 @@
 
                         <td>
                             <div class="d-flex justify-content-end flex-shrink-0">
-                                <a class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" href="#"
+                                <a class="btn btn-primary btn-sm me-1" href="#"
                                     data-bs-toggle="modal"
                                     onClick="edit_weekend_details('{{ $weekendDetails->id }}','{{ $weekendDetails->company_branch_id }}','{{ $weekendDetails->department_id }}','{{ $weekendDetails->designation_id }}','{{ json_encode($weekendDetails->weekend_dates) }}')"><i
                                         class="fa fa-edit"></i></a>
-                                <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                <a href="#" class="btn btn-danger btn-sm me-1"
                                     onclick="deleteFunction('{{ $weekendDetails->id }}')">
                                     <i class="fa fa-trash"></i>
                                 </a>

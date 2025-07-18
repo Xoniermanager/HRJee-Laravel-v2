@@ -1,4 +1,4 @@
-<div id="office_time_list" class="card-body py-3">
+<div id="office_time_list" class="">
     <!--begin::Table container-->
     <div class="table-responsive">
         <!--begin::Table-->
@@ -33,12 +33,12 @@
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <a href="#" data-bs-toggle="modal"
                                     onClick="edit_office_time_details('{{ $officeTimeDetail->id }}', '{{ $officeTimeDetail->name }}','{{ $officeTimeDetail->company_branch_id }}','{{$officeTimeDetail->shift_hours}}','{{$officeTimeDetail->half_day_hours}}','{{$officeTimeDetail->min_shift_Hours}}','{{$officeTimeDetail->min_half_day_hours}}')"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    class="btn btn-primary btn-sm me-1">
                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                     <i class="fa fa-edit"></i>
                                     <!--end::Svg Icon-->
                                 </a>
-                                <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                <a href="#" class="btn btn-danger btn-sm me-1"
                                     onclick="deleteFunction('{{ $officeTimeDetail->id }}')">
                                     <i class="fa fa-trash"></i>
                                 </a>

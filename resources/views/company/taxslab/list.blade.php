@@ -36,10 +36,10 @@
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <a href="#" data-bs-toggle="modal"
                                 onClick="edit_taxslab_details('{{ $taxRateDetail->id }}', '{{ $taxRateDetail->income_range_start }}','{{ $taxRateDetail->tax_rate }}','{{ $taxRateDetail->income_range_end }}')"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    class="btn btn-icon btn-primary btn-sm me-1">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                <a href="#" class="btn btn-icon btn-danger btn-sm me-1"
                                     onclick="deleteFunction('{{ $taxRateDetail->id }}')">
                                     <i class="fa fa-trash"></i>
                                 </a>

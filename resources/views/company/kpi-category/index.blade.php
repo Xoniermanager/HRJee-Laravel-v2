@@ -6,8 +6,8 @@
     <div class="container-xxl" id="kt_content_container">
         <div class="row gy-5 g-xl-10">
             <!--begin::Col-->
-            <div class="card card-body col-md-12">
-                <div class="card-header cursor-pointer p-0">
+            <div class="card custom-table p-0">
+                <div class="card-header cursor-pointer">
                     <div class="card-title m-0">
                         <div class="d-flex align-items-center position-relative my-1  min-w-250px me-2">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->

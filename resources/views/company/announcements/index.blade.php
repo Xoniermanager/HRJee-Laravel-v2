@@ -8,8 +8,8 @@
     <div class="container-xxl" id="kt_content_container">
         <!--begin::Row-->
         <div class="row gy-5 g-xl-10">
-            <div class="card card-body col-md-12">
-                <div class="card-header cursor-pointer p-0">
+            <div class="card custom-table p-0">
+                <div class="card-header cursor-pointer">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
                         <div class="d-flex align-items-center position-relative my-1">
@@ -185,14 +185,14 @@
         if (all_company_branch_check == 1) {
             jQuery('#company_branches_checkbox').prop('checked', true);
             jQuery('#company_branch').prop('disabled', true);
-        } 
+        }
         else if (all_company_branch_check == 0) {
             $("#company_branch").val(JSON.parse(all_company_branch)).trigger('change');
         }
         if (all_department_check == 1) {
             jQuery('#department_checkbox').prop('checked', true);
             jQuery('#department_id').prop('disabled', true);
-        } 
+        }
         else if (all_department_check == 0) {
             $("#department_id").val(JSON.parse(all_department)).trigger('change');
             get_designation_by_department_id(JSON.parse(all_designation));
