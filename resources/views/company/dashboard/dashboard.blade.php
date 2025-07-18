@@ -209,20 +209,58 @@
 
                 </div>
             </div>
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <button onclick="prevMonth()">&lt;</button>
-                    <span id="monthYear"></span>
-                    <button onclick="nextMonth()">&gt;</button>
-                </div>
+            <div class="col-md-4">
+                <div class="calendar-container mb-5">
+                    <div class="calendar-header">
+                        <button onclick="prevMonth()">&lt;</button>
+                        <span id="monthYear">June 2025</span>
+                        <button onclick="nextMonth()">&gt;</button>
+                    </div>
 
-                <div class="calendar-grid" id="calendar-days">
-                    <!-- Dynamic days -->
-                </div>
+                    <div class="calendar-grid" id="calendar-days">
+                        <!-- Weekdays -->
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                        <!-- Days will be injected here -->
+                    </div>
 
-                <div class="schedule" id="schedule">
-                    <h4>Schedule</h4>
-                    <div id="events-list">Loading...</div>
+                    <div class="schedule" id="schedule">
+                        <h4>25 June 2025</h4>
+                        <div class="event">
+                            <div class="event-time">9:00 AM to 9:30 AM</div>
+                            <div>
+                                <div class="event-title">Morning Briefing</div>
+                                <div class="event-label all-dept">All Departments</div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="event-time">9:00 AM to 9:30 AM</div>
+                            <div>
+                                <div class="event-title">Project Review Meeting</div>
+                                <div class="event-label all-dept">Project Development</div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="event-time">9:00 AM to 9:30 AM</div>
+                            <div>
+                                <div class="event-title">Marketing Strategy Session</div>
+                                <div class="event-label all-dept">Marketing</div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="event-time">11:00 AM to 11:30 AM</div>
+                            <div>
+                                <div class="event-title">New Project Discussion</div>
+                                <div class="event-label all-dept">Development</div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -823,151 +861,128 @@
     });
 </script>
 <script>
-    let selectedDate = new Date();
+    const calendarDays = document.getElementById('calendar-days');
+    const monthYear = document.getElementById('monthYear');
+    const schedule = document.getElementById('schedule');
+
+    // This is the date that will be selected initially
+    let selectedDate = new Date(2025, 5, 25); // June 15, 2025
+
+    // Today's actual system date
+    const today = new Date();
 
     function renderCalendar(year, month) {
-        const calendarDays = document.getElementById('calendar-days');
-        const monthYear = document.getElementById('monthYear');
-        calendarDays.innerHTML = '';
+        calendarDays.innerHTML = `
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      `;
 
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        // Week headers
-        const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        weekdays.forEach(day => {
-            const div = document.createElement('div');
-            div.textContent = day;
-            div.className = 'day-header';
-            calendarDays.appendChild(div);
-        });
-
-        // Blank spaces
+        // Fill blank days from previous month
         for (let i = 0; i < firstDay; i++) {
-            let blank = document.createElement('div');
-            blank.className = 'blank-day';
-            calendarDays.appendChild(blank);
+            const empty = document.createElement('div');
+            empty.className = 'inactive';
+            calendarDays.appendChild(empty);
         }
 
-        // Days
-        for (let d = 1; d <= daysInMonth; d++) {
-            const dateEl = document.createElement('div');
-            dateEl.textContent = d;
+        // Fill actual days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateBtn = document.createElement('div');
+            dateBtn.textContent = day;
 
-            const thisDate = new Date(year, month, d);
-            if (thisDate.toDateString() === new Date().toDateString()) {
-                dateEl.classList.add('today');
-            }
+            const thisDate = new Date(year, month, day);
 
-            if (
+            const isToday = (
+                thisDate.getDate() === today.getDate() &&
+                thisDate.getMonth() === today.getMonth() &&
+                thisDate.getFullYear() === today.getFullYear()
+            );
+
+            const isSelected = (
                 thisDate.getDate() === selectedDate.getDate() &&
                 thisDate.getMonth() === selectedDate.getMonth() &&
                 thisDate.getFullYear() === selectedDate.getFullYear()
-            ) {
-                dateEl.classList.add('selected');
-            }
+            );
 
-            dateEl.addEventListener('click', () => {
-                selectedDate = new Date(year, month, d);
+            if (isToday) dateBtn.classList.add('today');
+            if (isSelected) dateBtn.classList.add('selected');
+
+            dateBtn.addEventListener('click', () => {
+                selectedDate = new Date(year, month, day);
                 renderCalendar(year, month);
-                loadSchedule();
+                updateSchedule();
             });
 
-            calendarDays.appendChild(dateEl);
+            calendarDays.appendChild(dateBtn);
         }
 
-        monthYear.textContent = selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+        monthYear.textContent = `${selectedDate.toLocaleString('default', { month: 'long' })} ${year}`;
+    }
+
+    function updateSchedule() {
+        if (
+            selectedDate.getFullYear() === 2025 &&
+            selectedDate.getMonth() === 5 &&
+            selectedDate.getDate() === 25
+        ) {
+            schedule.innerHTML = `
+          <h4>25 June 2025</h4>
+          <div class="event">
+            <div class="event-time">9:00 AM to 9:30 AM</div>
+            <div>
+                <div class="event-title">Morning Briefing</div>
+                <div class="event-label all-dept">All Departments</div>
+            </div>
+            </div>
+            <div class="event">
+                <div class="event-time">9:00 AM to 9:30 AM</div>
+                <div>
+                    <div class="event-title">Project Review Meeting</div>
+                    <div class="event-label all-dept">Project Development</div>
+                </div>
+            </div>
+            <div class="event">
+            <div class="event-time">9:00 AM to 9:30 AM</div>
+            <div>
+                <div class="event-title">Marketing Strategy Session</div>
+                <div class="event-label all-dept">Marketing</div>
+            </div>
+        </div>
+        <div class="event">
+            <div class="event-time">11:00 AM to 11:30 AM</div>
+            <div>
+                <div class="event-title">New Project Discussion </div>
+                <div class="event-label all-dept">Development</div>
+            </div>
+        </div>
+        <div class="event">
+            <div class="event-time">11:00 AM to 11:30 AM</div>
+            <div>
+                <div class="event-title">New Policy Discussion </div>
+                <div class="event-label all-dept">HR Department</div>
+            </div>
+        </div>
+        `;
+        } else {
+            schedule.innerHTML = `<h4>${selectedDate.getDate()} ${selectedDate.toLocaleString('default', { month: 'long' })} ${selectedDate.getFullYear()}</h4><p>No events scheduled.</p>`;
+        }
     }
 
     function prevMonth() {
         selectedDate.setMonth(selectedDate.getMonth() - 1);
         renderCalendar(selectedDate.getFullYear(), selectedDate.getMonth());
-        loadSchedule();
+        updateSchedule();
     }
 
     function nextMonth() {
         selectedDate.setMonth(selectedDate.getMonth() + 1);
         renderCalendar(selectedDate.getFullYear(), selectedDate.getMonth());
-        loadSchedule();
+        updateSchedule();
     }
 
-    function loadSchedule() {
-        const dateStr = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
-        document.getElementById('events-list').innerHTML = 'Loading...';
-
-        fetch(`/calendar/events?date=${dateStr}`)
-            .then(response => response.json())
-            .then(events => {
-                const container = document.getElementById('events-list');
-                container.innerHTML = '';
-
-                if (events.length === 0) {
-                    container.innerHTML = '<p>No events scheduled.</p>';
-                    return;
-                }
-
-                events.forEach(event => {
-                    const eventDiv = document.createElement('div');
-                    eventDiv.className = 'event';
-                    eventDiv.innerHTML = `
-                        <div><strong>${event.title}</strong></div>
-                        <div class="event-type">${event.type}</div>
-                        <div class="event-dept">${event.department}</div>
-                    `;
-                    container.appendChild(eventDiv);
-                });
-            });
-    }
-
-    // Initial render
+    // Initialize
     renderCalendar(selectedDate.getFullYear(), selectedDate.getMonth());
-    loadSchedule();
+    updateSchedule();
 </script>
-<style>
-    .calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
-        margin-top: 10px;
-    }
-
-    .calendar-grid div {
-        padding: 10px;
-        text-align: center;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-
-    .day-header {
-        font-weight: bold;
-        background: #e9ecef;
-    }
-
-    .today {
-        border: 2px solid #007bff;
-    }
-
-    .selected {
-        background: #007bff;
-        color: white;
-    }
-
-    .event {
-        padding: 10px;
-        background-color: #f8f9fa;
-        margin-bottom: 10px;
-        border-left: 4px solid #007bff;
-    }
-
-    .event-type {
-        font-size: 12px;
-        color: #6c757d;
-    }
-
-    .event-dept {
-        font-size: 12px;
-        color: #6c757d;
-    }
-</style>
-
 @endsection
