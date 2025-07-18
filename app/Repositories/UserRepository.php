@@ -37,13 +37,15 @@ class UserRepository extends BaseRepository
         string $userId,
         ?string $date,
         ?int $onlyStayPoints = 0,
-        ?int $onlyNewPoints = 0, $punchOutTime = null
+        ?int $onlyNewPoints = 0,
+        $punchOutTime = null
     ) {
         $date = $date ?? Carbon::now()->toDateString();
 
         $query = UserLiveLocation::where('user_id', $userId)
             ->where('company_id', auth()->user()->company_id)
             ->where('created_at', '>=', Carbon::parse("{$date} 00:00:00"))
+            ->where('created_at', '<=', Carbon::parse($punchOutTime))
             ->select(['id', 'latitude', 'longitude', 'created_at', 'read']);
 
         if ($onlyNewPoints) {

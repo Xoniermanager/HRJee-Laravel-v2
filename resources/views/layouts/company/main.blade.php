@@ -32,7 +32,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daterangepicker/3.1/daterangepicker.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/assets/js/jquery.searchableSelect.css') }}">
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!--end::Global Stylesheets Bundle-->
     <link rel="icon" type="image/png" href="{{ asset('assets/media/logos/favicon.png') }}">
 

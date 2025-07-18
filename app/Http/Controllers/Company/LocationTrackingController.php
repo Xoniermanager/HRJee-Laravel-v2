@@ -89,12 +89,12 @@ class LocationTrackingController extends Controller
         } else {
             $allEmployees = $this->userService->getAllEmployeeUnAssignedLocationTracking(Auth()->user()->company_id)->paginate(10);
         }
-        
+
         return response()->json([
             'data' => view('company.location_tracking.list', [
                 'trackingEnabledEmployees' => $allEmployees
             ])->render()
-        ]); 
+        ]);
     }
 
     public function getLocations(Request $request)
@@ -135,7 +135,7 @@ class LocationTrackingController extends Controller
         }
     }
 
-    public function fetchCurrentLocationOfEmployees(Request $request) 
+    public function fetchCurrentLocationOfEmployees(Request $request)
     {
         try {
             $locations = $this->userService->fetchEmployeesCurrentLocation(auth()->user()->company_id);
@@ -168,30 +168,36 @@ class LocationTrackingController extends Controller
         $punchIn = null;
         $punchOut = null;
         $stayPoints = [];
-
+        $punchOutData = [];
+        $punchInData = [];
         if($attendanceDetails) {
             $punchIn = $attendanceDetails->punch_in;
             if($attendanceDetails->punch_in) {
-                $locationData[] = [
+                $punchInData[] = [
                     "latitude" => $attendanceDetails->punch_in_latitude,
                     "longitude" => $attendanceDetails->punch_in_longitude,
                     "created_at" => $attendanceDetails->created_at,
                 ];
             }
 
-            $locations = $this->userService->fetchLocationsOfEmployee($userID, $date)->toArray();
-            $locationData = array_merge($locationData, $locations);
+            if($attendanceDetails->punch_out){
+                $locations = $this->userService->fetchLocationsOfEmployee(
+                    userId:$userID,
+                    date: $date,
+                    punchOutTime: $attendanceDetails->punch_out
+                )->toArray();
 
-            if($attendanceDetails->punch_out) {
                 $punchOut = $attendanceDetails->punch_out;
-                if($attendanceDetails->punch_out_latitude) {
-                    $locationData[] = [
-                        "latitude" => $attendanceDetails->punch_out_latitude,
-                        "longitude" => $attendanceDetails->punch_out_longitude,
-                        "created_at" => $attendanceDetails->punch_out,
-                    ];
-                }
-            }   
+                $punchOutData[] = [
+                    "latitude" => $attendanceDetails->punch_out_latitude ?? $attendanceDetails->punch_in_latitude,
+                    "longitude" => $attendanceDetails->punch_out_longitude  ?? $attendanceDetails->punch_in_longitude,
+                    "created_at" => $punchOut,
+                ];
+            }else{
+                $locations = $this->userService->fetchLocationsOfEmployee($userID, $date)->toArray();
+            }
+
+            $locationData = array_merge($punchInData, $locations, $punchOutData);
         }
 
         if($date == date("Y-m-d")) {

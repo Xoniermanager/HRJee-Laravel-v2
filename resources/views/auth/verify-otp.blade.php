@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>HRJEE - OTP Verification</title>
@@ -11,6 +12,7 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
         .disabled {
             pointer-events: none;
             color: gray !important;
@@ -18,6 +20,7 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+
         #codeExpiredMessage {
             display: none;
             background-color: #ffe8e6;
@@ -28,6 +31,7 @@
             margin-top: 15px;
             font-size: 16px;
         }
+
         .otp-input {
             width: 60px;
             height: 60px;
@@ -35,19 +39,21 @@
             text-align: center;
             margin: 5px;
         }
+
         .form-container {
             background: #ffffffcc;
             border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
+
 <body class="auth-bg">
     <div class="d-flex flex-column flex-root">
         <div class="d-flex flex-column flex-lg-row flex-column-fluid overflow-hidden">
             <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-lg-2 order-1"
-                 style="background-image: url('{{ asset('assets/media/misc/bg7.jpg') }}'); background-size: cover; height: 100vh;">
+                style="background-image: url('{{ asset('assets/media/misc/bg7.jpg') }}'); background-size: cover; height: 100vh;">
                 <div class="d-flex flex-column flex-center w-100">
                     <div class="form-container w-100 bg-white" style="max-width: 450px">
                         <div class="text-center mb-4">
@@ -62,10 +68,14 @@
                             <input type="hidden" name="otp" id="otp">
 
                             <div class="d-flex justify-content-center rounded p-3">
-                                <input type="text" maxlength="1" id="n0" data-next="1" class="form-control otp-input authInput border border-primary bg-white">
-                                <input type="text" maxlength="1" id="n1" data-next="2" class="form-control otp-input authInput border border-primary bg-white">
-                                <input type="text" maxlength="1" id="n2" data-next="3" class="form-control otp-input authInput border border-primary bg-white">
-                                <input type="text" maxlength="1" id="n3" data-next="4" class="form-control otp-input authInput border border-primary bg-white">
+                                <input type="text" maxlength="1" id="n0" data-next="1"
+                                    class="form-control otp-input authInput border border-primary bg-white">
+                                <input type="text" maxlength="1" id="n1" data-next="2"
+                                    class="form-control otp-input authInput border border-primary bg-white">
+                                <input type="text" maxlength="1" id="n2" data-next="3"
+                                    class="form-control otp-input authInput border border-primary bg-white">
+                                <input type="text" maxlength="1" id="n3" data-next="4"
+                                    class="form-control otp-input authInput border border-primary bg-white">
                             </div>
                             <div class="text-center mt-5">
                                 <button id="kt_sign_in_submit" type="button" class="btn btn-primary w-100">
@@ -92,7 +102,8 @@
                                 </div>
                             @endif
                             <div class="text-center mt-3">
-                                <a href="javascript:void(0)" id="resendLink" class="text-primary">Resend Code <span id="timer"></span></a>
+                                <a href="javascript:void(0)" id="resendLink" class="text-primary">Resend Code <span
+                                        id="timer"></span></a>
                             </div>
                         </form>
                     </div>
@@ -196,17 +207,22 @@
                 document.getElementById("kt_sign_in_form").submit();
             });
         });
-        </script>
+    </script>
 
-        <!-- Optional: fade out alerts after 5 seconds -->
-        <script>
+    <!-- Optional: fade out alerts after 5 seconds -->
+    <script>
         setTimeout(() => {
             document.querySelectorAll('.alert').forEach(alert => {
                 alert.classList.add('fade-out');
                 setTimeout(() => alert.remove(), 1000);
             });
         }, 5000);
+    </script>
+    @if(!Auth::check())
+        <script>
+            localStorage.removeItem("otp_countdown_expiry");
         </script>
-
+    @endif
 </body>
+
 </html>

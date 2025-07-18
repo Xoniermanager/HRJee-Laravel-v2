@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PushNotification extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'body', 'data', 'token', 'success', 'response','status'
+        'user_id', 'title', 'body', 'data', 'token', 'success', 'response','status','company_id'
     ];
 
     protected $casts = [

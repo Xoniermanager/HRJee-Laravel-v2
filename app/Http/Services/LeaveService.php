@@ -108,9 +108,9 @@ class LeaveService
         if ($managers->isNotEmpty()) {
             foreach ($managers as $manager) {
                 $managerUser = $manager->manager; // get manager's user via relation
-                if ($managerUser) {
+                if ($managerUser->fcm_token) {
                     SendNotification::send(
-                        '$managerUser->fcm_token',
+                        $managerUser->fcm_token,
                         $title,
                         $body,
                         [
@@ -132,9 +132,9 @@ class LeaveService
 
         if ($hrUsers->isNotEmpty()) {
             foreach ($hrUsers as $hr) {
-                // if ($hr->fcm_token) {
+                if ($hr->fcm_token) {
                     SendNotification::send(
-                        '$hr->fcm_token',
+                        $hr->fcm_token,
                         $title,
                         $body,
                         [
@@ -143,7 +143,7 @@ class LeaveService
                         ],
                         $hr->id
                     );
-                // }
+                }
             }
         }
 

@@ -6,16 +6,19 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Leave;
 use App\Mail\ContactUsMail;
+use App\Models\KpiEmployee;
+use App\Models\EmployeeType;
 use Illuminate\Http\Request;
 use App\Models\EmployeeAttendance;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Services\AttendanceRequestService;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Services\BranchServices;
 use App\Http\Services\EmployeeServices;
 use App\Http\Services\DepartmentServices;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\DesignationServices;
+use App\Http\Services\AttendanceRequestService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 
@@ -27,7 +30,7 @@ class CompanyDashboardController extends Controller
     public $employeeService;
     public $attendanceRequestService;
 
-    public function __construct(DepartmentServices $departmentService, DesignationServices $designationService, BranchServices $companyBranchService, EmployeeServices $employeeService,AttendanceRequestService $attendanceRequestService)
+    public function __construct(DepartmentServices $departmentService, DesignationServices $designationService, BranchServices $companyBranchService, EmployeeServices $employeeService, AttendanceRequestService $attendanceRequestService)
     {
         $this->departmentService = $departmentService;
         $this->designationService = $designationService;
@@ -57,6 +60,7 @@ class CompanyDashboardController extends Controller
             ->whereHas('details', function ($q) {
                 $q->whereNull('exit_date');
             });
+
         // Filters (if any from request)
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -108,11 +112,61 @@ class CompanyDashboardController extends Controller
             $employees = $query->paginate(10);
         }
 
+        // Attendance Chart Data (delegated to helper method)
+        [$chartLabels, $chartData] = $this->getAttendanceChartData($companyId);
+
         // Return partial table if AJAX
         if ($request->ajax()) {
             return view('company.dashboard.list', compact('employees'))->render();
         }
 
+        // Get all employee types from master
+        $staticColors = [
+            '#1642b3',
+            '#ffa502',
+            '#1e90ff',
+            '#70a1ff',
+            '#2ed573',
+            '#ff4757',
+            '#5352ed',
+        ];
+
+        $employeeTypes = EmployeeType::all();
+        $employeeChart = [];
+        $totalEmployees = User::managerFilter()->where('company_id', $companyId)
+            ->where('type', 'user')
+            ->where('status', 1)
+            ->count();
+
+        foreach ($employeeTypes as $index => $type) {
+            $count = User::where('company_id', $companyId)
+                ->where('type', 'user')
+                ->where('status', 1)
+                ->whereHas('details', fn($q) => $q->where('employee_type_id', $type->id))
+                ->count();
+
+            $employeeChart[] = [
+                'label' => $type->name,
+                'count' => $count,
+                'percentage' => $totalEmployees > 0 ? round(($count / $totalEmployees) * 100) : 0,
+                'color' => $staticColors[$index % count($staticColors)], // ⬅️ This must exist
+            ];
+        }
+
+        $year = Carbon::now()->year;
+
+        // Get count of KPI assigned per month
+        $monthlyKpiCounts = KpiEmployee::selectRaw('MONTH(created_at) as month, COUNT(*) as total_kpi')
+            ->where('company_id', $companyId)
+            ->whereYear('created_at', $year)
+            ->groupByRaw('MONTH(created_at)')
+            ->orderByRaw('MONTH(created_at)')
+            ->pluck('total_kpi', 'month'); // [1 => 5, 2 => 8, ...]
+
+        $kpiData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $kpiData[] = $monthlyKpiCounts[$i] ?? 0;
+        }
         // Full dashboard view
         $dashboardData = [
             'allCompanyBranch' => $this->companyBranchService->getAllCompanyBranchByCompanyId($companyIDs),
@@ -120,13 +174,27 @@ class CompanyDashboardController extends Controller
             'total_present' => EmployeeAttendance::whereDate('punch_in', $today)
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
                 ->count(),
+            'total_employee' => User::managerFilter()->with(['details', 'details.designation'])
+                ->where('company_id', $companyId)
+                ->where('type', 'user')
+                ->where('status', 1)
+                ->whereHas('details', function ($q) {
+                    $q->whereNull('exit_date');
+                })->count(),
             'total_active_employee' => User::managerFilter()->with(['details', 'details.designation'])
-            ->where('company_id', $companyId)
-            ->where('type', 'user')
-            ->where('status', 1)
-            ->whereHas('details', function ($q) {
-                $q->whereNull('exit_date');
-            })->count(),
+                ->where('company_id', $companyId)
+                ->where('type', 'user')
+                ->where('status', 1)
+                ->whereHas('details', function ($q) {
+                    $q->whereNull('exit_date');
+                })->count(),
+            'total_inactive_employee' => User::managerFilter()->with(['details', 'details.designation'])
+                ->where('company_id', $companyId)
+                ->where('type', 'user')
+                ->where('status', 0)
+                ->whereHas('details', function ($q) {
+                    $q->whereNull('exit_date');
+                })->count(),
             'total_leave' => Leave::whereDate('from', '<=', $today)->whereDate('to', '>=', $today)
                 ->where('leave_status_id', 2)
                 ->whereHas('user', fn($query) => $query->where('company_id', $companyId))
@@ -137,10 +205,63 @@ class CompanyDashboardController extends Controller
                 ->count(),
             'all_users_details' => $employees,
             'total_attendance_request' => $this->attendanceRequestService->getAttendanceRequestByCompanyId($companyIDs)->count(),
+            'attendance_chart_labels' => $chartLabels,
+            'attendance_chart_data' => $chartData,
+            'total_employee_type' => $totalEmployees,
+            'employee_chart' => $chartData,
+            'employee_type_chart' => $employeeChart,
+            'kpiData' => $kpiData
         ];
 
         return view('company.dashboard.dashboard', compact('dashboardData', 'daysLeft'));
     }
+
+    private function getAttendanceChartData($companyId)
+    {
+        $endDate = Carbon::now();
+        $startDate = $endDate->copy()->subDays(6);
+
+        $dates = collect();
+        for ($date = $startDate->copy(); $date <= $endDate; $date->addDay()) {
+            $dates->push($date->format('Y-m-d'));
+        }
+
+        $employeeIds = User::managerFilter()->where('company_id', $companyId)->pluck('id');
+        $employeeCount = $employeeIds->count();
+
+        $rawData = EmployeeAttendance::whereBetween(DB::raw('DATE(punch_in)'), [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->whereIn('user_id', $employeeIds)
+            ->get()
+            ->groupBy(fn($attendance) => Carbon::parse($attendance->punch_in)->format('Y-m-d'));
+
+        $chartLabels = [];
+        $chartData = [];
+
+        foreach ($dates as $date) {
+            $label = Carbon::parse($date)->format('j M');
+            $chartLabels[] = $label;
+
+            $attendances = $rawData[$date] ?? collect();
+
+            $onTime = $attendances->where('status', '1')->where('late', 0)->count();
+            $late = $attendances->where('status', '1')->where('late', 1)->count();
+            $present = $onTime + $late;
+            $absent = $employeeCount - $present;
+
+            $onTimePercent = $employeeCount > 0 ? round(($onTime / $employeeCount) * 100, 2) : 0;
+            $latePercent = $employeeCount > 0 ? round(($late / $employeeCount) * 100, 2) : 0;
+            $absentPercent = max(0, 100 - $onTimePercent - $latePercent);
+
+            $chartData[$label] = [
+                'on_time' => $onTimePercent,
+                'late' => $latePercent,
+                'absent' => $absentPercent,
+            ];
+        }
+
+        return [$chartLabels, $chartData];
+    }
+
 
 
     public function sendMailForSubscription(Request $request)

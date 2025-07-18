@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Http\Services;
-
-use Illuminate\Support\Facades\DB;
+use App\Http\Services\SendNotification;
 use App\Repositories\LeaveStatusLogRepository;
 use App\Repositories\LeaveManagerUpdateRepository;
 
@@ -59,7 +58,7 @@ class LeaveStatusLogService
                 $title = "Leave Status {$statusTitle}";
                 $body  = "Your leave request ({$leave->start_date} to {$leave->end_date}) has been {$statusTitle} by {$user->name}.";
 
-                SendNotification::sendNotification(
+                SendNotification::send(
                     $targetUser->fcm_token,
                     $title,
                     $body,
