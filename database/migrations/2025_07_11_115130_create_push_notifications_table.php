@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('success')->default(false);
             $table->text('response')->nullable();
             $table->boolean('status')->default(true);
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->timestamps();
         });
     }

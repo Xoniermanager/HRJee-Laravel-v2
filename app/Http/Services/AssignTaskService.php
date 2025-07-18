@@ -89,7 +89,7 @@ class AssignTaskService
         return $taskDetails->delete();
     }
 
-    public function searchFilterTask($searchKey)
+    public function searchFilterTask($searchKey = null)
     {
         $taskDetails = $this->assignTaskRepository->where('company_id', Auth()->user()->company_id);
 

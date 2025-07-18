@@ -41,9 +41,11 @@
             </td>
         </tr>
         @empty
-        <tr>
-            <td colspan="4">No employees found.</td>
-        </tr>
+        <td colspan="4">
+            <span class="text-danger text-center">
+                <strong>No Employee Found!</strong>
+            </span>
+        </td>
         @endforelse
     </tbody>
 </table>

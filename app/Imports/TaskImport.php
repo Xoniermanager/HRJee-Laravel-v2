@@ -53,7 +53,7 @@ class TaskImport implements ToCollection, WithChunkReading
 
                 // Save task
                 AssignTask::create([
-                    'user_id' => $user->id,
+                    'user_id' => $user->user_id,
                     'visit_address' => $rowAssoc['VISIT_ADDRESS'] ?? null,
                     'remark' => $rowAssoc['REMARK'] ?? null,
                     'latitude' => $latitude,

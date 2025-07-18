@@ -31,7 +31,7 @@
                             <select class="form-control ml-2" id="user_id">
                                 <option value="">Select Employee</option>
                                 @foreach ($allEmployeeDetails as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name .' ('.$item->details->emp_id.')'}}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name . ' (' . $item->details->emp_id . ')'}}</option>
                                 @endforeach
                             </select>
                             <select class="form-control ml-2" id="final_status">
@@ -159,22 +159,28 @@
         jQuery("#user_id").on('change', function () {
             search_filter_results();
         });
-        jQuery(document).on('click', '#task_list .paginate a', function (e) {
+        // Use 'body' or any static container that won't get replaced
+        jQuery(document).on('click', '#task_list .pagination a', function (e) {
             e.preventDefault();
-            var page_no = $(this).attr('href').split('page=')[1];
-            search_filter_results(page_no);
+
+            let pageUrl = $(this).attr('href');
+            let pageNo = new URLSearchParams(pageUrl.split('?')[1]).get('page');
+
+            search_filter_results(pageNo);
         });
+
         function search_filter_results(page_no = 1) {
             jQuery.ajax({
                 type: 'GET',
                 url: company_ajax_base_url + '/location-visit/search/task?page=' + page_no,
                 data: {
-                    'final_status': jQuery('#final_status').val(),
-                    'search': jQuery('#search').val(),
-                    'user_id': jQuery('#user_id').val(),
+                    final_status: jQuery('#final_status').val(),
+                    search: jQuery('#search').val(),
+                    user_id: jQuery('#user_id').val(),
                 },
                 success: function (response) {
-                    jQuery('#task_list').replaceWith(response.data);
+                    // Replace full container (make sure response contains #task_list again)
+                    jQuery('#task_list').html(response.data);
                 }
             });
         }

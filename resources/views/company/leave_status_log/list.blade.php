@@ -1,25 +1,31 @@
 @php
-function statusBadge($statusId, $statusName, $isDisabled = false) {
+function statusBadge($statusId, $statusName, $isDisabled = false, $leaveId = null) {
+    $statusName = e($statusName); // Escape output
+
     if ($isDisabled) {
         return '<span class="final-status-disabled badge bg-success p-2 opacity-75 cursor-pointer"
-                    data-current-status="'.$statusId.'"
-                    title="Approved by you">
-                    '.$statusName.'
-                </span>';
+                    data-current-status="' . $statusId . '"
+                    title="Approved by you">'
+                    . $statusName .
+                '</span>';
     }
 
     switch ($statusId) {
-        case 1: return '<span class="final-status-btn badge bg-warning text-dark p-2 cursor-pointer"
-                            data-current-status="'.$statusId.'">'.$statusName.'</span>';
-        case 2: return '<span class="badge bg-success p-2">'.$statusName.'</span>';
-        case 3: return '<span class="badge bg-danger p-2">'.$statusName.'</span>';
-        case 4: return '<span class="badge bg-dark p-2">'.$statusName.'</span>';
-        default: return '<span class="badge bg-secondary p-2">'.$statusName.'</span>';
+        case 1:
+            return '<span class="final-status-btn badge bg-warning text-dark p-2 cursor-pointer"
+                            data-current-status="' . $statusId . '"
+                            data-id="' . $leaveId . '">' . $statusName . '</span>';
+        case 2:
+            return '<span class="badge bg-success p-2">' . $statusName . '</span>';
+        case 3:
+            return '<span class="badge bg-danger p-2">' . $statusName . '</span>';
+        case 4:
+            return '<span class="badge bg-dark p-2">' . $statusName . '</span>';
+        default:
+            return '<span class="badge bg-secondary p-2">' . $statusName . '</span>';
     }
 }
 @endphp
-
-
 
 <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
     <thead>
@@ -51,9 +57,7 @@ function statusBadge($statusId, $statusName, $isDisabled = false) {
             </td>
             <td>{{ $leave->from }}</td>
             <td>{{ $leave->to }}</td>
-            <td>
-                {!! statusBadge($leave->leaveStatus->id, $leave->leaveStatus->name, $managerApproved) !!}
-            </td>
+            <td>{!! statusBadge($leave->leaveStatus->id, $leave->leaveStatus->name, $managerApproved, $leave->id) !!}</td>
             <td>
                 <a href="javascript:void(0);" class="leavetracking" data-id="{{ $leave->id }}">
                     <img src="https://cdn-icons-png.flaticon.com/512/3273/3273365.png" class="h-35px" alt="Leave Tracking">
@@ -65,13 +69,13 @@ function statusBadge($statusId, $statusName, $isDisabled = false) {
     </tbody>
 </table>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    // For normal pending badge → show full form popup
-    document.querySelectorAll('.final-status-btn').forEach(function(el) {
-        el.addEventListener('click', function() {
-            showLeaveStatusPopup(); // your existing SweetAlert popup function
-        });
-    });
+    // document.addEventListener('DOMContentLoaded', function() {
+    // // For normal pending badge → show full form popup
+    // document.querySelectorAll('.final-status-btn').forEach(function(el) {
+    //     el.addEventListener('click', function() {
+    //         showLeaveStatusPopup(); // your existing SweetAlert popup function
+    //     });
+    // });
 
     // For disabled badge → show simple info popup
     document.querySelectorAll('.final-status-disabled').forEach(function(el) {
@@ -84,6 +88,6 @@ function statusBadge($statusId, $statusName, $isDisabled = false) {
             });
         });
     });
-});
+// });
 
 </script>

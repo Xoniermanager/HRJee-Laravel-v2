@@ -10,6 +10,7 @@ use App\Models\UserDetail;
 use App\Mail\ResetPassword;
 use Illuminate\Support\Arr;
 use App\Models\CompanyBranch;
+use App\Models\EmployeeStatus;
 use App\Models\EmployeeManager;
 use App\Models\UserActiveLocation;
 use Illuminate\Support\Facades\DB;
@@ -66,7 +67,7 @@ class EmployeeServices
                 $status = 'updatedData';
                 $id = $existingDetails->user_id;
             } else {
-                $data['employee_status_id'] = '1';
+                $data['employee_status_id'] = EmployeeStatus::CURRENT;
                 $createdEmployee = $this->userDetailRepository->create($data);
                 $createdEmployee->user->skill()->sync($data['skill_id']);
                 $this->syncEmployeeLanguages($createdEmployee->user, $data['language']);

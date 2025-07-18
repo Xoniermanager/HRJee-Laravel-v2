@@ -52,7 +52,7 @@
         <!--end::Table body-->
     </table>
     <!--end::Table-->
-    <div class="paginate">
+    <div class="pagination">
         {{ $allTaskDetails->links() }}
     </div>
 </div>
