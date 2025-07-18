@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Company;
 
 use Carbon\Carbon;
+use App\Models\News;
 use App\Models\User;
 use App\Models\Leave;
+use App\Models\Policy;
+use App\Models\UserDetail;
 use App\Mail\ContactUsMail;
 use App\Models\KpiEmployee;
+use App\Models\Announcement;
 use App\Models\EmployeeType;
 use Illuminate\Http\Request;
 use App\Models\EmployeeAttendance;
@@ -288,4 +292,100 @@ class CompanyDashboardController extends Controller
 
         return response()->json(['status' => true, 'message' => 'Your enquiry has been submitted. We will get back to you soon!']);
     }
+    public function getEvents(Request $request)
+    {
+        $date = Carbon::parse($request->date)->toDateString(); // Y-m-d
+        $companyId = getCompanyIDs();
+        $events = [];
+
+        // 🎂 Birthdays
+        $birthdays = UserDetail::with('user')
+            ->whereHas('user', function ($q) use ($companyId) {
+                $q->where('company_id', $companyId)->where('type', 'user')->where('status', 1);
+            })
+            ->whereMonth('date_of_birth', Carbon::parse($date)->month)
+            ->whereDay('date_of_birth', Carbon::parse($date)->day)
+            ->get();
+
+        foreach ($birthdays as $detail) {
+            if ($detail->user) {
+                $events[] = [
+                    'type' => 'birthday',
+                    'title' => "Birthday: {$detail->user->name} ({$detail->emp_id})"
+                ];
+            }
+        }
+
+        // 🎉 Anniversaries
+        $anniversaries = UserDetail::with('user')
+            ->whereHas('user', function ($q) use ($companyId) {
+                $q->where('company_id', $companyId)->where('type', 'user')->where('status', 1);
+            })
+            ->whereMonth('joining_date', Carbon::parse($date)->month)
+            ->whereDay('joining_date', Carbon::parse($date)->day)
+            ->get();
+
+        foreach ($anniversaries as $detail) {
+            if ($detail->user) {
+                $events[] = [
+                    'type' => 'anniversary',
+                    'title' => "Work Anniversary: {$detail->user->name} ({$detail->emp_id})"
+                ];
+            }
+        }
+
+        // 📢 Announcements
+        $announcements = Announcement::where('company_id', $companyId)
+            ->where('status', 1)
+            ->whereDate('start_date_time', '<=', $date)
+            ->whereDate('expires_at_time', '>=', $date)
+            ->get();
+
+        foreach ($announcements as $a) {
+            $events[] = [
+                'type' => 'announcement',
+                'title' => "Announcement: {$a->title}"
+            ];
+        }
+
+        // 📰 News
+        $newsList = News::where('company_id', $companyId)
+            ->where('status', 1)
+            ->whereDate('start_date', '<=', $date)
+            ->whereDate('end_date', '>=', $date)
+            ->get();
+
+        foreach ($newsList as $news) {
+            $events[] = [
+                'type' => 'news',
+                'title' => "News: {$news->title}"
+            ];
+        }
+
+        // 📋 Policies
+        $policies = Policy::where('company_id', $companyId)
+            ->where('status', 1)
+            ->whereDate('start_date', '<=', $date)
+            ->whereDate('end_date', '>=', $date)
+            ->get();
+
+        foreach ($policies as $policy) {
+            $events[] = [
+                'type' => 'policy',
+                'title' => "Policy: {$policy->title}"
+            ];
+        }
+
+        return response()->json([
+            'events' => $events,
+            'birthday_count' => count($birthdays),
+            'anniversary_count' => count($anniversaries),
+        ]);
+    }
+
+    public function allNotification()
+    {
+        return view('company.notification.index');
+    }
+
 }

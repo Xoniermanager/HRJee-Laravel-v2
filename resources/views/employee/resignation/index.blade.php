@@ -6,8 +6,8 @@
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <div class="container-xxl" id="kt_content_container">
             <div class="row gy-5 g-xl-10">
-                <div class="card card-body col-md-12">
-                    <div class="card-header cursor-pointer p-0">
+                <div class="card custom-table p-0">
+                    <div class="card-header cursor-pointer">
                         <div class="card-title m-0">
                             <h3 class="fw-bold m-0"> Applied Resign</h3>
                         </div>

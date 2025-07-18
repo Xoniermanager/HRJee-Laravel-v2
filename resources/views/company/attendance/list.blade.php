@@ -27,10 +27,10 @@
                         <td>
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <a href="{{ route('attendance.view.details', getEncryptId($employee->id)) }}"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    class="btn btn-warning btn-sm me-1">
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                <button class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                <button class="btn btn-primary btn-sm me-1"
                                     @if ($employee->totalPresent > 0) class="btn"
                                 @else
                                 class="btn disabled"

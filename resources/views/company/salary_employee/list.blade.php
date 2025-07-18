@@ -21,7 +21,7 @@
                     <td>
                         <div class="d-flex justify-content-end flex-shrink-0">
                             <a href="{{ route('employee_salary.viewSalary',getEncryptId($item->id)) }}"
-                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                class="btn btn-icon btn-primary btn-sm me-1">
                                 <i class="fa fa-eye"></i>
                             </a>
                         </div>

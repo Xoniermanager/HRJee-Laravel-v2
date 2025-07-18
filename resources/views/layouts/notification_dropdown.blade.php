@@ -1,50 +1,67 @@
-
 <li class="nav-item dropdown">
-    <a class="nav-link position-relative" href="#" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-bell fs-5"></i>
+    <a class="nav-link position-relative" href="#" id="notificationDropdown" data-bs-toggle="dropdown"
+        aria-expanded="false" style="padding: 10px; border-radius: 50px; background: #eaf4ff; transition: 0.3s;">
+        <i class="fas fa-bell fs-5 text-primary" style="position: relative; animation: ring 4s .7s ease-in-out infinite;"></i>
         @if($globalNotifications->count() > 0)
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm"
+                style="font-size: 12px; padding: 4px 6px;">
                 {{ $globalNotifications->count() }}
             </span>
         @endif
     </a>
-    <div class="dropdown-menu dropdown-menu-end p-0 shadow rounded-3" aria-labelledby="notificationDropdown" style="width: 340px;">
-        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-light">
-            <span class="fw-semibold text-dark">🔔 Notifications</span>
-            <button id="clearAllNotifications" class="btn btn-sm btn-link text-danger text-decoration-none">Clear All</button>
+
+    <div class="dropdown-menu dropdown-menu-end p-0 shadow-lg rounded-4 border-0" aria-labelledby="notificationDropdown"
+        style="width: 360px; overflow: hidden;">
+        <div class="d-flex justify-content-between align-items-center px-4 py-3 bg-primary text-white">
+            <span class="fw-semibold">🔔 Notifications</span>
+            @if(Auth()->user()->type === 'user')
+                <button id="clearAllNotifications" class="btn btn-sm btn-light text-danger">Clear All</button>
+            @else
+                <a href="{{ route('company.all_notification') }}" class="btn btn-sm btn-light">See all</a>
+            @endif
         </div>
-        <div id="notificationList" style="max-height: 340px; overflow-y: auto;">
+
+        <div id="notificationList" style="max-height: 360px; overflow-y: auto;" class="bg-white">
             @forelse($globalNotifications as $notification)
-                @php $isUnread = $notification->status ?? false; @endphp
-                <div class="d-flex align-items-start gap-2 px-3 py-2 border-bottom notification-item {{ $isUnread ? 'bg-light fw-semibold' : '' }}"
-                     data-id="{{ $notification->id }}" style="cursor: pointer; transition: background-color 0.2s;">
-                    <div class="flex-shrink-0 mt-1 text-primary">
-                        <i class="fas fa-circle fa-xs {{ $isUnread ? '' : 'invisible' }}"></i>
+                @php
+                    $isUnread = $notification->status ?? false;
+                    $user = $notification->user;
+                    $userDetails = $user?->details;
+                @endphp
+
+                <div class="d-flex align-items-start gap-3 px-4 py-3 border-bottom notification-item {{ $isUnread ? 'bg-light' : '' }}"
+                    data-id="{{ $notification->id }}" style="cursor: pointer; transition: 0.3s;">
+                    <div class="pt-1 text-primary">
+                        <i class="fas fa-dot-circle fa-xs {{ $isUnread ? '' : 'invisible' }}"></i>
                     </div>
+
                     <div class="flex-grow-1 text-truncate">
-                        <div class="small">{{ $notification->title ?? 'Notification' }}</div>
+                        <div class="fw-semibold small">{{ $notification->title ?? 'Notification' }}</div>
+
                         @if(!empty($notification->body))
                             <div class="small text-muted text-truncate">{{ $notification->body }}</div>
                         @endif
-                        <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+
+                        <small class="text-muted d-block mt-1">{{ $notification->created_at->diffForHumans() }}</small>
+
+                        {{-- ✅ Show name & emp ID if current user is type company --}}
+                        @if(Auth()->user()->type === 'company' && $user)
+                            <div class="text-muted small mt-1">
+                                <span class="fw-semibold text-dark">{{ $user->name }}</span>
+                                    <span class="ms-1">| Emp ID: {{ $user->details->emp_id ?? ''}}</span>
+                            </div>
+                        @endif
                     </div>
-                    @if($isUnread)
-                        <button class="btn btn-sm text-muted ms-1 mark-as-read-btn" title="Mark as read">
+
+                    @if(Auth()->user()->type === 'user' && $isUnread)
+                        <button class="btn btn-sm text-muted ms-auto mark-as-read-btn" title="Mark as read">
                             <i class="fas fa-times small"></i>
                         </button>
                     @endif
                 </div>
             @empty
-                <span class="dropdown-item text-center small text-muted py-3">No notifications</span>
+                <div class="text-center py-4 text-muted small">No notifications found</div>
             @endforelse
         </div>
     </div>
 </li>
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
-    <div id="notificationToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body" id="toastBody">Notification updated</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>

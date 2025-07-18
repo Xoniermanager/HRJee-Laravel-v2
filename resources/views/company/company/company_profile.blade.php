@@ -6,7 +6,7 @@
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <!--begin::Container-->
     <div class="container-xxl" id="kt_content_container">
-        
+
         <!--begin::Navbar-->
         <div class="card mb-5 mb-xl-10">
             <div class="card-body pt-9 pb-0">
@@ -199,7 +199,8 @@
                         <h3 class="fw-bold m-0">Personal Details</h3>
                     </div>
                 </div>
-                @if (session('error'))
+                <div class="card-body p-9">
+                    @if (session('error'))
                     <div class="alert alert-danger alert-dismissible">
                         {{ session('error') }}
                     </div>
@@ -209,38 +210,50 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                <div class="card-body p-9">
                     <form method="post" action="{{route("company.profile.update")}}" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="">Company Logo </label>
                                 <input class="form-control" name="logo" type="file">
+                                @if ($errors->has('logo'))
+                                <div class="text-danger">{{ $errors->first('logo') }}</div>
+                            @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Company Name </label>
-                                <input class="form-control" name="name" type="text" value="{{ Auth()->user()->name }}">
+                                <input class="form-control" name="name" type="text" value="{{ Auth()->user()->name }}" readonly>
+                                  @if ($errors->has('name'))
+                                <div class="text-danger">{{ $errors->first('name') }}</div>
+                            @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">User Name </label>
                                 <input class="form-control" name="username" type="text"
                                     value="{{ Auth()->user()->companyDetails->username }}">
+                                    @if ($errors->has('username'))
+                                    <div class="text-danger">{{ $errors->first('username') }}</div>
+                                @endif
                             </div>
 
                             <div class="col-md-6 form-group">
                                 <label for="">Company Email Id </label>
                                 <input class="form-control" name="email" type="email"
                                     value="{{ Auth()->user()->email }}" disabled>
+                                    @if ($errors->has('email'))
+                                    <div class="text-danger">{{ $errors->first('email') }}</div>
+                                @endif
                             </div>
                             <div class="col-md-6 form-group">
                                 <label for="">Contact Number </label>
                                 <input class="form-control" name="contact_no" type="number"
                                     value="{{ Auth()->user()->companyDetails->contact_no }}">
+                                    @if ($errors->has('leave_type_id'))
+                                    <div class="text-danger">{{ $errors->first('leave_type_id') }}</div>
+                                @endif
                             </div>
                         </div>
-
                         <button class="btn btn-primary" type='submit'>Update</button>
-
                     </form>
                 </div>
                 <!--end::Card body-->

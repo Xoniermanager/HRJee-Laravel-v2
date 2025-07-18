@@ -4,7 +4,7 @@
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
-            <div class="card mb-4">
+            <div class="card custom-table p-0">
                 <div class="card-header d-block cursor-pointer border-0">
                     <div class="row align-items-center mt-4">
                         <div class="col-md-4">
@@ -32,28 +32,29 @@
                             Add Course</a>
                     </div>
                 </div>
-            </div>
-            <!--begin::Row-->
-            <div class="row gy-5 g-xl-10">
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @elseif (session('danger'))
-                    <div class="alert alert-danger">
-                        {{ session('danger') }}
-                    </div>
-                @endif
-                <!--begin::Col-->
-                <div class="card card-body col-md-12">
-                    <div class="mb-5 mb-xl-10">
-                        <!--begin::Body-->
-                        <div class="card-body py-3">
-                            @include('company.courses.list')
+                <!--begin::Row-->
+                <div class="row gy-5 g-xl-10">
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @elseif (session('danger'))
+                        <div class="alert alert-danger">
+                            {{ session('danger') }}
+                        </div>
+                    @endif
+                    <!--begin::Col-->
+                    <div class="card-body col-md-12">
+                        <div class="mb-5 mb-xl-10">
+                            <!--begin::Body-->
+                            <div class="card-body py-3">
+                                @include('company.courses.list')
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
         <script>
             function deleteFunction(id) {

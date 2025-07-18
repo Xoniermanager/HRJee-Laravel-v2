@@ -2,7 +2,9 @@
     <thead>
         <tr class="fw-bold">
             <th>Sr. No.</th>
-            <th>Employee</th>
+            <th>Employee Name</th>
+            <th>Department</th>
+            <th>Designation</th>
             <th>Contact</th>
             <th>Attendance</th>
         </tr>
@@ -19,13 +21,12 @@
                         </div>
                         <div class="d-flex justify-content-start flex-column">
                             <span class="text-dark fw-bold text-hover-primary fs-6">{{ $item->name }}</span>
-                            <span class="text-muted fw-semibold d-block fs-7">
-                                {{ $item->details->designation->name ?? 'N/A' }}
-                            </span>
                         </div>
                     </div>
                 </a>
             </td>
+            <td>{{ $item->details->department->name ?? ''}}</td>
+            <td>{{ $item->details->designation->name ?? ''}}</td>
             <td>
                 <a href="tel:{{ $item->details->phone }}" title="{{ $item->details->phone }}">
                     <span class="badge py-3 px-4 fs-7 badge-light-success"><i class="fa fa-phone-flip"></i></span>

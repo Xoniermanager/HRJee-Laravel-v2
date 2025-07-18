@@ -34,12 +34,12 @@
                             <div class="d-flex justify-content-end flex-shrink-0">
                                 <a href="#" data-bs-toggle="modal"
                                     onClick="edit_complain_category_details('{{ $complainCategoryDetails->id }}', '{{ $complainCategoryDetails->name }}','{{ $complainCategoryDetails->description }}')"
-                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                    class="btn btn-primary btn-sm me-1">
                                     <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                     <i class="fa fa-edit"></i>
                                     <!--end::Svg Icon-->
                                 </a>
-                                <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                <a href="#" class="btn btn-danger btn-sm me-1"
                                     onclick="deleteFunction('{{ $complainCategoryDetails->id }}')">
                                     <i class="fa fa-trash"></i>
                                 </a>

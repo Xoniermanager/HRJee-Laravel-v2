@@ -1,4 +1,4 @@
-<div class="table-responsive">
+<div class="">
 	<!--begin::Table-->
 	<table class="table-row-dashed table-row-gray-300 gs-0 gy-4 table align-middle">
 		<!--begin::Table head-->
@@ -79,14 +79,14 @@
 					<td>
 						<div class="d-flex justify-content-end flex-shrink-0">
 							<a href="{{ route('employee.view', $singleUserDetails->id) }}"
-								class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+								class="btn btn-dark btn-sm me-1">
 								<!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
 								<i class="fa fa-eye"></i>
 								<!--end::Svg Icon-->
 							</a>
 							<!--begin::Menu-->
 							<div class="me-1">
-								<button class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary" data-kt-menu-trigger="click"
+								<button class="btn btn-primary btn-sm" data-kt-menu-trigger="click"
 									data-kt-menu-placement="bottom-end">
 									<i class="fa fa-edit"></i>
 								</button>
@@ -130,7 +130,7 @@
 								</div>
 								<!--end::Menu 3-->
 							</div>
-							<a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+							<a href="#" class="btn btn-danger btn-sm me-1"
 								onclick="deleteFunction('{{ $singleUserDetails->id }}')">
 								<!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
 								<i class="fa fa-sign-out-alt"></i>

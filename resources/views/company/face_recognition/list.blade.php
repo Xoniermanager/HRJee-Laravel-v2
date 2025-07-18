@@ -35,7 +35,7 @@
         				<td>NA</td>
         			@endif
 					<td><a href="#"
-						class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+						class="btn btn-danger btn-sm me-1"
 						onclick="deleteFunction('{{ $singleUserDetails->id }}')">
 						<i class="fa fa-trash"></i>
 					</a></td>

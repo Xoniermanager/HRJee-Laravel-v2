@@ -72,7 +72,7 @@
     --bs-border-radius: 0.65rem;
     --bs-border-radius-sm: 0.3rem;
     --bs-border-radius-lg: 0.85rem;
-    --bs-border-radius-xl: 1.25rem;
+    --bs-border-radius-xl: 2rem;
     --bs-border-radius-2xl: 2rem;
     --bs-border-radius-pill: 50rem;
     --bs-heading-color: #37496e;
@@ -36594,7 +36594,7 @@ g.ng-star-inserted {
 
 .custom-table td {
     background-color: var(--bs-body-bg);
-    padding: 0.6rem 0.55rem !important;
+    padding: 0.2rem 0.55rem !important;
     border-bottom: 3px solid var(--kt-page-bg) !important;
 }
 
@@ -36778,9 +36778,6 @@ g.ng-star-inserted {
     outline: var(--bs-none) !important;
 }
 
-.custom-table {
-    min-height: 430px;
-}
 
 th {
     font-weight: var(--kt-weight-bold) !important;
@@ -38860,11 +38857,6 @@ mat-paginator {
     font-size: 15px ! IMPORTANT;
 }
 
-.form-control {
-    background-color: transparent;
-    border: 1px solid #ddd
-}
-
 .wt-space {
     white-space: nowrap;
 }
@@ -40326,6 +40318,7 @@ padding-bottom: 0 !important;
   .custom-table .card-header {
     background: var(--kt-primary-lite);
     padding: 10px 20px !important;
+    border-radius: 20px 20px 0 0;
   }
 
   .glass-card:hover {

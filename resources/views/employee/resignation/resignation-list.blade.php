@@ -52,14 +52,14 @@
 						<td>
 							<div class="d-flex justify-content-end flex-shrink-0">
 								<a href="{{ route('resignation.view', $resignation->id) }}"
-									class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+									class="btn btn-primary btn-sm me-1">
 									<i class="fa fa-eye" aria-hidden="true"></i>
 								</a>
 
 								@if ($resignation->status == 'pending')
 									@if (Auth::user()->id == $resignation->user_id)
 										<a href="#" data-bs-toggle="modal" onClick="edit_resignation('{{ $resignation }}')"
-											class="btn btn-icon btn-bg-light text-danger btn-active-color-primary btn-sm me-1">
+											class="btn btn-primary btn-sm me-1">
 											<i class="fa fa-edit" aria-hidden="true"></i>
 										</a>
 									@endif
@@ -67,7 +67,7 @@
 
 								@if (Auth::user()->type == 'company')
 									<a href="#" data-bs-toggle="modal" onClick="action_resignation('{{ $resignation }}')"
-										class="btn btn-icon btn-bg-light text-danger btn-active-color-primary btn-sm me-1">
+										class="btn btn-primary btn-sm me-1">
 										<i class="fas fa-sync-alt"></i>
 									</a>
 								@endif
@@ -77,7 +77,7 @@
 										$resignation->status != 'approved' &&
 										Auth::user()->id == $resignation->user_id)
 									<a href="#" data-bs-toggle="modal" onClick="action_resignation('{{ $resignation }}', true)"
-										class="btn btn-icon btn-bg-light text-danger btn-active-color-primary btn-sm me-1">
+										class="btn btn-primary btn-sm me-1">
 										<i class="fa fa-times" aria-hidden="true"></i>
 									</a>
 								@endif
@@ -103,20 +103,20 @@
 
 {{-- <script>
     const segmentControl = document.getElementById('statusSegment');
-    
+
     segmentControl.addEventListener('click', (event) => {
         if (event.target.tagName === 'BUTTON') {
             segmentControl.querySelectorAll('button').forEach(button => {
                 button.classList.remove('active');
             });
-            
+
             event.target.classList.add('active');
             const newStatus = event.target.getAttribute('data-status');
         }
     });
 
     const statusSegmentButtons = document.querySelectorAll('#statusSegment button');
-    
+
     function disableSegmentInput() {
         statusSegmentButtons.forEach(button => {
             button.disabled = true;
@@ -124,7 +124,7 @@
     }
 
     disableSegmentInput()
-    
+
     function enableSegmentInput() {
         statusSegmentButtons.forEach(button => {
             button.disabled = false;

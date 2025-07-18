@@ -36,14 +36,14 @@
                     </td>
                     <td>
                         <div class="d-flex justify-content-end flex-shrink-0">
-                            <a href="{{ route('salary.view',$item->id) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                            <a href="{{ route('salary.view',$item->id) }}" class="btn btn-icon btn-dark btn-sm me-1">
                                 <i class="fa fa-eye"></i>
-                            <a href="{{ route('salary.edit',$item->id) }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                            <a href="{{ route('salary.edit',$item->id) }}" class="btn btn-icon btn-primary btn-sm me-1">
                                 <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                                 <i class="fa fa-edit"></i>
                                 <!--end::Svg Icon-->
                             </a>
-                            <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                            <a href="#" class="btn btn-icon btn-danger btn-sm me-1"
                                 onclick="deleteFunction('{{ $item->id }}')">
                                 <i class="fa fa-trash"></i>
                             </a>

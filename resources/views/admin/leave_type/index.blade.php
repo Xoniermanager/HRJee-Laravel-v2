@@ -6,7 +6,7 @@
     <div class="container-xxl" id="kt_content_container">
         <div class="row gy-5 g-xl-10">
             <!--begin::Col-->
-            <div class="card card-body col-md-12">
+            <div class="custom-table card p-0">
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
                     <div class="card-title m-0">

@@ -9,8 +9,8 @@
         <!--begin::Row-->
         <div class="row gy-5 g-xl-10">
             <!--begin::Col-->
-            <div class="card card-body col-md-12">
-                <div class="card-header cursor-pointer p-0">
+            <div class="card custom-table p-0">
+                <div class="card-header cursor-pointer">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
                         <div class="d-flex align-items-center position-relative my-1">
@@ -37,21 +37,21 @@
                             <option {{ old('status') == '0' || request()->get('status') == '0' ? 'selected' : '' }}
                                 value="2">Inactive</option>
                         </select>
-                        <select class="form-control ml-2 min-w-200px" id="policy_category">
+                        <select class="form-control ml-2 min-w-150px" id="policy_category">
                             <option value="">Policy Category</option>
                             @foreach ($allPolicyCategoryDetails as $policyCategoryDetails)
                                 <option value="{{ $policyCategoryDetails->id }}">
                                     {{ $policyCategoryDetails->name }}</option>
                             @endforeach
                         </select>
-                        <select class="form-control ml-2 min-w-200px" id="company_branch">
+                        <select class="form-control ml-2 min-w-150px" id="company_branch">
                             <option value="">Company Branches</option>
                             @foreach ($allCompanyBranchesDetails as $compayBranches)
                                 <option value="{{ $compayBranches->id }}">{{ $compayBranches->name }}
                                 </option>
                             @endforeach
                         </select>
-                        <select class="form-control ml-2 min-w-200px" id="department">
+                        <select class="form-control ml-2 min-w-150px" id="department">
                             <option value="">Department</option>
                             @foreach ($allDepartmentsDetails as $departmentsDetails)
                                 <option value="{{ $departmentsDetails->id }}">

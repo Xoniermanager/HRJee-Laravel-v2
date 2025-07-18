@@ -6,73 +6,79 @@
     <div class="content d-flex flex-column flex-column-fluid fade-in-image" id="kt_content">
         <!--begin::Container-->
         <div class="container-xxl" id="kt_content_container">
-            <div class="card mb-4">
-                <div class="card-header d-block cursor-pointer border-0 pb-5">
-                    <div class="row align-items-center mt-4">
-                        <div class="col-md-3">
-                            <div class="d-flex align-items-center position-relative">
-                                <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-                                <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none">
-                                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
-                                            rx="1" transform="rotate(45 17.0365 15.1223)" fill="black">
-                                        </rect>
-                                        <path
-                                            d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
-                                            fill="black"></path>
-                                    </svg>
-                                </span>
-                                <!--end::Svg Icon-->
-                                <input data-kt-patient-filter="search" class="form-control ps-14" placeholder="Search"
-                                    type="text" id="search">
-                                <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+            <div class="card custom-table p-0">
+                <div class="card-header d-block cursor-pointer border-0">
+                    <div class="row align-items-center">
+                        <div class="row align-items-center g-3">
+                            <!-- 🔍 Search Input -->
+                            <div class="col-md-2">
+                                <div class="d-flex align-items-center position-relative">
+                                    <span class="svg-icon svg-icon-1 position-absolute ms-4">
+                                        <!--begin::Svg Icon-->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none">
+                                            <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
+                                                rx="1" transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
+                                            <path
+                                                d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                                                fill="black"></path>
+                                        </svg>
+                                        <!--end::Svg Icon-->
+                                    </span>
+                                    <input data-kt-patient-filter="search" class="form-control ps-14" placeholder="Search"
+                                        type="text" id="search">
+                                    <button style="opacity: 0; display: none !important" id="table-search-btn"></button>
+                                </div>
                             </div>
-                        </div>
-                        <a class="col-md-1 btn btn-sm ms-3 btn-primary align-self-center wt-space"
-                            id="export_button">Export</a>
-                        <div class="col-md-5">
-                            <a class="btn btn-sm ms-3 btn-primary align-self-center wt-space disabled"
-                                data-bs-toggle="modal" data-bs-target="#modal_radius" id="punch_in_radius">Add PunchIn
-                                Radius</a>
-                        </div>
-                        @if ($activeUserCount < auth()->user()->companyDetails->company_size)
-                            <a href="{{ route('employee.add') }}"
-                                class="col-md-2 btn btn-sm ms-3 btn-primary align-self-center wt-space">
-                                Add Employee</a>
 
-                            <div class="row">
+                            <!-- 📤 Export Button -->
 
-                                <div class="col-md-1 mt-3">
-                                    <a href="{{ asset('storage/test.csv') }}"
-                                        class="btn btn-sm btn-primary align-self-center wt-space" title="Download Template"
-                                        download>
-                                        <i class="fa fa-download"></i>
+
+                            <!-- 📍 Add Punch-In Radius -->
+                            <div class="col-md-2">
+                                <a class="btn btn-sm btn-primary disabled"
+                                    data-bs-toggle="modal" data-bs-target="#modal_radius" id="punch_in_radius">
+                                    Add PunchIn Radius
+                                </a>
+                            </div>
+                             <div class="col-md-2">
+                                <a class="btn btn-sm btn-dark" id="export_button">Export</a>
+                                </div>
+                            @if ($activeUserCount < auth()->user()->companyDetails->company_size)
+                                <div class="col-md-1">
+                                    <a href="{{ asset('storage/test.csv') }}" class="btn btn-sm btn-primary" title="Download Template" download>
+                                       Template
                                     </a>
                                 </div>
-                                <div class="col-md-4 mt-3">
-
-                                    <form class="d-flex" id="importForm" enctype="multipart/form-data">
+                                <!-- ⬆️ Upload CSV -->
+                                <div class="col-md-3">
+                                    <form class="d-flex align-items-center" id="importForm" enctype="multipart/form-data">
                                         @csrf
-                                        <input type="file" name="file" id="file" class="form-control">
-                                        <button type="submit" class="btn btn-sm ms-3 btn-primary">
+                                        <input type="file" name="file" id="file" class="form-control form-control-sm me-2">
+                                        <button type="submit" class="btn btn-sm btn-primary">
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     </form>
                                 </div>
-                            </div>
-                        @endif
+
+                                <div class="col-md-2 text-end">
+                                    <a href="{{ route('employee.add') }}" class="btn btn-sm btn-primary">
+                                        Add Employee
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- ⚠️ Validation & Session Messages -->
                         <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
                         <div id="validationErrors" class="alert alert-danger" style="display: none;"></div>
+
                         @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
+                            <div class="alert alert-success">{{ session('success') }}</div>
                         @elseif (session('danger'))
-                            <div class="alert alert-danger">
-                                {{ session('danger') }}
-                            </div>
+                            <div class="alert alert-danger">{{ session('danger') }}</div>
                         @endif
+
                     </div>
                 </div>
             </div>

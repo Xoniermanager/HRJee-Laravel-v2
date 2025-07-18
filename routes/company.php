@@ -98,6 +98,8 @@ Route::prefix('company')->middleware(['checkAccountStatus', 'Check2FA', 'checkUr
     Route::controller(CompanyDashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('company.dashboard');
         Route::post('/send-enquiry', 'sendMailForSubscription')->name('company.send-enquiry');
+        Route::get('/calendar/events','getEvents');
+        Route::get('/all-notification', 'allNotification')->name('company.all_notification');
     });
 
     Route::controller(CompanyBranchesController::class)->group(function () {

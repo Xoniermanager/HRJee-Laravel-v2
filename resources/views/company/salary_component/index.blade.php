@@ -7,7 +7,7 @@
         <!--begin::Row-->
         <div class="row gy-5 g-xl-10">
             <!--begin::Col-->
-            <div class="card card-body col-md-12">
+            <div class="custom-table card p-0">
                 <div class="card-header cursor-pointer p-0">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
@@ -61,7 +61,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-                <div class="mb-5 mb-xl-10">
+                <div class="mb-xl-10">
                     @include('company.salary_component.list')
                 </div>
                 <!--end::Col-->

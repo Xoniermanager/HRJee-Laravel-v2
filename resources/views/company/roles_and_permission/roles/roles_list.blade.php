@@ -43,11 +43,11 @@
                                 @if ($role->category !== 'default')
                                     <a href="#" data-bs-toggle="modal"
                                         onClick="edit_role_details('{{ $role->id }}', '{{ $role->name }}')"
-                                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                        class="btn btn-icon btn-primary btn-sm me-1">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <a href="#"
-                                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                        class="btn btn-icon btn-danger btn-sm me-1"
                                         onclick="deleteFunction('{{ $role->id }}')">
                                         <i class="fa fa-trash"></i>
                                     </a>
